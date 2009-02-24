@@ -1,0 +1,5 @@
+syntax: glob
+
+log/*
+tmp/*
+nbproject/private/*
