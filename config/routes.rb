@@ -1,6 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :groups
   map.resources :group_permissions
+  map.connect 'users/login', :controller => "users", :action => "login"
 
   # The priority is based upon order of creation: first created -> highest priority.
 
