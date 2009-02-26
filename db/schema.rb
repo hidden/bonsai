@@ -9,11 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090226084528) do
+ActiveRecord::Schema.define(:version => 20090226100609) do
+
+  create_table "group_permissions", :force => true do |t|
+    t.integer "user_id",    :null => false
+    t.integer "group_id",   :null => false
+    t.string  "permission", :null => false
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string "name", :null => false
+  end
 
   create_table "users", :force => true do |t|
-    t.string "username"
-    t.string "name"
+    t.string "username", :null => false
+    t.string "name",     :null => false
   end
 
 end

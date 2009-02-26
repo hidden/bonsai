@@ -1,0 +1,28 @@
+<h1>Listing groups</h1>
+
+<table>
+  <tr>
+    <th>Group Name</th>
+    <th>Users</th>
+    <th>Actions</th>
+  </tr>
+
+  <% for group in @groups %>
+    <tr>
+      <td><%=h group.name %></td>
+      <td><%=h group.users.collect {|user| user.full_name }.split ', ' %></td>
+      <td>
+        <% if @current_user.can_edit_group? group %>
+          <%= link_to 'Edit', edit_group_path(group) %><%= link_to 'Destroy', group, :confirm => 'Are you sure?', :method => :delete %>
+        <% else %>
+          -
+        <% end %>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+
+<br />
+
+<%= link_to 'New group', new_group_path %>
