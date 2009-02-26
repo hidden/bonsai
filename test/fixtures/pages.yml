@@ -1,15 +1,15 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  title: MyString
-  sid: MyString
-  parent_id: 1
-  ltf: 1
-  rgt: 1
+  title: PeWe
+  sid: pewe
+  parent_id: 0
+  lft: 1
+  rgt: 4
 
 two:
-  title: MyString
-  sid: MyString
+  title: Program
+  sid: program
   parent_id: 1
-  ltf: 1
-  rgt: 1
+  lft: 2
+  rgt: 3

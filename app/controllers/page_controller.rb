@@ -1,7 +1,7 @@
 class PageController < ApplicationController
   def view
     @current_user = session[:user]
-    @page = Page.find_by_path(params[:path])
+    @page = Page.find_by_path(params[:path], @current_user)
     if params.include? 'edit'
       render :action => 'edit'
     elsif params.include? 'update'

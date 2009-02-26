@@ -1,9 +1,6 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  name: MyString
+  name: body
   current_page_part_revision_id: 1
-
-two:
-  name: MyString
-  current_page_part_revision_id: 1
+  page_id: 1
