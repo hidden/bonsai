@@ -1,5 +1,5 @@
-syntax: glob
+syntax: regexp
 
-log/*
-tmp/*
-nbproject/private/*
+^nbproject\/private/
+^tmp\//
+^log\//
