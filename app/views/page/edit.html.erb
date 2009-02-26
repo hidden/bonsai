@@ -1,0 +1,7 @@
+<% form_tag '?update' do %>
+  <% for part in @page.page_parts %>
+    <h1><%=h part.name %></h1>
+    <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body %>
+  <% end %>
+  <p><%= submit_tag 'Save' %></p>
+<% end %>

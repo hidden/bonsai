@@ -1,0 +1,5 @@
+<%= link_to 'edit', '?edit' %>
+<% for part in @page.page_parts %>
+  <h1><%=h part.name %></h1>
+  <%=h part.current_page_part_revision.body %>
+<% end %>
