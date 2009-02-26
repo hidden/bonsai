@@ -22,6 +22,6 @@ class PageController < ApplicationController
         page_part.save
       end
     end
-    redirect_to params[:path].join '/'
+    redirect_to('/' + params[:path].join('/'))
   end
 end
