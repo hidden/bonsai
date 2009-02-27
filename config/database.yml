@@ -19,8 +19,8 @@ development:
   encoding: utf8
   database: bonsai_development
   pool: 5
-  username: root
-  password: greferod
+  username: bonsai
+  password: bonsai
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
@@ -31,8 +31,8 @@ test:
   encoding: utf8
   database: bonsai_test
   pool: 5
-  username: root
-  password: greferod
+  username: bonsai
+  password: bonsai
   host: localhost
 
 production:
@@ -40,7 +40,7 @@ production:
   encoding: utf8
   database: bonsai_production
   pool: 5
-  username: root
-  password: greferod
+  username: bonsai
+  password: bonsai
   host: localhost
 
