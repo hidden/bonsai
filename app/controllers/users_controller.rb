@@ -8,7 +8,8 @@ class UsersController < ApplicationController
     else
       user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
       session[:user] = user
-      redirect_to :controller => 'page', :action => 'index'
+
+      redirect_to(Page.root.get_path + "/")
     end
   end
 end
