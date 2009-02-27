@@ -1,6 +1,21 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  name: body
-  current_page_part_revision_id: 1
-  page_id: 1
+seminars:
+  name: seminars_body
+  current_page_part_revision: first_seminars_revision
+  page: all_seminars
+
+pewe_body:
+  name: pewe_body
+  current_page_part_revision: first_pewe_body_revision
+  page: pewe
+
+pewe_menu:
+  name: pewe_menu
+  current_page_part_revision: first_pewe_menu_revision
+  page: pewe
+
+pewe_program_body:
+  name: pewe_program_body
+  current_page_part_revision: first_pewe_progam_revision
+  page: program

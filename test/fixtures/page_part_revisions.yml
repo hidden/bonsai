@@ -1,8 +1,27 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  page_part_id: 1
-  user_id: 1
+first_seminars_revision:
+  page_part: seminars
+  user: barla
   created_at: 2009-02-26 15:33:18
-  body: tralalala
+  body: first seminars revision
+
+first_pewe_body_revision:
+  page_part: pewe_body
+  user: barla
+  created_at: 2009-02-26 15:33:18
+  body: first pewe body revision
+
+first_pewe_menu_revision:
+  page_part: pewe_menu
+  user: barla
+  created_at: 2009-02-26 15:33:18
+  body: first pewe menu revision
+
+first_pewe_progam_revision:
+  page_part: pewe_program
+  user: barla
+  created_at: 2009-02-26 15:33:18
+  body: first pewe program revision
+
 

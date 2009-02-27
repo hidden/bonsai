@@ -1,15 +1,22 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
+all_seminars:
+  title: seminars
+  sid: seminars
+  #parent_id: nil
+  lft: 1
+  rgt: 6
+
+pewe:
   title: PeWe
   sid: pewe
-  parent_id: 0
-  lft: 1
-  rgt: 4
+  parent_id: <%= Fixtures.identify(:all_seminars) %>
+  lft: 2
+  rgt: 5
 
-two:
+program:
   title: Program
   sid: program
-  parent_id: 1
-  lft: 2
-  rgt: 3
+  parent_id: <%= Fixtures.identify(:pewe) %>
+  lft: 3
+  rgt: 4

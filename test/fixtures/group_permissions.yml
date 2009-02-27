@@ -1,11 +1,41 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  user_id: 1
-  group_id: 1
-  permission: MyString
+  user: barla
+  group: barla
+  permission: view
 
 two:
-  user_id: 1
-  group_id: 1
-  permission: MyString
+  user: barla
+  group: barla
+  permission: edit
+
+three:
+  user: xsuchal
+  group: xsuchal
+  permission: view
+
+four:
+  user: xsuchal
+  group: xsuchal
+  permission: edit
+
+five:
+  user: steinmuller
+  group: steinmuller
+  permission: view
+
+six:
+  user: steinmuller
+  group: steinmuller
+  permission: edit
+
+seven:
+  user: bielikova
+  group: bielikova
+  permission: view
+
+eight:
+  user: bielikova
+  group: bielikova
+  permission: edit

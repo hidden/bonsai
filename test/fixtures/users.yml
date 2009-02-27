@@ -1,9 +1,17 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-#one:
-#  username: MyString
-#  name: MyString
+one:
+  username: barla
+  name: Ing. Michal Barla
 
-#two:
-#  username: MyString
-#  name: MyString
+two:
+  username: xsuchal
+  name: Ing. Jan Suchal
+
+three:
+  username: bielik
+  name: prof. Ing. Maria Bielikova, PhD.
+
+four:
+  username: steinmuller
+  name: Ing. Branislav Steinmuller
