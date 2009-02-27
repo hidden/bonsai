@@ -1,0 +1,5 @@
+<% form_for(@page_part_revision, :url => page_page_part_page_part_revision_path(@page, @page_part, @page_part_revision), :html => { :method => :put }) do |f| %>
+  <%= text_area_tag "body", @page_part_revision.body %>
+  <p><%= submit_tag 'Update' %></p>
+<% end %>
+

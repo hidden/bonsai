@@ -9,6 +9,10 @@ class PageController < ApplicationController
     end
   end
 
+  def inherit
+    @page = Page.find(params[:id])
+  end
+
   private
   def edit
   end

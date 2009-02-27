@@ -13,15 +13,15 @@ class Page < ActiveRecord::Base
       if parent.nil?
         return nil unless path.size == 1 && Page.root.nil?  #we do not want to create new page in the middle of the tree, but we proceed if this is going to be the root page
       end
-        #TODO: check for permission
-        ActiveRecord::Base.transaction do
-          current = Page.create(:title => path.last, :sid => path.last)
-          current.move_to_child_of parent unless parent.nil?
-          #TODO: co bolo skorej, vajce alebo sliepka? PagePart or its revision?
-          first_revision = PagePartRevision.create(:user => current_user, :body => "This page does not hold any content yet", :page_part_id => 0)
-          page_part = PagePart.create(:name => "body", :page => current, :current_page_part_revision => first_revision)
-          first_revision.page_part = page_part
-        end
+      #TODO: check for permission
+      ActiveRecord::Base.transaction do
+        current = Page.create(:title => path.last, :sid => path.last)
+        current.move_to_child_of parent unless parent.nil?
+        #TODO: co bolo skorej, vajce alebo sliepka? PagePart or its revision?
+        first_revision = PagePartRevision.create(:user => current_user, :body => "This page does not hold any content yet", :page_part_id => 0)
+        page_part = PagePart.create(:name => "body", :page => current, :current_page_part_revision => first_revision)
+        first_revision.page_part = page_part
+      end
     end
     return current
   end
@@ -35,5 +35,11 @@ class Page < ActiveRecord::Base
       parent_id = current.id
     end
     return current
+  end
+
+  def get_path
+    path = ""
+    self.ancestors.collect { |e| path = path + "/" + e.sid  }
+    path = path + "/" + sid
   end
 end

@@ -1,0 +1,13 @@
+<h1>New Page Part</h1>
+
+<% form_for(@page_part, :url => page_page_parts_path) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>

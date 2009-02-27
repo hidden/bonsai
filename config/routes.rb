@@ -1,6 +1,11 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :groups
   map.resources :group_permissions
+  map.resources :pages, :member => { :inherit => :put } do |page|
+    page.resources :page_parts do |page_part|
+      page_part.resources :page_part_revisions
+    end
+  end
   map.connect 'users/login', :controller => "users", :action => "login"
 
   # The priority is based upon order of creation: first created -> highest priority.
