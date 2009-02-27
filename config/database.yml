@@ -20,7 +20,7 @@ development:
   database: bonsai_development
   pool: 5
   username: root
-  password: test
+  password: greferod
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
@@ -32,7 +32,7 @@ test:
   database: bonsai_test
   pool: 5
   username: root
-  password: test
+  password: greferod
   host: localhost
 
 production:
@@ -41,6 +41,6 @@ production:
   database: bonsai_production
   pool: 5
   username: root
-  password: test
+  password: greferod
   host: localhost
 

@@ -14,6 +14,8 @@ class PageController < ApplicationController
   end
 
   def update page
+    page.title = params[:title]
+    page.save
     params[:parts].each do |part_name, body|
       page_part = PagePart.find_by_name_and_page_id(part_name, page.id)
       unless page_part.current_page_part_revision.body == body

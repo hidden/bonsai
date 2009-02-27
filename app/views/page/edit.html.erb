@@ -1,4 +1,8 @@
 <% form_tag '?update' do %>
+  <p>
+    <h1><%= label_tag 'title' %></h1>
+    <%= text_field_tag('title', @page.title) %>
+  </p>
   <% for part in @page.page_parts %>
     <h1><%=h part.name %></h1>
     <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body %>

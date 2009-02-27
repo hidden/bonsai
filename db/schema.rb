@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(:version => 20090226143318) do
   end
 
   create_table "page_parts", :force => true do |t|
-    t.integer "page_id",                       :null => false
     t.string  "name",                          :null => false
+    t.integer "page_id",                       :null => false
     t.integer "current_page_part_revision_id", :null => false
   end
 
