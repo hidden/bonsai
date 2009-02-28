@@ -21,7 +21,7 @@ Scenario: Anonymous user logs in successfully
     And I fill in "password" with "something bad"
     And I press "Log in"
     Then I should see "Login failed. Invalid credentials."
-    Then I should not see "Logged in as:"
+    And I should not see "Logged in as:"
 
 Scenario: Logged user visits a fresh wiki and creates first page
     When I go to the main page
