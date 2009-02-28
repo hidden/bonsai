@@ -26,7 +26,7 @@ Scenario: Anonymous user logs in successfully
 Scenario: Logged user visits a fresh wiki and creates first page
     When I go to the main page
     And I login as "johno"
-    Then I should see "Page does not exits yet. Do you want to create it?"
+    Then I should see "Page does not exists. Do you want to create it?"
     And I fill in "title" with "Hello world!"
     And I fill in "body" with "Hello universe!"
     And I press "Create"
