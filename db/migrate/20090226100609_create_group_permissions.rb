@@ -3,7 +3,8 @@ class CreateGroupPermissions < ActiveRecord::Migration
     create_table :group_permissions do |t|
       t.references :user, :null => false
       t.references :group, :null => false
-      t.string :permission, :null => false
+      t.boolean :can_view, :null => false, :default => false
+      t.boolean :can_edit, :null => false, :default => false
     end
   end
 

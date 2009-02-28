@@ -14,7 +14,7 @@ class Page < ActiveRecord::Base
         return nil unless path.size == 1 && Page.root.nil?  #we do not want to create new page in the middle of the tree, but we proceed if this is going to be the root page
       end
       #TODO: check for permission
-      ActiveRecord::Base.transaction do
+      transaction do
         current = Page.create(:title => path.last, :sid => path.last)
         current.move_to_child_of parent unless parent.nil?
         #TODO: co bolo skorej, vajce alebo sliepka? PagePart or its revision?

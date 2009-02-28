@@ -17,4 +17,15 @@ class SimpleLDAP
     connection.unbind
     return result
   end
+   
+  class Stub
+    def self.authenticate(login, password, host = nil, port = nil, base = nil, attributes = ['cn'])
+      return nil unless login == password
+      data = {}
+      for key in attributes
+        data[key] = [login]
+      end
+      return data
+    end
+  end
 end

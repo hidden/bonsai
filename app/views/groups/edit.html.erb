@@ -1,23 +1,20 @@
-<h1>Editing group</h1>
+<h1>Group <%=h @group.name %></h1>
 
 <% form_for(@group) do |f| %>
   <%= f.error_messages %>
 
   <p>
     <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <%= f.text_field :name %><%= f.submit "Update" %>
   </p>
-
+  <h2>Group members</h2>
   <% for permission in @group.group_permissions %>
-    <p><%=h permission.user.full_name %> <%=h permission.permission %> <%= link_to "Remove permission", group_permission_path(permission, :group_id => permission.group_id), :method => :delete %></p>
+    <p><%=h permission.user.full_name %> <% if permission.can_edit? %>editor<% elsif permission.can_view? %>viewer<% end %> <%= link_to "Change permission", switch_group_permission_path(permission, :group_id => permission.group_id), :method => :put %> <%= link_to "Remove member", group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => 'Are you sure?' %></p>
   <% end %>
-  <p>
-    <%= f.submit "Update" %>
-  </p>
 <% end %>
-
+<h2>Add new user</h2>
 <% form_tag group_permissions_path(:group_id => @group.id), :method => :post do %>
-<p><%= text_field('add_username', '') %> <%= select('add_permission', 'type', ['edit', 'view']) %><%= submit_tag("Add") %></p>
+<p><%= text_field('add_username', '') %> <%= select('add_permission', 'type', ['editor', 'viewer']) %><%= submit_tag("Add") %></p>
 <% end %>
 
 <%= link_to 'Back', groups_path %>

@@ -12,9 +12,10 @@
 ActiveRecord::Schema.define(:version => 20090226143318) do
 
   create_table "group_permissions", :force => true do |t|
-    t.integer "user_id",    :null => false
-    t.integer "group_id",   :null => false
-    t.string  "permission", :null => false
+    t.integer "user_id",                     :null => false
+    t.integer "group_id",                    :null => false
+    t.boolean "can_view", :default => false, :null => false
+    t.boolean "can_edit", :default => false, :null => false
   end
 
   create_table "groups", :force => true do |t|

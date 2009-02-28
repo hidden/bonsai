@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   def login
     return unless params[:username]
-    data = SimpleLDAP.authenticate(params[:username], params[:password], 'ldap.stuba.sk', 389, 'ou=People,dc=stuba,dc=sk')
+    authenticator = Rails.env.production? ? SimpleLDAP : SimpleLDAP::Stub
+    data = authenticator.authenticate(params[:username], params[:password], 'ldap.stuba.sk', 389, 'ou=People,dc=stuba,dc=sk')
     if data.nil?
       flash[:notice] = 'Login failed'
       redirect_to :action => 'login'
