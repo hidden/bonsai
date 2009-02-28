@@ -4,9 +4,7 @@ class GroupPermissionsController < ApplicationController
   def verify_editor_permission
     @current_user = session[:user]
     permission = GroupPermission.find_by_id(params[:id])
-    if permission.user == @current_user or !@current_user.can_edit_group? Group.find_by_id(params[:group_id])
-      redirect_to groups_path
-    end
+    redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:group_id])
   end
 
   def create
@@ -17,7 +15,7 @@ class GroupPermissionsController < ApplicationController
       permission = GroupPermission.find_or_initialize_by_group_id_and_user_id(params[:group_id], user.id)
       permission.can_view = true
       permission.can_edit = params[:add_permission][:type] == 'editor'
-      permission.save
+      permission.save unless permission.user == @current_user
     end
     redirect_to edit_group_path(params[:group_id])
   end

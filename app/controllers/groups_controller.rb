@@ -48,7 +48,7 @@ class GroupsController < ApplicationController
       if @group.save
         @group.add_editor @current_user
         flash[:notice] = 'Group was successfully created.'
-        format.html { redirect_to groups_path }
+        format.html { redirect_to edit_group_path(@group) }
         format.xml  { render :xml => @group, :status => :created, :location => @group }
       else
         format.html { render :action => "new" }
