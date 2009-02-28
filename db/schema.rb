@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090226143318) do
+ActiveRecord::Schema.define(:version => 20090228211904) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -33,6 +33,14 @@ ActiveRecord::Schema.define(:version => 20090226143318) do
     t.string  "name",                          :null => false
     t.integer "page_id",                       :null => false
     t.integer "current_page_part_revision_id", :null => false
+  end
+
+  create_table "page_permissions", :force => true do |t|
+    t.integer "page_id"
+    t.integer "group_id"
+    t.boolean "can_view"
+    t.boolean "can_edit"
+    t.boolean "can_manage"
   end
 
   create_table "pages", :force => true do |t|
