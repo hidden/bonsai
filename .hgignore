@@ -1,5 +1,5 @@
 syntax: regexp
 
-^nbproject\/private/
-^tmp\//
-^log\//
+^nbproject\/private
+^tmp
+^log
