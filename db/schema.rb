@@ -36,11 +36,11 @@ ActiveRecord::Schema.define(:version => 20090228211904) do
   end
 
   create_table "page_permissions", :force => true do |t|
-    t.integer "page_id"
-    t.integer "group_id"
-    t.boolean "can_view"
-    t.boolean "can_edit"
-    t.boolean "can_manage"
+    t.integer "page_id",    :null => false
+    t.integer "group_id",   :null => false
+    t.boolean "can_view",   :null => false
+    t.boolean "can_edit",   :null => false
+    t.boolean "can_manage", :null => false
   end
 
   create_table "pages", :force => true do |t|
