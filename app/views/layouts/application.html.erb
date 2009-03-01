@@ -12,14 +12,14 @@
   <body>
     <div id="toolbar">
       <% if @current_user.nil? %>
-        <% form_tag 'users/login' do %>
+        <% form_tag login_path do %>
           <p><label>Login: <%= text_field_tag 'username', nil, :size => 10 %></label>
             <label>Password: <%= password_field_tag 'password', nil, :size => 15 %></label>
             <%= submit_tag 'Log in' %>
           <% end %>
         </p>
       <% else %>
-        <p>Logged in as: <%= @current_user.full_name %> | <%= link_to "Log out", 'users/logout' %></p>
+        <p>Logged in as: <%= @current_user.full_name %> | <%= link_to "Log out", logout_path %></p>
         <% unless @page.nil? %>
           <p><% if @current_user.can_edit_page? @page %><%= link_to "edit this page", '?edit' %><% end %></p>
         <% end %>        

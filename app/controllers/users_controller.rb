@@ -10,11 +10,12 @@ class UsersController < ApplicationController
       session[:user] = user
       flash[:notice] = 'You have successfully logged in.'
     end
-    redirect_to "/"
+    redirect_to :back
   end
 
   def logout
+    flash[:notice] = 'Logout successfull.'
     session[:user] = nil
-    redirect_to "/"
+    redirect_to :back
   end
 end
