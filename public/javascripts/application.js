@@ -1,2 +1,9 @@
-// Place your application-specific JavaScript functions and classes here
-// This file is automatically included by javascript_include_tag :defaults
+function initialize() {
+    // find flash and hide it after to 10 seconds
+    var flash = $('flash');
+    if(flash != null) {
+        Effect.Fade.delay(5, 'flash');
+    }
+}
+
+Event.observe(window, 'load', initialize);

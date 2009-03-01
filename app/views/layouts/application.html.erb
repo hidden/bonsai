@@ -7,7 +7,7 @@
     <title>Bonsai</title>
     <%= stylesheet_link_tag 'scaffold' %>
     <%= stylesheet_link_tag 'visual' %>
-
+    <%= javascript_include_tag :defaults %>
   </head>
   <body>
     <div id="toolbar">
@@ -23,7 +23,7 @@
       <% end %>
     </div>
     <div id="holder">
-      <% if flash[:notice] %><p class="notice"><%=h flash[:notice] %></p><% end %>
+      <% if flash[:notice] %><p id="flash" class="notice"><%=h flash[:notice] %></p><% end %>
       <%= yield  %>
     </div>
   </body>
