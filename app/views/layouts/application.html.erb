@@ -1,22 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>Bonsai</title>
-  <%= stylesheet_link_tag 'scaffold' %>
-  <%= stylesheet_link_tag 'visual' %>
-  
-</head>
-<body>
-<% unless @current_user.nil? %>
-<div id="toolbar">
-  <p>Logged in as: <%= @current_user.full_name %></p>
-</div>
-<% end %>
-<div id="holder">
-<%= yield  %>
-</div>
-</body>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Bonsai</title>
+    <%= stylesheet_link_tag 'scaffold' %>
+    <%= stylesheet_link_tag 'visual' %>
+
+  </head>
+  <body>
+    <div id="toolbar">
+      <% if @current_user.nil? %>
+        <% form_tag 'users/login' do %>
+          <p><label><span>Login</span><%= text_field_tag 'username' %></label>
+            <label><span>Password</span><%= password_field_tag 'password' %></label>
+            <%= submit_tag 'Log in' %>
+          <% end %>
+        </p>
+      <% else %>
+        <p>Logged in as: <%= @current_user.full_name %></p>
+      <% end %>
+    </div>
+    <div id="holder">
+      <% if flash[:notice] %><p class="notice"><%=h flash[:notice] %></p><% end %>
+      <%= yield  %>
+    </div>
+  </body>
 </html>

@@ -44,6 +44,7 @@ class PageController < ApplicationController
     @page_part = PagePart.create(:name => "body", :page => @page, :current_page_part_revision => @first_revision)
     @first_revision.page_part = @page_part
     @first_revision.save!
+    flash[:notice] = 'Page successfully created.'
     redirect_to @page.get_path
   end
 

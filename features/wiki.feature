@@ -30,6 +30,6 @@ Scenario: Logged user visits a fresh wiki and creates first page
     And I fill in "title" with "Hello world!"
     And I fill in "body" with "Hello universe!"
     And I press "Create"
-    Then I should see "Page succesfully created."
+    Then I should see "Page successfully created."
     And I should see "Hello world!"
     And I should see "Hello universe!"
