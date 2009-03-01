@@ -1,5 +1,12 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
 
+class String
+	def strip_tags
+		self.gsub( %r{</?[^>]+?>}, '' )
+	end
+end
+
+
 # Commonly used webrat steps
 # http://github.com/brynary/webrat
 
@@ -87,11 +94,11 @@ When /^I attach the file at "(.*)" to "(.*)" $/ do |path, field|
 end
 
 Then /^I should see "(.*)"$/ do |text|
-  response.body.should =~ /#{text}/m
+  response.body.strip_tags.should =~ /#{text}/m
 end
 
 Then /^I should not see "(.*)"$/ do |text|
-  response.body.should_not =~ /#{text}/m
+  response.body.strip_tags.should_not =~ /#{text}/m
 end
 
 Then /^the "(.*)" checkbox should be checked$/ do |label|
