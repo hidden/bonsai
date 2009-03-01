@@ -1,15 +1,15 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  page_id: 1
-  group_id: 1
-  can_view: false
-  can_edit: false
-  can_manage: false
+#one:
+#  page_id: 1
+#  group_id: 1
+#  can_view: false
+#  can_edit: false
+#  can_manage: false
 
-two:
-  page_id: 1
-  group_id: 1
-  can_view: false
-  can_edit: false
-  can_manage: false
+#two:
+#  page_id: 1
+#  group_id: 1
+#  can_view: false
+#  can_edit: false
+#  can_manage: false
