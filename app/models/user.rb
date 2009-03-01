@@ -14,4 +14,8 @@ class User < ActiveRecord::Base
   def can_edit_group? group
     GroupPermission.exists?(:group_id => group, :user_id => self, :can_edit => true)
   end
+
+  def can_edit_page? page
+    true
+  end
 end
