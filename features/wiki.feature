@@ -40,3 +40,12 @@ Scenario: Logged user visits a fresh wiki and creates first page
     Then I should see "Page successfully created."
     And I should see "Hello world!"
     And I should see "Hello universe!"
+
+Scenario: User uses markdown syntax on wiki page
+    When I go to the main page
+    When I login as "johno"
+    And I fill in "title" with "Markdown Page"
+    And I fill in "body" with "Text with *emphasis*."
+    And I press "Create"
+    Then I should see "Text with <em>emphasis</em>." in html code
+

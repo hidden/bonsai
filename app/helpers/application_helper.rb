@@ -7,4 +7,8 @@ module ApplicationHelper
   def logout_path
     url_for :controller => 'users', :action => 'logout'
   end
+
+  def markdown(text)
+    text.blank? ? "" : Maruku.new(text).to_html
+  end
 end
