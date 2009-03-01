@@ -3,39 +3,47 @@
 one:
   user: barla
   group: barla
-  permission: view
+  can_view: 1
+  can_edit: 1
 
 two:
   user: barla
   group: barla
-  permission: edit
+  can_view: 1
+  can_edit: 1
 
 three:
   user: xsuchal
   group: xsuchal
-  permission: view
+  can_view: 1
+  can_edit: 1
 
 four:
   user: xsuchal
   group: xsuchal
-  permission: edit
+  can_view: 1
+  can_edit: 1
 
 five:
   user: steinmuller
   group: steinmuller
-  permission: view
+  can_view: 1
+  can_edit: 1
 
 six:
   user: steinmuller
   group: steinmuller
-  permission: edit
+  can_view: 1
+  can_edit: 1
 
 seven:
   user: bielikova
   group: bielikova
-  permission: view
+  can_view: 1
+  can_edit: 1
 
 eight:
   user: bielikova
   group: bielikova
-  permission: edit
+  can_view: 1
+  can_edit: 1

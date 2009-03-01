@@ -10,7 +10,7 @@ class UsersController < ApplicationController
       user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
       session[:user] = user
 
-      redirect_to(Page.root.get_path + "/")
+      redirect_to("/")
     end
   end
 end
