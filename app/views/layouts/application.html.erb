@@ -4,14 +4,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>Groups: <%= controller.action_name %></title>
+  <title>Bonsai</title>
   <%= stylesheet_link_tag 'scaffold' %>
+  <%= stylesheet_link_tag 'visual' %>
+  
 </head>
 <body>
-
-<p style="color: green"><%= flash[:notice] %></p>
-
+<% unless @current_user.nil? %>
+<div id="toolbar">
+  <p>Logged in as: <%= @current_user.full_name %></p>
+</div>
+<% end %>
+<div id="holder">
 <%= yield  %>
-
+</div>
 </body>
 </html>

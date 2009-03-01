@@ -1,0 +1,23 @@
+#body {
+    margin: 0;
+    padding: 0;
+}
+
+#toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    background-color: #55f;
+    text-align: right;
+}
+
+#toolbar p {
+    font-size: 11px;
+    margin: 1em;
+}
+
+#holder {
+    margin-top: 5em;
+}
