@@ -57,11 +57,12 @@ class PageController < ApplicationController
     page.save
     params[:parts].each do |part_name, body|
       page_part = PagePart.find_by_name_and_page_id(part_name, page.id)
+      page_part.is_deleted = params[:is_deleted].nil? ? nil:params[:is_deleted][part_name]
       unless page_part.current_page_part_revision.body == body
         revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body)
         page_part.current_page_part_revision_id = revision.id
-        page_part.save
       end
+      page_part.save
     end
     redirect_to('/' + params[:path].join('/'))
   end

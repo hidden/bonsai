@@ -6,20 +6,15 @@
   <% for part in @page.page_parts %>
     <h1><%=h part.name %></h1>
     <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
+    <p>
+    <%= label_tag 'delete this page_part?' unless part.is_deleted? %>
+    <%= label_tag 'uncheck to undelete this page_part' if part.is_deleted? %>
+    <%= check_box_tag("is_deleted[#{part.name}]", 1, part.is_deleted?) %>
+    </p>
   <% end %>
   <p><%= submit_tag 'Save' %></p>
 <% end %>
 
 <% form_tag new_page_page_part_path(:page_id => @page.id), :method => :get do %>
   <p><%= submit_tag 'Add new page part' %></p>
-<% end %>
-
-<% unless @page.parent.nil? %>
-or inherit one from the parent:
-  <% form_tag inherit_page_path(:id => @page.id), :method => :inherit do %>
-    <p>
-      <%= select('add_page_part','page_part_id', @page.parent.page_parts.collect {|c| [c.name, c.id] }) %>
-      <%= submit_tag 'Inherit page_part' %>
-    </p>
-  <% end %>
 <% end %>
