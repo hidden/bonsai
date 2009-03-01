@@ -23,6 +23,13 @@ Scenario: Anonymous user logs in successfully
     Then I should see "Login failed. Invalid credentials."
     And I should not see "Logged in as:"
 
+Scenario: User wants to log out.
+    When I go to the main page
+    And I login as "johno"
+    And I follow "Log out"
+    Then I should see "Logout successfull."
+    And I should not see "Logged in as:"
+
 Scenario: Logged user visits a fresh wiki and creates first page
     When I go to the main page
     And I login as "johno"

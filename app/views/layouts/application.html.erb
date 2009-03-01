@@ -13,17 +13,17 @@
     <div id="toolbar">
       <% if @current_user.nil? %>
         <% form_tag 'users/login' do %>
-          <p><label><span>Login</span><%= text_field_tag 'username' %></label>
-            <label><span>Password</span><%= password_field_tag 'password' %></label>
+          <p><label>Login: <%= text_field_tag 'username', nil, :size => 10 %></label>
+            <label>Password: <%= password_field_tag 'password', nil, :size => 15 %></label>
             <%= submit_tag 'Log in' %>
           <% end %>
         </p>
       <% else %>
-        <p>Logged in as: <%= @current_user.full_name %></p>
+        <p>Logged in as: <%= @current_user.full_name %> | <%= link_to "Log out", 'users/logout' %></p>
       <% end %>
     </div>
     <div id="holder">
-      <% if flash[:notice] %><p id="flash" class="notice"><%=h flash[:notice] %></p><% end %>
+      <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
       <%= yield  %>
     </div>
   </body>

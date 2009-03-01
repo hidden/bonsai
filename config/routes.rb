@@ -7,7 +7,7 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   map.conect 'page/new', :controller => "page", :action => "create"
-  map.connect 'users/login', :controller => "users", :action => "login"
+  map.connect 'users/:action', :controller => "users"
   
 
   # The priority is based upon order of creation: first created -> highest priority.

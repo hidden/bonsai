@@ -7,10 +7,12 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 250px;
-    color: white;
     background-color: #55f;
     text-align: right;
+}
+
+#toolbar, #toolbar a {
+    color: white;
 }
 
 #toolbar p {
@@ -29,4 +31,8 @@
 
 #flash.notice {
     background-color: #ffa;
+}
+
+#flash.error {
+    background-color: #faa;
 }
