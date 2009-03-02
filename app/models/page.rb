@@ -16,6 +16,6 @@ class Page < ActiveRecord::Base
   end
 
   def get_path
-    self.self_and_ancestors.collect {|node| node.sid}.join('/')
+    self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
   end
 end

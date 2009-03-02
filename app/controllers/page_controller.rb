@@ -64,6 +64,6 @@ class PageController < ApplicationController
       end
       page_part.save
     end
-    redirect_to('/' + params[:path].join('/'))
+    redirect_to page.get_path
   end
 end
