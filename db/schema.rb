@@ -23,11 +23,11 @@ ActiveRecord::Schema.define(:version => 20090302103718) do
   end
 
   create_table "page_part_revisions", :force => true do |t|
-    t.integer  "page_part_id", :null => false
-    t.integer  "user_id",      :null => false
-    t.datetime "created_at",   :null => false
-    t.text     "body",         :null => false
-    t.boolean  "was_deleted"
+    t.integer  "page_part_id",                    :null => false
+    t.integer  "user_id",                         :null => false
+    t.datetime "created_at",                      :null => false
+    t.text     "body",                            :null => false
+    t.boolean  "was_deleted",  :default => false, :null => false
     t.string   "summary"
   end
 

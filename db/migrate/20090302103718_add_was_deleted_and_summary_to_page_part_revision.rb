@@ -1,6 +1,6 @@
 class AddWasDeletedAndSummaryToPagePartRevision < ActiveRecord::Migration
   def self.up
-    add_column :page_part_revisions, :was_deleted, :boolean
+    add_column :page_part_revisions, :was_deleted, :boolean, :null => false, :default => false
     add_column :page_part_revisions, :summary, :string
   end
 
