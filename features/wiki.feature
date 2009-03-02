@@ -43,7 +43,7 @@ Scenario: Logged user visits a fresh wiki and creates first page
 
 Scenario: User uses markdown syntax on wiki page
     When I go to the main page
-    And I login as "johno"
+    When I login as "johno"
     And I fill in "title" with "Markdown Page"
     And I fill in "body" with "Text with *emphasis*."
     And I press "Create"
