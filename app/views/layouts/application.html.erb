@@ -22,7 +22,7 @@
         <p>Logged in as: <%= @current_user.full_name %> | <%= link_to "Log out", logout_path %></p>
         <% unless @page.nil? %>
           <p><% if @current_user.can_edit_page? @page %>
-              <%= link_to "edit this page", '?edit' %>
+              <%= link_to "Edit", '?edit' %>
               <%= link_to "History", history_url(@page.id) %>
             <% end %></p>
           <% end %>
