@@ -1,13 +1,12 @@
 <h1>New Page Part</h1>
 
-<% form_for(@page_part, :url => page_page_parts_path) do |f| %>
-  <%= f.error_messages %>
-
+<% form_tag(page_page_parts_path, :method => :post) do %>
   <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <%= label_tag :name %><br />
+    <%= text_field_tag :part_name %>
   </p>
+  <%= text_area_tag  :page_revision_body %>
   <p>
-    <%= f.submit "Create" %>
+  <%= submit_tag "Create" %>
   </p>
 <% end %>

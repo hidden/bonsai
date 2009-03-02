@@ -1,5 +1,7 @@
 <h1><%=h @page.title %></h1>
 <% for part in @page.page_parts %>
-  <h2><%=h part.name %></h2>
-  <%= markdown(part.current_page_part_revision.body) %>
+  <%  unless part.is_deleted %>
+    <h2><%=h part.name %></h2>
+    <%= markdown(part.current_page_part_revision.body) %>
+  <% end %>
 <% end %>
