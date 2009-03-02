@@ -6,7 +6,6 @@ ActionController::Routing::Routes.draw do |map|
       page_part.resources :page_part_revisions
     end
   end
-  map.history 'page/:id/history', :controller => "page", :action => "show_history"
   map.conect 'page/new', :controller => "page", :action => "create"
   map.connect 'users/:action', :controller => "users"
   

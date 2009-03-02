@@ -11,6 +11,12 @@ class PageController < ApplicationController
       @page_part = PagePart.find(params[:page_part])
       @page_revision = PagePartRevision.find(params[:revision])
       render :action => 'edit'
+    elsif params.include? 'history'
+      render :action => 'show_history'
+    elsif params.include? 'diff'
+      @first_revision = PagePartRevision.find(params[:first_revision])
+      @second_revision = PagePartRevision.find(params[:second_revision])
+      render :action => 'diff'
     elsif @page.nil?
       new
     elsif params.include? 'update'
@@ -52,7 +58,9 @@ class PageController < ApplicationController
   end
 
   def show_history
-    @page = Page.find(params[:id])
+    if params.include? 'diff'
+      render :action => "diff"
+    end
   end 
 
   private
