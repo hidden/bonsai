@@ -105,8 +105,6 @@ Then /^I should see "(.*)" in html code$/ do |text|
   response.body.should =~ /#{text}/m
 end
 
-
-
 Then /^the "(.*)" checkbox should be checked$/ do |label|
   field_labeled(label).should be_checked
 end

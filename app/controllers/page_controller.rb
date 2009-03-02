@@ -22,7 +22,7 @@ class PageController < ApplicationController
       parent_path = Array.new @path
       parent_path.pop
       parent = Page.find_by_path(parent_path)
-      # TODO check if exists
+      render :action => 'no_parent' and return if parent.nil?
       @parent_id = parent.id
     end
     @sid = @path.empty? ? nil : @path.last

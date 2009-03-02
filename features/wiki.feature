@@ -41,6 +41,14 @@ Scenario: Logged user visits a fresh wiki and creates first page
     And I should see "Hello world!"
     And I should see "Hello universe!"
 
+Scenario: User wants to edit a page
+
+Scenario: User wants to create a wiki page without existing parent
+    When I go to the main page
+    And I login as "johno"
+    And I go to a page without parent
+    Then I should see "Parent page does not exists."
+
 Scenario: User uses markdown syntax on wiki page
     When I go to the main page
     When I login as "johno"

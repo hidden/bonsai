@@ -4,7 +4,8 @@ def path_to(page_name)
   when /the main page/i
     "/"
   
-  # Add more page name => path mappings here
+  when /a page without parent/i
+    "/some/nested/page/"
   
   else
     raise "Can't find mapping from \"#{page_name}\" to a path."
