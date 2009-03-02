@@ -18,4 +18,10 @@ class Page < ActiveRecord::Base
   def get_path
     self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
   end
+
+  def add_viewer group
+    permission = PagePermission.find_or_initialize_by_page_id_and_group_id(self.id, group.id)
+    permission.can_view = true
+    permission.save
+  end
 end
