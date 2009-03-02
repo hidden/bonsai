@@ -1,0 +1,9 @@
+<h1>Changes for page: <%= @page.title %></h1>
+<% @page.page_parts.each do |page_part| %>
+  <h1><%= page_part.name %></h1>
+  <ul>
+  <% page_part.page_part_revisions.each do |revision| %>
+    <li><%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>, <%=h revision.user.username %>, <%=h revision.summary %></li>
+  <% end %>
+  </ul>
+<% end %>

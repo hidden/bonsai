@@ -40,12 +40,16 @@ class PageController < ApplicationController
     page.save!
     page.move_to_child_of parent unless parent.nil?
     page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
-    first_revision = PagePartRevision.create(:user => session[:user], :body => params[:body], :page_part => page_part)
+    first_revision = PagePartRevision.create(:user => session[:user], :body => params[:body], :page_part => page_part, :summary => params[:summary])
     page_part.current_page_part_revision = first_revision
     page_part.save!
     flash[:notice] = 'Page successfully created.'
     redirect_to page.get_path
   end
+
+  def show_history
+    @page = Page.find(params[:id])
+  end 
 
   private
   def edit
@@ -57,9 +61,17 @@ class PageController < ApplicationController
     page.save
     params[:parts].each do |part_name, body|
       page_part = PagePart.find_by_name_and_page_id(part_name, page.id)
-      page_part.is_deleted = params[:is_deleted].nil? ? nil:params[:is_deleted][part_name]
+      current_revision = page_part.current_page_part_revision
+      #page_part.is_deleted = params[:is_deleted].nil? ? nil:params[:is_deleted][part_name]
       unless page_part.current_page_part_revision.body == body
-        revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body)
+        revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary], :was_deleted => current_revision.was_deleted)
+        page_part.current_page_part_revision_id = revision.id
+      end
+      if current_revision.was_deleted && (params[:is_deleted].nil? || params[:is_deleted][part_name].nil?)
+        revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary])
+        page_part.current_page_part_revision_id = revision.id
+      elsif !current_revision.was_deleted && !params[:is_deleted].nil? && !params[:is_deleted][part_name].nil?
+        revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary], :was_deleted => 1)
         page_part.current_page_part_revision_id = revision.id
       end
       page_part.save

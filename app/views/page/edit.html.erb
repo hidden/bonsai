@@ -7,11 +7,12 @@
     <h1><%=h part.name %></h1>
     <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
     <p>
-    <%= label_tag 'delete this page_part?' unless part.is_deleted? %>
-    <%= label_tag 'uncheck to undelete this page_part' if part.is_deleted? %>
-    <%= check_box_tag("is_deleted[#{part.name}]", 1, part.is_deleted?) %>
+      <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
+      <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
+      <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
     </p>
   <% end %>
+  <p><%= label_tag 'Summary' %>:<%= text_field_tag('summary') %></p>
   <p><%= submit_tag 'Save' %></p>
 <% end %>
 

@@ -1,6 +1,6 @@
 class AddIsDeletedToPagePart < ActiveRecord::Migration
   def self.up
-    add_column :page_parts, :is_deleted, :boolean, :null => false, :default => false
+    add_column :page_parts, :is_deleted, :boolean
   end
 
   def self.down
