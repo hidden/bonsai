@@ -5,9 +5,9 @@ class Page < ActiveRecord::Base
   has_many :page_parts, :dependent => :destroy
 
   def self.find_by_path path
-    path = [nil] if path.empty?
+    full_path = [nil] + path
     parent_id = nil
-    for chunk in path
+    for chunk in full_path
       current = Page.find_by_parent_id_and_sid(parent_id, chunk)
       return nil if current.nil?
       parent_id = current.id
