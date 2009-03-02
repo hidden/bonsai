@@ -4,5 +4,4 @@
     <h2><%=h part.name %></h2>
     <%= markdown(part.current_page_part_revision.body) %>
   <% end %>
-  <%= link_to "History", history_url(@page.id) %>
 <% end %>
