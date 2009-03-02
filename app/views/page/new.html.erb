@@ -1,8 +1,8 @@
 <h1>Page does not exists. Do you want to create it?</h1>
 
 <% form_tag('?create', :method => :post) do %>
-   <%= hidden_field_tag "parent_id", @parent_id %>
-   <%= hidden_field_tag "sid", @sid %>
+  <%= hidden_field_tag "parent_id", @parent_id %>
+  <%= hidden_field_tag "sid", @sid %>
   <p>
     <%= label_tag :title %><br />
     <%= text_field_tag "title", :title %>
@@ -10,6 +10,9 @@
   <p>
     <%= label_tag :body %><br />
     <%= text_area_tag "body", :body, :rows => 20, :cols => 80 %>
+  </p>
+  <p>
+    <p><%= label_tag 'Summary' %>:<%= text_field_tag('summary') %></p>
   </p>
   <p>
     <%= submit_tag "Create" %>

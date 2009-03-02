@@ -5,13 +5,25 @@
   </p>
   <% for part in @page.page_parts %>
     <h1><%=h part.name %></h1>
-    <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
+    <% if part == @page_part %>
+      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 20, :cols => 80 %>
+    <% else %>
+      <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
+    <%  end %>
     <p>
-    <%= label_tag 'delete this page_part?' unless part.is_deleted? %>
-    <%= label_tag 'uncheck to undelete this page_part' if part.is_deleted? %>
-    <%= check_box_tag("is_deleted[#{part.name}]", 1, part.is_deleted?) %>
+      <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
+      <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
+      <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
     </p>
   <% end %>
+  <p>
+    <%= label_tag 'Summary' %>:
+    <%if @page_revision %>
+      <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s) %>
+    <% else %>
+      <%= text_field_tag('summary') %>
+    <% end %>
+  </p>
   <p><%= submit_tag 'Save' %></p>
 <% end %>
 

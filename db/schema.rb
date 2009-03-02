@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090301182526) do
+ActiveRecord::Schema.define(:version => 20090302103718) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -27,13 +27,14 @@ ActiveRecord::Schema.define(:version => 20090301182526) do
     t.integer  "user_id",      :null => false
     t.datetime "created_at",   :null => false
     t.text     "body",         :null => false
+    t.boolean  "was_deleted"
+    t.string   "summary"
   end
 
   create_table "page_parts", :force => true do |t|
-    t.string  "name",                                             :null => false
-    t.integer "page_id",                                          :null => false
-    t.integer "current_page_part_revision_id",                    :null => false
-    t.boolean "is_deleted",                    :default => false, :null => false
+    t.string  "name",                          :null => false
+    t.integer "page_id",                       :null => false
+    t.integer "current_page_part_revision_id", :null => false
   end
 
   create_table "page_permissions", :force => true do |t|
