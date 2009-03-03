@@ -7,6 +7,7 @@
   <% first_array = @first_revision.body.split
   second_array = @second_revision.body.split
 
+  # TODO move logic to controller!
   cbo = Diff::LCS::ContextDiffCallbacks.new
   diffs = Diff::LCS.sdiff(first_array, second_array, cbo)
   cbo.finish
@@ -43,6 +44,7 @@
   end %>
 
   <p>
+    <% #TODO add styling %>
     <%=  first_array.join(" ") %>
   </p>
 <% end %>
