@@ -16,7 +16,18 @@ class User < ActiveRecord::Base
   end
 
   def can_view_page? page
-    return true
+    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+    
+    # check if user belongs to a group that can view some of the ancestors or self
+    restriction_in_path = false
+    for node in page.self_and_ancestors
+      viewable_directly = PagePermission.exists_viewable_by_user_and_page(self, node)
+      return true if viewable_directly
+      unless page.viewer_groups.empty?
+        restriction_in_path = true
+      end
+    end
+    return !restriction_in_path
   end
 
   def can_edit_page? page
