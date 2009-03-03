@@ -3,6 +3,7 @@ class Page < ActiveRecord::Base
   validates_uniqueness_of :sid, :scope => :parent_id
 
   has_many :page_parts, :dependent => :destroy
+  has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC'
 
   def self.find_by_path path
     full_path = [nil] + path
