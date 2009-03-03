@@ -21,7 +21,10 @@ class PageController < ApplicationController
       new
     elsif params.include? 'update'
       update @page
+    elsif params.include? 'add_page_part'
+      add_new_page_part @page
     end
+
   end
 
   def new
@@ -100,7 +103,7 @@ class PageController < ApplicationController
             current_revision.was_deleted && (params[:is_deleted].blank? || params[:is_deleted][part_name].blank?) ||
             !current_revision.was_deleted && !params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?)
 
-        revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary], :was_deleted => nil)
+        revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary])
         if(!current_revision.was_deleted && (!params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?))
           revision.was_deleted = 1
         end
@@ -118,5 +121,15 @@ class PageController < ApplicationController
     end
     flash[:notice] = 'Page successfully updated.'
     redirect_to page.get_path
+  end
+
+  def add_new_page_part page
+    page_part = PagePart.create(:name => params[:new_page_part_name], :page => page, :current_page_part_revision_id => 0)
+    page_part_revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => params[:new_page_part_text], :summary => "init")
+    page_part_revision.save
+    page_part.current_page_part_revision = page_part_revision
+    page_part.save!
+    flash[:notice] = 'Page part successfully added.'
+    redirect_to page.get_path + "?edit"
   end
 end

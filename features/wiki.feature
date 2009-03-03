@@ -59,7 +59,7 @@ Scenario: User wants to edit a page he created and forgets a summary
     And I fill in "body" with "Hello universe!"
     And I fill in "summary" with "init"
     And I press "Create"
-    And I follow "edit this page"
+    And I follow "edit"
     And I fill in "title" with "Changed title"
     And I fill in "parts[body]" with "Changed body"
     And I press "Save"
@@ -73,7 +73,7 @@ Scenario: User wants to edit a page he created
     And I fill in "body" with "Hello universe!"
     And I fill in "summary" with "short summary"
     And I press "Create"
-    And I follow "edit this page"
+    And I follow "edit"
     And I fill in "title" with "Changed title"
     And I fill in "parts[body]" with "Changed body"
     And I fill in "summary" with "short summary"
@@ -108,6 +108,7 @@ Scenario: Wiki page viewable by one user
     Then I should see "Permission denied."
     When I login as "johno"
     Then I should see "Some content."
+
 Scenario: User wants to see the page history
     Given that a "main" page with multiple revisions exist
     When I go to the main page
@@ -133,9 +134,22 @@ Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
-    And I go to the main page
     And I follow "history"
     When I follow "Revert to this revision"
     And I press "Save"
     Then I should see "Page successfully updated."
     And I should see "This is first revision"
+
+Scenario: User wants to add a new page part
+    Given that a "main" page with multiple revisions exist
+    When I go to the main page
+    And I login as "johno"
+    And I follow "edit"
+    And I fill in "new_page_part_name" with "menu"
+    And I fill in "new_page_part_text" with "This is a text of a new page part"
+    And I press "Add new page part"
+    Then I should see "Page part successfully added."
+    And I should see "Menu"
+    And I should see "This is a text of a new page part"
+    And I should not see "Page successfully updated."
+

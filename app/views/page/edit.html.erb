@@ -28,6 +28,14 @@
   <p><%= submit_tag 'Save' %></p>
 <% end %>
 
-<% form_tag new_page_page_part_path(:page_id => @page.id), :method => :get do %>
+<p>Or add a new page part here:</p>
+<% form_tag "?add_page_part" do %>
+  <p>
+    <%= label_tag "new page part name" %><br />
+    <%= text_field_tag('new_page_part_name') %>
+  </p>
+  <p>
+    <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80} %>
+  </p>
   <p><%= submit_tag 'Add new page part' %></p>
 <% end %>
