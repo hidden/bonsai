@@ -19,7 +19,7 @@
   <% end %>
   <p>
     <%= label_tag 'Summary' %>:
-    <%if @page_revision %>
+    <%if @undo %>
       <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s) %>
     <% else %>
       <%= text_field_tag('summary') %>

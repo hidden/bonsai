@@ -10,6 +10,7 @@ class PageController < ApplicationController
     elsif params.include? 'undo'
       @page_part = PagePart.find(params[:page_part])
       @page_revision = PagePartRevision.find(params[:revision])
+      @undo = true
       render :action => 'edit'
     elsif params.include? 'history'
       render :action => 'show_history'
@@ -49,42 +50,43 @@ class PageController < ApplicationController
       # TODO check if exists
     end
     sid = params[:sid].blank? ? nil : params[:sid]
-    ActiveRecord::Base.transaction do
-      page = Page.new(:title => params[:title], :sid => sid)
-      unless (page.valid?)
-        error_message = ""
-        page.errors.each_full { |msg| error_message << msg }
-        flash[:notice] = error_message
-        redirect_to page.get_path
-      end
-      page.save!
-      page.move_to_child_of parent unless parent.nil?
-      page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
-      first_revision = PagePartRevision.new(:user => session[:user], :body => params[:body], :page_part => page_part, :summary => params[:summary])
-      unless (first_revision.valid?)
-        error_message = ""
-        first_revision.errors.each_full { |msg| error_message << msg }
-        flash[:notice] = error_message
-        page_part.delete
-        page.delete
-        redirect_to page.get_path
-      end
-      if(first_revision.save)
-        flash[:notice] = 'Page successfully created.'
-        page_part.current_page_part_revision = first_revision
-        page_part.save!
-      else
-        raise ActiveRecord::Rollback
-      end
-      redirect_to page.get_path
+    page = Page.new(:title => params[:title], :sid => sid)
+    unless (page.valid?)
+      error_message = ""
+      page.errors.each_full { |msg| error_message << msg }
+      flash[:notice] = error_message
+      render :action => "new"
+      return
     end
+    page.save!
+    page.move_to_child_of parent unless parent.nil?
+    page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
+    first_revision = PagePartRevision.new(:user => session[:user], :body => params[:body], :page_part => page_part, :summary => params[:summary])
+    unless (first_revision.valid?)
+      error_message = ""
+      first_revision.errors.each_full { |msg| error_message << msg }
+      flash[:notice] = error_message
+      @body = first_revision.body
+      @sid = sid
+      @parent_id = params[:parent_id]
+      page_part.delete
+      page.delete
+      render :action => "new"
+      return
+    end
+    if(first_revision.save)
+      flash[:notice] = 'Page successfully created.'
+      page_part.current_page_part_revision = first_revision
+      page_part.save!
+    end
+    redirect_to page.get_path
   end
 
   def show_history
     if params.include? 'diff'
       render :action => "diff"
     end
-  end 
+  end
 
   private
   def edit
@@ -105,13 +107,15 @@ class PageController < ApplicationController
 
         revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary])
         if(!current_revision.was_deleted && (!params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?))
-          revision.was_deleted = 1
+          revision.was_deleted = true
         end
         unless(revision.valid?)
           error_message = ""
           revision.errors.each_full { |msg| error_message << msg }
+          @page_part = page_part
+          @page_revision = revision
           flash[:notice] = error_message
-          redirect_to page.get_path + "?edit"
+          render :action => "edit"
           return
         end
         revision.save!
