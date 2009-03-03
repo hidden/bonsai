@@ -15,7 +15,29 @@ class User < ActiveRecord::Base
     GroupPermission.exists?(:group_id => group, :user_id => self, :can_edit => true)
   end
 
+  def can_view_page? page
+    return true
+  end
+
   def can_edit_page? page
     true
+  end
+
+  def logged?
+    true
+  end
+end
+
+class AnonymousUser
+  def logged?
+    false
+  end
+
+  def can_view_page? page
+    false
+  end
+
+  def can_edit_page?
+    false
   end
 end
