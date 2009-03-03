@@ -1,0 +1,17 @@
+= For 1.0:
+
+  * Settle on a diff format, e.g. what should the first field look like:
+	[ '+', 23, "foo" ]
+	[ :add, 23, "foo" ]
+	[ DiffAdd, 23, "foo" ]
+    or should we have classed
+	class DiffAdd
+		attr_reader :position, :element
+	end
+
+= Other Ideas:
+
+  * Contextual diffs?
+  * Unix diff/patch compatible wrapper
+
+

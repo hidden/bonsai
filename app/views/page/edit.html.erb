@@ -1,13 +1,14 @@
 <% form_tag '?update' do %>
   <p>
-    <h1><%= label_tag 'title' %></h1>
+    <%= label_tag :title %><br />
     <%= text_field_tag('title', @page.title) %>
   </p>
   <% for part in @page.page_parts %>
-    <h1><%=h part.name %></h1>
     <% if part == @page_part %>
+      <%= label_tag part.name %><br />
       <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 20, :cols => 80 %>
     <% else %>
+      <%= label_tag part.name %><br />
       <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
     <%  end %>
     <p>

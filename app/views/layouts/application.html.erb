@@ -23,7 +23,7 @@
         <% unless @page.nil? %>
           <p><% if @current_user.can_edit_page? @page %>
               <%= link_to "Edit", '?edit' %>
-              <%= link_to "History", history_url(@page.id) %>
+              <%= link_to "History", '?history' %>
             <% end %></p>
           <% end %>
         <% end %>

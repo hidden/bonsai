@@ -11,6 +11,12 @@ class PageController < ApplicationController
       @page_part = PagePart.find(params[:page_part])
       @page_revision = PagePartRevision.find(params[:revision])
       render :action => 'edit'
+    elsif params.include? 'history'
+      render :action => 'show_history'
+    elsif params.include? 'diff'
+      @first_revision = PagePartRevision.find(params[:first_revision])
+      @second_revision = PagePartRevision.find(params[:second_revision])
+      render :action => 'diff'
     elsif @page.nil?
       new
     elsif params.include? 'update'
@@ -40,19 +46,41 @@ class PageController < ApplicationController
       # TODO check if exists
     end
     sid = params[:sid].blank? ? nil : params[:sid]
-    page = Page.create(:title => params[:title], :sid => sid)
-    page.save!
-    page.move_to_child_of parent unless parent.nil?
-    page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
-    first_revision = PagePartRevision.create(:user => session[:user], :body => params[:body], :page_part => page_part, :summary => params[:summary])
-    page_part.current_page_part_revision = first_revision
-    page_part.save!
-    flash[:notice] = 'Page successfully created.'
-    redirect_to page.get_path
+    ActiveRecord::Base.transaction do
+      page = Page.new(:title => params[:title], :sid => sid)
+      unless (page.valid?)
+        error_message = ""
+        page.errors.each_full { |msg| error_message << msg }
+        flash[:notice] = error_message
+        redirect_to page.get_path
+      end
+      page.save!
+      page.move_to_child_of parent unless parent.nil?
+      page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
+      first_revision = PagePartRevision.new(:user => session[:user], :body => params[:body], :page_part => page_part, :summary => params[:summary])
+      unless (first_revision.valid?)
+        error_message = ""
+        first_revision.errors.each_full { |msg| error_message << msg }
+        flash[:notice] = error_message
+        page_part.delete
+        page.delete
+        redirect_to page.get_path
+      end
+      if(first_revision.save)
+        flash[:notice] = 'Page successfully created.'
+        page_part.current_page_part_revision = first_revision
+        page_part.save!
+      else
+        raise ActiveRecord::Rollback
+      end
+      redirect_to page.get_path
+    end
   end
 
   def show_history
-    @page = Page.find(params[:id])
+    if params.include? 'diff'
+      render :action => "diff"
+    end
   end 
 
   private
@@ -66,20 +94,29 @@ class PageController < ApplicationController
     params[:parts].each do |part_name, body|
       page_part = PagePart.find_by_name_and_page_id(part_name, page.id)
       current_revision = page_part.current_page_part_revision
-      #page_part.is_deleted = params[:is_deleted].nil? ? nil:params[:is_deleted][part_name]
-      unless page_part.current_page_part_revision.body == body
-        revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary], :was_deleted => current_revision.was_deleted)
-        page_part.current_page_part_revision_id = revision.id
+
+      revision = nil
+      if(page_part.current_page_part_revision.body != body ||
+            current_revision.was_deleted && (params[:is_deleted].blank? || params[:is_deleted][part_name].blank?) ||
+            !current_revision.was_deleted && !params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?)
+
+        revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary], :was_deleted => nil)
+        if(!current_revision.was_deleted && (!params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?))
+          revision.was_deleted = 1
+        end
+        unless(revision.valid?)
+          error_message = ""
+          revision.errors.each_full { |msg| error_message << msg }
+          flash[:notice] = error_message
+          redirect_to page.get_path + "?edit"
+          return
+        end
+        revision.save!
+        page_part.current_page_part_revision = revision
+        page_part.save!
       end
-      if current_revision.was_deleted && (params[:is_deleted].nil? || params[:is_deleted][part_name].nil?)
-        revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary])
-        page_part.current_page_part_revision_id = revision.id
-      elsif !current_revision.was_deleted && !params[:is_deleted].nil? && !params[:is_deleted][part_name].nil?
-        revision = PagePartRevision.create(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary], :was_deleted => 1)
-        page_part.current_page_part_revision_id = revision.id
-      end
-      page_part.save
     end
+    flash[:notice] = 'Page successfully updated.'
     redirect_to page.get_path
   end
 end

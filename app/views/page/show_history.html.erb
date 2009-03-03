@@ -1,13 +1,21 @@
 <h1>Changes for page: <%= @page.title %></h1>
-<% @page.page_parts.each do |page_part| %>
-  <h1><%= page_part.name %></h1>
+<% form_tag '?diff' do %>
+  <%= submit_tag 'compare selected versions' %>
+  <% revisions = Array.new %>
+  <% @page.page_parts.collect { |page_part| revisions = revisions + page_part.page_part_revisions } %>
   <ul>
-    <% page_part.page_part_revisions.each do |revision| %>
-      <li><%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
-        <%=h revision.user.username %>,
-        <%=h revision.summary %>,
-        <%=  link_to "Undo", @page.get_path + "?undo&page_part=" + page_part.id.to_s + "&revision=" + revision.id.to_s %>
+    <% revisions.each do |revision| %>
+      <li>
+        r<%=  revision.id.to_s %>
+        <%= radio_button_tag "first_revision" , revision.id, false %>
+        <%= radio_button_tag "second_revision" , revision.id, false %>
+        <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
+        <%=h revision.user.username %> edited <%= revision.page_part.name %>,
+        (<%=h revision.summary %>),
+        <%=  link_to "Revert to this revision", @page.get_path + "?undo&page_part=" + revision.page_part.id.to_s + "&revision=" + revision.id.to_s %>
       </li>
     <% end %>
   </ul>
 <% end %>
+<%= submit_tag 'compare selected versions' %>
+
