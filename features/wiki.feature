@@ -64,6 +64,7 @@ Scenario: User wants to edit a page he created and forgets a summary
     And I fill in "parts[body]" with "Changed body"
     And I press "Save"
     Then I should see "Summary can't be blank."
+    And I should see "Hello universe!"
     And I should not see "Page successfully updated."
 
 Scenario: User wants to edit a page he created
@@ -106,7 +107,8 @@ Scenario: Wiki page viewable by one user
     Then I should see "Permission denied."
     When I login as "crutch"
     Then I should see "Permission denied."
-    When I login as "johno"
+    When I logout
+    And I login as "johno"
     Then I should see "Some content."
 
 Scenario: User wants to see the page history
