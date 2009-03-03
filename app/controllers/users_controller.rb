@@ -16,6 +16,7 @@ class UsersController < ApplicationController
   def logout
     flash[:notice] = 'Logout successfull.'
     session[:user] = nil
-    redirect_to :back
+    redirect_to Page.root.get_path unless Page.root.nil?
+    redirect_to "/" if Page.root.nil?
   end
 end
