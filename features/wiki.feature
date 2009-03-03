@@ -5,7 +5,7 @@ Feature: Wiki
 
 Scenario: Anonymous user visits a fresh wiki
     When I go to the main page
-    Then I should see "Page does not exists, but you must login to edit it."
+    Then I should see "Permission denied."
 
 Scenario: Anonymous user logs in successfully
     When I go to the main page

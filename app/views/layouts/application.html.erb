@@ -11,7 +11,7 @@
   </head>
   <body>
     <div id="toolbar">
-      <% if @current_user.nil? %>
+      <% unless @current_user.logged? %>
         <% form_tag login_path do %>
           <p><label>Login: <%= text_field_tag 'username', nil, :size => 10 %></label>
             <label>Password: <%= password_field_tag 'password', nil, :size => 15 %></label>

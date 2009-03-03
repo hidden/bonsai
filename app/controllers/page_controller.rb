@@ -1,8 +1,16 @@
 class PageController < ApplicationController
+  before_filter :set_user
+
+  def set_user
+    @current_user = session[:user].nil? ? AnonymousUser.new : session[:user]
+  end
+
   def view
-    @current_user = session[:user]
     @path = params[:path]
     @page = Page.find_by_path(@path)
+    unless @page.nil?
+      render :action => 'unprivileged' and return unless @current_user.can_view_page? @page
+    end
     if params.include? 'edit'
       render :action => 'edit'
     elsif params.include? 'create'
@@ -28,7 +36,7 @@ class PageController < ApplicationController
   end
 
   def new
-    render :action => 'unprivileged' and return if @current_user.nil?
+    render :action => 'unprivileged' and return unless @current_user.logged?
     if @path.empty?
       @parent_id = nil
     else

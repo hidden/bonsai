@@ -12,6 +12,7 @@ When /^I create "(.*)" page$/ do |url|
   visit url
   fill_in('title', :with => 'Some title')
   fill_in('body', :with => 'Some contents.')
+  fill_in('summary', :with => 'A summary.')
   click_button('Create')
 end
 
@@ -20,10 +21,11 @@ Given /^user "(.*)" exists$/ do |username|
   User.create(:username => username, :name => username)
 end
 
-Given /^page "(.*)" is viewable by "(.*)"$/ do |path, group|
-  page = Page.find_by_path(path.split('/'))
+Given /^page "(.*)" is viewable by "(.*)"$/ do |url, group|
+  page = Page.find_by_path(url.split("/"))
   page.add_viewer Group.find_by_name(group)
 end
+
 Given /^that a "(.*) page with multiple revisions exist$/ do |page|
   user = User.create(:name => 'johno', :username => 'johno')
   page = Page.create!(:title => "main")

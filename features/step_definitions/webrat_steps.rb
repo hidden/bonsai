@@ -22,7 +22,7 @@ When /^I follow "(.*)"$/ do |link|
   click_link(link)
 end
 
-When /^I follow "{.*}" with "{.*}"$/ do |link_text, selector|
+When /^I follow "(.*)" with "(.*)"$/ do |link_text, selector|
   click_link_within selector, link_text
 end
 
