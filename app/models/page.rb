@@ -6,7 +6,7 @@ class Page < ActiveRecord::Base
   has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC'
 
   has_many :page_permissions, :dependent => :destroy
-  has_many :viewer_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_view = ?', true]
+  has_many :viewer_groups, :through => :page_permissions, :class_name => 'Group', :source => :page, :conditions => ['page_permissions.can_view = ?', true]
 
   def self.find_by_path path
     full_path = [nil] + path
