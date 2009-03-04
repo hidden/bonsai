@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090302103718) do
+ActiveRecord::Schema.define(:version => 20090304164531) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -38,11 +38,11 @@ ActiveRecord::Schema.define(:version => 20090302103718) do
   end
 
   create_table "page_permissions", :force => true do |t|
-    t.integer "page_id",    :null => false
-    t.integer "group_id",   :null => false
-    t.boolean "can_view",   :null => false
-    t.boolean "can_edit",   :null => false
-    t.boolean "can_manage", :null => false
+    t.integer "page_id",                       :null => false
+    t.integer "group_id",                      :null => false
+    t.boolean "can_view",   :default => false, :null => false
+    t.boolean "can_edit",   :default => false, :null => false
+    t.boolean "can_manage", :default => false, :null => false
   end
 
   create_table "pages", :force => true do |t|
@@ -54,6 +54,13 @@ ActiveRecord::Schema.define(:version => 20090302103718) do
   end
 
   add_index "pages", ["sid"], :name => "index_pages_on_sid"
+
+  create_table "uploaded_files", :force => true do |t|
+    t.integer "size"
+    t.string  "content_type"
+    t.string  "filename"
+    t.integer "page_id"
+  end
 
   create_table "users", :force => true do |t|
     t.string "username", :null => false

@@ -32,6 +32,8 @@ class PageController < ApplicationController
       update @page
     elsif params.include? 'add_page_part'
       add_new_page_part @page
+    elsif params.include? 'file_upload'
+      attach_file @page
     end
 
   end
@@ -143,5 +145,20 @@ class PageController < ApplicationController
     page_part.save!
     flash[:notice] = 'Page part successfully added.'
     redirect_to page.get_path + "?edit"
+  end
+
+  def attach_file page
+    @uploaded_file = UploadedFile.new(params[:uploaded_file])
+    @uploaded_file.page = page
+    puts @uploaded_file.to_yaml
+    if @uploaded_file.save
+      flash[:notice] = 'File was successfully uploaded.'
+      redirect_to page.get_path
+    else
+      error_message = ""
+      @uploaded_file.errors.each_full { |msg| error_message << msg }
+      flash[:notice] = error_message
+      render :action => :edit
+    end
   end
 end
