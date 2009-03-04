@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
     for node in page.self_and_ancestors
       viewable_directly = PagePermission.exists_viewable_by_user_and_page(self, node)
       return true if viewable_directly
-      unless page.viewer_groups.empty?
+      unless page.viewer_groups(true).empty?
         restriction_in_path = true
       end
     end

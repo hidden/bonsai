@@ -106,6 +106,7 @@ Scenario: Wiki page viewable by one user
     Then I should see "Permission denied."
     When I login as "crutch"
     Then I should see "Permission denied."
+    When I logout
     When I login as "johno"
     Then I should see "Some content."
 
