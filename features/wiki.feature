@@ -64,7 +64,7 @@ Scenario: User wants to edit a page he created and forgets a summary
     And I fill in "parts[body]" with "Changed body"
     And I press "Save"
     Then I should see "Summary can't be blank."
-    And I should see "Hello universe!"
+    And I should see "Changed body"
     And I should not see "Page successfully updated."
 
 Scenario: User wants to edit a page he created
