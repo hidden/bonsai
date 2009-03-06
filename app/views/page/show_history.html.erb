@@ -12,7 +12,7 @@
         <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
         <%=h revision.user.username %> edited <%= revision.page_part.name %>
         (<%=h revision.summary %>),
-        <%=  link_to "Revert to this revision", @page.get_path + "?undo&page_part=" + revision.page_part.id.to_s + "&revision=" + revision.id.to_s %>
+        <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&page_part=" + revision.page_part.id.to_s + "&revision=" + revision.id.to_s %>
       </li>
     <% end %>
   </ul>

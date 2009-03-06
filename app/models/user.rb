@@ -75,10 +75,18 @@ class AnonymousUser
   end
 
   def can_view_page? page
+    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+    for node in page.self_and_ancestors
+      return false unless node.viewer_groups.empty?
+    end
+    return true
+  end
+
+  def can_edit_page? page
     false
   end
 
-  def can_edit_page?
+  def can_manage_page? page
     false
   end
 end

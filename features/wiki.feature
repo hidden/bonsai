@@ -116,14 +116,15 @@ Scenario: User wants to see the diff of two page revisions
     And I choose "first_revision_1"
     And I choose "second_revision_2"
     And I press "compare selected versions"
-    Then I should see "This is \-second \+first revision"
+    Then I should see "\+This is second revision"
+    Then I should see "\-This is first revision"
 
 Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
     And I follow "history"
-    When I follow "Revert to this revision"
+    When I follow "Revert to revision 1"
     And I press "Save"
     Then I should see "Page successfully updated."
     And I should see "This is first revision"

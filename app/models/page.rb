@@ -3,7 +3,7 @@ class Page < ActiveRecord::Base
   validates_uniqueness_of :sid, :scope => :parent_id
 
   has_many :page_parts, :dependent => :destroy
-  has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC'
+  has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC, id DESC'
 
   has_many :page_permissions, :dependent => :destroy
   has_many :viewer_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_view = ?', true]
@@ -27,23 +27,24 @@ class Page < ActiveRecord::Base
     self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
   end
 
-  def set_viewer group
+  def add_viewer group
     permission = PagePermission.find_or_initialize_by_page_id_and_group_id(:page_id => self.id, :group_id => group.id)
-    permission.can_manage = permission.can_edit = false
     permission.can_view = true
     permission.save!
   end
 
-  def set_editor group
+  def add_editor group
     permission = PagePermission.find_or_initialize_by_page_id_and_group_id(:page_id => self.id, :group_id => group.id)
-    permission.can_view = permission.can_edit = true
-    permission.can_manage = false
+    permission.can_view = true unless self.viewer_groups.empty?
+    permission.can_edit = true
     permission.save!
   end
 
-  def set_manager group
+  def add_manager group
     permission = PagePermission.find_or_initialize_by_page_id_and_group_id(:page_id => self.id, :group_id => group.id)
-    permission.can_view = permission.can_edit = permission.can_manage = true
+    permission.can_view = true unless self.viewer_groups.empty?
+    permission.can_edit = true unless self.editor_groups.empty?
+    permission.can_manage = true
     permission.save!
   end
 end

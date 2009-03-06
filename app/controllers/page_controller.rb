@@ -69,7 +69,7 @@ class PageController < ApplicationController
       return
     end
     page.save!
-    page.set_manager @current_user.private_group
+    page.add_manager @current_user.private_group
     page.move_to_child_of parent unless parent.nil?
     page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
     first_revision = PagePartRevision.new(:user => session[:user], :body => params[:body], :page_part => page_part, :summary => params[:summary])

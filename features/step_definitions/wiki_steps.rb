@@ -23,12 +23,17 @@ end
 
 Given /^page "(.*)" is viewable by "(.*)"$/ do |url, group|
   page = Page.find_by_path(url.split("/"))
-  page.set_viewer Group.find_by_name(group)
+  page.add_viewer Group.find_by_name(group)
+end
+
+Given /^page "(.*)" is editable by "(.*)"$/ do |url, group|
+  page = Page.find_by_path(url.split("/"))
+  page.add_editor Group.find_by_name(group)
 end
 
 Given /^page "(.*)" is manageable by "(.*)"$/ do |url, group|
   page = Page.find_by_path(url.split("/"))
-  page.set_manager Group.find_by_name(group)
+  page.add_manager Group.find_by_name(group)
 end
 
 Given /^that a "(.*) page with multiple revisions exist$/ do |page|
