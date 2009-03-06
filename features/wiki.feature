@@ -97,20 +97,6 @@ Scenario: User uses markdown syntax on wiki page
     And I press "Create"
     Then I should see "Text with <em>emphasis</em>." in html code
 
-Scenario: Wiki page viewable by one user
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
-    And page "/" is viewable by "johno"
-    When I logout
-    And I go to the main page
-    Then I should see "Permission denied."
-    When I login as "crutch"
-    Then I should see "Permission denied."
-    When I logout
-    When I login as "johno"
-    Then I should see "Some content."
-
 Scenario: User wants to see the page history
     Given that a "main" page with multiple revisions exist
     When I go to the main page

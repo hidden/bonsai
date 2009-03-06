@@ -11,6 +11,10 @@ class User < ActiveRecord::Base
     "#{name} (#{username})"
   end
 
+  def private_group
+    Group.find_by_name(self.username)
+  end
+
   def can_edit_group? group
     GroupPermission.exists?(:group_id => group, :user_id => self, :can_edit => true)
   end
@@ -18,12 +22,12 @@ class User < ActiveRecord::Base
   def can_view_page? page
     # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
     
-    # check if user belongs to a group that can view some of the ancestors or self
     restriction_in_path = false
+    # check if user belongs to a group that can view some of the ancestors or self
     for node in page.self_and_ancestors
-      viewable_directly = PagePermission.exists_viewable_by_user_and_page(self, node)
-      return true if viewable_directly
-      unless page.viewer_groups(true).empty?
+      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_view')
+      return true if direct_access
+      unless page.viewer_groups.empty?
         restriction_in_path = true
       end
     end
@@ -31,7 +35,33 @@ class User < ActiveRecord::Base
   end
 
   def can_edit_page? page
-    true
+    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+
+    restriction_in_path = false
+    # check if user belongs to a group that can view some of the ancestors or self
+    for node in page.self_and_ancestors
+      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_edit')
+      return true if direct_access
+      unless page.editor_groups.empty?
+        restriction_in_path = true
+      end
+    end
+    return !restriction_in_path
+  end
+
+  def can_manage_page? page
+    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+
+    restriction_in_path = false
+    # check if user belongs to a group that can view some of the ancestors or self
+    for node in page.self_and_ancestors
+      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_manage')
+      return true if direct_access
+      unless page.manager_groups.empty?
+        restriction_in_path = true
+      end
+    end
+    return !restriction_in_path
   end
 
   def logged?
