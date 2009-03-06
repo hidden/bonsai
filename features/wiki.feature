@@ -130,7 +130,7 @@ Scenario: User wants to see the diff of two page revisions
     And I choose "first_revision_1"
     And I choose "second_revision_2"
     And I press "compare selected versions"
-    Then I should see "This is -second +first revision"
+    Then I should see "This is \-second \+first revision"
 
 Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
