@@ -3,3 +3,4 @@ syntax: regexp
 ^nbproject\/private
 ^tmp
 ^log
+^public\/upload

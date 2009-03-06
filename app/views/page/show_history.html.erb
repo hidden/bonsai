@@ -2,13 +2,15 @@
 <% form_tag '?diff' do %>
   <%= submit_tag 'compare selected versions' %>
   <ul>
-    <% @page.page_parts_revisions.each do |revision| %>
+    <% number_of_revisions = @page.page_parts_revisions.size %>
+    <% @page.page_parts_revisions.each_with_index do |revision, index| %>
       <li>
-        r<%=  revision.id.to_s %>
-        <%= radio_button_tag "first_revision" , revision.id, false %>
-        <%= radio_button_tag "second_revision" , revision.id, false %>
+        <% counter = number_of_revisions - index %>
+        r<%= counter %>
+        <%= radio_button_tag "first_revision" , revision.id, false, :id => "first_revision_#{counter}" %>
+        <%= radio_button_tag "second_revision" , revision.id, false, :id => "second_revision_#{counter}" %>
         <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
-        <%=h revision.user.username %> edited <%= revision.page_part.name %>,
+        <%=h revision.user.username %> edited <%= revision.page_part.name %>
         (<%=h revision.summary %>),
         <%=  link_to "Revert to this revision", @page.get_path + "?undo&page_part=" + revision.page_part.id.to_s + "&revision=" + revision.id.to_s %>
       </li>

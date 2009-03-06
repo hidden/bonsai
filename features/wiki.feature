@@ -64,7 +64,7 @@ Scenario: User wants to edit a page he created and forgets a summary
     And I fill in "parts[body]" with "Changed body"
     And I press "Save"
     Then I should see "Summary can't be blank."
-    And I should see "Hello universe!"
+    And I should see "Changed body"
     And I should not see "Page successfully updated."
 
 Scenario: User wants to edit a page he created
@@ -130,7 +130,7 @@ Scenario: User wants to see the diff of two page revisions
     And I choose "first_revision_1"
     And I choose "second_revision_2"
     And I press "compare selected versions"
-    Then I should see "This is -second +first revision"
+    Then I should see "This is \-second \+first revision"
 
 Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
