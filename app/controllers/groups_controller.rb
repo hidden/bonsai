@@ -1,21 +1,23 @@
 class GroupsController < ApplicationController
+  before_filter :set_user
   before_filter :verify_editor_permission, :only => [:remove, :add]
   before_filter :verify_editor_permission_by_id, :only => [:destroy, :edit, :update]
-  
+
+  def set_user
+    @current_user = session[:user].nil? ? AnonymousUser.new : session[:user]
+  end
+
   def verify_editor_permission_by_id
-    @current_user = session[:user]
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:id])
   end
 
   def verify_editor_permission
-    @current_user = session[:user]
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:group_id])
   end
 
   # GET /groups
   # GET /groups.xml
   def index
-    @current_user = session[:user]
     @groups = @current_user.visible_groups
 
     respond_to do |format|

@@ -7,6 +7,8 @@ class Page < ActiveRecord::Base
 
   has_many :page_permissions, :dependent => :destroy
   has_many :viewer_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_view = ?', true]
+  has_many :editor_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_edit = ?', true]
+  has_many :manager_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_manage = ?', true]
 
   has_many :uploaded_files, :dependent => :destroy
 
@@ -25,9 +27,23 @@ class Page < ActiveRecord::Base
     self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
   end
 
-  def add_viewer group
-    permission = PagePermission.find_or_initialize_by_page_id_and_group_id(:page_id => self.id, :group_id => group.id, :can_edit => false, :can_manage => false)
+  def set_viewer group
+    permission = PagePermission.find_or_initialize_by_page_id_and_group_id(:page_id => self.id, :group_id => group.id)
+    permission.can_manage = permission.can_edit = false
     permission.can_view = true
-    permission.save
+    permission.save!
+  end
+
+  def set_editor group
+    permission = PagePermission.find_or_initialize_by_page_id_and_group_id(:page_id => self.id, :group_id => group.id)
+    permission.can_view = permission.can_edit = true
+    permission.can_manage = false
+    permission.save!
+  end
+
+  def set_manager group
+    permission = PagePermission.find_or_initialize_by_page_id_and_group_id(:page_id => self.id, :group_id => group.id)
+    permission.can_view = permission.can_edit = permission.can_manage = true
+    permission.save!
   end
 end
