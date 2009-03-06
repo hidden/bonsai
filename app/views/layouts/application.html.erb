@@ -24,6 +24,7 @@
           <p><% if @current_user.can_edit_page? @page %><%= link_to "Edit", '?edit' %><% end %>
             <% if @current_user.can_manage_page? @page %><%= link_to "Manage", '?manage' %><% end %> 
             <%= link_to "History", '?history' %></p>
+          <p><%= link_to "Groups", groups_path %></p>
         <% end %>
       <% end %>
     </div>
