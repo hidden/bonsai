@@ -1,5 +1,6 @@
 class UploadedFile < ActiveRecord::Base
   belongs_to :page
+  belongs_to :user
   has_attachment :storage => :file_system,
     :path_prefix => "public/upload"
 
@@ -23,5 +24,5 @@ class UploadedFile < ActiveRecord::Base
   def partitioned_path(*args)
     #("%08d" % attachment_path_id).scan(/..../) + args
     args
-  end 
+  end
 end

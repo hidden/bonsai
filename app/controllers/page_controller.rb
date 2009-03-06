@@ -149,8 +149,9 @@ class PageController < ApplicationController
 
   def attach_file page
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
+    sleep(3)
     @uploaded_file.page = page
-    puts @uploaded_file.to_yaml
+    @uploaded_file.user = @current_user
     if @uploaded_file.save
       flash[:notice] = 'File was successfully uploaded.'
       redirect_to page.get_path

@@ -93,8 +93,8 @@ When /^I choose "(.*)"$/ do |field|
   choose(field)
 end
 
-When /^I attach the file at "(.*)" to "(.*)" $/ do |path, field|
-  attach_file(field, path)
+When /^I attach the file at "(.*)" to "(.*)"$/ do |path, field|
+  attach_file(field, File.join(Rails.root,'features', 'fixtures', path))
 end
 
 Then /^I should see "(.*)"$/ do |text|

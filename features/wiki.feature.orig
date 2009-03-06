@@ -1,3 +1,4 @@
+
 Feature: Wiki
     In order to share content on wiki
     A user
@@ -130,7 +131,7 @@ Scenario: User wants to see the diff of two page revisions
     And I choose "first_revision_1"
     And I choose "second_revision_2"
     And I press "compare selected versions"
-    Then I should see "This is \-second \+first revision"
+    Then I should see "This is -second +first revision"
 
 Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
@@ -155,11 +156,3 @@ Scenario: User wants to add a new page part
     And I should see "This is a text of a new page part"
     And I should not see "Page successfully updated."
 
-Scenario: User wants to upload a file
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
-    And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    Then I should see "File was successfully uploaded."
