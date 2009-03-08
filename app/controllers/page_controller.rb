@@ -9,37 +9,71 @@ class PageController < ApplicationController
     @path = params[:path]
     @page = Page.find_by_path(@path)
     unless @page.nil?
-      render :action => 'unprivileged' and return unless @current_user.can_view_page? @page
+      unless @current_user.can_view_page? @page
+        render :action => 'unprivileged'
+        return
+      end
     end
     if params.include? 'edit'
-      render :action => 'edit'
+      render :action => 'edit' and return if @current_user.can_edit_page? @page
+      render :action => 'unprivileged'
     elsif params.include? 'create'
-      create
+      if @current_user.logged?
+        create
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'undo'
       @page_revision = @page.page_parts_revisions[params[:revision].to_i]
       @page_part = @page_revision.page_part
       @undo = true
-      render :action => 'edit'
+      if @current_user.can_edit_page? @page
+        render :action => 'edit'
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'history'
-      render :action => 'show_history'
+      if @current_user.can_view_page? @page
+        render :action => 'show_history'
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'diff'
       @first_revision = @page.page_parts_revisions[params[:first_revision].to_i]
       @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
-      render :action => 'diff'
+      if @current_user.can_view_page? @page
+        render :action => 'diff'
+      else
+        render :action => 'unprivileged'
+      end
     elsif @page.nil?
-      new
+      if @current_user.logged?
+        new
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'update'
-      update @page
+      if @current_user.can_edit_page? @page
+        update @page
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'add_page_part'
-      add_new_page_part @page
+      if @current_user.can_edit_page? @page
+        add_new_page_part @page
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'file_upload'
-      attach_file @page
+      if @current_user.can_edit_page? @page
+        attach_file @page
+      else
+        render :action => 'unprivileged'
+      end
     end
-
   end
 
   def new
-    render :action => 'unprivileged' and return unless @current_user.logged?
     if @path.empty?
       @parent_id = nil
     else
@@ -72,7 +106,7 @@ class PageController < ApplicationController
     page.add_manager @current_user.private_group
     page.move_to_child_of parent unless parent.nil?
     page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
-    first_revision = PagePartRevision.new(:user => session[:user], :body => params[:body], :page_part => page_part, :summary => params[:summary])
+    first_revision = PagePartRevision.new(:user => @current_user, :body => params[:body], :page_part => page_part, :summary => params[:summary])
     unless (first_revision.valid?)
       error_message = ""
       first_revision.errors.each_full { |msg| error_message << msg }
