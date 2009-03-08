@@ -16,15 +16,15 @@ class PageController < ApplicationController
     elsif params.include? 'create'
       create
     elsif params.include? 'undo'
-      @page_part = PagePart.find(params[:page_part])
-      @page_revision = PagePartRevision.find(params[:revision])
+      @page_revision = @page.page_parts_revisions[params[:revision].to_i]
+      @page_part = @page_revision.page_part
       @undo = true
       render :action => 'edit'
     elsif params.include? 'history'
       render :action => 'show_history'
     elsif params.include? 'diff'
-      @first_revision = PagePartRevision.find(params[:first_revision])
-      @second_revision = PagePartRevision.find(params[:second_revision])
+      @first_revision = @page.page_parts_revisions[params[:first_revision].to_i]
+      @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
       render :action => 'diff'
     elsif @page.nil?
       new
