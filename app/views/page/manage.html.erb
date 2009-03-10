@@ -1,0 +1,36 @@
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Can view</th>
+    <th>Can edit</th>
+    <th>Can manage</th>
+  </tr>
+  <% @page.page_permissions.each_index do |index| %>
+    
+    <tr>
+      <td>
+        <%=  @page.page_permissions[index].group.name %>
+      </td>
+      <td>
+        <%=  link_to @page.page_permissions[index].can_view.to_s, "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %>
+      </td>
+      <td>
+        <%=  link_to @page.page_permissions[index].can_edit.to_s, "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %>
+      </td>
+      <td>
+        <%=  link_to @page.page_permissions[index].can_manage.to_s, "?change-permission&index=#{index}&permission=can_manage", {:method => :post}  %>
+      </td>
+      <td>
+        <%=  link_to "remove", "?remove-permission&index=#{index}", {:method => :post}  %>
+      </td>
+
+    </tr>
+  <% end %>
+</table>
+<% form_tag '?set-permissions' do %>
+  <%= collection_select(:groups,:id,Group.find(:all), :id, :name, {}, {:size => 10, :multiple => :true}) %>
+  read <%=  check_box_tag("can_view", value = "1", checked = false, options = {})%>
+  edit <%=  check_box_tag("can_edit", value = "1", checked = false, options = {})%>
+  manage <%=  check_box_tag("can_manage", value = "1", checked = false, options = {})%>
+  <%= submit_tag 'Set' %>
+<% end %>

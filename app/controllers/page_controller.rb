@@ -23,6 +23,38 @@ class PageController < ApplicationController
       else
         render :action => 'unprivileged'
       end
+    elsif params.include? 'manage'
+      render :action => 'manage' and return if @current_user.can_manage_page? @page
+      render :action => 'unprivileged'
+    elsif params.include? 'set-permissions'
+      if @current_user.can_manage_page? @page
+        set_permissions @page
+      else
+        render :action => 'unprivileged'
+      end
+    elsif params.include? 'change-permission'
+      if @current_user.can_manage_page? @page
+        page_permission = @page.page_permissions[params[:index].to_i]
+        if(params[:permission] == "can_view")
+          page_permission.can_view = page_permission.can_view ? false:true
+        elsif(params[:permission] == "can_edit")
+          page_permission.can_edit = page_permission.can_view ? false:true
+        elsif(params[:permission] == "can_manage")
+          page_permission.can_manage = page_permission.can_manage ? false:true
+        end
+        page_permission.save
+        redirect_to @page.get_path + "?manage"
+      else
+        render :action => 'unprivileged'
+      end
+    elsif params.include? 'remove-permission'
+      if @current_user.can_manage_page? @page
+        page_permission = @page.page_permissions[params[:index].to_i]
+        page_permission.destroy
+        redirect_to @page.get_path + "?manage"
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'undo'
       @page_revision = @page.page_parts_revisions[params[:revision].to_i]
       @page_part = @page_revision.page_part
@@ -136,6 +168,17 @@ class PageController < ApplicationController
   private
   def edit
     
+  end
+
+  def set_permissions page
+    groups = params[:groups][:id]
+    groups.each do |group_id|
+      group = Group.find(group_id)
+      page.add_viewer group if params[:can_view]
+      page.add_editor group if params[:can_edit]
+      page.add_manager group if params[:can_manage]
+    end
+    redirect_to page.get_path + "?manage"
   end
 
   def update page
