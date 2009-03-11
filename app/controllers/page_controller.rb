@@ -36,11 +36,11 @@ class PageController < ApplicationController
       if @current_user.can_manage_page? @page
         page_permission = @page.page_permissions[params[:index].to_i]
         if(params[:permission] == "can_view")
-          page_permission.can_view = page_permission.can_view ? false:true
+          page_permission.can_view ? page_permission.can_view = false:@page.add_viewer(page_permission.group)
         elsif(params[:permission] == "can_edit")
-          page_permission.can_edit = page_permission.can_view ? false:true
+          page_permission.can_edit ? page_permission.can_edit = false:@page.add_editor(page_permission.group)
         elsif(params[:permission] == "can_manage")
-          page_permission.can_manage = page_permission.can_manage ? false:true
+          page_permission.can_manage ? page_permission.can_manage = false:@page.add_manager(page_permission.group)
         end
         page_permission.save
         redirect_to @page.get_path + "?manage"
