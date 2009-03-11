@@ -55,6 +55,27 @@ class PageController < ApplicationController
       else
         render :action => 'unprivileged'
       end
+    elsif params.include? 'make-public'
+      if @current_user.can_manage_page? @page
+        @page.page_permissions.each do |permission|
+          permission.can_view = false
+          permission.save
+        end
+        redirect_to @page.get_path + "?manage"
+      else
+        render :action => 'unprivileged'
+      end
+    elsif params.include? 'make-editable'
+      if @current_user.can_manage_page? @page
+        @page.page_permissions.each do |permission|
+          permission.can_view = false
+          permission.can_edit = false
+          permission.save
+        end
+        redirect_to @page.get_path + "?manage"
+      else
+        render :action => 'unprivileged'
+      end
     elsif params.include? 'undo'
       @page_revision = @page.page_parts_revisions[params[:revision].to_i]
       @page_part = @page_revision.page_part
