@@ -27,6 +27,15 @@
     </tr>
   <% end %>
 </table>
+<br/>
+Quick links:
+<p>
+<%=link_to "Make this page public", "?make-public", {:title => "Removes all can_view permissions of this page, so anyone can view it"} %>
+</p>
+<p>
+<%=link_to "Make this page editable by logged users", "?make-editable", {:title => "Removes all can_view and can_edit permissions of this page, so anyone can view it and logged users can edit it"} %>
+</p>
+<%  %>
 <% form_tag '?set-permissions' do %>
   <%= collection_select(:groups,:id,Group.find(:all), :id, :name, {}, {:size => 10, :multiple => :true}) %>
   read <%=  check_box_tag("can_view", value = "1", checked = false, options = {})%>
