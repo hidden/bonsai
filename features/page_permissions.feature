@@ -1,7 +1,7 @@
 Feature: Secure wiki
-    In order to have
+    In order to have a secure wiki
     A user
-    Should be able to create and manage wiki pages
+    Should be able to set permissions for viewing, editing and managing pages.
 
 Scenario: Wiki page viewable by one user
     When I go to the main page
@@ -47,6 +47,9 @@ Scenario: Anonymous cannot see a restricted page
     And page "/" is viewable by "johno"
     And I logout
     Then I should see "Permission denied."
+    Then I should not see "History"
+    Then I should not see "Edit"
+    Then I should not see "Manage"
 
 Scenario: Anonymous can see a public page
     When I go to the main page
@@ -54,6 +57,7 @@ Scenario: Anonymous can see a public page
     And I create "/" page
     And I logout
     Then I should not see "Permission denied."
+    Then I should see "History"
 
 Scenario: Manager adds an editor to a public page
     Given user "johno" exists

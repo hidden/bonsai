@@ -20,17 +20,17 @@
         </p>
       <% else %>
         <p>Logged in as: <%= @current_user.full_name %> | <%= link_to "Log out", logout_path %></p>
-        <% unless @page.nil? %>
-          <p><% if @current_user.can_edit_page? @page %><%= link_to "Edit", '?edit' %><% end %>
-            <% if @current_user.can_manage_page? @page %><%= link_to "Manage", '?manage' %><% end %> 
-            <%= link_to "History", '?history' %></p>
-          <p><%= link_to "Groups", groups_path %></p>
-        <% end %>
+      <% end %>
+      <% unless @page.nil? %>
+        <p><% if @current_user.can_edit_page? @page %><%= link_to "Edit", '?edit' %><% end %>
+          <% if @current_user.can_manage_page? @page %><%= link_to "Manage", '?manage' %><% end %>
+          <% if @current_user.can_view_page? @page %><%= link_to "History", '?history' %><% end %></p>
+          <% if @current_user.logged? %><p><%= link_to "Groups", groups_path %></p><% end %>
       <% end %>
     </div>
     <div id="holder">
-      <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
-      <%= yield  %>
+    <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
+    <%= yield  %>
     </div>
   </body>
 </html>
