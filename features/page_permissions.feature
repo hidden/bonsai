@@ -133,7 +133,7 @@ Scenario: Manager adds an editor to a non-public page
     And I logout
     And I login as "matell"
     Then I should not see "Permission denied."
-    And I should see "edit"
+    And I should see "Edit"
     And I logout
     And I login as "crutch"
     Then I should see "Permission denied."
@@ -154,8 +154,8 @@ Scenario: Manager adds another manager to a non-public page
     And I logout
     And I login as "matell"
     Then I should not see "Permission denied."
-    And I should see "edit"
-    And I should see "manage"
+    And I should see "Edit"
+    And I should see "Manage"
     And I logout
     And I login as "crutch"
     Then I should see "Permission denied."
