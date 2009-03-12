@@ -31,7 +31,7 @@
   <span class="description">Removes all viewer and editors from this page, so anyone can view it and logged users can edit it.<span></p>
   <h2>Add group permission</h2>
   <% form_tag '?set-permissions' do %>
-    <%= collection_select(:groups,:id, @current_user.visible_groups, :id, :name, {}, {:size => 5, :multiple => :true}) %><br/>
+    <%= collection_select(:groups,:id, @current_user.visible_groups + Group.groups_visible_for_all, :id, :name, {}, {:size => 5, :multiple => :true}) %><br/>
     <label><%= check_box_tag("can_view")%> Reader</label><br/>
     <label><%= check_box_tag("can_edit")%> Editor</label><br/>
     <label><%= check_box_tag("can_manage")%> Manager</label><br/>
