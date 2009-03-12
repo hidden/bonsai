@@ -1,45 +1,40 @@
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Can view</th>
-    <th>Can edit</th>
-    <th>Can manage</th>
-  </tr>
-  <% @page.page_permissions.each_index do |index| %>
-    
-    <tr>
-      <td>
-        <%=  @page.page_permissions[index].group.name %>
-      </td>
-      <td>
-        <%=  link_to @page.page_permissions[index].can_view.to_s, "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %>
-      </td>
-      <td>
-        <%=  link_to @page.page_permissions[index].can_edit.to_s, "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %>
-      </td>
-      <td>
-        <%=  link_to @page.page_permissions[index].can_manage.to_s, "?change-permission&index=#{index}&permission=can_manage", {:method => :post}  %>
-      </td>
-      <td>
-        <%=  link_to "remove", "?remove-permission&index=#{index}", {:method => :post}  %>
-      </td>
+<div class="bonsai">
+  <h1>Permissions for <%=h @page.title %></h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Group</th>
+        <th>Viewer</th>
+        <th>Editor</th>
+        <th>Manager</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @page.page_permissions.each_with_index do |permission, index| %>
+        <tr>
+          <td><%=h  permission.group.name %></td>
+          <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %></td>
+          <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %></td>
+          <td><%= link_to image_boolean(permission.can_manage, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_manage", {:method => :post}  %></td>
+          <td><%= link_to "remove", "?remove-permission&index=#{index}", {:method => :post}  %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-    </tr>
+  <h2>Quick setup</h2>
+  <p><%= link_to "Make this page public", "?make-public"%><br />
+  <span class="description">Removes all viewer permissions on this page, so anyone can view it.<span></p>
+
+  <p><%= link_to "Make this page editable by logged users", "?make-editable" %><br />
+  <span class="description">Removes all viewer and editors from this page, so anyone can view it and logged users can edit it.<span></p>
+  <h2>Add group permission</h2>
+  <% form_tag '?set-permissions' do %>
+    <%= collection_select(:groups,:id, @current_user.visible_groups, :id, :name, {}, {:size => 5, :multiple => :true}) %><br/>
+    <label><%= check_box_tag("can_view")%> Reader</label><br/>
+    <label><%= check_box_tag("can_edit")%> Editor</label><br/>
+    <label><%= check_box_tag("can_manage")%> Manager</label><br/>
+    <%= submit_tag 'Set' %>
   <% end %>
-</table>
-<br/>
-Quick links:
-<p>
-<%=link_to "Make this page public", "?make-public", {:title => "Removes all can_view permissions of this page, so anyone can view it"} %>
-</p>
-<p>
-<%=link_to "Make this page editable by logged users", "?make-editable", {:title => "Removes all can_view and can_edit permissions of this page, so anyone can view it and logged users can edit it"} %>
-</p>
-<%  %>
-<% form_tag '?set-permissions' do %>
-  <%= collection_select(:groups,:id,Group.find(:all), :id, :name, {}, {:size => 10, :multiple => :true}) %>
-  read <%=  check_box_tag("can_view", value = "1", checked = false, options = {})%>
-  edit <%=  check_box_tag("can_edit", value = "1", checked = false, options = {})%>
-  manage <%=  check_box_tag("can_manage", value = "1", checked = false, options = {})%>
-  <%= submit_tag 'Set' %>
-<% end %>
+</div>

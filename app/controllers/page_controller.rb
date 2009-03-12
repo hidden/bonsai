@@ -1,10 +1,4 @@
 class PageController < ApplicationController
-  before_filter :set_user
-
-  def set_user
-    @current_user = session[:user].nil? ? AnonymousUser.new : session[:user]
-  end
-
   def view
     @path = params[:path]
     @page = Page.find_by_path(@path)

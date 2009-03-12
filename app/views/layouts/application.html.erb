@@ -5,29 +5,11 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <title>Bonsai</title>
-    <%= stylesheet_link_tag 'scaffold' %>
     <%= stylesheet_link_tag 'visual' %>
     <%= javascript_include_tag :defaults %>
   </head>
   <body>
-    <div id="toolbar">
-      <% unless @current_user.logged? %>
-        <% form_tag login_path do %>
-          <p><label>Login: <%= text_field_tag 'username', nil, :size => 10 %></label>
-            <label>Password: <%= password_field_tag 'password', nil, :size => 15 %></label>
-            <%= submit_tag 'Log in' %>
-          <% end %>
-        </p>
-      <% else %>
-        <p>Logged in as: <%= @current_user.full_name %> | <%= link_to "Log out", logout_path %></p>
-      <% end %>
-      <% unless @page.nil? %>
-        <p><% if @current_user.can_edit_page? @page %><%= link_to "Edit", '?edit' %><% end %>
-          <% if @current_user.can_manage_page? @page %><%= link_to "Manage", '?manage' %><% end %>
-          <% if @current_user.can_view_page? @page %><%= link_to "History", '?history' %><% end %></p>
-          <% if @current_user.logged? %><p><%= link_to "Groups", groups_path %></p><% end %>
-      <% end %>
-    </div>
+    <%= render :partial => 'shared/toolbar' %>
     <div id="holder">
     <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
     <%= yield  %>

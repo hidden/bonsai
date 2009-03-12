@@ -1,28 +1,32 @@
-<h1>Listing groups</h1>
+<div class="bonsai">
+  <h1>Groups Management</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Group</th>
+        <th>Users</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for group in @groups %>
+        <tr>
+          <td><%=h group.name %></td>
+          <td><%=h group.users.collect {|user| user.full_name }.join ', ' %></td>
+          <td>
+            <% if @current_user.can_edit_group? group %>
+              <%= link_to 'Edit', edit_group_path(group) %> <%= link_to 'Destroy', group, :confirm => 'Are you sure?', :method => :delete %>
+            <% else %>
+              -
+            <% end %>
+          </td>
 
-<table>
-  <tr>
-    <th>Group Name</th>
-    <th>Users</th>
-    <th>Actions</th>
-  </tr>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-  <% for group in @groups %>
-    <tr>
-      <td><%=h group.name %></td>
-      <td><%=h group.users.collect {|user| user.full_name }.join ', ' %></td>
-      <td>
-        <% if @current_user.can_edit_group? group %>
-          <%= link_to 'Edit', edit_group_path(group) %> <%= link_to 'Destroy', group, :confirm => 'Are you sure?', :method => :delete %>
-        <% else %>
-          -
-        <% end %>
-      </td>
+  <br />
 
-    </tr>
-  <% end %>
-</table>
-
-<br />
-
-<%= link_to 'New group', new_group_path %>
+  <%= link_to 'New group', new_group_path %>
+</div>
