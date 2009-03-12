@@ -27,6 +27,10 @@ class Page < ActiveRecord::Base
     self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
   end
 
+  def full_title
+    self.self_and_ancestors.collect {|node| node.title}.reverse.join(' | ')
+  end
+
   def add_viewer group
     if self.viewer_groups.empty?
       self.page_permissions.each do |permission|
