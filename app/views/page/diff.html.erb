@@ -1,50 +1,29 @@
-<h1>diff</h1>
+<div class="bonsai">
+  <h1>Diff for <%=h @page.title %></h1>
+  <% if @first_revision.was_deleted? != @second_revision.was_deleted? %>
+    <p>Revision <%=  @first_revision.was_deleted? ? @first_revision.id.to_s : @second_revision.id.to_s %> was marked as deleted.</p>
+  <% else %>
+    <%
+    first = @first_revision.body.split("\n")
+    second = @second_revision.body.split("\n")
 
-<% if  @first_revision.was_deleted? != @second_revision.was_deleted? %>
-  <p>Revision <%=  @first_revision.was_deleted? ? @first_revision.id.to_s : @second_revision.id.to_s %> was marked as deleted.</p>
-<% end %>
-<% if @first_revision.body != @second_revision.body %>
-  <% first_array = @first_revision.body.split("\n")
-  second_array = @second_revision.body.split("\n")
+    # TODO move logic to controller!
 
-  # TODO move logic to controller!
-  cbo = Diff::LCS::ContextDiffCallbacks.new
-  diffs = Diff::LCS.diff(first_array, second_array, cbo)
-  cbo.finish
-
-  diffs.reverse.each do |hunk|
-    case hunk
-    when Array
-      hunk.reverse_each do |diff|
+    diffs = Diff::LCS.sdiff(first, second)
+    %>
+    <div class="diff">
+      <% for diff in diffs
+        klass = nil
+        data = diff.new_element
         case diff.action
-        when '+'
-          #               np.insert(diff.old_position, "+#{diff.new_element}")
-          first_array.insert(diff.old_position, "+#{diff.new_element}")
-        when '-'
-          #first_array.delete_at(diff.old_position)
-          first_array[diff.old_position] = "-#{diff.old_element}"
-        when '!'
-          first_array[diff.old_position] = "-#{diff.old_element}"
-          first_array.insert(diff.old_position + 1, "+#{diff.new_element}")
+        when '=' then klass = 'line-unchanged'
+        when '-' then klass = 'line-removed'; data = diff.old_element
+        when '+' then klass = 'line-added'
+        when '!' then klass = 'line-changed'
         end
-      end
-    when Diff::LCS::ContextChange
-      case hunk.action
-      when '+'
-        first_array.insert(hunk.old_position, "++#{hunk.new_element}")
-        #             np.insert(hunk.old_position, "+#{hunk.new_element}")
-      when '-'
-        #first_array.delete_at(hunk.old_position)
-        first_array[hunk.old_position] = "--#{hunk.old_element}"
-      when '!'
-        first_array.body[hunk.old_position] = "--#{hunk.old_element}"
-        first_array.body.insert(hunk.old_position + 1, "++#{hunk.new_element}")
-      end
-    end
-  end %>
-
-  <pre>
-    <% #TODO add styling %>
-    <%=  first_array.join("\n") %>
-  </pre>
-<% end %>
+      %>
+        <div class="<%= klass %>"><%= data %></div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,8 +1,6 @@
+<div class="bonsai">
 <% form_tag '?update' do %>
-  <p>
-    <%= label_tag :title %><br />
-    <%= text_field_tag('title', @page.title) %>
-  </p>
+  <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
   <% for part in @page.page_parts %>
     <% if part == @page_part %>
       <%= label_tag part.name %><br />
@@ -12,13 +10,13 @@
       <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
     <%  end %>
     <p>
+      <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
       <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
       <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
-      <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
     </p>
   <% end %>
   <p>
-    <%= label_tag 'Summary' %>:
+    <%= label_tag 'Summary' %><br/>
     <%if @undo %>
       <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s) %>
     <% else %>
@@ -41,13 +39,6 @@
 <% end %>
 <p>Or attach a file to a page here:</p>
 <% form_for(:uploaded_file, :url => "?file_upload", :html => {:multipart => true}) do |f| %>
-  <p>
-    <label for="uploaded_file">Upload a File:
-      <%= f.file_field :uploaded_data %>
-    </label>
-  </p>
-  <p>
-    <%= submit_tag 'Upload' %>
-  </p>
-
+  <p><label for="uploaded_file">Upload a File<br/><%= f.file_field :uploaded_data %></label><%= submit_tag 'Upload' %></p>
 <% end %>
+</div>
