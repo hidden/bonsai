@@ -16,7 +16,11 @@
           <td><%=h  permission.group.name %></td>
           <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %></td>
           <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %></td>
-          <td><%= link_to image_boolean(permission.can_manage, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_manage", {:method => :post}  %></td>
+          <% if permission.group.users.include? @current_user %>
+            <td><%=  image_boolean(permission.can_manage, 'You cannot change your own management permission') %></td>
+          <% else %>
+            <td><%= link_to image_boolean(permission.can_manage, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_manage", {:method => :post}  %></td>
+          <% end %>
           <td><%= link_to "remove", "?remove-permission&index=#{index}", {:method => :post}  %></td>
         </tr>
       <% end %>

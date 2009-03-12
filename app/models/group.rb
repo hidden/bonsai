@@ -29,6 +29,25 @@ class Group < ActiveRecord::Base
     permission.save
   end
 
+  def remove_viewer user
+    permission = GroupPermission.find_by_user_id_and_group_id(user.id, self.id)
+    permission.destroy
+    if(self.users.empty?)
+      self.destroy
+    end
+  end
+
+  def remove_editor user
+    permission = GroupPermission.find_by_user_id_and_group_id(user.id, self.id)
+    if(self.editor_users.size == 1)
+      permission.destroy
+      self.destroy
+    else
+      permission.can_edit = false
+      permission.save
+    end
+  end
+
   def add_as_non_viewer user
     permission = GroupPermission.find_or_initialize_by_user_id_and_group_id(user.id, self.id)
     permission.can_view = false

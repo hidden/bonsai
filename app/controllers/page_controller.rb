@@ -30,11 +30,19 @@ class PageController < ApplicationController
       if @current_user.can_manage_page? @page
         page_permission = @page.page_permissions[params[:index].to_i]
         if(params[:permission] == "can_view")
-          page_permission.can_view ? page_permission.can_view = false:@page.add_viewer(page_permission.group)
+          if(page_permission.group.users.include? @current_user)
+            flash[:notice] = "You cannot disable your own view permission if you are in the manager group of the page. If you want to make this page public, you should use the quick setup link below"
+          else
+            page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
+          end
         elsif(params[:permission] == "can_edit")
-          page_permission.can_edit ? page_permission.can_edit = false:@page.add_editor(page_permission.group)
+          if(page_permission.group.users.include? @current_user)
+            flash[:notice] = "You cannot disable your own edit permission if you are in the manager group of the page. If you want to make this page editable by anyone, you should use the quick setup link below"
+          else
+            page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
+          end
         elsif(params[:permission] == "can_manage")
-          page_permission.can_manage ? page_permission.can_manage = false:@page.add_manager(page_permission.group)
+          page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
         end
         page_permission.save
         redirect_to @page.get_path + "?manage"

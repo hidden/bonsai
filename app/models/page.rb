@@ -67,4 +67,23 @@ class Page < ActiveRecord::Base
     permission.can_manage = true
     permission.save!
   end
+
+  def remove_viewer group
+    permission = PagePermission.find_by_page_id_and_group_id(self.id, group.id)
+    permission.destroy
+  end
+
+  def remove_editor group
+    permission = PagePermission.find_by_page_id_and_group_id(self.id, group.id)
+    permission.can_edit = false
+    permission.can_manage = false
+    permission.save
+  end
+
+  def remove_manager group
+    permission = PagePermission.find_by_page_id_and_group_id(self.id, group.id)
+    permission.can_manage = false
+    permission.save
+  end
+
 end

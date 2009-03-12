@@ -4,10 +4,7 @@ class GroupPermission < ActiveRecord::Base
 
   def switch_view
     if can_view?
-      self.can_view = false
-      unless self.can_edit?
-        self.destroy
-      end
+      self.group.remove_viewer self.user
     else
       self.group.add_viewer self.user
     end
@@ -15,10 +12,7 @@ class GroupPermission < ActiveRecord::Base
 
   def switch_edit
     if can_edit?
-      self.can_edit = false
-      unless self.can_view?
-        self.destroy
-      end
+      self.group.remove_editor self.user
     else
       self.group.add_editor self.user
     end
