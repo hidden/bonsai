@@ -12,17 +12,22 @@ class GroupPermissionsController < ApplicationController
     if user.nil?
       flash[:notice] = 'Username not found!'
     else
-      permission = GroupPermission.find_or_initialize_by_group_id_and_user_id(params[:group_id], user.id)
-      permission.can_view = true
-      permission.can_edit = params[:add_permission][:type] == 'editor'
-      permission.save unless permission.user == @current_user
+      Group.find(params[:group_id]).add_viewer user if params[:add_permission][:type] == 'viewer'
+      Group.find(params[:group_id]).add_editor user if params[:add_permission][:type] == 'editor'
     end
     redirect_to edit_group_path(params[:group_id])
   end
 
-  def switch
+  def switch_view
     permission = GroupPermission.find_by_id(params[:id])
-    permission.switch unless permission.user == @current_user
+    permission.switch_view
+    permission.save
+    redirect_to edit_group_path(params[:group_id])
+  end
+
+  def switch_edit
+    permission = GroupPermission.find_by_id(params[:id])
+    permission.switch_edit unless permission.user == @current_user
     permission.save
     redirect_to edit_group_path(params[:group_id])
   end

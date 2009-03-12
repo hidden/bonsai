@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
 
   has_many :visible_groups, :through => :group_permissions, :class_name => 'Group', :source => :group, :conditions => ['group_permissions.can_view = ?', true]
 
-  after_create { |user| Group.create(:name => user.username).add_viewer(user) }
+  after_create { |user| Group.create(:name => user.username).add_as_non_viewer(user) }
   after_destroy { |user| Group.find_by_name(user.username).destroy }
 
   def full_name
