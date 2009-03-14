@@ -27,7 +27,7 @@
 <% end %>
 
 <p>Or add a new page part here:</p>
-<% form_tag "?add_page_part" do %>
+<% form_tag "?new-part" do %>
   <p>
     <%= label_tag "new page part name" %><br />
     <%= text_field_tag('new_page_part_name') %>
@@ -38,7 +38,7 @@
   <p><%= submit_tag 'Add new page part' %></p>
 <% end %>
 <p>Or attach a file to a page here:</p>
-<% form_for(:uploaded_file, :url => "?file_upload", :html => {:multipart => true}) do |f| %>
+<% form_for(:uploaded_file, :url => "?upload", :html => {:multipart => true}) do |f| %>
   <p><label for="uploaded_file">Upload a File<br/><%= f.file_field :uploaded_data %></label><%= submit_tag 'Upload' %></p>
 <% end %>
 </div>
