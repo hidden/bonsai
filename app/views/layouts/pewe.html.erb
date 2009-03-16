@@ -12,7 +12,9 @@
     <%= render :partial => 'shared/toolbar' %>
     <div id="holder">
     <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
-    <%= yield %>
     </div>
+    <div id="header"><%= markdown(@page.resolve_part('header')) %></div>
+    <div id="body"><%= markdown(@page.resolve_part('body')) %></div>
+    <div id="footer"><%= markdown(@page.resolve_part('footer')) %></div>
   </body>
 </html>

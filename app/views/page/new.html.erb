@@ -15,6 +15,9 @@
     <p><%= label_tag 'Summary' %>:<%= text_field_tag('summary') %></p>
   </p>
   <p>
+    <p><%= label_tag 'Layout' %>:<%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @layout) %></p>
+  </p>
+  <p>
     <%= submit_tag "Create" %>
   </p>
 <% end %>

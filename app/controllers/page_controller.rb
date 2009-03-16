@@ -33,10 +33,15 @@ class PageController < ApplicationController
     if @current_user.can_view_page? @page
       if params.include? 'history' then render :action => :show_history and return
       elsif params.include? 'diff' then diff and return
-      else render :action => :view and return
+      else view and return
       end
     end
     render :action => 'unprivileged'
+  end
+
+  def view
+    layout = @page.nil? ? 'application' : @page.resolve_layout
+    render :action => :view, :layout => layout
   end
 
   def diff
@@ -117,7 +122,8 @@ class PageController < ApplicationController
       # TODO check if exists
     end
     sid = params[:sid].blank? ? nil : params[:sid]
-    page = Page.new(:title => params[:title], :sid => sid)
+    layout = params[:layout].empty? ? nil : params[:layout]
+    page = Page.new(:title => params[:title], :sid => sid, :layout => layout)
     unless (page.valid?)
       error_message = ""
       page.errors.each_full { |msg| error_message << msg }
@@ -218,7 +224,7 @@ class PageController < ApplicationController
 
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
-    sleep(3)
+    sleep(1)
     @uploaded_file.page = @page
     @uploaded_file.user = @current_user
     if @uploaded_file.save

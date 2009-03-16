@@ -31,6 +31,23 @@ class Page < ActiveRecord::Base
     self.self_and_ancestors.collect {|node| node.title}.reverse.join(' | ')
   end
 
+  def resolve_layout
+    # TODO rewrite to one sql select
+    node_with_layout = self.self_and_ancestors.reverse.detect {|node| not node.layout.nil? }
+    return node_with_layout.nil? ? 'application' : node_with_layout.layout
+  end
+
+  def resolve_part part_name
+    # TODO rewrite to one sql select
+    for node in self.self_and_ancestors.reverse
+      part = PagePart.find_by_page_id_and_name(node.id, part_name)
+      unless part.nil?
+        return part.current_page_part_revision.body unless part.current_page_part_revision.was_deleted?
+      end
+    end
+    return nil
+  end
+
   def add_viewer group
     if self.viewer_groups.empty?
       self.page_permissions.each do |permission|
@@ -85,5 +102,4 @@ class Page < ActiveRecord::Base
     permission.can_manage = false
     permission.save
   end
-
 end

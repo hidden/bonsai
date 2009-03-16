@@ -16,7 +16,6 @@ When /^I create "(.*)" page$/ do |url|
   click_button('Create')
 end
 
-
 Given /^user "(.*)" exists$/ do |username|
   User.create(:username => username, :name => username)
 end

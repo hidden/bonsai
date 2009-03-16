@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090304164531) do
+ActiveRecord::Schema.define(:version => 20090315130456) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20090304164531) do
     t.integer "parent_id"
     t.integer "lft",       :null => false
     t.integer "rgt",       :null => false
+    t.string  "layout"
   end
 
   add_index "pages", ["sid"], :name => "index_pages_on_sid"
