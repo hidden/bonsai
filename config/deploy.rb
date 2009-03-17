@@ -12,7 +12,7 @@ set :use_sudo, false
 # your SCM below:
 set :scm, :mercurial
 
-server "nimbus.fiit.stuba.sk", :app, :web, :db
+server "nimbus.fiit.stuba.sk", :app, :web, :db, :primary => true
 
 namespace :passenger do
   desc "Restart Application"
