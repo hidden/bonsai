@@ -20,7 +20,7 @@ class GroupPermissionsController < ApplicationController
 
   def switch_view
     permission = GroupPermission.find_by_id(params[:id])
-    permission.switch_view
+    permission.switch_view unless permission.user == @current_user
     permission.save
     redirect_to edit_group_path(params[:group_id])
   end
