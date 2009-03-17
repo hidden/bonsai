@@ -22,11 +22,17 @@
       <% for permission in @group.group_permissions %>
         <tr>
           <td><%=h permission.user.full_name %></td>
-          <td><%= link_to(image_boolean(permission.can_view, 'Toggle permission'), switch_view_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
-          <td><%= link_to(image_boolean(permission.can_edit, 'Toggle permission'), switch_edit_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
+          <% if permission.user == @current_user %>
+            <td><%= image_boolean(permission.can_view, 'Toggle permission')  %></td>
+            <td><%= image_boolean(permission.can_edit, 'Toggle permission') %></td>
+          <% else %>
+            <td><%= link_to(image_boolean(permission.can_view, 'Toggle permission'), switch_view_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
+            <td><%= link_to(image_boolean(permission.can_edit, 'Toggle permission'), switch_edit_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
+          <% end %>
           <td><%= link_to "Remove member", group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => 'Are you sure?' %></td>
         </tr>
       <% end %>
+
     </tbody>
   </table>
 <% end %>
