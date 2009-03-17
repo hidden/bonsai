@@ -40,6 +40,7 @@ class PageController < ApplicationController
   end
 
   def view
+    @viewing_page = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
   end
