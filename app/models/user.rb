@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
     restriction_in_path = false
     # check if user belongs to a group that can view some of the ancestors or self
     for node in page.self_and_ancestors
-      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_view')
+      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_view') || PagePermission.exists_by_user_and_page(self, node, 'can_edit') || PagePermission.exists_by_user_and_page(self, node, 'can_manage')
       return true if direct_access
       unless page.viewer_groups.empty?
         restriction_in_path = true
@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
     restriction_in_path = false
     # check if user belongs to a group that can view some of the ancestors or self
     for node in page.self_and_ancestors
-      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_edit')
+      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_edit') || PagePermission.exists_by_user_and_page(self, node, 'can_manage')
       return true if direct_access
       unless page.editor_groups.empty?
         restriction_in_path = true
