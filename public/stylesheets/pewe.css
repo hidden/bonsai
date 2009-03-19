@@ -23,7 +23,7 @@ body {
   color: #333;
 }
 #caption {
-  background: #d5dfe5 url("images/layouts/pewe/bg_nav_ltblue.gif") repeat-x;
+  background: #d5dfe5 url("/images/layouts/pewe/bg_nav_ltblue.gif") repeat-x;
 }
 h1 {
   margin: 0;
