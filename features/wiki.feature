@@ -137,7 +137,7 @@ Scenario: User wants to add a new page part
     And I fill in "new_page_part_text" with "This is a text of a new page part"
     And I press "Add new page part"
     Then I should see "Page part successfully added."
-    And I should see "Menu"
+    And I should see "menu"
     And I should see "This is a text of a new page part"
     And I should not see "Page successfully updated."
 
