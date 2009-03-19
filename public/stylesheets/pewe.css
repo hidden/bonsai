@@ -61,7 +61,7 @@ h1 {
   line-height: normal;
   text-indent: 0;
 }
-#nav a, #nav strong {
+#pewe-holder #nav a, #nav strong {
   display: block;
   padding: 4px 10px;
   border: solid #bbb;
@@ -109,16 +109,17 @@ h1 {
   width: 730px;
 }
 
-#a {
+#pewe-holder a {
   color: #358;
   text-decoration: none;
   border-bottom: 1px dotted #469;
 }
-a:visited {
+
+#pewe-holder a:visited {
   color: #677;
   border-color: #899;
 }
-a:hover, #caption a:hover {
+#pewe-holder a:hover, #caption a:hover {
   color: #933;
   border-color: #b55;
   border-bottom-style: solid;
