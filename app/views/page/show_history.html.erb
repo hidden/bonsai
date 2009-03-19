@@ -1,21 +1,22 @@
-<h1>Changes for page: <%= @page.title %></h1>
-<% form_tag('?diff', {:method => :post}) do %>
-  <%= submit_tag 'compare selected versions' %>
-  <ul>
-    <% number_of_revisions = @page.page_parts_revisions.size %>
-    <% @page.page_parts_revisions.each_with_index do |revision, index| %>
-      <li>
-        <% counter = number_of_revisions - index %>
-        r<%= counter %>
-        <%= radio_button_tag "first_revision" , index, false, :id => "first_revision_#{counter}" %>
-        <%= radio_button_tag "second_revision" , index, false, :id => "second_revision_#{counter}" %>
-        <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
-        <%=h revision.user.username %> edited <%= revision.page_part.name %>
-        (<%=h revision.summary %>),
-        <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&revision=" + index.to_s, {:method => :post} %>
-      </li>
-    <% end %>
-  </ul>
-  <%= submit_tag 'compare selected versions' %>
-<% end %>
-
+<div class="bonsai">
+  <h1>Changes for page: <%= @page.title %></h1>
+  <% form_tag('?diff', {:method => :post}) do %>
+    <%= submit_tag 'compare selected versions' %>
+    <ul>
+      <% number_of_revisions = @page.page_parts_revisions.size %>
+      <% @page.page_parts_revisions.each_with_index do |revision, index| %>
+        <li>
+          <% counter = number_of_revisions - index %>
+          r<%= counter %>
+          <%= radio_button_tag "first_revision" , index, false, :id => "first_revision_#{counter}" %>
+          <%= radio_button_tag "second_revision" , index, false, :id => "second_revision_#{counter}" %>
+          <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
+          <%=h revision.user.username %> edited <%= revision.page_part.name %>
+          (<%=h revision.summary %>),
+          <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&revision=" + index.to_s, {:method => :post} %>
+        </li>
+      <% end %>
+    </ul>
+    <%= submit_tag 'compare selected versions' %>
+  <% end %>
+</div>
