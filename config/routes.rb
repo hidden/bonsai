@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :groups
+  map.resources :groups, :member => {:switch_public => :put, :switch_editable => :put}
   map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
   map.resources :pages do |page|
     page.resources :page_parts do |page_part|

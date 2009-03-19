@@ -23,8 +23,8 @@
         <tr>
           <td><%=h permission.user.full_name %></td>
           <% if permission.user == @current_user %>
-            <td><%= image_boolean(permission.can_view, 'Toggle permission')  %></td>
-            <td><%= image_boolean(permission.can_edit, 'Toggle permission') %></td>
+            <td><%= image_boolean(permission.can_view, 'You cannot change your own permission')  %></td>
+            <td><%= image_boolean(permission.can_edit, 'You cannot change your own permission') %></td>
           <% else %>
             <td><%= link_to(image_boolean(permission.can_view, 'Toggle permission'), switch_view_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
             <td><%= link_to(image_boolean(permission.can_edit, 'Toggle permission'), switch_edit_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
@@ -32,6 +32,11 @@
           <td><%= link_to "Remove member", group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => 'Are you sure?' %></td>
         </tr>
       <% end %>
+      <tr>
+        <td>Everyone</td>
+        <td><%= link_to(image_boolean(@group.is_public?, 'Toggle permission'), switch_public_group_path(@group), :method => :put)%></td>
+        <td><%= link_to(image_boolean(@group.is_editable?, 'Toggle permission'), switch_editable_group_path(@group), :method => :put)%></td>
+      </tr>
 
     </tbody>
   </table>
