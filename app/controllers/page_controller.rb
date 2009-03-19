@@ -184,6 +184,9 @@ class PageController < ApplicationController
 
   def update
     @page.title = params[:title]
+    if @current_user.can_manage_page? @page
+      @page.layout = params[:layout].empty? ? nil : params[:layout]
+    end
     @page.save
     params[:parts].each do |part_name, body|
       page_part = PagePart.find_by_name_and_page_id(part_name, @page.id)

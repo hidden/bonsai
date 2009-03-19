@@ -1,44 +1,47 @@
 <div class="bonsai">
-<% form_tag '?update' do %>
-  <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
-  <% for part in @page.page_parts %>
-    <% if part == @page_part %>
-      <%= label_tag part.name %><br />
-      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 20, :cols => 80 %>
-    <% else %>
-      <%= label_tag part.name %><br />
-      <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
-    <%  end %>
-    <p>
-      <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
-      <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
-      <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
-    </p>
-  <% end %>
-  <p>
-    <%= label_tag 'Summary' %><br/>
-    <%if @undo %>
-      <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s) %>
-    <% else %>
-      <%= text_field_tag('summary') %>
+  <% form_tag '?update' do %>
+    <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
+    <% if @current_user.can_manage_page? @page %>
+      <p><%= label_tag 'Layout' %>:<%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
     <% end %>
-  </p>
-  <p><%= submit_tag 'Save' %></p>
-<% end %>
+    <% for part in @page.page_parts %>
+      <% if part == @page_part %>
+        <%= label_tag part.name %><br />
+        <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 20, :cols => 80 %>
+      <% else %>
+        <%= label_tag part.name %><br />
+        <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
+      <%  end %>
+      <p>
+        <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
+        <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
+        <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
+      </p>
+    <% end %>
+    <p>
+      <%= label_tag 'Summary' %><br/>
+      <%if @undo %>
+        <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s) %>
+      <% else %>
+        <%= text_field_tag('summary') %>
+      <% end %>
+    </p>
+    <p><%= submit_tag 'Save' %></p>
+  <% end %>
 
-<p>Or add a new page part here:</p>
-<% form_tag "?new-part" do %>
-  <p>
-    <%= label_tag "new page part name" %><br />
-    <%= text_field_tag('new_page_part_name') %>
-  </p>
-  <p>
-    <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80} %>
-  </p>
-  <p><%= submit_tag 'Add new page part' %></p>
-<% end %>
-<p>Or attach a file to a page here:</p>
-<% form_for(:uploaded_file, :url => "?upload", :html => {:multipart => true}) do |f| %>
-  <p><label for="uploaded_file">Upload a File<br/><%= f.file_field :uploaded_data %></label><%= submit_tag 'Upload' %></p>
-<% end %>
+  <p>Or add a new page part here:</p>
+  <% form_tag "?new-part" do %>
+    <p>
+      <%= label_tag "new page part name" %><br />
+      <%= text_field_tag('new_page_part_name') %>
+    </p>
+    <p>
+      <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80} %>
+    </p>
+    <p><%= submit_tag 'Add new page part' %></p>
+  <% end %>
+  <p>Or attach a file to a page here:</p>
+  <% form_for(:uploaded_file, :url => "?upload", :html => {:multipart => true}) do |f| %>
+    <p><label for="uploaded_file">Upload a File<br/><%= f.file_field :uploaded_data %></label><%= submit_tag 'Upload' %></p>
+  <% end %>
 </div>
