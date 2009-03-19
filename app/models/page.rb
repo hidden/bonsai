@@ -104,10 +104,10 @@ class Page < ActiveRecord::Base
   end
 
   def is_public?
-    self.viewer_groups.empty? ? true:false
+    self.viewer_groups.empty? ? self.parent.nil? ? true : self.parent.is_public? : false
   end
 
   def is_editable?
-    self.editor_groups.empty? ? true:false
+    self.editor_groups.empty? ? self.parent.nil? ? true : self.parent.is_editable? : false
   end
 end
