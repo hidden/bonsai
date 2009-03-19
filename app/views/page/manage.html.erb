@@ -28,15 +28,15 @@
           <td><%= link_to "remove", "?remove-permission&index=#{index}", {:method => :post}  %></td>
         </tr>
       <% end %>
+      <tr>
+        <td>Everyone</td>
+        <td><%= link_to image_boolean(@page.is_public?, 'Toggle permission'), "?make-public", {:method => :post} %></td>
+        <td><%= link_to image_boolean(@page.is_editable?, 'Toggle permission'), "?make-editable", {:method => :post} %></td>
+        <td></td>
+      </tr>
     </tbody>
   </table>
 
-  <h2>Quick setup</h2>
-  <p><%= link_to "Make this page public", "?make-public"%><br />
-  <span class="description">Removes all viewer permissions on this page, so anyone can view it.<span></p>
-
-  <p><%= link_to "Make this page editable by logged users", "?make-editable" %><br />
-  <span class="description">Removes all viewer and editors from this page, so anyone can view it and logged users can edit it.<span></p>
   <h2>Add group permission</h2>
   <% form_tag '?set-permissions' do %>
     <%= collection_select(:groups,:id, @current_user.visible_groups + Group.groups_visible_for_all, :id, :name, {}, {:size => 5, :multiple => :true}) %><br/>
