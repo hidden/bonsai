@@ -102,4 +102,12 @@ class Page < ActiveRecord::Base
     permission.can_manage = false
     permission.save
   end
+
+  def is_public?
+    self.viewer_groups.empty? ? self.parent.nil? ? true : self.parent.is_public? : false
+  end
+
+  def is_editable?
+    self.editor_groups.empty? ? self.parent.nil? ? true : self.parent.is_editable? : false
+  end
 end

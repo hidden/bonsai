@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_filter :verify_editor_permission, :only => [:remove, :add]
-  before_filter :verify_editor_permission_by_id, :only => [:destroy, :edit, :update]
+  before_filter :verify_editor_permission_by_id, :only => [:destroy, :edit, :update, :make_public, :make_editable]
 
   def verify_editor_permission_by_id
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:id])
@@ -14,6 +14,7 @@ class GroupsController < ApplicationController
   # GET /groups.xml
   def index
     @groups = @current_user.visible_groups + Group.groups_visible_for_all
+    @groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
 
     respond_to do |format|
       format.html # index.html.erb
@@ -90,5 +91,27 @@ class GroupsController < ApplicationController
       format.html { redirect_to(groups_url) }
       format.xml  { head :ok }
     end
+  end
+
+  def switch_public
+    @group = Group.find(params[:id])
+    was_public = @group.is_public?
+    @group.group_permissions.each do |permission|
+      permission.can_view = was_public
+      permission.can_edit = was_public if was_public
+      permission.save
+    end
+    redirect_to edit_group_path(params[:id])
+  end
+
+  def switch_editable
+    @group = Group.find(params[:id])
+    was_editable = @group.is_editable?
+    @group.group_permissions.each do |permission|
+      permission.can_view = was_editable if !was_editable
+      permission.can_edit = was_editable
+      permission.save
+    end
+    redirect_to edit_group_path(params[:id])
   end
 end

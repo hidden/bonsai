@@ -14,8 +14,8 @@ class PageController < ApplicationController
       elsif params.include? 'change-permission' then change_permission and return
       elsif params.include? 'set-permissions' then set_permissions and return
       elsif params.include? 'remove-permission' then remove_permission and return
-      elsif params.include? 'make-public' then make_public and return
-      elsif params.include? 'make-editable' then make_editable and return
+      elsif params.include? 'switch-public' then switch_public and return
+      elsif params.include? 'switch-editable' then switch_editable and return
       end
     end
 
@@ -58,18 +58,21 @@ class PageController < ApplicationController
     render :action => 'edit'
   end
 
-  def make_public
+  def switch_public
+    was_public = @page.is_public?
     @page.page_permissions.each do |permission|
-      permission.can_view = false
+      permission.can_view = was_public
+      permission.can_edit = was_public if was_public
       permission.save
     end
     redirect_to @page.get_path + "?manage"
   end
   
-  def make_editable
+  def switch_editable
+    was_editable = @page.is_editable?
     @page.page_permissions.each do |permission|
-      permission.can_view = false
-      permission.can_edit = false
+      permission.can_view = was_editable if !was_editable
+      permission.can_edit = was_editable
       permission.save
     end
     redirect_to @page.get_path + "?manage"

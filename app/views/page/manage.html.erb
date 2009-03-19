@@ -28,15 +28,43 @@
           <td><%= link_to "remove", "?remove-permission&index=#{index}", {:method => :post}  %></td>
         </tr>
       <% end %>
+      <tr>
+        <td>Everyone</td>
+        <td><%= link_to image_boolean(@page.is_public?, 'Toggle permission'), "?switch-public", {:method => :post} %></td>
+        <td><%= link_to image_boolean(@page.is_editable?, 'Toggle permission'), "?switch-editable", {:method => :post} %></td>
+        <td></td>
+      </tr>
     </tbody>
   </table>
 
-  <h2>Quick setup</h2>
-  <p><%= link_to "Make this page public", "?make-public"%><br />
-  <span class="description">Removes all viewer permissions on this page, so anyone can view it.<span></p>
+  <% unless @page.ancestors.empty? %>
+    <h2>Inherited permissions</h2>
+    <table>
+      <thead>
+        <tr>
+          <td>Group</td>
+          <td>Viewer</td>
+          <td>Editor</td>
+          <td>Manager</td>
+          <td>Via</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @page.ancestors.each do |ancestor| %>
+          <% ancestor.page_permissions.each do |permission| %>
+            <tr>
+              <td><%=h  permission.group.name %></td>
+              <td><%= image_boolean(permission.can_view, 'You cannot change inherited permission') %></td>
+              <td><%= image_boolean(permission.can_edit, 'You cannot change inherited permission') %></td>
+              <td><%= image_boolean(permission.can_manage, 'You cannot change inherited permission') %></td>
+              <td><%= ancestor.sid %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
 
-  <p><%= link_to "Make this page editable by logged users", "?make-editable" %><br />
-  <span class="description">Removes all viewer and editors from this page, so anyone can view it and logged users can edit it.<span></p>
   <h2>Add group permission</h2>
   <% form_tag '?set-permissions' do %>
     <%= collection_select(:groups,:id, @current_user.visible_groups + Group.groups_visible_for_all, :id, :name, {}, {:size => 5, :multiple => :true}) %><br/>

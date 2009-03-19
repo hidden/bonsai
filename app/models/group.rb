@@ -54,6 +54,14 @@ class Group < ActiveRecord::Base
     permission.save
   end
 
+  def is_public?
+    self.viewer_users.empty? ? true:false
+  end
+
+  def is_editable?
+    self.editor_users.empty? ? true:false
+  end
+
   def self.groups_visible_for_all
     groups = Group.find(:all, :joins => "JOIN group_permissions ON groups.id = group_permissions.group_id", :conditions => "group_permissions.can_view = 0 OR group_permissions.can_view = NULL")
     groups

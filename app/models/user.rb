@@ -16,7 +16,8 @@ class User < ActiveRecord::Base
   end
 
   def can_edit_group? group
-    GroupPermission.exists?(:group_id => group, :user_id => self, :can_edit => true)
+    group.is_editable? ? true:GroupPermission.exists?(:group_id => group, :user_id => self, :can_edit => true)
+
   end
 
   def can_view_page? page
