@@ -16,24 +16,24 @@
           <td><%=h  permission.group.name %></td>
 
           <% if permission.group.users.include? @current_user %>
-            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (@current_user.can_view_page? @page.parent))) %>
+            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (@current_user.can_view_page? @page.parent))) %>
               <td>-</td>
             <% else %>
               <td><%= image_boolean(permission.can_view, 'You cannot change your own management permission') %></td>
             <% end %>
-            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (@current_user.can_edit_page? @page.parent))) %>
+            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (@current_user.can_edit_page? @page.parent))) %>
               <td>-</td>
             <% else %>
               <td><%= image_boolean(permission.can_edit, 'You cannot change your own management permission') %></td>
             <% end %>
             <td><%= image_boolean(permission.can_manage, 'You cannot change your own management permission') %></td>
           <% else %>
-            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (permission.group.users.first.can_view_page? @page.parent))) %>
+            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.users.first.can_view_page? @page.parent))) %>
               <td>-</td>
             <% else %>
               <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %></td>
             <% end %>
-            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (permission.group.users.first.can_edit_page? @page.parent))) %>
+            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.users.first.can_edit_page? @page.parent))) %>
               <td>-</td>
             <% else %>
               <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %></td>
