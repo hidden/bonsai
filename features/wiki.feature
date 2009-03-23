@@ -42,31 +42,6 @@ Scenario: Logged user visits a fresh wiki and creates first page
     And I should see "Hello world!"
     And I should see "Hello universe!"
 
-Scenario: Logged user visits a fresh wiki creates first page but forgets summary
-    When I go to the main page
-    And I login as "johno"
-    Then I should see "Page does not exists. Do you want to create it?"
-    And I fill in "title" with "Hello world!"
-    And I fill in "body" with "Hello universe!"
-    And I press "Create"
-    Then I should not see "Page successfully created."
-    And I should see "Summary can't be blank"
-
-Scenario: User wants to edit a page he created and forgets a summary
-    When I go to the main page
-    And I login as "johno"
-    And I fill in "title" with "Hello world!"
-    And I fill in "body" with "Hello universe!"
-    And I fill in "summary" with "init"
-    And I press "Create"
-    And I follow "edit"
-    And I fill in "title" with "Changed title"
-    And I fill in "parts[body]" with "Changed body"
-    And I press "Save"
-    Then I should see "Summary can't be blank."
-    And I should see "Changed body"
-    And I should not see "Page successfully updated."
-
 Scenario: User wants to edit a page he created
     When I go to the main page
     And I login as "johno"
