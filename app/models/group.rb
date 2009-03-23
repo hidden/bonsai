@@ -54,6 +54,36 @@ class Group < ActiveRecord::Base
     permission.save
   end
 
+  def can_view_page? page
+    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+    
+    restriction_in_path = false
+    # check if user belongs to a group that can view some of the ancestors or self
+    for node in page.self_and_ancestors
+      direct_access = page.viewer_groups.include?(self)
+      return true if direct_access
+      unless page.viewer_groups.empty?
+        restriction_in_path = true
+      end
+    end
+    return !restriction_in_path
+  end
+  
+  def can_edit_page? page
+    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+
+    restriction_in_path = false
+    # check if user belongs to a group that can view some of the ancestors or self
+    for node in page.self_and_ancestors
+      direct_access = page.editor_groups.include?(self)
+      return true if direct_access
+      unless page.editor_groups.empty?
+        restriction_in_path = true
+      end
+    end
+    return !restriction_in_path
+  end
+
   def is_public?
     self.viewer_users.empty? ? true:false
   end

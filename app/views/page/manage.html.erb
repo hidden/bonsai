@@ -28,12 +28,12 @@
             <% end %>
             <td><%= image_boolean(permission.can_manage, 'You cannot change your own management permission') %></td>
           <% else %>
-            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.users.first.can_view_page? @page.parent))) %>
+            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent))) %>
               <td>-</td>
             <% else %>
               <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %></td>
             <% end %>
-            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.users.first.can_edit_page? @page.parent))) %>
+            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent))) %>
               <td>-</td>
             <% else %>
               <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %></td>
