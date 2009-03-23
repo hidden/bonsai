@@ -115,14 +115,3 @@ Scenario: User wants to add a new page part
     And I should see "menu"
     And I should see "This is a text of a new page part"
     And I should not see "Page successfully updated."
-
-Scenario: User wants to upload a file
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
-    And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    Then I should see "File was successfully uploaded."
-    When I go to /test_file.txt
-    Then I should see "Some text in file."

@@ -2,9 +2,18 @@ class PageController < ApplicationController
   def handle
     @path = params[:path]
 
-    # a file?
-    if !@path.empty? and @path.last.match /[\w-]+\.\w+/
-      return send_file('shared/upload/' + @path.join('/'))
+    # is it a file?
+    if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
+      file_name = 'shared/upload/' + @path.join('/')
+      return render(:action => :file_not_found) unless File.file?(file_name)
+      parent_page_path = @path.clone
+      parent_page_path.pop
+      page = Page.find_by_path(parent_page_path)
+      if @current_user.can_view_page? page
+        return send_file(file_name)
+      else
+        return render(:action => :unprivileged)
+      end
     end
 
     @page = Page.find_by_path(@path)
