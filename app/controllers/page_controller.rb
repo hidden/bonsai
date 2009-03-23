@@ -4,16 +4,8 @@ class PageController < ApplicationController
 
     # is it a file?
     if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
-      file_name = 'shared/upload/' + @path.join('/')
-      return render(:action => :file_not_found) unless File.file?(file_name)
-      parent_page_path = @path.clone
-      parent_page_path.pop
-      page = Page.find_by_path(parent_page_path)
-      if @current_user.can_view_page? page
-        return send_file(file_name)
-      else
-        return render(:action => :unprivileged)
-      end
+      process_file
+      return
     end
 
     @page = Page.find_by_path(@path)
@@ -124,6 +116,19 @@ class PageController < ApplicationController
     page_permission = @page.page_permissions[params[:index].to_i]
     page_permission.destroy
     redirect_to @page.get_path + "?manage"
+  end
+
+  def process_file
+    file_name = 'shared/upload/' + @path.join('/')
+    return render(:action => :file_not_found) unless File.file?(file_name)
+    parent_page_path = @path.clone
+    parent_page_path.pop
+    page = Page.find_by_path(parent_page_path)
+    if @current_user.can_view_page? page
+      return send_file(file_name)
+    else
+      return render(:action => :unprivileged)
+    end
   end
 
   def new
