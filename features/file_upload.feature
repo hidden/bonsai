@@ -6,6 +6,8 @@ Feature: Secure file uploads
 Scenario: User tries do download a bogus file
     When I go to /bogus_file.txt
     Then I should see "File not found."
+    When I go to /a/nested/bogus_file.txt
+    Then I should see "File not found."
 
 
 Scenario: User wants to upload a file
