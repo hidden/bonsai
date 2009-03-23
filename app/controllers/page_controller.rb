@@ -60,20 +60,26 @@ class PageController < ApplicationController
 
   def switch_public
     was_public = @page.is_public?
-    @page.page_permissions.each do |permission|
-      permission.can_view = was_public
-      permission.can_edit = was_public if was_public
-      permission.save
+    if(@page.parent.nil? || @page.parent.is_public?)
+      @page.page_permissions.each do |permission|
+        permission.can_view = was_public
+        permission.can_edit = was_public if was_public
+        #TODO: if the @page has some public descendants, we should spread the switch to them as well
+        permission.save
+      end
     end
     redirect_to @page.get_path + "?manage"
   end
   
   def switch_editable
     was_editable = @page.is_editable?
-    @page.page_permissions.each do |permission|
-      permission.can_view = was_editable if !was_editable
-      permission.can_edit = was_editable
-      permission.save
+    if(@page.parent.nil? || @page.parent.is_editable?)
+      @page.page_permissions.each do |permission|
+        permission.can_view = was_editable if !was_editable
+        permission.can_edit = was_editable
+        #TODO: if the @page has some public descendants, we should spread the switch to them as well
+        permission.save
+      end
     end
     redirect_to @page.get_path + "?manage"
   end
