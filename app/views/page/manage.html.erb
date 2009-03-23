@@ -16,12 +16,28 @@
           <td><%=h  permission.group.name %></td>
 
           <% if permission.group.users.include? @current_user %>
-            <td><%= image_boolean(permission.can_view, 'You cannot change your own management permission') %></td>
-            <td><%= image_boolean(permission.can_edit, 'You cannot change your own management permission') %></td>
+            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (@current_user.can_view_page? @page.parent))) %>
+              <td>-</td>
+            <% else %>
+              <td><%= image_boolean(permission.can_view, 'You cannot change your own management permission') %></td>
+            <% end %>
+            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (@current_user.can_edit_page? @page.parent))) %>
+              <td>-</td>
+            <% else %>
+              <td><%= image_boolean(permission.can_edit, 'You cannot change your own management permission') %></td>
+            <% end %>
             <td><%= image_boolean(permission.can_manage, 'You cannot change your own management permission') %></td>
           <% else %>
-            <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %></td>
-            <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %></td>
+            <% if ((@page.is_public?) || ((!@page.parent.nil?) && (@current_user.can_view_page? @page.parent))) %>
+              <td>-</td>
+            <% else %>
+              <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_view", {:method => :post}  %></td>
+            <% end %>
+            <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (@current_user.can_edit_page? @page.parent))) %>
+              <td>-</td>
+            <% else %>
+              <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_edit", {:method => :post}  %></td>
+            <% end %>
             <td><%= link_to image_boolean(permission.can_manage, 'Toggle permission'), "?change-permission&index=#{index}&permission=can_manage", {:method => :post}  %></td>
 
           <% end %>
@@ -54,8 +70,16 @@
           <% ancestor.page_permissions.each do |permission| %>
             <tr>
               <td><%=h  permission.group.name %></td>
-              <td><%= image_boolean(permission.can_view, 'You cannot change inherited permission') %></td>
-              <td><%= image_boolean(permission.can_edit, 'You cannot change inherited permission') %></td>
+              <% if ancestor.is_public? %>
+                <td>-</td>
+              <% else %>
+                <td><%= image_boolean(permission.can_view, 'You cannot change inherited permission') %></td>
+              <% end %>
+              <% if ancestor.is_editable? %>
+                <td>-</td>
+              <% else %>
+                <td><%= image_boolean(permission.can_edit, 'You cannot change inherited permission') %></td>
+              <% end %>
               <td><%= image_boolean(permission.can_manage, 'You cannot change inherited permission') %></td>
               <td><%= ancestor.sid %></td>
             </tr>
