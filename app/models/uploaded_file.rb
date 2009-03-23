@@ -1,8 +1,7 @@
 class UploadedFile < ActiveRecord::Base
   belongs_to :page
   belongs_to :user
-  has_attachment :storage => :file_system,
-    :path_prefix => "public/upload"
+  has_attachment :storage => :file_system, :path_prefix => "shared/upload"
 
   validates_as_attachment
 

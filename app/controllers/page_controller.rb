@@ -1,6 +1,12 @@
 class PageController < ApplicationController
   def handle
     @path = params[:path]
+
+    # a file?
+    if !@path.empty? and @path.last.match /[\w-]+\.\w+/
+      return send_file('shared/upload/' + @path.join('/'))
+    end
+
     @page = Page.find_by_path(@path)
     if @page.nil?
       render :action => :unprivileged and return unless @current_user.logged?

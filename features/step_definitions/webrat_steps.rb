@@ -98,6 +98,11 @@ When /^I attach the file at "(.*)" to "(.*)"$/ do |path, field|
 end
 
 Then /^I should see "(.*)"$/ do |text|
+  if response.body.is_a? Proc
+    io = StringIO.new
+    response.body.call(nil, io)
+    response.body = io.string
+  end
   response.body.strip_tags.should =~ /#{text}/m
 end
 

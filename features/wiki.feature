@@ -124,3 +124,5 @@ Scenario: User wants to upload a file
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
+    When I go to /test_file.txt
+    Then I should see "Some text in file."

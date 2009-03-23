@@ -8,6 +8,6 @@ def path_to(page_name)
     "/some/nested/page/"
   
   else
-    raise "Can't find mapping from \"#{page_name}\" to a path."
+    page_name
   end
 end
