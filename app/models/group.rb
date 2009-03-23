@@ -62,7 +62,7 @@ class Group < ActiveRecord::Base
     for node in page.self_and_ancestors
       direct_access = page.viewer_groups.include?(self)
       return true if direct_access
-      unless page.viewer_groups.empty?
+      unless page.viewer_groups.empty? && page.is_public?
         restriction_in_path = true
       end
     end
@@ -73,11 +73,11 @@ class Group < ActiveRecord::Base
     # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
 
     restriction_in_path = false
-    # check if user belongs to a group that can view some of the ancestors or self
+    # check if a group can view some of the ancestors or self
     for node in page.self_and_ancestors
       direct_access = page.editor_groups.include?(self)
       return true if direct_access
-      unless page.editor_groups.empty?
+      unless page.editor_groups.empty? && page.is_editable?
         restriction_in_path = true
       end
     end
