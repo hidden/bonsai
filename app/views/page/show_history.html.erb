@@ -13,7 +13,9 @@
           <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
           <%=h revision.user.username %> edited <%= revision.page_part.name %>
           (<%=h revision.summary %>),
-          <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&revision=" + index.to_s, {:method => :post} %>
+          <% if @current_user.can_edit_page? @page %>
+            <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&revision=" + index.to_s, {:method => :post} %>
+          <% end %>
         </li>
       <% end %>
     </ul>
