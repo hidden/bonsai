@@ -10,7 +10,7 @@
   <% end %>
   <% unless @page.nil? %>
     <p class="actions">
-      <% unless @viewing_page %><%= link_to image_tag('icons/page_white_text.png', :alt => '') + " View", @page.get_path %><% end %>
+      <% unless @hide_view_in_toolbar %><%= link_to image_tag('icons/page_white_text.png', :alt => '') + " View", @page.get_path %><% end %>
       <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/page_white_stack.png', :alt => '') + " History", '?history' %><% end %>
       <% if @current_user.can_edit_page? @page %><%= link_to image_tag('icons/page_white_edit.png', :alt => '') + ' Edit', '?edit' %><% end %>
 

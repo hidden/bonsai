@@ -10,8 +10,11 @@ class PageController < ApplicationController
 
     @page = Page.find_by_path(@path)
     if @page.nil?
-      render :action => :unprivileged and return unless @current_user.logged?
-      params.include?('create') ? create : new
+      unless @current_user.logged?
+        unprivileged
+      else
+        params.include?('create') ? create : new
+      end
       return
     end
     
@@ -43,13 +46,18 @@ class PageController < ApplicationController
       else view and return
       end
     end
-    render :action => 'unprivileged'
+    unprivileged
   end
 
   def view
-    @viewing_page = true
+    @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
+  end
+
+  def unprivileged
+    @hide_view_in_toolbar = true
+    render :action => :unprivileged
   end
 
   def diff

@@ -24,6 +24,7 @@ body {
 }
 #caption {
   background: #d5dfe5 url("/images/layouts/pewe/bg_nav_ltblue.gif") repeat-x;
+  background-position: 0 -4px;
 }
 h1 {
   margin: 0;
@@ -195,18 +196,14 @@ dt {
 }
 
 #history {
-  float: left;
-  width: 100%;
+  overflow: auto;
   border: solid #ddd;
   border-width: 1px 0;
   margin: 0;
   margin-bottom: 1em;
-}
-#history ul {
-  float: left;
-  margin: 0;
   padding: 4px 0;
 }
+
 #history li {
   list-style: none;
   float: left;
@@ -231,13 +228,8 @@ dt {
   line-height: 1.2em;
 }
 
-#naj {
-  text-align: center;
-  padding-top: 0.25em;
-}
-#naj a {
-  border-bottom: 0px;
-}
+.center { text-align: center; }
+
 /* Fixes footer containment bug in IE-Win (5 and 6)
    http://www.positioniseverything.net/explorer/escape-floats.html
    But IE5-Mac shouldn't see this \*/
