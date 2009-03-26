@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   after_destroy { |user| Group.find_by_name(user.username).destroy }
 
   def full_name
-    "#{name} (#{username})"
+    "#{username} (#{name})"
   end
 
   def private_group
