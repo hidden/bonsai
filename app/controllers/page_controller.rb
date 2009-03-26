@@ -40,6 +40,17 @@ class PageController < ApplicationController
     end
 
     # viewer actions
+    if params.include? 'rss'
+      user_from_token = User.find_by_token params[:token]
+      user_from_token = AnonymousUser.new if user_from_token.nil?
+      if user_from_token.can_view_page? @page
+        rss_history
+      else
+        render :nothing => true, :status => :forbidden
+      end
+      return
+    end
+
     if @current_user.can_view_page? @page
       if params.include? 'history' then render :action => :show_history and return
       elsif params.include? 'diff' then diff and return
@@ -198,6 +209,11 @@ class PageController < ApplicationController
     if params.include? 'diff'
       render :action => "diff"
     end
+  end
+
+  def rss_history
+    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10)
+    render :action => :rss_history, :layout => false
   end
 
   private

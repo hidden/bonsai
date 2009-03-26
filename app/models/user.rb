@@ -4,11 +4,17 @@ class User < ActiveRecord::Base
 
   has_many :visible_groups, :through => :group_permissions, :class_name => 'Group', :source => :group, :conditions => ['group_permissions.can_view = ?', true]
 
+  before_create { |user| user.generate_unique_token }
   after_create { |user| Group.create(:name => user.username).add_as_non_viewer(user) }
-  after_destroy { |user| Group.find_by_name(user.username).destroy }
+  after_destroy { |user| user.private_group.destroy }
 
   def full_name
     "#{username} (#{name})"
+  end
+
+  def generate_unique_token
+    self.token = ActiveSupport::SecureRandom.hex(16)
+    generate_uniqe_token unless User.find_by_token(self.token).nil?
   end
 
   def private_group
@@ -16,8 +22,7 @@ class User < ActiveRecord::Base
   end
 
   def can_edit_group? group
-    group.is_editable? ? true:GroupPermission.exists?(:group_id => group, :user_id => self, :can_edit => true)
-
+    group.is_editable? ? true : GroupPermission.exists?(:group_id => group, :user_id => self, :can_edit => true)
   end
 
   def can_view_page? page
@@ -89,5 +94,9 @@ class AnonymousUser
 
   def can_manage_page? page
     false
+  end
+
+  def token
+    nil
   end
 end

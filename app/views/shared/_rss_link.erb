@@ -1,0 +1,1 @@
+<%= auto_discovery_link_tag(:rss, rss_url(@page, @current_user)) if not @page.nil? and @current_user.can_view_page? @page %>
