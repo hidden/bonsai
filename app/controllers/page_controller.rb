@@ -212,7 +212,7 @@ class PageController < ApplicationController
   end
 
   def rss_history
-    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10)
+    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
     render :action => :rss_history, :layout => false
   end
 
