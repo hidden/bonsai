@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090327210548) do
+ActiveRecord::Schema.define(:version => 20090327211317) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -31,14 +31,14 @@ ActiveRecord::Schema.define(:version => 20090327210548) do
     t.string   "summary"
   end
 
+  add_index "page_part_revisions", ["page_part_id"], :name => "index_page_part_revisions_on_page_part_id"
+
   create_table "page_parts", :force => true do |t|
     t.string  "name",                          :null => false
     t.integer "page_id",                       :null => false
     t.integer "current_page_part_revision_id", :null => false
   end
 
-  add_index "page_parts", ["name", "page_id"], :name => "Index_3"
-  add_index "page_parts", ["page_id", "name"], :name => "Index_2"
   add_index "page_parts", ["page_id", "name"], :name => "index_page_parts_on_page_id_and_name"
 
   create_table "page_permissions", :force => true do |t|
