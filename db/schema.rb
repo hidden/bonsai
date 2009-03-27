@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090327192656) do
+ActiveRecord::Schema.define(:version => 20090327210548) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -37,6 +37,10 @@ ActiveRecord::Schema.define(:version => 20090327192656) do
     t.integer "current_page_part_revision_id", :null => false
   end
 
+  add_index "page_parts", ["name", "page_id"], :name => "Index_3"
+  add_index "page_parts", ["page_id", "name"], :name => "Index_2"
+  add_index "page_parts", ["page_id", "name"], :name => "index_page_parts_on_page_id_and_name"
+
   create_table "page_permissions", :force => true do |t|
     t.integer "page_id",                       :null => false
     t.integer "group_id",                      :null => false
@@ -54,7 +58,6 @@ ActiveRecord::Schema.define(:version => 20090327192656) do
     t.string  "layout"
   end
 
-  add_index "pages", ["lft", "rgt"], :name => "Index_3"
   add_index "pages", ["lft", "rgt"], :name => "index_pages_on_lft_and_rgt"
   add_index "pages", ["sid"], :name => "index_pages_on_sid"
 

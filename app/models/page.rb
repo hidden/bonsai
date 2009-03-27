@@ -32,20 +32,15 @@ class Page < ActiveRecord::Base
   end
 
   def resolve_layout
-    # TODO rewrite to one sql select
-    node_with_layout = self.self_and_ancestors.reverse.detect {|node| not node.layout.nil? }
+    node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
     return node_with_layout.nil? ? 'application' : node_with_layout.layout
   end
 
   def resolve_part part_name
-    # TODO rewrite to one sql select
-    for node in self.self_and_ancestors.reverse
-      part = PagePart.find_by_page_id_and_name(node.id, part_name)
-      unless part.nil?
-        return part.current_page_part_revision.body unless part.current_page_part_revision.was_deleted?
-      end
-    end
-    return nil
+    condition =  "(? BETWEEN pages.lft AND pages.rgt)"
+    condition << " AND page_parts.name = ? AND page_part_revisions.was_deleted = ?"
+    condition << " AND page_parts.current_page_part_revision_id = page_part_revisions.id"
+    PagePartRevision.first(:include => {:page_part => :page}, :conditions => [condition, self.lft, part_name, false], :order => "pages.lft DESC").body
   end
 
   def add_viewer group
