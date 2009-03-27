@@ -3,7 +3,7 @@
   <% form_tag('?diff', {:method => :post}) do %>
     <%= submit_tag 'compare selected versions' %>
     <ul>
-      <% number_of_revisions = @page.page_parts_revisions.size %>
+      <% number_of_revisions = @page.page_parts_revisions.length %>
       <% @page.page_parts_revisions.each_with_index do |revision, index| %>
         <li>
           <% counter = number_of_revisions - index %>
@@ -12,7 +12,7 @@
           <%= radio_button_tag "second_revision" , index, false, :id => "second_revision_#{counter}" %>
           <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
           <%=h revision.user.username %> edited <%= revision.page_part.name %>
-          (<%=h revision.summary %>),
+          <% unless revision.summary.empty? %>(<%=h revision.summary %>),<% end %>
           <% if @current_user.can_edit_page? @page %>
             <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&revision=" + index.to_s, {:method => :post} %>
           <% end %>
