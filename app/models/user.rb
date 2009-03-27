@@ -26,33 +26,25 @@ class User < ActiveRecord::Base
   end
 
   def can_view_page? page
-    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+    return true if page.is_public?
     
-    restriction_in_path = false
     # check if user belongs to a group that can view some of the ancestors or self
     for node in page.self_and_ancestors
       direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_view') || PagePermission.exists_by_user_and_page(self, node, 'can_edit') || PagePermission.exists_by_user_and_page(self, node, 'can_manage')
       return true if direct_access
-      unless page.viewer_groups.empty?
-        restriction_in_path = true
-      end
     end
-    return !restriction_in_path
+    return false
   end
 
   def can_edit_page? page
-    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
+    return true if page.is_editable?
 
-    restriction_in_path = false
     # check if user belongs to a group that can view some of the ancestors or self
     for node in page.self_and_ancestors
       direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_edit') || PagePermission.exists_by_user_and_page(self, node, 'can_manage')
       return true if direct_access
-      unless page.editor_groups.empty?
-        restriction_in_path = true
-      end
     end
-    return !restriction_in_path
+    return false
   end
 
   def can_manage_page? page

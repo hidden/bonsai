@@ -40,7 +40,7 @@ class Page < ActiveRecord::Base
     condition =  "(? BETWEEN pages.lft AND pages.rgt)"
     condition << " AND page_parts.name = ? AND page_part_revisions.was_deleted = ?"
     condition << " AND page_parts.current_page_part_revision_id = page_part_revisions.id"
-    latest_part_revision = PagePartRevision.first(:include => {:page_part => :page}, :conditions => [condition, self.lft, part_name, false], :order => "pages.lft DESC")
+    latest_part_revision = PagePartRevision.first(:joins => {:page_part => :page}, :conditions => [condition, self.lft, part_name, false], :order => "pages.lft DESC")
     latest_part_revision.nil? ? nil : latest_part_revision.body
   end
 
@@ -100,10 +100,10 @@ class Page < ActiveRecord::Base
   end
 
   def is_public?
-    self.viewer_groups.empty? ? self.parent.nil? ? true : self.parent.is_public? : false
+    PagePermission.first(:joins => {:page => :viewer_groups}, :conditions => ["? BETWEEN pages.lft AND pages.rgt", self.lft]).nil?
   end
 
   def is_editable?
-    self.editor_groups.empty? ? self.parent.nil? ? true : self.parent.is_editable? : false
+    PagePermission.first(:joins => {:page => :editor_groups}, :conditions => ["? BETWEEN pages.lft AND pages.rgt", self.lft]).nil?
   end
 end
