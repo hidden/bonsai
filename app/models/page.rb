@@ -40,7 +40,8 @@ class Page < ActiveRecord::Base
     condition =  "(? BETWEEN pages.lft AND pages.rgt)"
     condition << " AND page_parts.name = ? AND page_part_revisions.was_deleted = ?"
     condition << " AND page_parts.current_page_part_revision_id = page_part_revisions.id"
-    PagePartRevision.first(:include => {:page_part => :page}, :conditions => [condition, self.lft, part_name, false], :order => "pages.lft DESC").body
+    latest_part_revision = PagePartRevision.first(:include => {:page_part => :page}, :conditions => [condition, self.lft, part_name, false], :order => "pages.lft DESC")
+    latest_part_revision.nil? ? nil : latest_part_revision.body
   end
 
   def add_viewer group
