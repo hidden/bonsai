@@ -48,18 +48,7 @@ class User < ActiveRecord::Base
   end
 
   def can_manage_page? page
-    # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
-
-    restriction_in_path = false
-    # check if user belongs to a group that can view some of the ancestors or self
-    for node in page.self_and_ancestors
-      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_manage')
-      return true if direct_access
-      unless page.manager_groups.empty?
-        restriction_in_path = true
-      end
-    end
-    return !restriction_in_path
+    return !PagePermission.first(:joins => [:page, {:group => :users}], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND users.id = ? AND page_permissions.can_manage = ?", page.lft, self.id, true]).nil?
   end
 
   def logged?
