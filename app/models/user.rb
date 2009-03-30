@@ -27,16 +27,16 @@ class User < ActiveRecord::Base
 
   def can_view_page? page
     return true if page.is_public?
-    return !PagePermission.first(:joins => [:page, {:group => :users}], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND users.id = ? AND page_permissions.can_view = ?", page.lft, self.id, true]).nil?
+    return !PagePermission.first(:joins => [:page, :group_permissions], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND group_permissions.user_id = ? AND page_permissions.can_view = ?", page.lft, self.id, true]).nil?
   end
 
   def can_edit_page? page
     return true if page.is_editable?
-    return !PagePermission.first(:joins => [:page, {:group => :users}], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND users.id = ? AND page_permissions.can_edit = ?", page.lft, self.id, true]).nil?
+    return !PagePermission.first(:joins => [:page, :group_permissions], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND group_permissions.user_id = ? AND page_permissions.can_edit = ?", page.lft, self.id, true]).nil?
   end
 
   def can_manage_page? page
-    return !PagePermission.first(:joins => [:page, {:group => :users}], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND users.id = ? AND page_permissions.can_manage = ?", page.lft, self.id, true]).nil?
+    return !PagePermission.first(:joins => [:page, :group_permissions], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND group_permissions.user_id = ? AND page_permissions.can_manage = ?", page.lft, self.id, true]).nil?
   end
 
   def logged?
