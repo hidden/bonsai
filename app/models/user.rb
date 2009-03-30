@@ -27,24 +27,12 @@ class User < ActiveRecord::Base
 
   def can_view_page? page
     return true if page.is_public?
-    
-    # check if user belongs to a group that can view some of the ancestors or self
-    for node in page.self_and_ancestors
-      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_view') || PagePermission.exists_by_user_and_page(self, node, 'can_edit') || PagePermission.exists_by_user_and_page(self, node, 'can_manage')
-      return true if direct_access
-    end
-    return false
+    return !PagePermission.first(:joins => [:page, {:group => :users}], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND users.id = ? AND page_permissions.can_view = ?", page.lft, self.id, true]).nil?
   end
 
   def can_edit_page? page
     return true if page.is_editable?
-
-    # check if user belongs to a group that can view some of the ancestors or self
-    for node in page.self_and_ancestors
-      direct_access = PagePermission.exists_by_user_and_page(self, node, 'can_edit') || PagePermission.exists_by_user_and_page(self, node, 'can_manage')
-      return true if direct_access
-    end
-    return false
+    return !PagePermission.first(:joins => [:page, {:group => :users}], :conditions => ["(? BETWEEN pages.lft AND pages.rgt) AND users.id = ? AND page_permissions.can_edit = ?", page.lft, self.id, true]).nil?
   end
 
   def can_manage_page? page
