@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090327220037) do
+ActiveRecord::Schema.define(:version => 20090330200840) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(:version => 20090327220037) do
     t.boolean "can_manage", :default => false, :null => false
   end
 
-  add_index "page_permissions", ["page_id"], :name => "Index_2"
   add_index "page_permissions", ["page_id"], :name => "index_page_permissions_on_page_id"
 
   create_table "pages", :force => true do |t|
@@ -62,7 +61,7 @@ ActiveRecord::Schema.define(:version => 20090327220037) do
   end
 
   add_index "pages", ["lft", "rgt"], :name => "index_pages_on_lft_and_rgt"
-  add_index "pages", ["sid"], :name => "index_pages_on_sid"
+  add_index "pages", ["parent_id", "sid"], :name => "index_pages_on_parent_id_and_sid"
 
   create_table "uploaded_files", :force => true do |t|
     t.integer "size"
