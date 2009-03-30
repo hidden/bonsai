@@ -283,7 +283,7 @@ class PageController < ApplicationController
 
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
-    sleep(1)
+    sleep(2)
     @uploaded_file.page = @page
     @uploaded_file.user = @current_user
     if @uploaded_file.save
