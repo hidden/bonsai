@@ -7,4 +7,8 @@ module PageHelper
     token_string = user.token.nil? ? '' : "&amp;token=#{user.token}"
     page.get_path + '?rss' + token_string
   end
+
+  def link_to_page page
+    link_to page.title, page.get_path
+  end
 end
