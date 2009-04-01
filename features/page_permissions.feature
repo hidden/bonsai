@@ -159,3 +159,53 @@ Scenario: Manager adds another manager to a non-public page
     And I logout
     And I login as "crutch"
     Then I should see "Permission denied."
+
+Scenario: Manager inherits permissions to view a non-public page
+    Given user "johno" exists
+    Given user "matell" exists
+    Given user "crutch" exists
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I logout
+    And I login as "matell"
+    And I create "/test/" page
+    And page "/test/" is viewable by "matell"
+    And page "/test/" is editable by "matell"
+    And I logout
+    And I login as "johno"
+    And I go to the test page
+    Then I should not see "Permission denied"
+    And I should see "Edit"
+    And I should see "Manage"
+    And I logout
+    And I login as "crutch"
+    And I go to the test page
+    Then I should see "Permission denied"
+    And I should not see "Edit"
+    And I should not see "Manage"
+
+
+Scenario: Editor inherits permissions to view a non-public page
+    Given user "johno" exists
+    Given user "matell" exists
+    Given user "crutch" exists
+    Given user "bielikova" exists
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And page "/" is editable by "matell"
+    And I create "/test/" page
+    And page "/test/" is viewable by "crutch"
+    And I logout
+    And I login as "matell"
+    And I go to the test page
+    Then I should not see "Permission denied"
+    And I should see "Edit"
+    And I should see "Manage"
+    And I logout
+    And I login as "bielikova"
+    And I go to the "test" page
+    Then I should see "Permission denied"
+    And I should not see "Edit"
+    And I should not see "Manage"
