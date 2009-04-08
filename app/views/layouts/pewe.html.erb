@@ -7,7 +7,7 @@
     <title><%=h @page.full_title unless @page.nil? %></title>
     <%= stylesheet_link_tag 'bonsai' %>
     <%= stylesheet_link_tag 'pewe' %>
-    <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag :defaults, :cache => true %>
     <%= render :partial => 'shared/rss_link' %>
   </head>
   <body>
