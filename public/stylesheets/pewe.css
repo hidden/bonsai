@@ -195,7 +195,7 @@ dt {
   list-style-image: url("/images/layouts/pewe/bg_bullet.png");
 }
 
-#history {
+ul#history {
   overflow: auto;
   border: solid #ddd;
   border-width: 1px 0;
