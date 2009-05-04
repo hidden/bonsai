@@ -11,7 +11,7 @@ class GroupsController < ApplicationController
   end
 
   def autocomplete_for_user
-    @users = User.all(:conditions => ["username LIKE ?", "#{params[:prefix]}%"], :limit => 10)
+    @users = User.all(:conditions => ["username LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'username')
     render :partial => 'autocomplete_users'
   end
 
