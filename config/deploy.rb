@@ -14,6 +14,10 @@ set :scm, :mercurial
 
 server "nimbus.fiit.stuba.sk", :app, :web, :db, :primary => true
 
+task :after_symlink do
+  run "ln -nfs #{shared_dir}/upload #{release_dir}/shared/upload"
+end
+
 namespace :passenger do
   desc "Restart Application"
   task :restart do
