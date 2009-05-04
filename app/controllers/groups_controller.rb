@@ -10,6 +10,11 @@ class GroupsController < ApplicationController
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:group_id])
   end
 
+  def autocomplete_for_user
+    @users = User.all(:conditions => ["username LIKE ?", "#{params[:prefix]}%"], :limit => 10)
+    render :partial => 'autocomplete_users'
+  end
+
   # GET /groups
   # GET /groups.xml
   def index

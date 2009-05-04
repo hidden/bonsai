@@ -96,3 +96,26 @@ body {
 #flash.error {
     background-color: #faa;
 }
+
+.autocomplete {
+    width: 250px !important;
+}
+
+.autocomplete ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    border: 2px solid #f0f0f0;
+}
+
+.autocomplete li {
+    margin: 0;
+    padding: 5px;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.autocomplete .selected {
+    background-color: #f0f0f0;
+}

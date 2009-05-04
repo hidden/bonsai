@@ -1,12 +1,12 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :groups, :member => {:switch_public => :put, :switch_editable => :put}
+  map.resources :groups, :member => {:switch_public => :put, :switch_editable => :put}, :collection => { :autocomplete_for_user => :get }
   map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
   map.resources :pages do |page|
     page.resources :page_parts do |page_part|
       page_part.resources :page_part_revisions
     end
   end
-  map.conect 'page/new', :controller => "page", :action => "create"
+  map.connect 'page/new', :controller => "page", :action => "create"
   map.connect 'users/:action', :controller => "users"
   
 
