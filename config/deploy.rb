@@ -28,7 +28,7 @@ namespace :deploy do
 
   desc "Symlink shared"
   task :symlink_shared do
-    run "mkdir -p #{release_path}/shared/upload"
+    run "mkdir #{release_path}/shared"
     run "ln -nfs #{shared_path}/upload #{release_path}/shared/upload"
   end
 
