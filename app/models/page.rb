@@ -104,6 +104,7 @@ class Page < ActiveRecord::Base
   end
 
   def is_editable?
-    PagePermission.first(:joins => :page, :conditions => ["? BETWEEN pages.lft AND pages.rgt AND page_permissions.can_edit = ?", self.lft, true]).nil?
+    self.editor_groups.empty?
+    #PagePermission.first(:joins => :page, :conditions => ["? BETWEEN pages.lft AND pages.rgt AND page_permissions.can_edit = ?", self.lft, true]).nil?
   end
 end

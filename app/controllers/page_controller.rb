@@ -99,7 +99,7 @@ class PageController < ApplicationController
   
   def switch_editable
     was_editable = @page.is_editable?
-    if(@page.parent.nil? || @page.parent.is_editable?)
+    if(@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_editable if !was_editable
         permission.can_edit = was_editable
@@ -174,42 +174,43 @@ class PageController < ApplicationController
       parent = Page.find_by_id(params[:parent_id])
       # TODO check if exists
     end
-    unless parent.nil?
-      unprivileged unless @current_user.can_edit_page? parent
+
+    if(!parent.nil? && !(@current_user.can_edit_page? parent))
+      unprivileged
     else
       sid = params[:sid].blank? ? nil : params[:sid]
-    layout = params[:layout].empty? ? nil : params[:layout]
-    page = Page.new(:title => params[:title], :sid => sid, :layout => layout)
-    unless (page.valid?)
-      error_message = ""
-      page.errors.each_full { |msg| error_message << msg }
-      flash[:notice] = error_message
-      render :action => "new"
-      return
-    end
-    page.save!
-    page.add_manager @current_user.private_group
-    page.move_to_child_of parent unless parent.nil?
-    page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
-    first_revision = PagePartRevision.new(:user => @current_user, :body => params[:body], :page_part => page_part, :summary => params[:summary])
-    unless (first_revision.valid?)
-      error_message = ""
-      first_revision.errors.each_full { |msg| error_message << msg }
-      flash[:notice] = error_message
-      @body = first_revision.body
-      @sid = sid
-      @parent_id = params[:parent_id]
-      page_part.delete
-      page.delete
-      render :action => "new"
-      return
-    end
-    if(first_revision.save)
-      flash[:notice] = 'Page successfully created.'
-      page_part.current_page_part_revision = first_revision
-      page_part.save!
-    end
-    redirect_to page.get_path
+      layout = params[:layout].empty? ? nil : params[:layout]
+      page = Page.new(:title => params[:title], :sid => sid, :layout => layout)
+      unless (page.valid?)
+        error_message = ""
+        page.errors.each_full { |msg| error_message << msg }
+        flash[:notice] = error_message
+        render :action => "new"
+        return
+      end
+      page.save!
+      page.add_manager @current_user.private_group
+      page.move_to_child_of parent unless parent.nil?
+      page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
+      first_revision = PagePartRevision.new(:user => @current_user, :body => params[:body], :page_part => page_part, :summary => params[:summary])
+      unless (first_revision.valid?)
+        error_message = ""
+        first_revision.errors.each_full { |msg| error_message << msg }
+        flash[:notice] = error_message
+        @body = first_revision.body
+        @sid = sid
+        @parent_id = params[:parent_id]
+        page_part.delete
+        page.delete
+        render :action => "new"
+        return
+      end
+      if(first_revision.save)
+        flash[:notice] = 'Page successfully created.'
+        page_part.current_page_part_revision = first_revision
+        page_part.save!
+      end
+      redirect_to page.get_path
     end
   end
 
