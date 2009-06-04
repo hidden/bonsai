@@ -78,6 +78,7 @@ body {
 .bonsai .line-changed { background-color: yellow; }
 .bonsai .line-removed { background-color: red; }
 .bonsai .line-added { background-color: green; }
+.bonsai textarea { width: 100% }
 
 
 #holder {
