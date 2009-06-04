@@ -160,8 +160,12 @@ class PageController < ApplicationController
       render :action => 'no_parent' and return if parent.nil?
       @parent_id = parent.id
     end
-    @sid = @path.empty? ? nil : @path.last
-    render :action => 'new'
+    if(!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
+      unprivileged 
+    else
+      @sid = @path.empty? ? nil : @path.last
+      render :action => 'new'
+    end
   end
 
   def create
@@ -170,7 +174,10 @@ class PageController < ApplicationController
       parent = Page.find_by_id(params[:parent_id])
       # TODO check if exists
     end
-    sid = params[:sid].blank? ? nil : params[:sid]
+    unless parent.nil?
+      unprivileged unless @current_user.can_edit_page? parent
+    else
+      sid = params[:sid].blank? ? nil : params[:sid]
     layout = params[:layout].empty? ? nil : params[:layout]
     page = Page.new(:title => params[:title], :sid => sid, :layout => layout)
     unless (page.valid?)
@@ -203,6 +210,7 @@ class PageController < ApplicationController
       page_part.save!
     end
     redirect_to page.get_path
+    end
   end
 
   def show_history
