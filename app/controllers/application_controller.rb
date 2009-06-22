@@ -16,10 +16,10 @@ class ApplicationController < ActionController::Base
   before_filter :set_user
 
   def set_user
-    if session[:user].nil? and not cookies[:token].nil?
+    if session[:user_id].nil? and not cookies[:token].nil?
      user_from_token = User.find_by_token(cookies[:token])
-     session[:user] = user_from_token unless user_from_token.nil?
+     session[:user_id] = user_from_token.id unless user_from_token.nil?
     end
-    @current_user = session[:user].nil? ? AnonymousUser.new : session[:user]
+    @current_user = session[:user_id].nil? ? AnonymousUser.new : User.find(session[:user_id])
   end
 end

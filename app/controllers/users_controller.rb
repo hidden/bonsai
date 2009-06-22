@@ -7,7 +7,7 @@ class UsersController < ApplicationController
       flash[:error] = 'Login failed. Invalid credentials.'
     else
       user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
-      session[:user] = user
+      session[:user_id] = user.id
       cookies[:token] = {:value => user.token, :expires => 1.month.from_now}
       flash[:notice] = 'You have successfully logged in.'
     end
@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   def logout
     flash[:notice] = 'Logout successfull.'
     cookies.delete :token
-    session[:user] = AnonymousUser.new
+    session[:user_id] = AnonymousUser.new.id
     redirect_to Page.root.get_path unless Page.root.nil?
     redirect_to "/" if Page.root.nil?
   end
