@@ -19,6 +19,7 @@ class GroupsController < ApplicationController
   # GET /groups.xml
   def index
     @groups = @current_user.visible_groups + Group.groups_visible_for_all
+    #uniq! removes duplicate elements from self but returns nil if no changes are made (that is, no duplicates are found).
     @groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
 
     respond_to do |format|
