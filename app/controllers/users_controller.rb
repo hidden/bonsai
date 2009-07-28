@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   def logout
     flash[:notice] = 'Logout successfull.'
     cookies.delete :token
-    session[:user_id] = AnonymousUser.new.id
+    session[:user_id] = nil
     redirect_to Page.root.get_path unless Page.root.nil?
     redirect_to "/" if Page.root.nil?
   end
