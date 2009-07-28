@@ -2,7 +2,7 @@ class GroupPermissionsController < ApplicationController
   before_filter :verify_editor_permission
 
   def verify_editor_permission
-    @current_user = session[:user]
+    #@current_user = session[:user]
     #permission = GroupPermission.find_by_id(params[:id])
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:group_id])
   end

@@ -46,7 +46,7 @@ class GroupsController < ApplicationController
   # POST /groups
   # POST /groups.xml
   def create
-    @current_user = session[:user]
+    #@current_user = session[:user]
     @group = Group.new(params[:group])
     respond_to do |format|
       if @group.save
