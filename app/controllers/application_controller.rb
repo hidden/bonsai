@@ -20,6 +20,6 @@ class ApplicationController < ActionController::Base
      user_from_token = User.find_by_token(cookies[:token])
      session[:user_id] = user_from_token.id unless user_from_token.nil?
     end
-    @current_user = session[:user_id].nil? ? AnonymousUser.new.id : User.find(session[:user_id]).id
+    @current_user = session[:user_id].nil? ? AnonymousUser.new : User.find(session[:user_id])
   end
 end
