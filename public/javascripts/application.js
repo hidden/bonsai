@@ -7,7 +7,7 @@ function initialize() {
 }
 
 function toggleDiv(event) {
-    var div = $(Event.element(event)).parentNode.next();
+    var div = $(Event.element(event).parentNode).next();
     if (div.visible()) {
         div.blindUp();
     } else {
