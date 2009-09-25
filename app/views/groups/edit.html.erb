@@ -43,11 +43,11 @@
 <% end %>
 <h2>Add new user</h2>
 <% form_tag group_permissions_path(:group_id => @group.id), :method => :post do %>
-  <p><%= text_field('add_username', '') %> <%= select('add_permission', 'type', ['editor', 'viewer']) %><%= submit_tag("Add") %></p>
+  <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', ['editor', 'viewer']) %><%= submit_tag("Add") %></p>
   <div id="autocomplete" style="display: none;" class="autocomplete"></div>
   <script type="text/javascript">
   //<![CDATA[
-  var autocompleter = new Ajax.Autocompleter('add_username_', 'autocomplete', '/groups/autocomplete_for_user', {paramName: 'prefix', method: 'get', select: 'username'});
+  var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '/groups/autocomplete_for_user', {paramName: 'prefix', method: 'get', select: 'username', tokens: ','});
   //]]>
 </script>
 <% end %>

@@ -8,12 +8,14 @@ class GroupPermissionsController < ApplicationController
   end
 
   def create
-    user = User.find_by_username(params[:add_username])
-    if user.nil?
+    users = User.find_all_by_username(params[:add_user][:usernames].split(/[ ]*, */))
+    if users.empty?
       flash[:notice] = 'Username not found!'
     else
-      Group.find(params[:group_id]).add_viewer user if params[:add_permission][:type] == 'viewer'
-      Group.find(params[:group_id]).add_editor user if params[:add_permission][:type] == 'editor'
+      for user in users do
+        Group.find(params[:group_id]).add_viewer user if params[:add_user][:type] == 'viewer'
+        Group.find(params[:group_id]).add_editor user if params[:add_user][:type] == 'editor'
+      end
     end
     redirect_to edit_group_path(params[:group_id])
   end
