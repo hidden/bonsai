@@ -8,9 +8,9 @@
       <p><%= link_to part.name, nil, :onclick => "return toggleDiv(event);" %></p>
       <div<%= ' style="display:none;" ' unless part.name == 'body' %>>
         <% if part == @page_part %>
-          <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 20, :cols => 80 %>
+          <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => 80 %>
         <% else %>
-          <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 20, :cols => 80 %>
+          <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80 %>
         <%  end %>
         <ul>
           <li>Paragraphs --- simply one or more consecutive lines of text, separated by one or more blank lines</li>
