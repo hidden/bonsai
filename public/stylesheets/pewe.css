@@ -12,7 +12,7 @@ body {
   text-align: center;
 }
 #container {
-  width: 750px;
+  width: 980px;
   margin: 0 auto;
   text-align: left;
   border: solid #bbb;
@@ -91,23 +91,8 @@ h1 {
 
 /* Content */
 
-#content, #c2 {
-  float: left;
-  width: 100%;
-}
-/* Overcome stupid 3px margin bug in IE/Win floats,
-   which fixes a lot of things, including disapearing company nav,
-   randomly appearing text, and wrappers pushed too wide.
-   http://www.positioniseverything.net/explorer/threepxtest.html */
-* html #content, * html #c2 {
-  margin-right: -3px;
-}
-#content {
-  width: 100%;
-}
 #c2 {
-  padding: 10px;
-  width: 730px;
+  padding: 20px;
 }
 
 #pewe-holder a {
