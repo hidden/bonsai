@@ -1,7 +1,7 @@
 class UploadedFile < ActiveRecord::Base
   belongs_to :page
   belongs_to :user
-  has_attachment :storage => :file_system, :path_prefix => "shared/upload", :max_size => 5.megabytes
+  has_attachment :storage => :file_system, :path_prefix => "shared/upload", :max_size => 15.megabytes
 
   validates_as_attachment
 
