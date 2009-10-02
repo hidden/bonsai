@@ -267,7 +267,7 @@ class PageController < ApplicationController
           revision.errors.each_full { |msg| error_message << msg }
           @page_part = page_part
           @page_revision = revision
-          flash[:notice] = error_message
+          flash[:error] = error_message
           render :action => "edit"
           return true
         end
@@ -282,6 +282,13 @@ class PageController < ApplicationController
 
   def new_part
     page_part = PagePart.create(:name => params[:new_page_part_name], :page => @page, :current_page_part_revision_id => 0)
+    unless page_part.valid?
+      error_message = ""
+      page_part.errors.each_full { |msg| error_message << msg }
+      flash[:error] = error_message
+      render :action => "edit"
+      return true
+    end
     page_part_revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => params[:new_page_part_text], :summary => "init")
     page_part_revision.save
     page_part.current_page_part_revision = page_part_revision
