@@ -11,7 +11,7 @@ end
 When /^I create "(.*)" page$/ do |url|
   visit url
   fill_in('title', :with => 'Some title')
-  fill_in('body', :with => 'Some contents.')
+  fill_in('body', :with => 'Some content.')
   fill_in('summary', :with => 'A summary.')
   click_button('Create')
 end

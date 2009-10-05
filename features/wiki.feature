@@ -55,7 +55,7 @@ Scenario: User wants to edit a page he created
     And I fill in "summary" with "short summary"
     And I press "Save"
     Then I should see "Page successfully updated."
-    And I should see "Changed body."
+    And I should see "Changed body"
 
 Scenario: User wants to create a wiki page without existing parent
     When I go to the main page
@@ -70,7 +70,7 @@ Scenario: User uses markdown syntax on wiki page
     And I fill in "body" with "Text with *emphasis*."
     And I fill in "summary" with "markdown test"
     And I press "Create"
-    Then I should see "Text with <em>emphasis</em>." in html code
+    And I should see "emphasis" within "em"
 
 Scenario: User wants to see the page history
     Given that a "main" page with multiple revisions exist
@@ -91,7 +91,7 @@ Scenario: User wants to see the diff of two page revisions
     And I choose "first_revision_1"
     And I choose "second_revision_2"
     And I press "compare selected versions"
-    Then I should see "<div class=\"line-changed\">This is second revision" in html code
+    Then I should see "This is second revision" within ".line-changed"
 
 Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
