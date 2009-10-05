@@ -34,6 +34,7 @@ Rails::Initializer.run do |config|
   config.gem "cucumber"
   config.gem "webrat"
   config.gem 'maruku'
+  config.gem 'javan-whenever', :lib => false, :source => 'http://gems.github.com'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
