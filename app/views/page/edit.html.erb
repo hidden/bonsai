@@ -1,5 +1,5 @@
 <div class="bonsai">
-  <% form_tag '?update' do %>
+  <% form_tag "#{@path}?update" do %>
     <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
     <% if @current_user.can_manage_page? @page %>
       <p><%= label_tag 'Layout' %><br /><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>

@@ -78,7 +78,6 @@ Scenario: Manager adds an editor to a public page
     And I login as "matell"
     And I should see "Edit"
 
-
 Scenario: Manager adds another manager to a public page
     Given user "johno" exists
     Given user "matell" exists
@@ -185,7 +184,7 @@ Scenario: Manager inherits permissions to view a non-public page
     And I should not see "Edit"
     And I should not see "Manage"
 
-
+@wip
 Scenario: Editor inherits permissions to view a non-public page
     Given user "johno" exists
     Given user "matell" exists
@@ -202,10 +201,10 @@ Scenario: Editor inherits permissions to view a non-public page
     And I go to the test page
     Then I should not see "Permission denied"
     And I should see "Edit"
-    And I should see "Manage"
+    And I should not see "Manage"
     And I logout
     And I login as "bielikova"
-    And I go to the "test" page
+    And I go to /test/
     Then I should see "Permission denied"
     And I should not see "Edit"
     And I should not see "Manage"
