@@ -9,7 +9,6 @@ Scenario: User tries do download a bogus file
     When I go to /a/nested/bogus_file.txt
     Then I should see "File not found."
 
-
 Scenario: User wants to upload a file
     When I go to the main page
     And I login as "johno"
@@ -20,7 +19,7 @@ Scenario: User wants to upload a file
     Then I should see "File was successfully uploaded."
     When I go to /test_file.txt
     Then I should see "Some text in file."
-
+    
 Scenario: User uploads a file under a restricted page and different user wants to download it
     When I go to the main page
     And I login as "johno"
