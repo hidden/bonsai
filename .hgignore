@@ -5,3 +5,4 @@ syntax: regexp
 ^log
 ^public\/upload
 ^shared
+^.idea
