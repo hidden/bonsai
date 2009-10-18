@@ -35,3 +35,25 @@ Scenario: User uploads a file under a restricted page and different user wants t
     And I go to /test_file.txt
     Then I should see "Permission denied."
 
+Scenario: User tries do download a bogus file and then upload it
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I go to /test_file2.txt
+    Then I should see "File not found."
+    When I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded."
+
+@wip
+Scenario: User tries do download a bogus file and then upload it with diffrent name
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I go to /bogus_file.txt
+    Then I should see "File not found."
+    When I attach the file at "test_file3.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded."
+    When I go to /bogus_file.txt
+    Then I should see "Some text in file."

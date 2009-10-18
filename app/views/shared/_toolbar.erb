@@ -15,6 +15,7 @@
       <% if @current_user.can_edit_page? @page %><%= link_to image_tag('icons/page_white_edit.png', :alt => '') + ' Edit', '?edit' %><% end %>
 
       <% if @current_user.can_manage_page? @page %><%= link_to image_tag('icons/page_white_key.png', :alt => '') + " Manage", '?manage' %><% end %>
-      <% if @current_user.logged? %><%= link_to image_tag('icons/group.png', :alt => '') + " Groups", groups_path %><% end %></p>
+      <% if @current_user.logged? %><%= link_to image_tag('icons/group.png', :alt => '') + " Groups", groups_path %><% end %>
+      <% if @current_user.logged? %><%= link_to image_tag('icons/file_cabinet.png', :alt => '') + " Files", '?files' %><% end %></p>
     <% end %>
 </div>

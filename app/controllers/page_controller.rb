@@ -313,13 +313,17 @@ class PageController < ApplicationController
       name = @path.pop
     end
     @page = Page.find_by_path(@path)
-    if name != @uploaded_file.filename && !name.empty?
-      flash[:notice] = 'Filename not match. No file uploaded.'
+    if name != @uploaded_file.filename && !name.empty? && File.extname(name) != File.extname(@uploaded_file.filename)
+      flash[:notice] = 'Type of file not match. No file uploaded.'
       redirect_to @page.get_path
     else
       @uploaded_file.page = @page
       @uploaded_file.user = @current_user
       if @uploaded_file.save
+        if name != @uploaded_file.filename && !name.empty?
+          dir = 'shared/upload/'
+          File.rename(dir + @uploaded_file.filename, dir + name)
+        end
         flash[:notice] = 'File was successfully uploaded.'
         redirect_to @page.get_path
       else
