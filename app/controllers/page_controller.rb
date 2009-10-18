@@ -139,10 +139,18 @@ class PageController < ApplicationController
 
   def process_file
     file_name = 'shared/upload/' + @path.join('/')
-    return render(:action => :file_not_found) unless File.file?(file_name)
     parent_page_path = @path.clone
     parent_page_path.pop
     page = Page.find_by_path(parent_page_path)
+
+    if params.include? 'upload' then upload and return
+    end
+    if @current_user.can_edit_page? page
+        return render(:action => :file_not_found_edit)
+      else
+        return render(:action => :file_not_found)
+      end unless File.file?(file_name)
+    
     if @current_user.can_view_page? page
       return send_file(file_name)
     else
@@ -300,16 +308,26 @@ class PageController < ApplicationController
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
     sleep(2)
-    @uploaded_file.page = @page
-    @uploaded_file.user = @current_user
-    if @uploaded_file.save
-      flash[:notice] = 'File was successfully uploaded.'
+    name = ""
+    if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
+      name = @path.pop
+    end
+    @page = Page.find_by_path(@path)
+    if name != @uploaded_file.filename && !name.empty?
+      flash[:notice] = 'Filename not match. No file uploaded.'
       redirect_to @page.get_path
     else
-      error_message = ""
-      @uploaded_file.errors.each_full { |msg| error_message << msg }
-      flash[:notice] = error_message
-      render :action => :edit
+      @uploaded_file.page = @page
+      @uploaded_file.user = @current_user
+      if @uploaded_file.save
+        flash[:notice] = 'File was successfully uploaded.'
+        redirect_to @page.get_path
+      else
+        error_message = ""
+        @uploaded_file.errors.each_full { |msg| error_message << msg }
+        flash[:notice] = error_message
+        render :action => :edit
+      end
     end
   end
 end
