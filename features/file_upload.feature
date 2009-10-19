@@ -45,7 +45,6 @@ Scenario: User tries do download a bogus file and then upload it
     And I press "Upload"
     Then I should see "File was successfully uploaded."
 
-@wip
 Scenario: User tries do download a bogus file and then upload it with diffrent name
     When I go to the main page
     And I login as "johno"

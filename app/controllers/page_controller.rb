@@ -141,17 +141,13 @@ class PageController < ApplicationController
     file_name = 'shared/upload/' + @path.join('/')
     parent_page_path = @path.clone
     parent_page_path.pop
-    page = Page.find_by_path(parent_page_path)
+    @page = Page.find_by_path(parent_page_path)
 
     if params.include? 'upload' then upload and return
     end
-    if @current_user.can_edit_page? page
-        return render(:action => :file_not_found_edit)
-      else
-        return render(:action => :file_not_found)
-      end unless File.file?(file_name)
+    return render(:action => :file_not_found) unless File.file?(file_name)
     
-    if @current_user.can_view_page? page
+    if @current_user.can_view_page? @page
       return send_file(file_name)
     else
       return render(:action => :unprivileged)
@@ -313,7 +309,7 @@ class PageController < ApplicationController
       name = @path.pop
     end
     @page = Page.find_by_path(@path)
-    if name != @uploaded_file.filename && !name.empty? && File.extname(name) != File.extname(@uploaded_file.filename)
+    if !name.empty? && File.extname(name) != File.extname(@uploaded_file.filename)
       flash[:notice] = 'Type of file not match. No file uploaded.'
       redirect_to @page.get_path
     else

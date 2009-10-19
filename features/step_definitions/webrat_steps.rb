@@ -1,9 +1,9 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
 
 class String
-	def strip_tags
-		self.gsub( %r{</?[^>]+?>}, '' )
-	end
+  def strip_tags
+    self.gsub( %r{</?[^>]+?>}, '' )
+  end
 end
 
 
@@ -119,16 +119,19 @@ When /^I choose "([^\"]*)"$/ do |field|
 end
 
 When /^I attach the file at "(.*)" to "(.*)"$/ do |path, field|
-  attach_file(field, File.join(Rails.root,'features', 'fixtures', path))
+  attach_file(field, File.join(Rails.root, 'features', 'fixtures', path))
 end
 
 Then /^I should see "([^\"]*)"$/ do |text|
+  body = nil
   if response.body.is_a? Proc
     io = StringIO.new
-    response.body.call(nil, io)
-    response.body = io.string
+    response.body.clone.call(nil, io)
+    body = io.string
+  else
+    body = response
   end
-  response.should contain(text)
+  body.should contain(text)
 end
 
 Then /^I should see "([^\"]*)" within "([^\"]*)"$/ do |text, selector|

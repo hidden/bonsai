@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   def generate_unique_token
     self.token = ActiveSupport::SecureRandom.hex(16)
-    generate_uniqe_token unless User.find_by_token(self.token).nil?
+    generate_unique_token unless User.find_by_token(self.token).nil?
   end
 
   def private_group
