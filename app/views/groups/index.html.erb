@@ -15,7 +15,7 @@
           <td><%=h group.users.collect {|user| user.full_name }.join(', ') %></td>
           <td>
             <% if((@current_user.can_edit_group? group) && (group.name != @current_user.username)) %>
-              <%= link_to 'Edit', edit_group_path(group), :id => "Edit_#{group.name}" %> <%= link_to 'Destroy', group, :id => "Destroy_#{group.name}", :confirm => 'Are you sure?', :method => :delete %>
+              <%= link_to 'Edit', edit_group_path(group), :id => "Edit_#{group.id}" %> <%= link_to 'Destroy', group, :id => "Destroy_#{group.id}", :confirm => 'Are you sure?', :method => :delete %>
             <% else %>
               -
             <% end %>

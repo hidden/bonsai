@@ -56,6 +56,20 @@ When /^I create "(.*)" group$/ do |group_name|
 end
 
 
+When /^I follow "(.*)" edit$/ do |group_name|
+  
+  click_link("Edit_#{Group.find_by_name(group_name).id}")
+end
+
+When /^I follow "(.*)" destroy$/ do |group_name|
+  
+  click_link("Destroy_#{Group.find_by_name(group_name).id}")
+end
+
+When /^I follow "(.*)" remove member$/ do |user_name|
+
+  click_link("Remove_member_#{User.find_by_name(user_name).id}")
+end
 
 Given /^group "\/?(.*)\/?" is viewable by "(.*)"$/ do |url, group|
   page = Page.find_by_path(url.split("/"))

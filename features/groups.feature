@@ -50,7 +50,7 @@ Scenario: User wants to delete group
     And I create "MyNewGroup" group
     And I follow "Back"
     Then I should see "Groups Management"
-    When I follow "Destroy_MyNewGroup"
+    When I follow "MyNewGroup" destroy
     #And I press "OK"
     #Then I should not see "MyNewGroup" within "Groups_table"
 
@@ -63,7 +63,7 @@ Scenario: User wants to add permisions within his group to another user
     And I create "MyNewGroup" group
     Then I should see "Group was successfully created."
     When I follow "Back"
-    And I follow "Edit_MyNewGroup"
+    And I follow "MyNewGroup" edit
     And I fill in "add_user_usernames" with "TestUser"
     And I select "editor" from "add_user_type"
     And I press "Add"
@@ -79,12 +79,12 @@ Scenario: User wants to delete another user from his group
     And I create "MyNewGroup" group
     Then I should see "Group was successfully created."
     When I follow "Back"
-    And I follow "Edit_MyNewGroup"
+    And I follow "MyNewGroup" edit
     And I fill in "add_user_usernames" with "TestUser"
     And I select "editor" from "add_user_type"
     And I press "Add"
     Then I should see "TestUser"
-    And I follow "Remove_member_TestUser"
+    And I follow "TestUser" remove member
     Then I should not see "TestUser"
 
 
@@ -107,10 +107,10 @@ Scenario: User was given permission to manage group. He wants to manage group, w
     When I login as "crutch"
     And I follow "Groups"
     Then I should see "Groups Management"
-    When I follow "Edit_MyNewGroup"
+    When I follow "MyNewGroup" edit
     Then I should see "Group MyNewGroup"
     When I follow "Back"
-    And I follow "Destroy_MyNewGroup"
+    And I follow "MyNewGroup" destroy
     #And I press "OK"
     #Then I should not see "MyNewGroup" within "Groups_table"
 

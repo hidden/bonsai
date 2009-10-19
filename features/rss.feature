@@ -23,7 +23,20 @@ Scenario: check if RSS works properly
     Then I should see "Some NEW title changes"
 
 
-
-
+    Scenario: check if user who has not permission can not see RSS
+    Given user "johno" exists
+    Given user "matell" exists
+    When I go to the main page
+    And I login as "matell"
+    And I create "/" page
+    And I go to /?rss
+    Then I should see "Some title changes"
+    When I go to the main page
+    And page "/" is viewable by "matell"
+    And I logout
+    And I login as "johno"
+    And I go to /?rss
+    Then I should not see "Some title changes"
+    
 
     
