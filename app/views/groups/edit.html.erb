@@ -9,7 +9,7 @@
     <%= f.text_field :name %><%= f.submit "Update" %>
   </p>
   <h2>Group members</h2>
-  <table>
+  <table id="Groups_memberstable">
     <thead>
       <tr>
         <th>User</th>
@@ -29,7 +29,7 @@
             <td><%= link_to(image_boolean(permission.can_view, 'Toggle permission'), switch_view_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
             <td><%= link_to(image_boolean(permission.can_edit, 'Toggle permission'), switch_edit_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
           <% end %>
-          <td><%= link_to "Remove member", group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => 'Are you sure?' %></td>
+          <td><%= link_to "Remove member", group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => 'Are you sure?', :id => "Remove_member_#{permission.user.name}" %></td>
         </tr>
       <% end %>
       <tr>

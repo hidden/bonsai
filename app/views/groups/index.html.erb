@@ -1,6 +1,6 @@
 <div class="bonsai">
   <h1>Groups Management</h1>
-  <table>
+  <table id="Groups_table">
     <thead>
       <tr>
         <th>Group</th>
@@ -12,10 +12,10 @@
       <% for group in @groups %>
         <tr>
           <td><%=h group.name %></td>
-          <td><%=h group.users.collect {|user| user.full_name }.join ', ' %></td>
+          <td><%=h group.users.collect {|user| user.full_name }.join(', ') %></td>
           <td>
             <% if((@current_user.can_edit_group? group) && (group.name != @current_user.username)) %>
-              <%= link_to 'Edit', edit_group_path(group) %> <%= link_to 'Destroy', group, :confirm => 'Are you sure?', :method => :delete %>
+              <%= link_to 'Edit', edit_group_path(group), :id => "Edit_#{group.name}" %> <%= link_to 'Destroy', group, :id => "Destroy_#{group.name}", :confirm => 'Are you sure?', :method => :delete %>
             <% else %>
               -
             <% end %>
