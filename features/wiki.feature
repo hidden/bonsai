@@ -115,3 +115,11 @@ Scenario: User wants to add a new page part
     And I should see "menu"
     And I should see "This is a text of a new page part"
     And I should not see "Page successfully updated."
+    
+Scenario: User wants to show a revision
+    Given that a "main" page with multiple revisions exist
+    When I go to the main page
+    And I login as "johno"
+    And I follow "history"
+    When I follow "Show page from revision 1"
+    Then I should see "This is first revision"    

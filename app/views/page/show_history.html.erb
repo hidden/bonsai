@@ -16,6 +16,7 @@
           <% if @current_user.can_edit_page? @page %>
             <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&revision=" + index.to_s, {:method => :post} %>
           <% end %>
+          <%=  link_to "Show page from revision #{counter}", @page.get_path + "?view&revision=" + index.to_s %>
         </li>
       <% end %>
     </ul>

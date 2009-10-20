@@ -53,6 +53,7 @@ class PageController < ApplicationController
 
     if @current_user.can_view_page? @page
       if params.include? 'history' then render :action => :show_history and return
+      elsif params.include? 'revision' then show_revision and return
       elsif params.include? 'diff' then diff and return
       else view and return
       end
@@ -75,6 +76,19 @@ class PageController < ApplicationController
     @first_revision = @page.page_parts_revisions[params[:first_revision].to_i]
     @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
     render :action => 'diff'
+  end
+  
+  def show_revision
+    revision_date = @page.page_parts_revisions[params[:revision].to_i].created_at
+    
+    @page_parts = Array.new    
+    
+    for part in @page.page_parts
+      current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
+      @page_parts << current_part if current_part
+    end
+    
+    render :action => 'show_revision'  
   end
 
   def undo
