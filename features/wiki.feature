@@ -115,11 +115,29 @@ Scenario: User wants to add a new page part
     And I should see "menu"
     And I should see "This is a text of a new page part"
     And I should not see "Page successfully updated."
-    
-Scenario: User wants to show a revision
+
+Scenario: User wants to show a revision of simple page
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
     And I follow "history"
     When I follow "Show page from revision 1"
     Then I should see "This is first revision"    
+
+Scenario: User wants to show a revision of complex page
+    When I go to the main page
+    And I login as "johno"
+    And I fill in "title" with "Root page"
+    And I fill in "body" with "Root body!"
+    And I fill in "summary" with "A change"
+    And I select "PeWe Layout" from "layout"
+    And I press "Create"
+    When I follow "edit"
+    And I fill in "new_page_part_name" with "navigation"
+    And I fill in "new_page_part_text" with "This is a header"
+    And I press "Add new page part"
+    And I follow "View"
+    And I follow "history"
+    When I follow "Show page from revision 1"
+    Then I should see "This is a header"
+    And I should see "Root body!"

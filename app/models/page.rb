@@ -16,7 +16,7 @@ class Page < ActiveRecord::Base
     full_path = [nil] + path
     parent_id = nil
     for chunk in full_path
-      current = Page.find_by_parent_id_and_sid(parent_id, chunk)
+      current = self.find_by_parent_id_and_sid(parent_id, chunk)
       return nil if current.nil?
       parent_id = current.id
     end

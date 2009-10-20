@@ -79,16 +79,19 @@ class PageController < ApplicationController
   end
   
   def show_revision
-    revision_date = @page.page_parts_revisions[params[:revision].to_i].created_at
+    @page = PageAtRevision.find_by_path(@path)
     
+    revision_date = @page.page_parts_revisions[params[:revision].to_i].created_at
+    @page.revision_date = revision_date   
     @page_parts = Array.new    
     
     for part in @page.page_parts
       current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
       @page_parts << current_part if current_part
     end
-    
-    render :action => 'show_revision'  
+    layout = @page.nil? ? 'application' : @page.resolve_layout
+
+    render :action => 'show_revision', :layout => layout  
   end
 
   def undo
