@@ -22,7 +22,6 @@ development:
   username: bonsai
   password: bonsai
   host: localhost
-  port: 3307
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -35,7 +34,6 @@ test: &TEST
   username: bonsai
   password: bonsai
   host: localhost
-  port: 3307
   
 production:
   adapter: mysql
@@ -45,7 +43,6 @@ production:
   username: bonsai
   password: bonsai
   host: localhost
-  port: 3307
 
 cucumber:
   <<: *TEST

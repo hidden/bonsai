@@ -6,3 +6,4 @@ syntax: regexp
 ^public\/upload
 ^shared
 ^.idea
+^config\/database.yml

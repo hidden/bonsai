@@ -1,6 +1,6 @@
 <div class="bonsai">
   <h1>Changes for page: <%= @page.title %></h1>
-  <% form_tag('?diff', {:method => :post}) do %>
+  <% form_tag("diff", {:action=> '?diff', :method => :get}) do %>
     <%= submit_tag 'compare selected versions' %>
     <ul>
       <% number_of_revisions = @page.page_parts_revisions.length %>
