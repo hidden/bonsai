@@ -1,7 +1,8 @@
 <div id="toolbar" class="bonsai">
   <% unless @current_user.logged? %>
     <% form_tag login_path do %>
-      <p class="login"><label>Login: <%= text_field_tag 'username', nil, :size => 10 %></label>
+      <p class="login">
+        <label>Login: <%= text_field_tag 'username', nil, :size => 10 %></label>
         <label>Password: <%= password_field_tag 'password', nil, :size => 15 %></label>
       <%= submit_tag 'Log in' %></p>
     <% end %>
@@ -16,7 +17,7 @@
 
       <% if @current_user.can_manage_page? @page %><%= link_to image_tag('icons/page_white_key.png', :alt => '') + " Manage", '?manage' %><% end %>
       <% if @current_user.logged? %><%= link_to image_tag('icons/group.png', :alt => '') + " Groups", groups_path %><% end %>
-      <% if @current_user.logged? %><%= link_to image_tag('icons/rss.png', :alt => '') + " Rss feeds", rss_url(@page, @current_user) %><% end %>
+      <% if @current_user.can_view_page? @page %><%= link_to  image_tag('icons/rss.png', :alt => '') + " Rss feeds", rss_url(@page, @current_user), :id => 'rss_feeds' %><% end %>
     </p>
     <% end %>
 </div>
