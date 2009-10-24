@@ -1,0 +1,8 @@
+nbproject/private
+tmp
+log
+public/upload
+shared
+.idea
+config/database.yml
+*.*~
