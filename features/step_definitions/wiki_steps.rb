@@ -16,6 +16,14 @@ When /^I create "(.*)" page$/ do |url|
   click_button('Create')
 end
 
+When /^I create "(.*)" page with file link$/ do |url|
+  visit url
+  fill_in('title', :with => 'Some title')
+  fill_in('body', :with => '[linka](subor.txt)')
+  fill_in('summary', :with => 'A summary.')
+  click_button('Create')
+end
+
 Given /^user "(.*)" exists$/ do |username|
   User.create(:username => username, :name => username)
 end

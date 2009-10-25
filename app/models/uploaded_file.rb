@@ -18,6 +18,12 @@ class UploadedFile < ActiveRecord::Base
     File.join(RAILS_ROOT, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
   end
 
+  def rename(name)
+      self.filename = name
+      self.save
+  end
+
+
   # overrwrite this to do your own app-specific partitioning.
   # you can thank Jamis Buck for this: http://www.37signals.com/svn/archives2/id_partitioning.php 
   def partitioned_path(*args)

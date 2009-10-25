@@ -1,0 +1,30 @@
+<% @page = Page.find_by_path(@path) %>
+<% files = Array.[] %>
+
+<table>
+      <tr><th>File</th><th>User</th></tr>
+<% for file in @page.uploaded_files %>
+  <% if !files.include?(file.filename) %>
+    <%  files.push(file.filename) %>
+    <%if file.user_id != nil %>
+      <tr><td><%=h file.filename %></td><td><%=h file.user.username %></td>
+     <% else %>
+      <tr><td><%=h file.filename %></td><td></td>
+    <%  end %>
+  <%end%>
+<% end %>
+<%#= markdown("--------- file system ---------") %>
+<% dir = 'shared/upload' + @page.get_path %>
+<% names = Array.[] %>
+<%  Dir.foreach(dir) {|x| names.push("#{x}")}%>
+<% i=0 %>
+<% until i >= names.length %>
+  <% if File.file?(dir+'/'+names[i]) %>
+    <% if !files.include?(names[i]) %>
+      <tr><td><%=h names[i] %></td><td></td>
+    <% end %>
+  <% end %>
+  <% i+=1 %>
+<% end %>
+</table>
+

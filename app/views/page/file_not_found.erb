@@ -3,7 +3,7 @@
 <% if @current_user.can_edit_page? @page %>
     <p>You can <a href="#" onclick="return toggleDiv(event);">upload this file</a>.</p>
     <div style="display: none;">
-      <% form_for(:uploaded_file, :url =>"#{@path}?upload", :html => {:multipart => true}) do |f| %>
+      <% form_for(:uploaded_file, :url =>@path.last+"?upload", :html => {:multipart => true}) do |f| %>
           <p><label for="uploaded_file">Upload a File<br/><%= f.file_field :uploaded_data %>
           </label><%= submit_tag 'Upload' %></p>
       <% end %>
