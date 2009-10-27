@@ -57,8 +57,6 @@ Feature: Secure file uploads
     When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
-    When I go to /bogus_file.txt
-    Then I should see "Some text in file."
 
   Scenario: User tries do download a bogus file and then upload difrent type of file
     When I go to the main page
@@ -81,7 +79,7 @@ Feature: Secure file uploads
     When I go to the main page
     And I login as "johno"
     And I create "/" page
-    And I create "/new_page/" page with file link
+    And I create "/new_page/" page
     And I go to /new_page/link.txt
     Then I should see "File not found."
     When I attach the file at "picture.jpg" to "uploaded_file_uploaded_data"
@@ -90,11 +88,11 @@ Feature: Secure file uploads
     And I go to /new_page/link.txt
     Then I should see "File not found."
 
-  Scenario: User tries do download a bogus file and then upload difrent type of file
+  Scenario: User tries do download a bogus file and then upload file with  difrent name
     When I go to the main page
     And I login as "johno"
     And I create "/" page
-    And I create "/new_page/" page with file link
+    And I create "/new_page/" page
     And I go to /new_page/link.txt
     Then I should see "File not found."
     When I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"

@@ -139,5 +139,5 @@ Feature: Wiki
     And I follow "View"
     And I follow "history"
     When I follow "Show page from revision 1"
-    Then I should see "This is a header"
+    Then I should not see "This is a header"
     And I should see "Root body!"

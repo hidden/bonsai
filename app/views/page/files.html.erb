@@ -12,8 +12,10 @@
             <td><%= link_to file.filename, file.filename  %></td>
             <td><%= h file.user.full_name %></td>
         <% else %>
-            <td><%= link_to file, file %></td>
-            <td>unknown</td>
+            <% if File.file?(file) %>
+                <td><%= link_to file, file %></td>
+                <td>unknown</td>
+            <% end %>
         <% end %>
       </tr>
   <% end %>
