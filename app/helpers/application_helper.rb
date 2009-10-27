@@ -8,6 +8,14 @@ module ApplicationHelper
     url_for :controller => 'users', :action => 'logout'
   end
 
+  def edit_page_path(page)
+    "#{page.get_path}?edit"
+  end
+
+  def upload_file_path(page)
+    "#{page.get_path}?upload"
+  end
+
   def markdown(text)
     text.blank? ? "" : Maruku.new(text).to_html
   end

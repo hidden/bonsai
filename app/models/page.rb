@@ -44,10 +44,19 @@ class Page < ActiveRecord::Base
     latest_part_revision.nil? ? nil : latest_part_revision.body
   end
 
+  def files
+    uploaded_file_names = self.uploaded_files.collect(&:filename)
+    path = 'shared/upload' + get_path
+    files_from_file_system = Dir.entries(path).reject do |file|
+      file.starts_with?('.') or uploaded_file_names.include?(file)
+    end
+    self.uploaded_files + files_from_file_system
+  end
+
   def add_viewer group
     if self.viewer_groups.empty?
       self.page_permissions.each do |permission|
-        if(permission.can_edit == true || permission.can_manage == true)
+        if (permission.can_edit == true || permission.can_manage == true)
           permission.can_view = true
         end
         permission.save
@@ -61,7 +70,7 @@ class Page < ActiveRecord::Base
   def add_editor group
     if self.editor_groups.empty?
       self.page_permissions.each do |permission|
-        if(permission.can_manage == true)
+        if (permission.can_manage == true)
           permission.can_edit = true
         end
         permission.save

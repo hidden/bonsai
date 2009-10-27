@@ -55,7 +55,7 @@ class PageController < ApplicationController
       if params.include? 'history' then render :action => :show_history and return
       elsif params.include? 'revision' then show_revision and return
       elsif params.include? 'diff' then diff and return
-      elsif params.include? 'files' then file_list and return
+      elsif params.include? 'files' then files and return
       else view and return
       end
     end
@@ -64,7 +64,6 @@ class PageController < ApplicationController
 
   def view
     @hide_view_in_toolbar = true
-    #tmp = @url.
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
   end
@@ -160,7 +159,7 @@ class PageController < ApplicationController
     @no_toolbar = true
     file_name = 'shared/upload/' + @path.join('/')
     parent_page_path = @path.clone
-    parent_page_path.pop
+    @filename = parent_page_path.pop
     @page = Page.find_by_path(parent_page_path)
 
     if params.include? 'upload' then upload and return
@@ -324,18 +323,15 @@ class PageController < ApplicationController
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
     sleep(2)
-    @name = ""
-    if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
-      @name = @path.pop
-    end
+    @name = params[:uploaded_file_filename]
     @page = Page.find_by_path(@path)
-    if !@name.empty? && File.extname(@name) != File.extname(@uploaded_file.filename)
+    if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
       flash[:notice] = 'Type of file not match. No file uploaded.'
       redirect_to @page.get_path
     else
       @uploaded_file.page = @page
       @uploaded_file.user = @current_user
-      @uploaded_file.rename(@name) if !@name.empty?
+      @uploaded_file.rename(@name) unless @name.nil?
       if @uploaded_file.save
         #if @name != @uploaded_file.filename && !@name.empty?
         #  dir = 'shared/upload' + @page.get_path
@@ -352,11 +348,7 @@ class PageController < ApplicationController
       end
     end
     
-  def file_list
-    @no_toolbar = true
-    parent_page_path = @path.clone
-    parent_page_path.pop
-    @page = Page.find_by_path(parent_page_path)
-    render :action => :page_filelist
+  def files
+    render :action => :files
   end
 end

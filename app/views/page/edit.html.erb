@@ -1,5 +1,5 @@
 <div class="bonsai">
-  <% form_tag "/#{@path}?update" do %>
+  <% form_tag edit_page_path(@page) do %>
     <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
     <% if @current_user.can_manage_page? @page %>
       <p><%= label_tag 'Layout' %><br /><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
@@ -49,7 +49,7 @@
   </div>
   <p>Or <a href="#" onclick="return toggleDiv(event);">attach a file to this page</a>.</p>
   <div style="display: none;">
-    <% form_for(:uploaded_file, :url => "?upload", :html => {:multipart => true}) do |f| %>
+    <% form_for(:uploaded_file, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
       <p><label for="uploaded_file">Upload a File<br/><%= f.file_field :uploaded_data %></label><%= submit_tag 'Upload' %></p>
     <% end %>
   </div>
