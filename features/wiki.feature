@@ -1,13 +1,13 @@
 Feature: Wiki
-    In order to share content on wiki
-    A user
-    Should be able to create and manage wiki pages
+  In order to share content on wiki
+  A user
+  Should be able to create and manage wiki pages
 
-Scenario: Anonymous user visits a fresh wiki
+  Scenario: Anonymous user visits a fresh wiki
     When I go to the main page
     Then I should see "Permission denied."
 
-Scenario: Anonymous user logs in successfully
+  Scenario: Anonymous user logs in successfully
     When I go to the main page
     And I fill in "username" with "johno"
     And I fill in "password" with "johno"
@@ -15,7 +15,7 @@ Scenario: Anonymous user logs in successfully
     Then I should see "You have successfully logged in."
     Then I should see "Logged in as: johno"
 
-Scenario: Anonymous user logs in successfully
+  Scenario: Anonymous user logs in successfully
     When I go to the main page
     And I fill in "username" with "johno"
     And I fill in "password" with "something bad"
@@ -23,14 +23,14 @@ Scenario: Anonymous user logs in successfully
     Then I should see "Login failed. Invalid credentials."
     And I should not see "Logged in as:"
 
-Scenario: User wants to log out.
+  Scenario: User wants to log out.
     When I go to the main page
     And I login as "johno"
     And I follow "Log out"
     Then I should see "Logout successfull."
     And I should not see "Logged in as:"
 
-Scenario: Logged user visits a fresh wiki and creates first page
+  Scenario: Logged user visits a fresh wiki and creates first page
     When I go to the main page
     And I login as "johno"
     Then I should see "Page does not exists. Do you want to create it?"
@@ -42,7 +42,7 @@ Scenario: Logged user visits a fresh wiki and creates first page
     And I should see "Hello world!"
     And I should see "Hello universe!"
 
-Scenario: User wants to edit a page he created
+  Scenario: User wants to edit a page he created
     When I go to the main page
     And I login as "johno"
     And I fill in "title" with "Hello world!"
@@ -57,13 +57,13 @@ Scenario: User wants to edit a page he created
     Then I should see "Page successfully updated."
     And I should see "Changed body"
 
-Scenario: User wants to create a wiki page without existing parent
+  Scenario: User wants to create a wiki page without existing parent
     When I go to the main page
     And I login as "johno"
     And I go to a page without parent
     Then I should see "Parent page does not exists."
 
-Scenario: User uses markdown syntax on wiki page
+  Scenario: User uses markdown syntax on wiki page
     When I go to the main page
     When I login as "johno"
     And I fill in "title" with "Markdown Page"
@@ -72,7 +72,7 @@ Scenario: User uses markdown syntax on wiki page
     And I press "Create"
     And I should see "emphasis" within "em"
 
-Scenario: User wants to see the page history
+  Scenario: User wants to see the page history
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
@@ -82,7 +82,7 @@ Scenario: User wants to see the page history
     And I should see "This is first summary"
     And I should see "This is second summary"
 
-Scenario: User wants to see the diff of two page revisions
+  Scenario: User wants to see the diff of two page revisions
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
@@ -93,7 +93,7 @@ Scenario: User wants to see the diff of two page revisions
     And I press "compare selected versions"
     Then I should see "This is second revision" within ".line-changed"
 
-Scenario: User wants to revert a revision
+  Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
@@ -103,7 +103,7 @@ Scenario: User wants to revert a revision
     Then I should see "Page successfully updated."
     And I should see "This is first revision"
 
-Scenario: User wants to add a new page part
+  Scenario: User wants to add a new page part
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
@@ -116,15 +116,15 @@ Scenario: User wants to add a new page part
     And I should see "This is a text of a new page part"
     And I should not see "Page successfully updated."
 
-Scenario: User wants to show a revision of simple page
+  Scenario: User wants to show a revision of simple page
     Given that a "main" page with multiple revisions exist
     When I go to the main page
     And I login as "johno"
     And I follow "history"
     When I follow "Show page from revision 1"
-    Then I should see "This is first revision"    
+    Then I should see "This is first revision"
 
-Scenario: User wants to show a revision of complex page
+  Scenario: User wants to show a revision of complex page
     When I go to the main page
     And I login as "johno"
     And I fill in "title" with "Root page"

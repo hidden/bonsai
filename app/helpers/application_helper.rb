@@ -12,6 +12,10 @@ module ApplicationHelper
     "#{page.get_path}?edit"
   end
 
+  def update_page_path(page)
+    "#{page.get_path}?update"
+  end
+
   def upload_file_path(page)
     "#{page.get_path}?upload"
   end

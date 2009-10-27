@@ -1,9 +1,9 @@
 Feature: Secure wiki
-    In order to have a secure wiki
-    A user
-    Should be able to set permissions for viewing, editing and managing pages.
+  In order to have a secure wiki
+  A user
+  Should be able to set permissions for viewing, editing and managing pages.
 
-Scenario: Wiki page viewable by one user
+  Scenario: Wiki page viewable by one user
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -12,14 +12,14 @@ Scenario: Wiki page viewable by one user
     When I login as "johno"
     Then I should see "Some content."
 
-Scenario: Manager can edit page permissions and page
+  Scenario: Manager can edit page permissions and page
     When I go to the main page
     And I login as "johno"
     And I create "/" page
     Then I should see "Manage"
     And I should see "Edit"
 
-Scenario: Editor cannot manage page permissions
+  Scenario: Editor cannot manage page permissions
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -30,7 +30,7 @@ Scenario: Editor cannot manage page permissions
     Then I should not see "Manage"
     And I should see "Edit"
 
-Scenario: Viewer can only view page
+  Scenario: Viewer can only view page
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -40,7 +40,7 @@ Scenario: Viewer can only view page
     Then I should not see "Manage"
     And I should not see "Edit"
 
-Scenario: Anonymous cannot see a restricted page
+  Scenario: Anonymous cannot see a restricted page
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -51,7 +51,7 @@ Scenario: Anonymous cannot see a restricted page
     Then I should not see "Edit"
     Then I should not see "Manage"
 
-Scenario: Anonymous can see a public page
+  Scenario: Anonymous can see a public page
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -59,7 +59,7 @@ Scenario: Anonymous can see a public page
     Then I should not see "Permission denied."
     Then I should see "History"
 
-Scenario: Manager adds an editor to a public page
+  Scenario: Manager adds an editor to a public page
     Given user "johno" exists
     Given user "matell" exists
     Given user "crutch" exists
@@ -78,7 +78,7 @@ Scenario: Manager adds an editor to a public page
     And I login as "matell"
     And I should see "Edit"
 
-Scenario: Manager adds another manager to a public page
+  Scenario: Manager adds another manager to a public page
     Given user "johno" exists
     Given user "matell" exists
     Given user "crutch" exists
@@ -96,7 +96,7 @@ Scenario: Manager adds another manager to a public page
     And I login as "matell"
     And I should see "Manage"
 
-Scenario: Manager adds a viewer to a public page, so it is no longer public
+  Scenario: Manager adds a viewer to a public page, so it is no longer public
     Given user "johno" exists
     Given user "matell" exists
     Given user "crutch" exists
@@ -116,7 +116,7 @@ Scenario: Manager adds a viewer to a public page, so it is no longer public
     And I login as "crutch"
     Then I should see "Permission denied."
 
-Scenario: Manager adds an editor to a non-public page
+  Scenario: Manager adds an editor to a non-public page
     Given user "johno" exists
     Given user "matell" exists
     Given user "crutch" exists
@@ -137,7 +137,7 @@ Scenario: Manager adds an editor to a non-public page
     And I login as "crutch"
     Then I should see "Permission denied."
 
-Scenario: Manager adds another manager to a non-public page
+  Scenario: Manager adds another manager to a non-public page
     Given user "johno" exists
     Given user "matell" exists
     Given user "crutch" exists
@@ -159,7 +159,7 @@ Scenario: Manager adds another manager to a non-public page
     And I login as "crutch"
     Then I should see "Permission denied."
 
-Scenario: Manager inherits permissions to view a non-public page
+  Scenario: Manager inherits permissions to view a non-public page
     Given user "johno" exists
     Given user "matell" exists
     Given user "crutch" exists
@@ -184,8 +184,8 @@ Scenario: Manager inherits permissions to view a non-public page
     And I should not see "Edit"
     And I should not see "Manage"
 
-@wip
-Scenario: Editor inherits permissions to view a non-public page
+  @wip
+  Scenario: Editor inherits permissions to view a non-public page
     Given user "johno" exists
     Given user "matell" exists
     Given user "crutch" exists

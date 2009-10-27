@@ -1,15 +1,18 @@
 Feature: Secure file uploads
-    In order to have a files secured in wiki
-    A user
-    Should be able to upload files and inherit file permissions from pages
+  In order to have a files secured in wiki
+  A user
+  Should be able to upload files and inherit file permissions from pages
 
-Scenario: User tries do download a bogus file
+  Background:
+    Given there are no files uploaded
+
+  Scenario: User tries do download a bogus file
     When I go to /bogus_file.txt
     Then I should see "File not found."
     When I go to /a/nested/bogus_file.txt
     Then I should see "File not found."
 
-Scenario: User wants to upload a file
+  Scenario: User wants to upload a file
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -19,8 +22,8 @@ Scenario: User wants to upload a file
     Then I should see "File was successfully uploaded."
     When I go to /test_file.txt
     Then I should see "Some text in file."
-    
-Scenario: User uploads a file under a restricted page and different user wants to download it
+
+  Scenario: User uploads a file under a restricted page and different user wants to download it
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -35,29 +38,29 @@ Scenario: User uploads a file under a restricted page and different user wants t
     And I go to /test_file.txt
     Then I should see "Permission denied."
 
-Scenario: User tries do download a bogus file and then upload it
+  Scenario: User tries do download a bogus file and then upload it
     When I go to the main page
     And I login as "johno"
     And I create "/" page
     And I go to /test_file2.txt
     Then I should see "File not found."
-    When I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
+    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
 
-Scenario: User tries do download a bogus file and then upload it with diffrent name
+  Scenario: User tries do download a bogus file and then upload it with diffrent name
     When I go to the main page
     And I login as "johno"
     And I create "/" page
     And I go to /bogus_file.txt
     Then I should see "File not found."
-    When I attach the file at "test_file3.txt" to "uploaded_file_uploaded_data"
+    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     When I go to /bogus_file.txt
     Then I should see "Some text in file."
 
-Scenario: User tries do download a bogus file and then upload difrent type of file
+  Scenario: User tries do download a bogus file and then upload difrent type of file
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -69,13 +72,12 @@ Scenario: User tries do download a bogus file and then upload difrent type of fi
     When I go to /bogus_still_file.txt
     Then I should see "File not found."
 
-Scenario: User tries do download a bogus file
+  Scenario: User tries do download a bogus file
     When I go to /bogus_still_file.txt
     Then I should see "File not found."
     And I should not see "You can upload this file."
 
-@wip
-Scenario: User tries do download a bogus file and then upload difrent type of file
+  Scenario: User tries do download a bogus file and then upload difrent type of file
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -88,8 +90,7 @@ Scenario: User tries do download a bogus file and then upload difrent type of fi
     And I go to /new_page/link.txt
     Then I should see "File not found."
 
-@wip
-Scenario: User tries do download a bogus file and then upload difrent type of file
+  Scenario: User tries do download a bogus file and then upload difrent type of file
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -102,7 +103,7 @@ Scenario: User tries do download a bogus file and then upload difrent type of fi
     And I go to /new_page/link.txt
     Then I should see "Some text in file."
 
-Scenario: Check page's files
+  Scenario: Check page's files
     When I go to the main page
     And I login as "johno"
     And I create "/" page
