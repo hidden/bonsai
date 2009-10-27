@@ -1,7 +1,6 @@
-require 'ldap'
-
 class SimpleLDAP
   def self.authenticate(login, password, host, port, base, attributes = ['cn'])
+    require 'ldap'
     connection = LDAP::Conn.new(host, port)
     connection.set_option(LDAP::LDAP_OPT_PROTOCOL_VERSION, 3)
     result = nil
