@@ -33,7 +33,7 @@ Rails::Initializer.run do |config|
   config.gem 'diff-lcs', :lib => 'diff/lcs'
   config.gem 'maruku'
   config.gem 'chronic', :version => ">= 0.2.3"
-  config.gem 'javan-whenever', :lib => false, :source => 'http://gems.github.com'
+  config.gem 'whenever', :lib => false, :source => "http://gemcutter.org/"
 
   # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.
