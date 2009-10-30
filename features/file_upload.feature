@@ -116,3 +116,20 @@ Feature: Secure file uploads
     When I follow "files"
     Then I should see "test_file.txt"
     And I should see "test_file2.txt"
+
+  Scenario: User uploads some files and wants to see them without listing subdirectories
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I follow "Edit"
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I create "/nested/" page
+    And I go to /nested/?edit
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I go to the main page
+    When I follow "Files"
+    And show me the page
+    Then I should see "test_file.txt"
+    And I should not see "nested"
