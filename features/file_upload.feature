@@ -101,7 +101,7 @@ Feature: Secure file uploads
     And I go to /new_page/link.txt
     Then I should see "Some text in file."
 
-  Scenario: Check page's files
+  Scenario: User uploads some files and wants to see them all
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -116,6 +116,13 @@ Feature: Secure file uploads
     When I follow "files"
     Then I should see "test_file.txt"
     And I should see "test_file2.txt"
+
+  Scenario: User uploads no files and tries to view a listing
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I follow "Files"
+    Then I should see "No files uploaded for this page"
 
   Scenario: User uploads some files and wants to see them without listing subdirectories
     When I go to the main page

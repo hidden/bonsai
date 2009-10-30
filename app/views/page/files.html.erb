@@ -1,22 +1,28 @@
-<table>
-  <thead>
-  <tr>
-    <th>File</th>
-    <th>Uploader</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% for file in @page.files %>
+<% if @page.files.empty? then %>
+    <p>No files uploaded for this page.</p>
+<% else %>
+    <table>
+      <thead>
       <tr>
-        <% if file.respond_to? :user %>
-            <td><%= link_to file.filename, file.filename %></td>
-            <td><%= h file.user.full_name %></td>
-        <% else %>
-            <td><%= link_to file, file %></td>
-            <td>unknown</td>
-        <% end %>
+        <th>File</th>
+        <th>Uploader</th>
       </tr>
-  <% end %>
-  </tbody>
-</table>
+      </thead>
+      <tbody>
+      <% for file in @page.files %>
+          <tr>
+            <% if file.respond_to? :user %>
+                <td><%= link_to file.filename, file.filename %></td>
+                <td><%= h file.user.full_name %></td>
+            <% else %>
+                <td><%= link_to file, file %></td>
+                <td>unknown</td>
+            <% end %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>
+
+
 

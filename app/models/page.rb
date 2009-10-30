@@ -47,7 +47,8 @@ class Page < ActiveRecord::Base
   def files
     uploaded_file_names = self.uploaded_files.collect(&:filename)
     path = 'shared/upload' + get_path
-    files_from_file_system = Dir.entries(path).reject do |file|
+    entries = File.directory?(path) ? Dir.entries(path) : []
+    files_from_file_system = entries.reject do |file|
       uploaded_file_names.include?(file) or !File.file?(path + file) 
     end
     self.uploaded_files + files_from_file_system
