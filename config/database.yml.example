@@ -3,8 +3,8 @@ development:
   encoding: utf8
   database: bonsai_development
   pool: 5
-  username: root
-  password: test
+  username: bonsai
+  password: bonsai
   host: localhost
 
 test: &TEST
@@ -12,8 +12,8 @@ test: &TEST
   encoding: utf8
   database: bonsai_test
   pool: 5
-  username: root
-  password: test
+  username: bonsai
+  password: bonsai
   host: localhost
   
 production:
