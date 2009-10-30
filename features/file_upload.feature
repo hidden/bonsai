@@ -130,6 +130,5 @@ Feature: Secure file uploads
     And I press "Upload"
     And I go to the main page
     When I follow "Files"
-    And show me the page
     Then I should see "test_file.txt"
     And I should not see "nested"
