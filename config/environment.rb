@@ -11,7 +11,6 @@ RAILS_GEM_VERSION = '2.3.4' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 
 require 'ldap/simple_ldap'
-require 'diff/lcs'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -23,7 +22,7 @@ Rails::Initializer.run do |config|
   # you must remove the Active Record framework.
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
 
-  # Specify gems that this application depends on. 
+  # Specify gems that this application depends on.
   # They can then be installed with "rake gems:install" on new installations.
   # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)
   # config.gem "bj"
@@ -31,12 +30,12 @@ Rails::Initializer.run do |config|
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
-  config.gem "cucumber"
-  config.gem "webrat"
+  config.gem 'diff-lcs', :lib => 'diff/lcs'
   config.gem 'maruku'
+  config.gem 'chronic', :version => ">= 0.2.3"
   config.gem 'javan-whenever', :lib => false, :source => 'http://gems.github.com'
 
-  # Only load the plugins named here, in the order given. By default, all plugins 
+  # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
