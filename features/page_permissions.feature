@@ -66,11 +66,7 @@ Feature: Secure wiki
     When I go to the main page
     And I login as "johno"
     And I create "/" page
-    And I follow "Manage"
-    And I select "johno" from "groups_id"
-    And I select "matell" from "groups_id"
-    And I check "can_edit"
-    And I press "Set"
+    And I add "matell,johno" editor permission
     And I logout
     And I login as "crutch"
     Then I should not see "Edit"
@@ -85,10 +81,7 @@ Feature: Secure wiki
     When I go to the main page
     And I login as "johno"
     And I create "/" page
-    And I follow "Manage"
-    And I select "matell" from "groups_id"
-    And I check "can_manage"
-    And I press "Set"
+    And I add "matell" manager permission
     And I logout
     And I login as "crutch"
     Then I should not see "Manage"
@@ -104,7 +97,8 @@ Feature: Secure wiki
     And I login as "johno"
     And I create "/" page
     And I follow "Manage"
-    And I select "matell" from "groups_id"
+    And I fill in "add_group" with "matell"
+    #And I select "matell" from "groups_id"
     And I check "can_view"
     And I press "Set"
     And I go to the main page
@@ -115,6 +109,7 @@ Feature: Secure wiki
     And I logout
     And I login as "crutch"
     Then I should see "Permission denied."
+    
 
   Scenario: Manager adds an editor to a non-public page
     Given user "johno" exists
@@ -125,10 +120,7 @@ Feature: Secure wiki
     And I create "/" page
     And page "/" is viewable by "johno"
     And page "/" is editable by "johno"
-    And I follow "Manage"
-    And I select "matell" from "groups_id"
-    And I check "can_edit"
-    And I press "Set"
+    And I add "matell" editor permission
     And I logout
     And I login as "matell"
     Then I should not see "Permission denied."
@@ -146,10 +138,7 @@ Feature: Secure wiki
     And I create "/" page
     And page "/" is viewable by "johno"
     And page "/" is editable by "johno"
-    And I follow "Manage"
-    And I select "matell" from "groups_id"
-    And I check "can_manage"
-    And I press "Set"
+    And I add "matell" manager permission
     And I logout
     And I login as "matell"
     Then I should not see "Permission denied."
