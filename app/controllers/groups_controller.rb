@@ -14,6 +14,11 @@ class GroupsController < ApplicationController
     @users = User.all(:conditions => ["username LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'username')
     render :partial => 'autocomplete_users'
   end
+  def autocomplete_for_groups
+      @groups = Group.all(:conditions => ["name LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'name')
+      render :partial => 'autocomplete_groups'
+    end
+  
 
   # GET /groups
   # GET /groups.xml
