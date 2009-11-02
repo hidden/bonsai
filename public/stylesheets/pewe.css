@@ -176,7 +176,7 @@ dt {
 	margin-bottom: 0.75em;
 }
 
-#content li {
+#content ul li {
   list-style-image: url("/images/layouts/pewe/bg_bullet.png");
 }
 
@@ -189,7 +189,7 @@ ul#history {
   padding: 4px 0;
 }
 
-#history li {
+ul#history li {
   list-style: none;
   float: left;
   margin: 0 .5em;
