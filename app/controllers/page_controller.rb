@@ -267,58 +267,62 @@ class PageController < ApplicationController
   end
 
   def update
-    @page.title = params[:title]
-    if @current_user.can_manage_page? @page
-      @page.layout = params[:layout].empty? ? nil : params[:layout]
-    end
-    @page.save
-    params[:parts].each do |part_name, body|
-      page_part = PagePart.find_by_name_and_page_id(part_name, @page.id)
-      current_revision = page_part.current_page_part_revision
+     @page.title = params[:title]
+     if @current_user.can_manage_page? @page
+       @page.layout = params[:layout].empty? ? nil : params[:layout]
+     end
+     @page.save
+     params[:parts].each do |part_name, body|
+       page_part = PagePart.find_by_name_and_page_id(part_name, @page.id)
+       s = "page_part_name_" + part_name
+       current_revision = page_part.current_page_part_revision
+       params[s]
+       page_part
+        revision = nil
+       if(params[s] != part_name || page_part.current_page_part_revision.body != body ||
+             current_revision.was_deleted && (params[:is_deleted].blank? || params[:is_deleted][part_name].blank?) ||
+             !current_revision.was_deleted && !params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?)
 
-      revision = nil
-      if(page_part.current_page_part_revision.body != body ||
-            current_revision.was_deleted && (params[:is_deleted].blank? || params[:is_deleted][part_name].blank?) ||
-            !current_revision.was_deleted && !params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?)
+         revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary])
+         if(!current_revision.was_deleted && (!params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?))
+           revision.was_deleted = true
+         end
+         unless(revision.valid?)
+           error_message = ""
+           revision.errors.each_full { |msg| error_message << msg }
+           @page_part = page_part
+           @page_revision = revision
+           flash[:error] = error_message
+           render :action => "edit"
+           return true
+         end
+         revision.save!
+         page_part.current_page_part_revision = revision
+         page_part.name = params[s]
+         page_part.save!
+       end
+     end
+     flash[:notice] = 'Page successfully updated.'
+     redirect_to @page.get_path
+   end
 
-        revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary])
-        if(!current_revision.was_deleted && (!params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?))
-          revision.was_deleted = true
-        end
-        unless(revision.valid?)
-          error_message = ""
-          revision.errors.each_full { |msg| error_message << msg }
-          @page_part = page_part
-          @page_revision = revision
-          flash[:error] = error_message
-          render :action => "edit"
-          return true
-        end
-        revision.save!
-        page_part.current_page_part_revision = revision
-        page_part.save!
-      end
-    end
-    flash[:notice] = 'Page successfully updated.'
-    redirect_to @page.get_path
-  end
-
-  def new_part
-    page_part = PagePart.create(:name => params[:new_page_part_name], :page => @page, :current_page_part_revision_id => 0)
-    unless page_part.valid?
-      error_message = ""
-      page_part.errors.each_full { |msg| error_message << msg }
-      flash[:error] = error_message
-      render :action => "edit"
-      return true
-    end
-    page_part_revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => params[:new_page_part_text], :summary => "init")
-    page_part_revision.save
-    page_part.current_page_part_revision = page_part_revision
-    page_part.save!
-    flash[:notice] = 'Page part successfully added.'
-    redirect_to @page.get_path + "?edit"
-  end
+   def new_part
+    page_part = @page.page_parts.find_by_name(params[:new_page_part_name])
+    page_part = PagePart.create(:name => params[:new_page_part_name], :page => @page, :current_page_part_revision_id => 0) if page_part.nil?
+     unless page_part.valid?
+       error_message = ""
+       page_part.errors.each_full { |msg| error_message << msg }
+       flash[:error] = error_message
+       render :action => "edit"
+       return true
+     end
+     page_part_revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => params[:new_page_part_text], :summary => "init")
+     page_part_revision.save
+     page_part.current_page_part_revision = page_part_revision
+     page_part.save!
+     flash[:notice] = 'Page part successfully added.'
+     redirect_to @page.get_path + "?edit"
+   end
 
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
