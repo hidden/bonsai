@@ -15,6 +15,7 @@
         <% end %>
         <%= render :partial => 'maruku_help' %>
         <p>
+          Name of page part: <%= text_field_tag("page_part_name_#{part.name}", part.name) %><br/><br/>
           <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
           <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
           <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
