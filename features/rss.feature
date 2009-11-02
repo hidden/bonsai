@@ -7,29 +7,29 @@ Feature: Wiki
   Scenario: check if RSS feeds from page menu works properly
     When I go to the main page
     And I login as "johno"
-    And I fill in "title" with "Root page"
-    And I fill in "body" with "Root body!"
-    And I fill in "summary" with "A change"
-    And I select "PeWe Layout" from "layout"
-    And I press "Create"
+    And I create "/" page with title "Root page"
     And I follow "RSS feed of page changes"
     Then I should see "Root page changes"
+
+  Scenario: check if RSS feed of page changes from page menu works properly without login
+      When I go to the main page
+      And I login as "johno"
+      And I create "/" page with title "Root page"
+      And I follow "RSS feed of page changes"
+      Then I should see "Root page changes"
+      When I go to the main page
+      And I follow "Log out"
+      And I follow "RSS feed of page changes"
+      Then I should see "Root page changes"
 
   Scenario: check if RSS works properly
     When I go to the main page
     And I login as "johno"
-    And I fill in "title" with "Root page"
-    And I fill in "body" with "Root body!"
-    And I fill in "summary" with "A change"
-    And I select "PeWe Layout" from "layout"
-    And I press "Create"
+    And I create "/" page with title "Root page"
     And I follow "RSS feed of page changes"
     Then I should see "Root page changes"
     When I go to the main page
-    And I follow "Edit"
-    And I fill in "title" with "Some NEW title"
-    And I press "Save"
-    Then I should see "Page successfully updated."
+    And I edit "/" page with title "Some NEW title"
     And I follow "RSS feed of page changes"
     Then I should see "Some NEW title changes"
 
@@ -49,17 +49,5 @@ Feature: Wiki
     When I go to /?rss
     Then I should not see "Some title changes"
 
-  Scenario: check if RSS feed of page changes from page menu works properly without login
-    When I go to the main page
-    And I login as "johno"
-    And I fill in "title" with "Root page"
-    And I fill in "body" with "Root body!"
-    And I fill in "summary" with "A change"
-    And I select "PeWe Layout" from "layout"
-    And I press "Create"
-    And I follow "Log out"
-    And I follow "RSS feed of page changes"
-    Then I should see "Root page changes"
-    
 
     
