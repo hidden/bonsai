@@ -254,16 +254,16 @@ class PageController < ApplicationController
   end
 
   def set_permissions
-    if params[:groups]
-      groups = params[:groups][:id]
-      groups.each do |group_id|
-        group = Group.find(group_id)
-        @page.add_viewer group if params[:can_view]
-        @page.add_editor group if params[:can_edit]
-        @page.add_manager group if params[:can_manage]
-      end
-    end
-    redirect_to @page.get_path + "?manage"
+   addedgroups =  params[:add_group].split(",")
+       for addedgroup in addedgroups
+         groups = Group.find_all_by_name(addedgroup)
+          for group in groups
+            @page.add_viewer group if params[:can_view]
+            @page.add_editor group if params[:can_edit]
+            @page.add_manager group if params[:can_manage]
+          end
+       end
+        redirect_to @page.get_path + "?manage"
   end
 
   def update
