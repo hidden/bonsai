@@ -27,6 +27,10 @@ class Page < ActiveRecord::Base
     self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
   end
 
+  def get_rel_path
+    (self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/').sub("/","")
+  end
+
   def full_title
     self.self_and_ancestors.collect {|node| node.title}.reverse.join(' | ')
   end

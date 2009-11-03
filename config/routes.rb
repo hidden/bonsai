@@ -7,6 +7,7 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   map.connect 'page/new', :controller => "page", :action => "create"
+  map.page_history 'wiki/history/*path', :controller => "page_history", :action => "show"
   map.connect 'users/:action', :controller => "users"
 
 
