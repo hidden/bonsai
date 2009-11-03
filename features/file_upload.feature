@@ -16,7 +16,7 @@ Feature: Secure file uploads
     When I go to the main page
     And I login as "johno"
     And I create "/" page
-    #And I upload "test_file.txt" file
+  #And I upload "test_file.txt" file
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
@@ -104,7 +104,7 @@ Feature: Secure file uploads
     And I go to /new_page/link.txt
     Then I should see "Some text in file."
 
-  Scenario: Check page's files
+  Scenario: User uploads some files and wants to see them all
     When I go to the main page
     And I login as "johno"
     And I create "/" page
@@ -118,4 +118,27 @@ Feature: Secure file uploads
     Then I should see "File was successfully uploaded."
     When I follow "files"
     Then I should see "test_file.txt"
-    And I should see "test_file2.txt"
+    And I should see "test_file2.txt"    
+
+  Scenario: User uploads some files and wants to see them without listing subdirectories
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I follow "Edit"
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I create "/nested/" page
+    And I go to /nested/?edit
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I go to the main page
+    When I follow "Files"
+    Then I should see "test_file.txt"
+    And I should not see "nested"
+
+  Scenario: User uploads no files and tries to view a listing
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I follow "Files"
+    Then I should see "No files uploaded for this page"
