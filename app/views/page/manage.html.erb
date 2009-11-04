@@ -31,23 +31,23 @@
             <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent))) %>
               <td>-</td>
             <% else %>
-              <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), ";change_permission?index=#{index}&permission=can_view", {:method => :post}  %></td>
+              <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), "#{@page.get_path};change_permission?index=#{index}&permission=can_view", {:method => :post}  %></td>
             <% end %>
             <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent))) %>
               <td>-</td>
             <% else %>
-              <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), ";change_permission?index=#{index}&permission=can_edit", {:method => :post}  %></td>
+              <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), "#{@page.get_path};change_permission?index=#{index}&permission=can_edit", {:method => :post}  %></td>
             <% end %>
-            <td><%= link_to image_boolean(permission.can_manage, 'Toggle permission'), ";change_permission?index=#{index}&permission=can_manage", {:method => :post}  %></td>
+            <td><%= link_to image_boolean(permission.can_manage, 'Toggle permission'), "#{@page.get_path};change_permission?index=#{index}&permission=can_manage", {:method => :post}  %></td>
 
           <% end %>
-          <td><%= link_to "remove", "?remove_permission&index=#{index}", {:method => :post}  %></td>
+          <td><%= link_to "remove", "#{@page.get_path}?remove_permission&index=#{index}", {:method => :post}  %></td>
         </tr>
       <% end %>
       <tr>
         <td>Everyone</td>
-        <td><%= link_to image_boolean(@page.is_public?, 'Toggle permission'), ";switch_public", {:method => :post} %></td>
-        <td><%= link_to image_boolean(@page.is_editable?, 'Toggle permission'), ";switch_editable", {:method => :post} %></td>
+        <td><%= link_to image_boolean(@page.is_public?, 'Toggle permission'), "#{@page.get_path};switch_public", {:method => :post} %></td>
+        <td><%= link_to image_boolean(@page.is_editable?, 'Toggle permission'), "#{@page.get_path};switch_editable", {:method => :post} %></td>
         <td></td>
       </tr>
     </tbody>

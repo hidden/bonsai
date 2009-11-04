@@ -9,15 +9,15 @@ module ApplicationHelper
   end
 
   def edit_page_path(page)
-    "#{page.get_path}?edit"
+    "#{page.get_path};edit"
   end
 
   def update_page_path(page)
-    "#{page.get_path}?update"
+    "#{page.get_path};update"
   end
 
   def upload_file_path(page)
-    "#{page.get_path}?upload"
+    "#{page.get_path};upload"
   end
 
   def markdown(text)

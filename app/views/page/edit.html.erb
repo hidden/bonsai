@@ -36,7 +36,7 @@
 
   <p>Or <a href="#" onclick="return toggleDiv(event);">add a new page part</a>.</p>
   <div style="display: none;">
-    <% form_tag "?new-part" do %>
+    <% form_tag ";new_part" do %>
       <p>
         <%= label_tag "new page part name" %><br />
         <%= text_field_tag('new_page_part_name') %>

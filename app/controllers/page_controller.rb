@@ -1,7 +1,8 @@
 class PageController < ApplicationController
   before_filter :load_page
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
-  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,'new-part']
+  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,:new_part]
+  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :files]
 
 
   def handle
@@ -20,49 +21,23 @@ class PageController < ApplicationController
       return
     end
     
-    # manager actions
-    if @current_user.can_manage_page? @page
-      if params.include? 'manage' then render :action => :manage and return
-      elsif params.include? 'change-permission' then change_permission and return
-      elsif params.include? 'set-permissions' then set_permissions and return
-      elsif params.include? 'remove-permission' then remove_permission and return
-      elsif params.include? 'switch-public' then switch_public and return
-      elsif params.include? 'switch-editable' then switch_editable and return
-      end
-    end
-
-    # editor actions
-    if @current_user.can_edit_page? @page
-      if params.include? 'edit' then edit and return
-      elsif params.include? 'update' then update and return
-      elsif params.include? 'upload' then upload and return
-      elsif params.include? 'undo' then undo and return
-      elsif params.include? 'new-part' then new_part and return
-      end
-    end
-
-    # viewer actions
-    if params.include? 'rss'
-      user_from_token = User.find_by_token params[:token]
-      user_from_token = AnonymousUser.new if user_from_token.nil?
-      if user_from_token.can_view_page? @page
-        rss_history
-      else
-        render :nothing => true, :status => :forbidden
-      end
+    if @current_user.can_view_page? @page
+      view
       return
     end
 
-    if @current_user.can_view_page? @page
-      if params.include? 'history' then render :action => :show_history and return
-      elsif params.include? 'revision' then show_revision and return
-      elsif params.include? 'diff' then diff and return
-      elsif params.include? 'files' then files and return
-      else view and return
-      end
-    end
     unprivileged
   end
+  
+  def rss
+    user_from_token = User.find_by_token params[:token]
+    user_from_token = AnonymousUser.new if user_from_token.nil?
+    if user_from_token.can_view_page? @page
+      rss_history
+    else
+      render :nothing => true, :status => :forbidden
+    end  
+  end 
 
   def view
     @hide_view_in_toolbar = true
@@ -73,6 +48,10 @@ class PageController < ApplicationController
   def unprivileged
     @hide_view_in_toolbar = true
     render :action => :unprivileged
+  end
+
+  def show_history
+    render :action => :show_history
   end
 
   def diff
@@ -266,23 +245,6 @@ class PageController < ApplicationController
        end
         redirect_to @page.get_path + "?manage"
   end
-  
-
-  private
-  def load_page
-    @path = params[:path]
-    @page = Page.find_by_path(@path)
-  end
-  
-  def can_manage_page_check
-   unless @current_user.can_manage_page? @page then unprivileged end
-  end
-  
-  def can_edit_page_check
-    unless @current_user.can_edit_page? @page then unprivileged end
-  end
-  
-
 
   def update
      @page.title = params[:title]
@@ -339,7 +301,7 @@ class PageController < ApplicationController
      page_part.current_page_part_revision = page_part_revision
      page_part.save!
      flash[:notice] = 'Page part successfully added.'
-     redirect_to @page.get_path + "?edit"
+     redirect_to @page.get_path + ";edit"
    end
 
   def upload
@@ -362,10 +324,28 @@ class PageController < ApplicationController
         flash[:notice] = error_message
         render :action => :edit
       end
-      end
     end
-    
-  def files
-    render :action => :files
   end
+
+
+  
+
+  private
+  def load_page
+    @path = params[:path]
+    @page = Page.find_by_path(@path)
+  end
+  
+  def can_manage_page_check
+   unless @current_user.can_manage_page? @page then unprivileged end
+  end
+  
+  def can_edit_page_check
+    unless @current_user.can_edit_page? @page then unprivileged end
+  end
+  
+  def can_view_page_check
+    unless @current_user.can_view_page? @page then unprivileged end
+  end
+
 end

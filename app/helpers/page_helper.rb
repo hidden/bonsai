@@ -4,8 +4,8 @@ module PageHelper
   end
 
   def rss_url page, user
-    token_string = user.token.nil? ? '' : "&amp;token=#{user.token}"
-    page.get_path + '?rss' + token_string
+    token_string = user.token.nil? ? '' : "?token=#{user.token}"
+    page.get_path + ';rss' + token_string
   end
 
   def link_to_page page

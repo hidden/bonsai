@@ -1,6 +1,6 @@
 <div class="bonsai">
   <h1>Changes for page: <%= @page.title %></h1>
-  <% form_tag("#{@page.get_path}?diff", {:method => :get}) do %>
+  <% form_tag("#{@page.get_path};diff", {:method => :get}) do %>
     <%= submit_tag 'compare selected versions', :name => nil %>
     <%= hidden_field_tag 'diff' %>
     <ul>
@@ -15,9 +15,9 @@
           <%=h revision.user.username %> edited <%= revision.page_part.name %>
           <% unless revision.summary.empty? %>(<%=h revision.summary %>),<% end %>
           <% if @current_user.can_edit_page? @page %>
-            <%=  link_to "Revert to revision #{counter}", @page.get_path + "?undo&revision=" + index.to_s, {:method => :post} %>
+            <%=  link_to "Revert to revision #{counter}", page_path(@page.get_rel_path, :undo, :revision => index.to_s), {:method => :post} %>
           <% end %>
-          <%=  link_to "Show page from revision #{counter}", @page.get_path + "?view&revision=" + index.to_s %>
+          <%=  link_to "Show page from revision #{counter}", page_path(@page.get_rel_path, :show_revision, :revision => index.to_s) %>
         </li>
       <% end %>
     </ul>

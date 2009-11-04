@@ -12,11 +12,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'page/new', :controller => "page", :action => "create"
 
-
   map.page '*path;:action', :controller => "page"
-  map.page_history 'wiki/history/:action/*path', :controller => "page_history"#, :action => "show"
-
-
 
   map.connect 'users/:action', :controller => "users"
 
