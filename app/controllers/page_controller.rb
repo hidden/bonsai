@@ -93,7 +93,7 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
   
   def switch_editable
@@ -106,7 +106,7 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
 
   def change_permission
@@ -127,13 +127,13 @@ class PageController < ApplicationController
       page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
     end
     page_permission.save
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
 
   def remove_permission
     page_permission = @page.page_permissions[params[:index].to_i]
     page_permission.destroy
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
 
   def process_file
@@ -243,7 +243,7 @@ class PageController < ApplicationController
             @page.add_manager group if params[:can_manage]
           end
        end
-        redirect_to @page.get_path + "?manage"
+        redirect_to @page.get_path + ";manage"
   end
 
   def update
