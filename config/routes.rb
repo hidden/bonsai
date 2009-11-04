@@ -1,4 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
+  ActionController::Routing::SEPARATORS <<  ";" unless ActionController::Routing::SEPARATORS.include?(";")
+
+
   map.resources :groups, :member => {:switch_public => :put, :switch_editable => :put}, :collection => { :autocomplete_for_user => :get, :autocomplete_for_groups => :get }
   map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
   map.resources :pages do |page|
@@ -6,8 +9,15 @@ ActionController::Routing::Routes.draw do |map|
       page_part.resources :page_part_revisions
     end
   end
+
   map.connect 'page/new', :controller => "page", :action => "create"
-  map.page_history 'wiki/history/*path', :controller => "page_history", :action => "show"
+
+
+  map.page '*path;:action', :controller => "page"
+  map.page_history 'wiki/history/:action/*path', :controller => "page_history"#, :action => "show"
+
+
+
   map.connect 'users/:action', :controller => "users"
 
 

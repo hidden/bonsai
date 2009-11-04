@@ -2,6 +2,7 @@ class Page < ActiveRecord::Base
   acts_as_nested_set
   validates_uniqueness_of :sid, :scope => :parent_id
 
+
   has_many :page_parts, :dependent => :destroy, :order => 'name'
   has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC, id DESC'
 
@@ -28,7 +29,9 @@ class Page < ActiveRecord::Base
   end
 
   def get_rel_path
-    (self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/').sub("/","")
+    a = self.self_and_ancestors.collect {|node| node.sid }
+    a.delete_at(0)
+    return a
   end
 
   def full_title

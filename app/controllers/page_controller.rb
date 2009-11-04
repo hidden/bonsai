@@ -1,14 +1,16 @@
 class PageController < ApplicationController
-  def handle
-    @path = params[:path]
+  before_filter :load_page
+  before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
+  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,'new-part']
 
+
+  def handle
     # is it a file?
     if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
       process_file
       return
     end
 
-    @page = Page.find_by_path(@path)
     if @page.nil?
       unless @current_user.logged?
         unprivileged
@@ -248,11 +250,10 @@ class PageController < ApplicationController
     render :action => :rss_history, :layout => false
   end
 
-  private
   def edit
     render :action => :edit
   end
-
+  
   def set_permissions
    addedgroups =  params[:add_group].split(",")
        for addedgroup in addedgroups
@@ -265,6 +266,23 @@ class PageController < ApplicationController
        end
         redirect_to @page.get_path + "?manage"
   end
+  
+
+  private
+  def load_page
+    @path = params[:path]
+    @page = Page.find_by_path(@path)
+  end
+  
+  def can_manage_page_check
+   unless @current_user.can_manage_page? @page then unprivileged end
+  end
+  
+  def can_edit_page_check
+    unless @current_user.can_edit_page? @page then unprivileged end
+  end
+  
+
 
   def update
      @page.title = params[:title]
