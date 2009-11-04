@@ -113,8 +113,29 @@ Feature: Wiki
     And I follow "Show page from revision 2"
     Then I should see "This is a header"
     And I should see "Root body!"
+    
+  Scenario: User wants to show a revision of page with inherited pagepart
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    When I follow "edit"
+    And I select "PeWe Layout" from "layout"
+    And I press "Save"
+    When I follow "edit"
+    And I fill in "new_page_part_name" with "caption"
+    And I fill in "new_page_part_text" with "This is original caption."
+    And I press "Add new page part"
+    And I create "/test" page
+    And I go to the main page
+    When I follow "edit"
+    And I fill in "parts_caption" with "This is modified caption."
+    And I press "Save"
+    When I go to the test page
+    And I follow "history"
+    And I follow "Show page from revision 1"
+    Then I should see "This is original caption."
 
-    @wip
+  @wip
   Scenario: User wants to go to page without /
     When I go to the main page
     And I login as "johno"
