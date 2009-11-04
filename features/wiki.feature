@@ -113,3 +113,16 @@ Feature: Wiki
     And I follow "Show page from revision 2"
     Then I should see "This is a header"
     And I should see "Root body!"
+
+    @wip
+  Scenario: User wants to go to page without /
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page with title "Root page" body "Root body!"
+    And I create "/nested/" page with title "Nested page" body "[linka](test_file.txt)"
+    And I follow "edit"
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I go to /nested
+    When I follow "linka"
+    Then I should not see "File not found"

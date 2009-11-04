@@ -1,5 +1,6 @@
 class PageController < ApplicationController
   def handle
+    session[:link_back] = nil
     @path = params[:path]
 
     # is it a file?
@@ -17,7 +18,7 @@ class PageController < ApplicationController
       end
       return
     end
-    
+
     # manager actions
     if @current_user.can_manage_page? @page
       if params.include? 'manage' then render :action => :manage and return
@@ -36,7 +37,13 @@ class PageController < ApplicationController
       elsif params.include? 'upload' then upload and return
       elsif params.include? 'undo' then undo and return
       elsif params.include? 'new-part' then new_part and return
+      elsif params.include? 'files' then files and return
       end
+    end
+
+    # for logged user
+    if @current_user.logged?
+      if params.include? 'groups' then groups and return end
     end
 
     # viewer actions
@@ -55,14 +62,19 @@ class PageController < ApplicationController
       if params.include? 'history' then render :action => :show_history and return
       elsif params.include? 'revision' then show_revision and return
       elsif params.include? 'diff' then diff and return
-      elsif params.include? 'files' then files and return
-      else view and return
+      else view #and return
       end
+    else
+      unprivileged
     end
-    unprivileged
   end
 
   def view
+    link = request.env['PATH_INFO']
+    unless link.ends_with?('/')
+      redirect_to link + '/'
+      return
+    end
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
@@ -350,4 +362,10 @@ class PageController < ApplicationController
   def files
     render :action => :files
   end
+
+  def groups
+    @page = Page.find_by_path(@path)
+    session[:link_back] = @page.get_path
+    redirect_to groups_path
+    end
 end
