@@ -117,5 +117,6 @@ Feature: Wiki
     And I go to /nested_page/
     And I follow "Groups"
     Then I should see "Groups Management"
-    When I follow "Return to page"
+    When I follow "New group"
+    And I follow "Return to page"
     Then I should see "Nested title"
