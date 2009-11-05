@@ -1,18 +1,14 @@
-set :application, "bonsai"
-set :repository,  "http://bitbucket.org/johno/bonsai/"
+set :application, "wiki"
+set :repository,  "git://github.com/jsuchal/bonsai.git"
 
-# If you aren't deploying to /u/apps/#{application} on the target
-# servers (which is the default), you can specify the actual location
-# via the :deploy_to variable:
 set :deploy_to, "/var/rails/#{application}"
-set :user, "bonsai"
+set :user, "wiki"
 set :use_sudo, false
+set :ssh_options, {:forward_agent => true}
 
-# If you aren't using Subversion to manage your source code, specify
-# your SCM below:
-set :scm, :mercurial
+set :scm, :git
 
-server "nimbus.fiit.stuba.sk", :app, :web, :db, :primary => true
+server "kif.fiit.stuba.sk", :app, :web, :db, :primary => true
 
 namespace :passenger do
   desc "Restart Application"
@@ -31,6 +27,10 @@ namespace :deploy do
     run "ln -nfs #{shared_path} #{release_path}/shared"
   end
 
+  task :symlink_database_yml do
+    run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+  end
+
   task "restart", :roles => :app do
     passenger.restart
   end
@@ -44,4 +44,5 @@ namespace :deploy do
 end
 
 after 'deploy:update_code', 'deploy:symlink_shared'
+after "deploy:finalize_update", 'deploy:symlink_database_yml'
 after "deploy:symlink", "deploy:update_crontab"
