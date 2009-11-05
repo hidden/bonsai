@@ -17,7 +17,7 @@
       <% if @current_user.can_manage_page? @page %><%= link_to image_tag('icons/page_white_key.png', :alt => '') + " Manage", manage_page_path(@page)%><% end %>
       <% if @current_user.logged? %><%= link_to image_tag('icons/group.png', :alt => '') + " Groups", groups_page_path(@page)%><% end %>
       <% if @current_user.can_edit_page? @page %><%= link_to image_tag('icons/page_white_link.png', :alt => '') + " Files", files_page_path(@page)%><% end %>
-      <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/view_design_summary.png', :alt => '') + " Summary", '?pagesib' %><% end %>
+      <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/view_design_summary.png', :alt => '') + " Summary", summary_page_path(@page)%><% end %>
       <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => "RSS feed of page changes" %><% end %>
     </p>
     <% end %>

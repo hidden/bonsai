@@ -32,12 +32,16 @@ module ApplicationHelper
    "#{page.get_path}?files"
   end
 
+ def summary_page_path(page)
+   "#{page.get_path}?pagesib"
+  end
+
   def view_page_path(page)
     page.get_path
   end
 
   def groups_page_path(page)
-    "#{page.get_path}?groups"
+    groups_path+"?back=#{page.get_path}"
   end
 
   def markdown(text)
