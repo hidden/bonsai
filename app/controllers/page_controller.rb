@@ -62,6 +62,7 @@ class PageController < ApplicationController
       if params.include? 'history' then render :action => :show_history and return
       elsif params.include? 'revision' then show_revision and return
       elsif params.include? 'diff' then diff and return
+      elsif params.include? 'pagesib' then pagesib and return
       else view #and return
       end
     else
@@ -89,6 +90,10 @@ class PageController < ApplicationController
     @first_revision = @page.page_parts_revisions[params[:first_revision].to_i]
     @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
     render :action => 'diff'
+  end
+
+  def pagesib
+     render :action =>'page_siblings'
   end
   
   def show_revision

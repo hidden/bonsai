@@ -1,0 +1,22 @@
+<div class="bonsai">
+  <h1>Subpages for page: <%= @page.title %></h1>
+  <ul class="TreeView" id="TreeView">
+    <% for page in @page.get_children_tree(@page) %>
+     <% if !@lvl.nil? and @lvl > page.level %>
+       </ul>
+     <%end%>
+     <%if !page.leaf? %>
+         <%if page.level>@page.level+1%>
+            <li class="Collapsed" onclick="return toggleTreeElement(this,'tree_folder<%=page.id%>')">
+            <%= link_to_page page %></li><ul style="display:none;" id="tree_folder<%=page.id%>">
+         <%else%>
+            <li class="Expanded" onclick="return toggleTreeElement(this,'tree_folder<%=page.id%>')">
+            <%= link_to_page page %></li><ul id="tree_folder<%=page.id%>">
+          <%end%>
+     <%else%>
+        <li><%= link_to_page page %></li>
+     <%end%>
+     <% @lvl = page.level%>
+    <%end%>
+  </ul>
+</div>

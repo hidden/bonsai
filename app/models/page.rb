@@ -12,6 +12,24 @@ class Page < ActiveRecord::Base
 
   has_many :uploaded_files, :dependent => :destroy
 
+  def get_page id
+           Page.all(:conditions => ["id = ?", id])
+   end
+
+    def get_siblings
+       Page.all(:conditions => ["parent_id IS NOT NULL and parent_id = ?", self.id])
+    end
+
+    def get_children_tree page
+       Page.all(:include => [:page_permissions],
+                :conditions => ["(lft BETWEEN ? AND ?)
+                                 AND (page_permissions.can_view = ?
+                                      OR page_permissions.can_edit = ?
+                                      OR page_permissions.can_manage = ?
+                                 )", page.lft, page.rgt,true,true,true],
+                 :order => "lft")
+    end  
+
   def self.find_by_path path
     full_path = [nil] + path
     parent_id = nil

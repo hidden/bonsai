@@ -147,3 +147,34 @@ Feature: Wiki
     And I go to /nested
     When I follow "linka"
     Then I should not see "File not found"
+
+Scenario: User with rights wants to view subpages tree
+      When I go to the main page
+      And I login as "johno"
+      And I create "/" page
+      And I create "/title1" page with title "Some title1"
+      And I create "/title1/title2" page with title "Some title2"
+      And I create "/title1/title3" page with title "Some title3"
+      And I follow "Some title"
+      And I follow "Summary"
+      And I should see "Subpages for page: Some title" within "body"
+      And I should see "   Some title" within "body"
+      And I should see "Some title1" within "body"
+      And I should see "Some title2" within "body"
+      Then I should see "Some title3" within "body"
+
+
+Scenario: User without rights wants to view subpages tree
+      When I go to the main page
+      And I login as "johno"
+      And I create "/" page
+      And page "/" is viewable by "johno"
+      And I create "/title1" page with title "Some title1"
+      And page "/title1" is viewable by "johno"
+      And I logout
+      And I login as "majzunova"
+      And I create "/title1/title2" page with title "Some title2"
+      And page "/title1/title2" is viewable by "majzunova"
+      And I follow "Summary"
+      Then I should not see "Some title1" within "body"
+    

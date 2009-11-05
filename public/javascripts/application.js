@@ -16,4 +16,9 @@ function toggleDiv(event) {
     return false;
 }
 
+function toggleTreeElement(Li,UI){
+  Li.className= Li.className=="Expanded"? "Collapsed":"Expanded";
+  Element.toggle(UI);
+}
+
 Event.observe(window, 'load', initialize);
