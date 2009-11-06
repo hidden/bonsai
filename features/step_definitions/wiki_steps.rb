@@ -1,3 +1,9 @@
+When /^I login$/ do
+  fill_in('username', :with => 'user')
+  fill_in('password', :with => 'user')
+  click_button('Log in')
+end
+
 When /^I login as "([^\"]*)"$/ do |username|
   fill_in('username', :with => username)
   fill_in('password', :with => username)
@@ -89,7 +95,7 @@ end
 
 When /^I edit "([^"]*)" page part with text "([^"]*)"$/ do |part_name, new_name|
   click_link('edit')
-  fill_in("page_part_name_#{part_name}", :with => new_name )
+  fill_in("parts[#{part_name}]", :with => new_name )
   click_button('Save')
 end
 

@@ -33,9 +33,8 @@ Feature: Wiki layouting and many page parts
     Then I should see "Page successfully updated."
     When I follow "Edit"
     Then I should not see "testpage"
-        
 
-Scenario: User create a page part and rename it
+  Scenario: User create a page part and rename it
     When I go to the main page
     And I login as "johno"
     And I create "/" page
