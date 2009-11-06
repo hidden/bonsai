@@ -5,17 +5,19 @@
       <p><%= label_tag 'Layout' %><br /><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
     <% end %>
     <% for part in @page.page_parts %>
-       <% unless part.current_page_part_revision.was_deleted %>
+       <% if @undo or !part.current_page_part_revision.was_deleted %>
       <p><%= link_to part.name, nil, :onclick => "return toggleDiv(event);" %></p>
-      <div<%= ' style="display:none;" ' unless part.name == 'body' %>>
+      <div<%= ' style="display:none;"' unless part.name == 'body' %>>
         <% if part == @page_part %>
+          <%= hidden_field_tag "parts_revision[#{part.name}]", @page_revision.id %>
           <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => 80 %>
         <% else %>
+          <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
           <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80 %>
         <% end %>
         <%= render :partial => 'maruku_help' %>
         <p>
-          Name of page part: <%= text_field_tag("page_part_name_#{part.name}", part.name) %><br/><br/>
+          Name of page part: <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
           <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
           <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
           <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>

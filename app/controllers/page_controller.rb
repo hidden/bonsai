@@ -17,25 +17,36 @@ class PageController < ApplicationController
       end
       return
     end
-    
+
     # manager actions
     if @current_user.can_manage_page? @page
-      if params.include? 'manage' then render :action => :manage and return
-      elsif params.include? 'change-permission' then change_permission and return
-      elsif params.include? 'set-permissions' then set_permissions and return
-      elsif params.include? 'remove-permission' then remove_permission and return
-      elsif params.include? 'switch-public' then switch_public and return
-      elsif params.include? 'switch-editable' then switch_editable and return
+      if params.include? 'manage' then
+        render :action => :manage and return
+      elsif params.include? 'change-permission' then
+        change_permission and return
+      elsif params.include? 'set-permissions' then
+        set_permissions and return
+      elsif params.include? 'remove-permission' then
+        remove_permission and return
+      elsif params.include? 'switch-public' then
+        switch_public and return
+      elsif params.include? 'switch-editable' then
+        switch_editable and return
       end
     end
 
     # editor actions
     if @current_user.can_edit_page? @page
-      if params.include? 'edit' then edit and return
-      elsif params.include? 'update' then update and return
-      elsif params.include? 'upload' then upload and return
-      elsif params.include? 'undo' then undo and return
-      elsif params.include? 'new-part' then new_part and return
+      if params.include? 'edit' then
+        edit and return
+      elsif params.include? 'update' then
+        update and return
+      elsif params.include? 'upload' then
+        upload and return
+      elsif params.include? 'undo' then
+        undo and return
+      elsif params.include? 'new-part' then
+        new_part and return
       end
     end
 
@@ -52,11 +63,16 @@ class PageController < ApplicationController
     end
 
     if @current_user.can_view_page? @page
-      if params.include? 'history' then render :action => :show_history and return
-      elsif params.include? 'revision' then show_revision and return
-      elsif params.include? 'diff' then diff and return
-      elsif params.include? 'files' then files and return
-      else view and return
+      if params.include? 'history' then
+        render :action => :show_history and return
+      elsif params.include? 'revision' then
+        show_revision and return
+      elsif params.include? 'diff' then
+        diff and return
+      elsif params.include? 'files' then
+        files and return
+      else
+        view and return
       end
     end
     unprivileged
@@ -78,21 +94,21 @@ class PageController < ApplicationController
     @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
     render :action => 'diff'
   end
-  
+
   def show_revision
     @page = PageAtRevision.find_by_path(@path)
-    
+
     revision_date = @page.page_parts_revisions[params[:revision].to_i].created_at
-    @page.revision_date = revision_date   
-    @page_parts = Array.new    
-    
+    @page.revision_date = revision_date
+    @page_parts = Array.new
+
     for part in @page.page_parts
       current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
       @page_parts << current_part if current_part
     end
     layout = @page.nil? ? 'application' : @page.resolve_layout
 
-    render :action => 'show_revision', :layout => layout  
+    render :action => 'show_revision', :layout => layout
   end
 
   def undo
@@ -104,7 +120,7 @@ class PageController < ApplicationController
 
   def switch_public
     was_public = @page.is_public?
-    if(@page.parent.nil? || @page.parent.is_public?)
+    if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_public
         permission.can_edit = was_public if was_public
@@ -114,10 +130,10 @@ class PageController < ApplicationController
     end
     redirect_to @page.get_path + "?manage"
   end
-  
+
   def switch_editable
     was_editable = @page.is_editable?
-    if(@page.parent.nil? || @page.parent.is_public?)
+    if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_editable if !was_editable
         permission.can_edit = was_editable
@@ -130,19 +146,19 @@ class PageController < ApplicationController
 
   def change_permission
     page_permission = @page.page_permissions[params[:index].to_i]
-    if(params[:permission] == "can_view")
-      if(page_permission.group.users.include? @current_user)
+    if (params[:permission] == "can_view")
+      if (page_permission.group.users.include? @current_user)
         flash[:notice] = "You cannot disable your own view permission if you are in the manager group of the page. If you want to make this page public, you should use the quick setup link below"
       else
         page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
       end
-    elsif(params[:permission] == "can_edit")
-      if(page_permission.group.users.include? @current_user)
+    elsif (params[:permission] == "can_edit")
+      if (page_permission.group.users.include? @current_user)
         flash[:notice] = "You cannot disable your own edit permission if you are in the manager group of the page. If you want to make this page editable by anyone, you should use the quick setup link below"
       else
         page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
       end
-    elsif(params[:permission] == "can_manage")
+    elsif (params[:permission] == "can_manage")
       page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
     end
     page_permission.save
@@ -162,10 +178,11 @@ class PageController < ApplicationController
     @filename = parent_page_path.pop
     @page = Page.find_by_path(parent_page_path)
 
-    if params.include? 'upload' then upload and return
+    if params.include? 'upload' then
+      upload and return
     end
     return render(:action => :file_not_found) unless File.file?(file_name)
-    
+
     if @current_user.can_view_page? @page
       return send_file(file_name)
     else
@@ -183,8 +200,8 @@ class PageController < ApplicationController
       render :action => 'no_parent' and return if parent.nil?
       @parent_id = parent.id
     end
-    if(!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
-      unprivileged 
+    if (!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
+      unprivileged
     else
       @sid = @path.empty? ? nil : @path.last
       render :action => 'new'
@@ -198,7 +215,7 @@ class PageController < ApplicationController
       # TODO check if exists
     end
 
-    if(!parent.nil? && !(@current_user.can_edit_page? parent))
+    if (!parent.nil? && !(@current_user.can_edit_page? parent))
       unprivileged
     else
       sid = params[:sid].blank? ? nil : params[:sid]
@@ -228,7 +245,7 @@ class PageController < ApplicationController
         render :action => "new"
         return
       end
-      if(first_revision.save)
+      if (first_revision.save)
         flash[:notice] = 'Page successfully created.'
         page_part.current_page_part_revision = first_revision
         page_part.save!
@@ -254,75 +271,72 @@ class PageController < ApplicationController
   end
 
   def set_permissions
-   addedgroups =  params[:add_group].split(",")
-       for addedgroup in addedgroups
-         groups = Group.find_all_by_name(addedgroup)
-          for group in groups
-            @page.add_viewer group if params[:can_view]
-            @page.add_editor group if params[:can_edit]
-            @page.add_manager group if params[:can_manage]
-          end
-       end
-        redirect_to @page.get_path + "?manage"
+    addedgroups = params[:add_group].split(",")
+    for addedgroup in addedgroups
+      groups = Group.find_all_by_name(addedgroup)
+      for group in groups
+        @page.add_viewer group if params[:can_view]
+        @page.add_editor group if params[:can_edit]
+        @page.add_manager group if params[:can_manage]
+      end
+    end
+    redirect_to @page.get_path + "?manage"
   end
 
   def update
-     @page.title = params[:title]
-     if @current_user.can_manage_page? @page
-       @page.layout = params[:layout].empty? ? nil : params[:layout]
-     end
-     @page.save
-     params[:parts].each do |part_name, body|
-       page_part = PagePart.find_by_name_and_page_id(part_name, @page.id)
-       s = "page_part_name_" + part_name
-       current_revision = page_part.current_page_part_revision
-       params[s]
-       page_part
-        revision = nil
-       if(params[s] != part_name || page_part.current_page_part_revision.body != body ||
-             current_revision.was_deleted && (params[:is_deleted].blank? || params[:is_deleted][part_name].blank?) ||
-             !current_revision.was_deleted && !params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?)
+    @page.title = params[:title]
+    if @current_user.can_manage_page? @page
+      @page.layout = params[:layout].empty? ? nil : params[:layout]
+    end
+    @page.save
+    params[:parts].each do |part_name, body|
+      page_part = PagePart.find_by_name_and_page_id(part_name, @page.id)
+      new_part_name = params["parts_name"][part_name]
+      edited_revision_id = params["parts_revision"][part_name]
+      delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
+      edited_revision = page_part.page_part_revisions.find(:first, :conditions => {:id => edited_revision_id})
+      # TODO edit conflict if page_part.current_page_part_revision != edited_revision      
 
-         revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => body, :summary => params[:summary])
-         if(!current_revision.was_deleted && (!params[:is_deleted].blank? && !params[:is_deleted][part_name].blank?))
-           revision.was_deleted = true
-         end
-         unless(revision.valid?)
-           error_message = ""
-           revision.errors.each_full { |msg| error_message << msg }
-           @page_part = page_part
-           @page_revision = revision
-           flash[:error] = error_message
-           render :action => "edit"
-           return true
-         end
-         revision.save!
-         page_part.current_page_part_revision = revision
-         page_part.name = params[s]
-         page_part.save!
-       end
-     end
-     flash[:notice] = 'Page successfully updated.'
-     redirect_to @page.get_path
-   end
+      # update if part name changed
+      # or part body was edited
+      # or current revision deletion status is different # TODO ok?
+      if new_part_name != part_name or edited_revision.body != body or page_part.current_page_part_revision.was_deleted != delete_part
+        revision = page_part.page_part_revisions.create(:user => @current_user, :body => body, :summary => params[:summary], :was_deleted => delete_part)
+        unless (revision.valid?)
+          error_message = ""
+          revision.errors.each_full { |msg| error_message << msg }
+          @page_part = page_part
+          @page_revision = revision
+          flash[:error] = error_message
+          render :action => "edit"
+          return true
+        end
+        revision.save!
+        page_part.current_page_part_revision = revision
+        page_part.name = new_part_name
+        page_part.save!
+      end
+    end
+    flash[:notice] = 'Page successfully updated.'
+    redirect_to @page.get_path
+  end
 
-   def new_part
-    page_part = @page.page_parts.find_by_name(params[:new_page_part_name])
-    page_part = PagePart.create(:name => params[:new_page_part_name], :page => @page, :current_page_part_revision_id => 0) if page_part.nil?
-     unless page_part.valid?
-       error_message = ""
-       page_part.errors.each_full { |msg| error_message << msg }
-       flash[:error] = error_message
-       render :action => "edit"
-       return true
-     end
-     page_part_revision = PagePartRevision.new(:user => @current_user, :page_part => page_part, :body => params[:new_page_part_text], :summary => "init")
-     page_part_revision.save
-     page_part.current_page_part_revision = page_part_revision
-     page_part.save!
-     flash[:notice] = 'Page part successfully added.'
-     redirect_to @page.get_path + "?edit"
-   end
+  def new_part
+    page_part = @page.page_parts.find_or_create_by_name(:name => params[:new_page_part_name], :current_page_part_revision_id => 0)
+    unless page_part.valid?
+      error_message = ""
+      page_part.errors.each_full { |msg| error_message << msg }
+      flash[:error] = error_message
+      render :action => "edit"
+      return true
+    end
+    page_part_revision = page_part.page_part_revisions.create(:user => @current_user, :body => params[:new_page_part_text], :summary => "init")
+    page_part_revision.save
+    page_part.current_page_part_revision = page_part_revision
+    page_part.save!
+    flash[:notice] = 'Page part successfully added.'
+    redirect_to @page.get_path + "?edit"
+  end
 
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
@@ -344,9 +358,9 @@ class PageController < ApplicationController
         flash[:notice] = error_message
         render :action => :edit
       end
-      end
     end
-    
+  end
+
   def files
     render :action => :files
   end
