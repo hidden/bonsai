@@ -8,11 +8,10 @@
        <% if @undo or !part.current_page_part_revision.was_deleted %>
       <p><%= link_to part.name, nil, :onclick => "return toggleDiv(event);" %></p>
       <div<%= ' style="display:none;"' unless part.name == 'body' %>>
+        <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
         <% if part == @page_part %>
-          <%= hidden_field_tag "parts_revision[#{part.name}]", @page_revision.id %>
           <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => 80 %>
-        <% else %>
-          <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
+        <% else %>          
           <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80 %>
         <% end %>
         <%= render :partial => 'maruku_help' %>

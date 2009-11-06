@@ -231,8 +231,8 @@ class PageController < ApplicationController
       page.save!
       page.add_manager @current_user.private_group
       page.move_to_child_of parent unless parent.nil?
-      page_part = PagePart.create(:name => "body", :page => page, :current_page_part_revision_id => 0)
-      first_revision = PagePartRevision.new(:user => @current_user, :body => params[:body], :page_part => page_part, :summary => params[:summary])
+      page_part = page.page_parts.create(:name => "body", :current_page_part_revision_id => 0)
+      first_revision = page_part.page_part_revisions.create(:user => @current_user, :body => params[:body], :summary => params[:summary])
       unless (first_revision.valid?)
         error_message = ""
         first_revision.errors.each_full { |msg| error_message << msg }
@@ -298,9 +298,16 @@ class PageController < ApplicationController
       # TODO edit conflict if page_part.current_page_part_revision != edited_revision      
 
       # update if part name changed
-      # or part body was edited
+      if new_part_name != part_name
+        # TODO validation?
+        page_part.name = new_part_name
+        page_part.save
+      end
+
+      # create new revision if
+      # part body was edited
       # or current revision deletion status is different # TODO ok?
-      if new_part_name != part_name or edited_revision.body != body or page_part.current_page_part_revision.was_deleted != delete_part
+      if edited_revision.body != body or page_part.current_page_part_revision.was_deleted != delete_part
         revision = page_part.page_part_revisions.create(:user => @current_user, :body => body, :summary => params[:summary], :was_deleted => delete_part)
         unless (revision.valid?)
           error_message = ""
@@ -340,7 +347,7 @@ class PageController < ApplicationController
 
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
-    sleep(2)
+    sleep(2) # TODO get rid of this
     @name = params[:uploaded_file_filename]
     if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
       flash[:notice] = 'Type of file not match. No file uploaded.'

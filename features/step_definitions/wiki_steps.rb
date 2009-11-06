@@ -95,7 +95,7 @@ end
 
 When /^I edit "([^"]*)" page part with text "([^"]*)"$/ do |part_name, new_name|
   click_link('edit')
-  fill_in("page_part_name_#{part_name}", :with => new_name )
+  fill_in("parts[#{part_name}]", :with => new_name )
   click_button('Save')
 end
 
