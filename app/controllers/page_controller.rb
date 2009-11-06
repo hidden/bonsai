@@ -87,10 +87,76 @@ class PageController < ApplicationController
   end
 
   def diff
-    @first_revision = @page.page_parts_revisions[params[:first_revision].to_i]
-    @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
-    render :action => 'diff'
-  end
+      @page = PageAtRevision.find_by_path(@path)
+      puts "*****************************************************************************************"
+         if (params[:first_revision].to_i < params[:second_revision].to_i)
+           first = params[:second_revision]
+           second = params[:first_revision]
+         else
+           second = params[:second_revision]
+           first = params[:first_revision]
+         end
+
+         @page.revision_date = @page.page_parts_revisions[first.to_i].created_at
+         @first_revision = @page.get_page_parts_by_date(first)
+             old_revision = ""
+             for part in @first_revision
+               unless part.was_deleted
+                 old_revision<< part.body << "\n"
+               end
+             end
+         @page.revision_date = @page.page_parts_revisions[second.to_i].created_at
+         @second_revision = @page.get_page_parts_by_date(second)
+             new_revision = ""
+             for part in @second_revision
+               unless part.was_deleted
+                 new_revision<< part.body << "\n"
+               end
+             end
+      p old_revision
+      p new_revision
+         compare(old_revision, new_revision)
+         render :action => 'diff'
+    end
+
+   def compare old,new
+     @output = []
+       data_old = old.split(/\n/)
+       data_new = new.split(/\n/)
+       diffs = Diff::LCS.sdiff(data_old, data_new)
+       #p diffs
+
+      for diff in diffs
+         data_old_parse = ""
+         data_new_parse = ""
+         temp = []
+        if((diff.action == '=')||(diff.action == '-')||(diff.action == '+'))
+          begin
+            if(diff.action == '-')
+
+              @output << [diff.action, diff.old_element]
+            else
+              @output << [diff.action, diff.new_element]
+            end
+          end
+        else begin
+                data_old_parse = diff.old_element.split("")
+                data_new_parse = diff.new_element.split("")
+                diffs_parsed = Diff::LCS.sdiff(data_old_parse, data_new_parse)
+                   for parsed_diff in diffs_parsed
+                     case parsed_diff.action
+                           when '=' then temp << ['=', parsed_diff.old_element]
+                           when '-' then temp << ['-', parsed_diff.old_element]
+                           when '+' then temp << ['+', parsed_diff.new_element]
+                     end
+                   end
+                 @output << ['*',temp]
+                 end
+          end
+       p @output
+      end
+    end
+ 
 
   def pagesib
      render :action =>'page_siblings'
@@ -260,11 +326,18 @@ class PageController < ApplicationController
     end
   end
 
-  def rss_history
+  def _history
     @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
     render :action => :rss_history, :layout => false
   end
 
+  def rss_history
+      @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
+      @revision_count = @page.page_parts_revisions.count
+      render :action => :rss_history, :layout => false
+    end
+
+  
   private
   def edit
     render :action => :edit

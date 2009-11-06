@@ -62,6 +62,16 @@ class Page < ActiveRecord::Base
     latest_part_revision.nil? ? nil : latest_part_revision.body
   end
 
+  def get_page_parts_by_date revision
+      page_parts = Array.new
+      for part in self.page_parts
+        current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
+        page_parts << current_part if current_part
+      end
+      return page_parts
+    end
+  
+
   def files
     uploaded_file_names = self.uploaded_files.collect(&:filename)
     path = 'shared/upload' + get_path

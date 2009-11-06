@@ -66,8 +66,7 @@ Feature: Wiki
     And I should see "This is first summary"
     And I should see "This is second summary"
   #  Then I must see "Changes for page: main & This is first summary & This is second summary"
-
-
+  @wip
   Scenario: User wants to see the diff of two page revisions
     Given that a "main" page with multiple revisions exist
     When I go to the main page
@@ -75,7 +74,7 @@ Feature: Wiki
     And I go to the main page
     And I follow "history"
     And I compare revision "first_revision_1" with "second_revision_2"
-    Then I should see "This is second revision" within ".line-changed"
+    Then I should see "This is second revision" within ".line-added"
 
   Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist

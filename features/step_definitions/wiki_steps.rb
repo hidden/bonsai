@@ -115,8 +115,6 @@ Given /^that a "(.*) page with multiple revisions exist$/ do |page|
 end
 
 
-
-
 When /^I upload "(.*)" file$/ do |file_name|
   visit path_to('/')  
   click_link('edit')
