@@ -129,11 +129,12 @@ class PageController < ApplicationController
       for diff in diffs
          data_old_parse = ""
          data_new_parse = ""
+         act_sign = ""
+         act_str = ""
          temp = []
         if((diff.action == '=')||(diff.action == '-')||(diff.action == '+'))
           begin
             if(diff.action == '-')
-
               @output << [diff.action, diff.old_element]
             else
               @output << [diff.action, diff.new_element]
@@ -144,12 +145,49 @@ class PageController < ApplicationController
                 data_new_parse = diff.new_element.split("")
                 diffs_parsed = Diff::LCS.sdiff(data_old_parse, data_new_parse)
                    for parsed_diff in diffs_parsed
+                     if(act_sign == "")
+                       act_sign = parsed_diff.action
+                     end
                      case parsed_diff.action
-                           when '=' then temp << ['=', parsed_diff.old_element]
-                           when '-' then temp << ['-', parsed_diff.old_element]
-                           when '+' then temp << ['+', parsed_diff.new_element]
+                       when '=' then if(act_sign == "=")
+                                            act_str << parsed_diff.old_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                            if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                           when '-' then if(act_sign == "-")
+                                            act_str << parsed_diff.old_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                           if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                           when '+' then if(act_sign == "+")
+                                            act_str << parsed_diff.new_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                           if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
                      end
                    end
+                 temp << [act_sign, act_str]
                  @output << ['*',temp]
                  end
           end
