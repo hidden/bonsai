@@ -66,8 +66,7 @@ Feature: Wiki
     And I should see "This is first summary"
     And I should see "This is second summary"
   #  Then I must see "Changes for page: main & This is first summary & This is second summary"
-
-
+  @wip
   Scenario: User wants to see the diff of two page revisions
     Given that a "main" page with multiple revisions exist
     When I go to the main page
@@ -75,7 +74,7 @@ Feature: Wiki
     And I go to the main page
     And I follow "history"
     And I compare revision "first_revision_1" with "second_revision_2"
-    Then I should see "This is second revision" within ".line-changed"
+    Then I should see "This is second revision" within ".line-added"
 
   Scenario: User wants to revert a revision
     Given that a "main" page with multiple revisions exist
@@ -135,4 +134,46 @@ Feature: Wiki
     And I follow "Show page from revision 1"
     Then I should see "This is original caption."
 
+  @wip
+  Scenario: User wants to go to page without /
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page with title "Root page" body "Root body!"
+    And I create "/nested/" page with title "Nested page" body "[linka](test_file.txt)"
+    And I follow "edit"
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I go to /nested
+    When I follow "linka"
+    Then I should not see "File not found"
 
+Scenario: User with rights wants to view subpages tree
+      When I go to the main page
+      And I login as "johno"
+      And I create "/" page
+      And I create "/title1" page with title "Some title1"
+      And I create "/title1/title2" page with title "Some title2"
+      And I create "/title1/title3" page with title "Some title3"
+      And I follow "Some title"
+      And I follow "Summary"
+      And I should see "Subpages for page: Some title" within "body"
+      And I should see "   Some title" within "body"
+      And I should see "Some title1" within "body"
+      And I should see "Some title2" within "body"
+      Then I should see "Some title3" within "body"
+
+
+Scenario: User without rights wants to view subpages tree
+      When I go to the main page
+      And I login as "johno"
+      And I create "/" page
+      And page "/" is viewable by "johno"
+      And I create "/title1" page with title "Some title1"
+      And page "/title1" is viewable by "johno"
+      And I logout
+      And I login as "majzunova"
+      And I create "/title1/title2" page with title "Some title2"
+      And page "/title1/title2" is viewable by "majzunova"
+      And I follow "Summary"
+      Then I should not see "Some title1" within "body"
+    

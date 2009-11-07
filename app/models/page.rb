@@ -13,6 +13,24 @@ class Page < ActiveRecord::Base
 
   has_many :uploaded_files, :dependent => :destroy
 
+  def get_page id
+           Page.all(:conditions => ["id = ?", id])
+   end
+
+    def get_siblings
+       Page.all(:conditions => ["parent_id IS NOT NULL and parent_id = ?", self.id])
+    end
+
+    def get_children_tree page
+       Page.all(:include => [:page_permissions],
+                :conditions => ["(lft BETWEEN ? AND ?)
+                                 AND (page_permissions.can_view = ?
+                                      OR page_permissions.can_edit = ?
+                                      OR page_permissions.can_manage = ?
+                                 )", page.lft, page.rgt,true,true,true],
+                 :order => "lft")
+    end  
+
   def self.find_by_path path
     full_path = [nil] + path
     parent_id = nil
@@ -50,6 +68,16 @@ class Page < ActiveRecord::Base
     latest_part_revision = PagePartRevision.first(:joins => {:page_part => :page}, :conditions => [condition, self.lft, part_name, false], :order => "pages.lft DESC")
     latest_part_revision.nil? ? nil : latest_part_revision.body
   end
+
+  def get_page_parts_by_date revision
+      page_parts = Array.new
+      for part in self.page_parts
+        current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
+        page_parts << current_part if current_part
+      end
+      return page_parts
+    end
+  
 
   def files
     uploaded_file_names = self.uploaded_files.collect(&:filename)

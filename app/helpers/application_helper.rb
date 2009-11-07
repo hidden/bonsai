@@ -1,6 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  def login_path
+ def login_path
     url_for :controller => 'users', :action => 'login'
   end
 
@@ -46,6 +46,18 @@ module ApplicationHelper
   
   def switch_editable(page)
     "#{@page.get_path};switch_editable"
+  end
+
+  def view_page_path(page)
+    page.get_path
+  end
+  
+  def summary_page_path(page)
+   "#{page.get_path};pagesib"
+  end
+
+  def groups_page_path(page)
+    "#{page.get_path};groups"
   end
 
   def markdown(text)

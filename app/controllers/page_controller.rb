@@ -4,8 +4,9 @@ class PageController < ApplicationController
   before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,:new_part]
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :files]
 
-
   def handle
+    session[:link_back] = nil
+    
     # is it a file?
     if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
       process_file
@@ -40,6 +41,11 @@ class PageController < ApplicationController
   end 
 
   def view
+    link = request.env['PATH_INFO']
+    unless link.ends_with?('/')
+      redirect_to link + '/'
+      return
+    end
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
@@ -55,9 +61,117 @@ class PageController < ApplicationController
   end
 
   def diff
-    @first_revision = @page.page_parts_revisions[params[:first_revision].to_i]
-    @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
-    render :action => 'diff'
+      @page = PageAtRevision.find_by_path(@path)
+      puts "*****************************************************************************************"
+         if (params[:first_revision].to_i < params[:second_revision].to_i)
+           first = params[:second_revision]
+           second = params[:first_revision]
+         else
+           second = params[:second_revision]
+           first = params[:first_revision]
+         end
+
+         @page.revision_date = @page.page_parts_revisions[first.to_i].created_at
+         @first_revision = @page.get_page_parts_by_date(first)
+             old_revision = ""
+             for part in @first_revision
+               unless part.was_deleted
+                 old_revision<< part.body << "\n"
+               end
+             end
+         @page.revision_date = @page.page_parts_revisions[second.to_i].created_at
+         @second_revision = @page.get_page_parts_by_date(second)
+             new_revision = ""
+             for part in @second_revision
+               unless part.was_deleted
+                 new_revision<< part.body << "\n"
+               end
+             end
+      p old_revision
+      p new_revision
+         compare(old_revision, new_revision)
+         render :action => 'diff'
+    end
+
+   def compare old,new
+     @output = []
+       data_old = old.split(/\n/)
+       data_new = new.split(/\n/)
+       diffs = Diff::LCS.sdiff(data_old, data_new)
+       #p diffs
+
+      for diff in diffs
+         data_old_parse = ""
+         data_new_parse = ""
+         act_sign = ""
+         act_str = ""
+         temp = []
+        if((diff.action == '=')||(diff.action == '-')||(diff.action == '+'))
+          begin
+            if(diff.action == '-')
+              @output << [diff.action, diff.old_element]
+            else
+              @output << [diff.action, diff.new_element]
+            end
+          end
+        else begin
+                data_old_parse = diff.old_element.split("")
+                data_new_parse = diff.new_element.split("")
+                diffs_parsed = Diff::LCS.sdiff(data_old_parse, data_new_parse)
+                   for parsed_diff in diffs_parsed
+                     if(act_sign == "")
+                       act_sign = parsed_diff.action
+                     end
+                     case parsed_diff.action
+                       when '=' then if(act_sign == "=")
+                                            act_str << parsed_diff.old_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                            if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                           when '-' then if(act_sign == "-")
+                                            act_str << parsed_diff.old_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                           if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                           when '+' then if(act_sign == "+")
+                                            act_str << parsed_diff.new_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                           if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                     end
+                   end
+                 temp << [act_sign, act_str]
+                 @output << ['*',temp]
+                 end
+          end
+       p @output
+      end
+    end
+ 
+
+  def pagesib
+     render :action =>'page_siblings'
   end
   
   def show_revision
@@ -143,8 +257,8 @@ class PageController < ApplicationController
     @filename = parent_page_path.pop
     @page = Page.find_by_path(parent_page_path)
 
-    if params.include? 'upload' then upload and return
-    end
+    if params.include? 'upload' then upload and return end
+    
     return render(:action => :file_not_found) unless File.file?(file_name)
     
     if @current_user.can_view_page? @page
@@ -224,11 +338,19 @@ class PageController < ApplicationController
     end
   end
 
-  def rss_history
+  def _history
     @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
     render :action => :rss_history, :layout => false
   end
 
+
+  def rss_history
+      @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
+      @revision_count = @page.page_parts_revisions.count
+      render :action => :rss_history, :layout => false
+  end
+
+  
   def edit
     render :action => :edit
   end
@@ -308,27 +430,35 @@ class PageController < ApplicationController
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
     sleep(2)
     @name = params[:uploaded_file_filename]
-    if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-      flash[:notice] = 'Type of file not match. No file uploaded.'
+    if @uploaded_file.filename.nil?
+      flash[:notice] = 'No file selected.'
       redirect_to @page.get_path
     else
-      @uploaded_file.page = @page
-      @uploaded_file.user = @current_user
-      @uploaded_file.rename(@name) unless @name.nil?
-      if @uploaded_file.save
-        flash[:notice] = 'File was successfully uploaded.'
+      if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
+        flash[:notice] = 'Type of file not match. No file uploaded.'
         redirect_to @page.get_path
       else
-        error_message = ""
-        @uploaded_file.errors.each_full { |msg| error_message << msg }
-        flash[:notice] = error_message
-        render :action => :edit
+        @uploaded_file.page = @page
+        @uploaded_file.user = @current_user
+        @uploaded_file.rename(@name) unless @name.nil?
+        if @uploaded_file.save
+          flash[:notice] = 'File was successfully uploaded.'
+          redirect_to @page.get_path
+        else
+          error_message = ""
+          @uploaded_file.errors.each_full { |msg| error_message << msg }
+          flash[:notice] = error_message
+          render :action => :edit
+        end
       end
     end
   end
-
-
   
+  def groups
+    @page = Page.find_by_path(@path)
+    session[:link_back] = @page.get_path
+    redirect_to groups_path
+  end
 
   private
   def load_page

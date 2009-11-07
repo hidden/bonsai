@@ -24,13 +24,13 @@ When /^I create "([^"]*)" page$/ do |url|
   click_button('Create')
 end
 
-When /^I create "([^"]*)" page with file link$/ do |url|
-  visit url
-  fill_in('title', :with => 'Some title')
-  fill_in('body', :with => '[linka](subor.txt)')
-  fill_in('summary', :with => 'A summary.')
-  click_button('Create')
-end
+#When /^I create "([^"]*)" page with file link$/ do |url|
+#  visit url
+#  fill_in('title', :with => 'Some title')
+#  fill_in('body', :with => '[linka](subor.txt)')
+#  fill_in('summary', :with => 'A summary.')
+#  click_button('Create')
+#end
 
 When /^I create "([^"]*)" page with title "([^"]*)"$/ do |url, title|
   visit url
@@ -113,8 +113,6 @@ Given /^that a "(.*) page with multiple revisions exist$/ do |page|
   page_part.current_page_part_revision = page_part.page_part_revisions.create(:page_part => page_part, :user => user, :body => "This is second revision", :summary => "This is second summary")
   page_part.save!
 end
-
-
 
 
 When /^I upload "(.*)" file$/ do |file_name|

@@ -100,10 +100,23 @@ Feature: Wiki
     And I should not see "Edit"
     And I should not see "Destroy"
 
+  Scenario: Return to main page
+    When I go to the main page
+    And I login as "bio"
+    And I create "/" page with title "Root title"
+    And I follow "Groups"
+    Then I should see "Groups Management"
+    When I follow "Return to page"
+    Then I should see "Root title"
 
-
-
-
-
-
-    
+  Scenario: Return to nested page
+    When I go to the main page
+    And I login as "bio"
+    And I create "/" page with title "Root title"
+    And I create "/nested_page/" page with title "Nested title"
+    And I go to /nested_page/
+    And I follow "Groups"
+    Then I should see "Groups Management"
+    When I follow "New group"
+    And I follow "Return to page"
+    Then I should see "Nested title"

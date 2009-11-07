@@ -1,6 +1,24 @@
 <p><%= link_to "Syntax Help", nil, :onclick => "return toggleDiv(event);" %></p>
 <div style="display: none;">
   <ul>
+     <li>Links
+      <ul>
+        <li>This is [an example](http://example.com/ "Title") inline link.</li>
+        <li>See my [About](/about/) page for details. </li>
+        <li>Automatic Links: < http://example.com/></li>
+      </ul>
+    </li>
+    <li>
+      Image
+      <ul>
+        <li>
+          ![Alt text](/path/to/img.jpg)
+        </li>
+        <li>
+          ![Alt text](/path/to/img.jpg "Optional title")
+        </li>
+      </ul>
+    </li>
     <li>Paragraphs --- simply one or more consecutive lines of text, separated by one or more blank lines</li>
     <li>
       Headings
@@ -8,6 +26,14 @@
         <li># This is an H1 </li>
         <li>## This is an H2</li>
         <li>###### This is an H6</li>
+      </ul>
+    </li>
+    <li>
+      Preformatted text
+      <ul>
+        <li>bold - < b>text< /b></li>
+        <li>italics - < i>text< /i></li>
+        <li>underline - < u>text< /u></li>
       </ul>
     </li>
     <li>Lists
@@ -28,12 +54,11 @@
         </li>
       </ul>
     </li>
-    <li>Links
-      <ul>
-        <li>This is [an example](http://example.com/ "Title") inline link.</li>
-        <li>See my [About](/about/) page for details.</li>
-      </ul>
+    <li>
+      Code Blocks: --- indent every line of the block by at least 4 spaces or 1 tab
     </li>
+
   </ul>
-  <p>Here you can find further information related to <a href="http://daringfireball.net/projects/markdown/syntax">markdown syntax</a></p>
+  <p>Here you can find further information related to
+    <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown syntax</a></p>
 </div>

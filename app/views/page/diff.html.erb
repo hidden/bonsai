@@ -1,29 +1,37 @@
 <div class="bonsai">
   <h1>Diff for <%=h @page.title %></h1>
-  <% if @first_revision.was_deleted? != @second_revision.was_deleted? %>
-    <p>Revision <%=  @first_revision.was_deleted? ? @first_revision.id.to_s : @second_revision.id.to_s %> was marked as deleted.</p>
-  <% else %>
-    <%
-    first = @first_revision.body.split("\n")
-    second = @second_revision.body.split("\n")
-
-    # TODO move logic to controller!
-
-    diffs = Diff::LCS.sdiff(first, second)
-    %>
-    <div class="diff">
-      <% for diff in diffs
-        klass = nil
-        data = diff.new_element
-        case diff.action
-        when '=' then klass = 'line-unchanged'
-        when '-' then klass = 'line-removed'; data = diff.old_element
-        when '+' then klass = 'line-added'
-        when '!' then klass = 'line-changed'
-        end
-      %>
-        <div class="<%= klass %>"><%= data %></div>
-      <% end %>
-    </div>
-  <% end %>
+   <div class="diff">
+        <table>
+          <tbody>
+          <% for item in @output %>
+                <% if (item[0] == '=')%>
+                                <tr>
+                                   <td class="line-unchanged"></td>
+                                   <td class="line-unchanged"><%= item[1] %></td>
+                                </tr>
+                  <% end %>
+               <% if (item[0] == '+')%>
+                                <tr>
+                                   <td class="line-added">+</td>
+                                   <td class="line-added"><%= item[1] %></td>
+                                </tr>
+                  <% end %>
+               <% if (item[0] == '-')%>
+                                <tr>
+                                   <td class="line-removed">-</td>
+                                   <td class="line-removed"><%= item[1] %></td>
+                                </tr>
+                  <% end %>
+                <% if (item[0] == '*')%>
+                                <tr>
+                                   <td class="line-changed">*</td>
+                                   <td class="line-changed">
+                                      <% for diff_item in item[1] %><% if (diff_item[0] == '=')%><span class="line-changed-same"><%= diff_item[1]%></span><% end %><% if (diff_item[0] == '+')%><span class="line-changed-add"><%= diff_item[1]%></span><% end %><% if (diff_item[0] == '-')%><span class="line-changed-del"><%= diff_item[1]%></span><% end %><% end %>
+                                   </td>
+                                </tr>
+                <% end %>
+             <% end %>
+          </tbody>
+        </table>
+  </div>
 </div>
