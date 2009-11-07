@@ -40,12 +40,7 @@ class PageController < ApplicationController
       elsif params.include? 'files' then files and return
       end
     end
-
-    # for logged user
-    if @current_user.logged?
-      if params.include? 'groups' then groups and return end
-    end
-
+    
     # viewer actions
     if params.include? 'rss'
       user_from_token = User.find_by_token params[:token]
@@ -283,8 +278,8 @@ class PageController < ApplicationController
     @filename = parent_page_path.pop
     @page = Page.find_by_path(parent_page_path)
 
-    if params.include? 'upload' then upload and return
-    end
+    if params.include? 'upload' then upload and return end
+    
     return render(:action => :file_not_found) unless File.file?(file_name)
     
     if @current_user.can_view_page? @page
@@ -456,32 +451,31 @@ class PageController < ApplicationController
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
     sleep(2)
     @name = params[:uploaded_file_filename]
-    if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-      flash[:notice] = 'Type of file not match. No file uploaded.'
+    if @uploaded_file.filename.nil?
+      flash[:notice] = 'No file selected.'
       redirect_to @page.get_path
     else
-      @uploaded_file.page = @page
-      @uploaded_file.user = @current_user
-      @uploaded_file.rename(@name) unless @name.nil?
-      if @uploaded_file.save
-        flash[:notice] = 'File was successfully uploaded.'
+      if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
+        flash[:notice] = 'Type of file not match. No file uploaded.'
         redirect_to @page.get_path
       else
-        error_message = ""
-        @uploaded_file.errors.each_full { |msg| error_message << msg }
-        flash[:notice] = error_message
-        render :action => :edit
+        @uploaded_file.page = @page
+        @uploaded_file.user = @current_user
+        @uploaded_file.rename(@name) unless @name.nil?
+        if @uploaded_file.save
+          flash[:notice] = 'File was successfully uploaded.'
+          redirect_to @page.get_path
+        else
+          error_message = ""
+          @uploaded_file.errors.each_full { |msg| error_message << msg }
+          flash[:notice] = error_message
+          render :action => :edit
+        end
       end
-      end
+     end
     end
     
   def files
     render :action => :files
   end
-
-  def groups
-    @page = Page.find_by_path(@path)
-    session[:link_back] = @page.get_path
-    redirect_to groups_path
-    end
 end

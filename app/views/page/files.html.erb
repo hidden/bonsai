@@ -13,7 +13,7 @@
           <tr>
             <% if file.respond_to? :user %>
                 <td><%= link_to file.filename, file.filename %></td>
-                <td><%= h file.user.full_name %></td>
+                <td><% if file.user.nil? %>unknown<% else %><%= h file.user.full_name %><% end %></td>
             <% else %>
                 <td><%= link_to file, file %></td>
                 <td>unknown</td>
