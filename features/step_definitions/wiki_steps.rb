@@ -130,12 +130,9 @@ When /^I upload "(.*)" file$/ do |file_name|
 end
 
 
-
-
-
-
-
-
+When /^I set locale to sk/ do
+ header('Accept-Language','sk-SK')
+end
 
 
 Then /^I must see "(.*)"$/ do |text|

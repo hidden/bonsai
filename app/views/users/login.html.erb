@@ -1,5 +1,5 @@
 <% form_tag do %>
-  <label><span>Login</span><%= text_field_tag 'username' %></label>
-  <label><span>Password</span><%= password_field_tag 'password' %></label>
+  <label><span><%= t(:login) %></span><%= text_field_tag 'username' %></label>
+  <label><span><%= t(:password)%></span><%= password_field_tag 'password' %></label>
   <%= submit_tag 'Login' %>
 <% end %>
