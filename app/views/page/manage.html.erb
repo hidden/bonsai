@@ -1,12 +1,12 @@
 <div class="bonsai">
-  <h1>Permissions for <%=h @page.title %></h1>
+  <h1><%= t(:permissions_for) %> <%=h @page.title %></h1>
   <table>
     <thead>
       <tr>
-        <th>Group</th>
-        <th>Viewer</th>
-        <th>Editor</th>
-        <th>Manager</th>
+        <th><%= t(:group)%></th>
+        <th><%= t(:viewer)%></th>
+        <th><%= t(:editor)%></th>
+        <th><%= t(:manager)%></th>
         <th></th>
       </tr>
     </thead>
@@ -19,50 +19,50 @@
             <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent))) %>
               <td>-</td>
             <% else %>
-              <td><%= image_boolean(permission.can_view, 'You cannot change your own management permission') %></td>
+              <td><%= image_boolean(permission.can_view, t(:err_management_perm)) %></td>
             <% end %>
             <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent))) %>
               <td>-</td>
             <% else %>
-              <td><%= image_boolean(permission.can_edit, 'You cannot change your own management permission') %></td>
+              <td><%= image_boolean(permission.can_edit, t(:err_management_perm)) %></td>
             <% end %>
-            <td><%= image_boolean(permission.can_manage, 'You cannot change your own management permission') %></td>
+            <td><%= image_boolean(permission.can_manage, t(:err_management_perm)) %></td>
           <% else %>
             <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent))) %>
               <td>-</td>
             <% else %>
-              <td><%= link_to image_boolean(permission.can_view, 'Toggle permission'), change_permission_path(@page,index, 'can_view'), {:method => :post}  %></td>
+              <td><%= link_to image_boolean(permission.can_view, t(:toggle)), change_permission_path(@page,index, 'can_view'), {:method => :post}  %></td>
             <% end %>
             <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent))) %>
               <td>-</td>
             <% else %>
-              <td><%= link_to image_boolean(permission.can_edit, 'Toggle permission'), change_permission_path(@page,index, 'can_edit'), {:method => :post}  %></td>
+              <td><%= link_to image_boolean(permission.can_edit, t(:toggle)), change_permission_path(@page,index, 'can_edit'), {:method => :post}  %></td>
             <% end %>
-            <td><%= link_to image_boolean(permission.can_manage, 'Toggle permission'), change_permission_path(@page,index, 'can_manage'), {:method => :post}  %></td>
+            <td><%= link_to image_boolean(permission.can_manage, t(:toggle)), change_permission_path(@page,index, 'can_manage'), {:method => :post}  %></td>
 
           <% end %>
-          <td><%= link_to "remove", remove_permission_path(@page, index), {:method => :post}  %></td>
+          <td><%= link_to t(:remove), remove_permission_path(@page, index), {:method => :post}  %></td>
         </tr>
       <% end %>
       <tr>
-        <td>Everyone</td>
-        <td><%= link_to image_boolean(@page.is_public?, 'Toggle permission'), switch_public_path(@page), {:method => :post} %></td>
-        <td><%= link_to image_boolean(@page.is_editable?, 'Toggle permission'), switch_editable(@page), {:method => :post} %></td>
+        <td><%= t(:everyone) %></td>
+        <td><%= link_to image_boolean(@page.is_public?, t(:toggle)), switch_public_path(@page), {:method => :post} %></td>
+        <td><%= link_to image_boolean(@page.is_editable?, t(:toggle)), switch_editable(@page), {:method => :post} %></td>
         <td></td>
       </tr>
     </tbody>
   </table>
 
   <% unless @page.ancestors.empty? %>
-    <h2>Inherited permissions</h2>
+    <h2><%= t(:inherited_permissions) %></h2>
     <table>
       <thead>
         <tr>
-          <td>Group</td>
-          <td>Viewer</td>
-          <td>Editor</td>
-          <td>Manager</td>
-          <td>Via</td>
+          <td><%= t(:group)%></td>
+          <td><%= t(:viewer)%></td>
+          <td><%= t(:editor)%></td>
+          <td><%= t(:manager)%></td>
+          <td><%= t(:via)%></td>
         </tr>
       </thead>
       <tbody>
@@ -73,14 +73,14 @@
               <% if ancestor.is_public? %>
                 <td>-</td>
               <% else %>
-                <td><%= image_boolean(permission.can_view, 'You cannot change inherited permission') %></td>
+                <td><%= image_boolean(permission.can_view, t(:err_inherit_perm)) %></td>
               <% end %>
               <% if ancestor.is_editable? %>
                 <td>-</td>
               <% else %>
-                <td><%= image_boolean(permission.can_edit, 'You cannot change inherited permission') %></td>
+                <td><%= image_boolean(permission.can_edit, t(:err_inherit_perm)) %></td>
               <% end %>
-              <td><%= image_boolean(permission.can_manage, 'You cannot change inherited permission') %></td>
+              <td><%= image_boolean(permission.can_manage, t(:err_inherit_perm)) %></td>
               <td><%= ancestor.sid %></td>
             </tr>
           <% end %>
@@ -89,7 +89,7 @@
     </table>
   <% end %>
 
-  <h2>Add group permission</h2>
+  <h2><%= t(:add_group_permission) %></h2>
   <% form_tag :controller => 'page', :action => 'set_permissions' do %>
     <%= text_field_tag('add_group') %><br/>
     <div id="autocomplete" style="display: none;" class="autocomplete"></div>
@@ -98,10 +98,10 @@
         var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '/groups/autocomplete_for_groups', {paramName: 'prefix', method: 'get', tokens: ','});
         //]]>
     </script>
-    <label><%= check_box_tag("can_view")%> Reader</label><br/>
-    <label><%= check_box_tag("can_edit")%> Editor</label><br/>
-    <label><%= check_box_tag("can_manage")%> Manager</label><br/>
+    <label><%= check_box_tag("can_view")%> <%= t(:reader) %></label><br/>
+    <label><%= check_box_tag("can_edit")%> <%= t(:editor) %></label><br/>
+    <label><%= check_box_tag("can_manage")%> <%= t(:manager) %></label><br/>
 
-    <%= submit_tag 'Set' %>
+    <%= submit_tag t(:set) %>
   <% end %>
 </div>

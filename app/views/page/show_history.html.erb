@@ -1,7 +1,7 @@
 <div class="bonsai">
-  <h1>Changes for page: <%= @page.title %></h1>
+  <h1><%= t(:changes_for_page) %> <%= @page.title %></h1>
   <% form_tag("#{@page.get_path};diff", {:method => :get}) do %>
-    <%= submit_tag 'compare selected versions', :name => nil %>
+    <%= submit_tag t(:btn_compare), :name => nil %>
     <%= hidden_field_tag 'diff' %>
     <ul>
       <% number_of_revisions = @page.page_parts_revisions.length %>
@@ -12,15 +12,15 @@
           <%= radio_button_tag "first_revision" , index, false, :id => "first_revision_#{counter}" %>
           <%= radio_button_tag "second_revision" , index, false, :id => "second_revision_#{counter}" %>
           <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>,
-          <%=h revision.user.username %> edited <%= revision.page_part.name %>
+          <%=h revision.user.username %> <%= t(:edited)%> <%= revision.page_part.name %>
           <% unless revision.summary.empty? %>(<%=h revision.summary %>),<% end %>
           <% if @current_user.can_edit_page? @page %>
-            <%=  link_to "Revert to revision #{counter}", page_path(@page.get_rel_path, :undo, :revision => index.to_s), {:method => :post} %>
+            <%=  link_to t(:revert) + " #{counter}", page_path(@page.get_rel_path, :undo, :revision => index.to_s), {:method => :post} %>
           <% end %>
-          <%=  link_to "Show page from revision #{counter}", page_path(@page.get_rel_path, :show_revision, :revision => index.to_s) %>
+          <%=  link_to  t(:show_from) + " #{counter}", page_path(@page.get_rel_path, :show_revision, :revision => index.to_s) %>
         </li>
       <% end %>
     </ul>
-    <%= submit_tag 'compare selected versions', :name => nil %>
+    <%= submit_tag t(:btn_compare), :name => nil %>
   <% end %>
 </div>

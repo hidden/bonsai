@@ -2,7 +2,7 @@
   <% form_tag update_page_path(@page) do %>
     <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
     <% if @current_user.can_manage_page? @page %>
-      <p><%= label_tag 'Layout' %><br /><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
+      <p><%= label_tag t(:layout) %><br /><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
     <% end %>
     <% for part in @page.page_parts %>
       <% if @undo or !part.current_page_part_revision.was_deleted %>
@@ -16,43 +16,43 @@
         <% end %>
         <%= render :partial => 'maruku_help' %>
         <p>
-          Name of page part: <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
+          <%= t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
           <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
-          <%= label_tag 'delete this page_part?' unless part.current_page_part_revision.was_deleted? %>
+          <%= label_tag t(:delete_page_part) unless part.current_page_part_revision.was_deleted? %>
           <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
         </p>
       </div>
       <% end %>
     <% end %>
     <p>
-      <%= label_tag 'Summary' %><br />
+      <%= label_tag t(:summary) %><br />
       <%if @undo %>
         <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s, :size => 40) %>
       <% else %>
         <%= text_field_tag('summary', nil, :size => 40) %>
       <% end %>
     </p>
-    <p><%= submit_tag 'Save' %></p>
+    <p><%= submit_tag t(:save) %></p>
   <% end %>
 
-  <p>Or <a href="#" onclick="return toggleDiv(event);">add a new page part</a>.</p>
+  <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:add_new_page_part) %></a>.</p>
   <div style="display: none;">
     <% form_tag ";new_part" do %>
       <p>
-        <%= label_tag "new page part name" %><br />
+        <%= label_tag t(:new_part_name) %><br />
         <%= text_field_tag('new_page_part_name') %>
       </p>
       <p>
         <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80} %>
       </p>
       <%= render :partial => 'maruku_help' %>
-      <p><%= submit_tag 'Add new page part' %></p>
+      <p><%= submit_tag t(:btn_new_page_part) %></p>
     <% end %>
   </div>
-  <p>Or <a href="#" onclick="return toggleDiv(event);">attach a file to this page</a>.</p>
+  <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:attach_file) %></a>.</p>
   <div style="display: none;">
     <% form_for(:uploaded_file, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
-      <p><label for="uploaded_file">Upload a File<br/><%= f.file_field :uploaded_data %></label><%= submit_tag 'Upload' %></p>
+      <p><label for="uploaded_file"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %></label><%= submit_tag t(:btn_upload) %></p>
     <% end %>
   </div>
 </div>
