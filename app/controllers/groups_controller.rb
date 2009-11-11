@@ -61,7 +61,7 @@ class GroupsController < ApplicationController
     respond_to do |format|
       if @group.save
         @group.add_editor @current_user
-        flash[:notice] = 'Group was successfully created.'
+        flash[:notice] = t(:group_created)
         format.html { redirect_to edit_group_path(@group) }
         format.xml  { render :xml => @group, :status => :created, :location => @group }
       else
@@ -78,7 +78,7 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       if @group.update_attributes(params[:group])
-        flash[:notice] = 'Group was successfully updated.'
+        flash[:notice] = t(:group_updated)
         format.html { redirect_to groups_path }
         format.xml  { head :ok }
       else

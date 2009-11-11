@@ -227,13 +227,13 @@ class PageController < ApplicationController
     page_permission = @page.page_permissions[params[:index].to_i]
     if (params[:permission] == "can_view")
       if (page_permission.group.users.include? @current_user)
-        flash[:notice] = "You cannot disable your own view permission if you are in the manager group of the page. If you want to make this page public, you should use the quick setup link below"
+        flash[:notice] = t(:can_view_error)
       else
         page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
       end
     elsif (params[:permission] == "can_edit")
       if (page_permission.group.users.include? @current_user)
-        flash[:notice] = "You cannot disable your own edit permission if you are in the manager group of the page. If you want to make this page editable by anyone, you should use the quick setup link below"
+        flash[:notice] = t(:can_edit_error)
       else
         page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
       end
@@ -325,7 +325,7 @@ class PageController < ApplicationController
         return
       end
       if (first_revision.save)
-        flash[:notice] = 'Page successfully created.'
+        flash[:notice] = t(:page_created)
         page_part.current_page_part_revision = first_revision
         page_part.save!
       end
@@ -410,7 +410,7 @@ class PageController < ApplicationController
         page_part.save!
       end
     end
-    flash[:notice] = 'Page successfully updated.'
+    flash[:notice] = t(:page_updated)
     redirect_to @page.get_path
   end
 
@@ -428,7 +428,7 @@ class PageController < ApplicationController
     page_part_revision.save
     page_part.current_page_part_revision = page_part_revision
     page_part.save!
-    flash[:notice] = 'Page part successfully added.'
+    flash[:notice] = t(:page_part_added)
     redirect_to @page.get_path + ";edit"
   end
 
@@ -437,18 +437,18 @@ class PageController < ApplicationController
     sleep(2) # TODO get rid of this
     @name = params[:uploaded_file_filename]
     if @uploaded_file.filename.nil?
-      flash[:notice] = 'No file selected.'
+      flash[:notice] = t(:no_files_selected)
       redirect_to @page.get_path
     else
       if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-        flash[:notice] = 'Type of file not match. No file uploaded.'
+        flash[:notice] = t(:file_not_match)
         redirect_to @page.get_path
       else
         @uploaded_file.page = @page
         @uploaded_file.user = @current_user
         @uploaded_file.rename(@name) unless @name.nil?
         if @uploaded_file.save
-          flash[:notice] = 'File was successfully uploaded.'
+          flash[:notice] = t(:file_uploaded)
           redirect_to @page.get_path
         else
           error_message = ""
