@@ -1,10 +1,6 @@
 <div id="toolbar" class="bonsai">
   <% unless @current_user.logged? %>
-    <% form_tag login_path do %>
-      <p class="login"><label><%= t(:login) %>  <%= text_field_tag 'username', nil, :size => 10 %></label>
-        <label><%= t(:password) %> <%= password_field_tag 'password', nil, :size => 15 %></label>
-      <%= submit_tag t(:btn_log_in) %></p>
-    <% end %>
+   <%= login_form  %>
   <% else %>
     <p class="login"><%= t(:logged_as) %> <%= @current_user.full_name %> | <%= link_to t(:log_out), logout_path %></p>
   <% end %>
@@ -27,3 +23,4 @@
       </p>
     <% end %>  
 </div>
+
