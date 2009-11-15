@@ -3,15 +3,7 @@ class UsersController < ApplicationController
     if APP_CONFIG['authentication_method'] == 'openid' then
       open_id_authentication
     else
-      return unless params[:username]
-      authenticator = Rails.env.production? ? SimpleLDAP : SimpleLDAP::Stub
-      data = authenticator.authenticate(params[:username], params[:password], 'ldap.stuba.sk', 389, 'ou=People,dc=stuba,dc=sk')
-      if data.nil?
-        failed_login
-      else
-        user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
-        successful_login(user)
-      end
+      ldap_authentification
     end
   end
 
@@ -25,15 +17,54 @@ class UsersController < ApplicationController
 
   private
 
-  def open_id_authentication
-    identity_url = params[:openid_identifier]
-    authenticate_with_open_id(identity_url, :optinal => [ :nickname ] ) do |result, identity_url, profile|
-      if result.successful?
-        name = profile['nickname'] || "openid"
-        user = User.find_or_create_by_username(:username => identity_url, :name => name)
-        successful_login(user)
-      else
+
+
+
+  def ldap_authentification
+    return unless params[:username]
+      authenticator = Rails.env.production? ? SimpleLDAP : SimpleLDAP::Stub
+      data = authenticator.authenticate(params[:username], params[:password], 'ldap.stuba.sk', 389, 'ou=People,dc=stuba,dc=sk')
+      if data.nil?
         failed_login
+      else
+        user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
+        successful_login(user)
+      end
+  end
+
+  def make_url(identity_url)
+    identity_url = (identity_url.slice(0, 7) == "http://") ? identity_url : ("http://" + identity_url)
+    identity_url += (identity_url.slice(-1, 1) == "/") ? "" : "/"
+    return  identity_url
+  end
+
+  def validate_url(url)
+    reg = /^(http\:\/\/)([\w_-]{2,}\.)+([\w_-]{2,})$/
+    return (reg.match(url))? true : false
+  end
+
+  def open_id_authentication
+
+    identity_url = params[:openid_identifier]
+
+    if !Rails.env.production?
+        if !validate_url(identity_url)
+          failed_login
+        else
+          #name = profile['nickname'] || "openid"
+          name = "openid"
+          user = User.find_or_create_by_username(:username => identity_url, :name => name)
+          successful_login(user)
+        end
+    else
+        authenticate_with_open_id(identity_url, :optinal => [ :nickname ] ) do |result, identity_url, profile|
+        if result.successful?
+          name = profile['nickname'] || "openid"
+          user = User.find_or_create_by_username(:username => make_url(identity_url), :name => name)
+          successful_login(user)
+        else
+          failed_login
+        end
       end
     end
   end
