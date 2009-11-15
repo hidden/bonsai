@@ -1,3 +1,6 @@
+Background:
+    Given LDAP is used
+  
 Scenario: User log in, set SK locale and should see slovak page
   When I go to the main page
   And I login as "martinerko"
@@ -5,5 +8,5 @@ Scenario: User log in, set SK locale and should see slovak page
   When I set locale to sk
   And I follow "Files"
   Then I should see "Súbory"
-  And I follow "Manažment"
+  And I follow "Spravovať"
   Then I should see "Prístupové práva pre"

@@ -3,6 +3,9 @@ Feature: Wiki
   A user
   Should be able to create and manage wiki pages
 
+  Background:
+    Given LDAP is used
+
   Scenario: Anonymous user visits a fresh wiki
     When I go to the main page
     Then I should see "Permission denied."

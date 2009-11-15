@@ -4,6 +4,7 @@ Feature: Parallel editing
   Should be able to edit page with other users
 
   Background:
+    Given LDAP is used
     When I go to the main page
     And I login
     And I create "/" page    

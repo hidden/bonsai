@@ -3,6 +3,9 @@ Feature: Wiki layouting and many page parts
   A user
   Should be able to define layout and edit page parts
 
+  Background:
+      Given LDAP is used
+
   Scenario: User wants to add a new page part
     Given that a "main" page with multiple revisions exist
     When I go to the main page
