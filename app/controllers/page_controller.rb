@@ -141,7 +141,7 @@ class PageController < ApplicationController
        p @output
       end
     end
-
+ 
 
   def pagesib
      render :action =>'page_siblings'
@@ -324,11 +324,11 @@ class PageController < ApplicationController
       render :action => :rss_history, :layout => false
   end
 
-
+  
   def edit
     render :action => :edit
   end
-
+  
   def set_permissions
     addedgroups = params[:add_group].split(",")
     for addedgroup in addedgroups
@@ -354,7 +354,7 @@ class PageController < ApplicationController
       edited_revision_id = params["parts_revision"][part_name]
       delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
       edited_revision = page_part.page_part_revisions.find(:first, :conditions => {:id => edited_revision_id})
-      # TODO edit conflict if page_part.current_page_part_revision != edited_revision
+      # TODO edit conflict if page_part.current_page_part_revision != edited_revision      
 
       # update if part name changed
       if new_part_name != part_name
@@ -442,11 +442,11 @@ class PageController < ApplicationController
     @path = params[:path]
     @page = Page.find_by_path(@path)
   end
-
+  
   def can_manage_page_check
-    unless @current_user.can_manage_page? @page then unprivileged end
+   unless @current_user.can_manage_page? @page then unprivileged end
   end
-
+  
   def can_edit_page_check
     unless @current_user.can_edit_page? @page then unprivileged end
   end
