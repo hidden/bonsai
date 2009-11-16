@@ -142,3 +142,21 @@ Feature: Secure file uploads
     When I follow "Files"
     Then I should see "test_file.txt"
     And I should not see "nested"
+
+  Scenario: User tries to view files list without permissions
+    When I go to the main page
+    And I login as "bio"
+    And I create "/" page
+    And page "/" is editable by "bio"
+    And I follow "edit"
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I follow "files"
+    Then I should see "test_file.txt"
+    When I logout
+    And I go to ;files
+    Then I should see "Permission denied."
+    When I go to the main page
+    And I login as "crutch"
+    And I go to ;files
+    Then I should see "Permission denied."

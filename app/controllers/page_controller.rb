@@ -1,35 +1,12 @@
 class PageController < ApplicationController
   before_filter :load_page
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
-  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,:new_part]
-  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :files]
+  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,:new_part, :files]
+  prepend_before_filter :slash_check, :only => [:view]  
+  before_filter :can_view_page_check, :only => [:view, :show_history, :show_revision, :diff]
+  before_filter :is_file, :only => [:view]
+  before_filter :is_blank_page, :only => [:view]
 
-  def handle
-    session[:link_back] = nil
-    
-    # is it a file?
-    if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
-      process_file
-      return
-    end
-
-    if @page.nil?
-      unless @current_user.logged?
-        unprivileged
-      else
-        params.include?('create') ? create : new
-      end
-      return
-    end
-    
-    if @current_user.can_view_page? @page
-      view
-      return
-    end
-
-    unprivileged
-  end
-  
   def rss
     user_from_token = User.find_by_token params[:token]
     user_from_token = AnonymousUser.new if user_from_token.nil?
@@ -37,15 +14,11 @@ class PageController < ApplicationController
       rss_history
     else
       render :nothing => true, :status => :forbidden
-    end  
-  end 
+    end
+  end
 
   def view
-    link = request.env['PATH_INFO']
-    unless link.ends_with?('/')
-      redirect_to link + '/'
-      return
-    end
+    unless session[:link_back].nil? then session[:link_back]= nil end
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
@@ -168,7 +141,7 @@ class PageController < ApplicationController
        p @output
       end
     end
- 
+
 
   def pagesib
      render :action =>'page_siblings'
@@ -351,11 +324,11 @@ class PageController < ApplicationController
       render :action => :rss_history, :layout => false
   end
 
-  
+
   def edit
     render :action => :edit
   end
-  
+
   def set_permissions
     addedgroups = params[:add_group].split(",")
     for addedgroup in addedgroups
@@ -381,7 +354,7 @@ class PageController < ApplicationController
       edited_revision_id = params["parts_revision"][part_name]
       delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
       edited_revision = page_part.page_part_revisions.find(:first, :conditions => {:id => edited_revision_id})
-      # TODO edit conflict if page_part.current_page_part_revision != edited_revision      
+      # TODO edit conflict if page_part.current_page_part_revision != edited_revision
 
       # update if part name changed
       if new_part_name != part_name
@@ -463,29 +436,52 @@ class PageController < ApplicationController
   def files
     render :action => :files
   end
-  
-  def groups
-    @page = Page.find_by_path(@path)
-    session[:link_back] = @page.get_path
-    redirect_to groups_path
-  end
 
   private
   def load_page
     @path = params[:path]
     @page = Page.find_by_path(@path)
   end
-  
+
   def can_manage_page_check
-   unless @current_user.can_manage_page? @page then unprivileged end
+    unless @current_user.can_manage_page? @page then unprivileged end
   end
-  
+
   def can_edit_page_check
     unless @current_user.can_edit_page? @page then unprivileged end
   end
-  
+
+  def slash_check
+    link = request.env['PATH_INFO']
+    unless link.ends_with?('/')
+      redirect_to link + '/'
+      return
+    end
+  end
+
   def can_view_page_check
-    unless @current_user.can_view_page? @page then unprivileged end
+    unless @page.nil?
+      unless @current_user.can_view_page? @page then unprivileged end
+    end
+  end
+
+  def is_file
+    # is it a file?
+    if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
+      process_file
+      return
+    end
+  end
+
+  def is_blank_page
+    if @page.nil?
+      unless @current_user.logged?
+        unprivileged
+      else
+        params.include?('create') ? create : new
+      end
+      return
+    end
   end
 
 end

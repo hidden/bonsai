@@ -57,7 +57,7 @@ module ApplicationHelper
   end
 
   def groups_page_path(page)
-    "#{page.get_path};groups"
+    groups_path+"?back=#{page.get_path}"
   end
 
   def markdown(text)

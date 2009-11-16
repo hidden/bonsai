@@ -1,6 +1,6 @@
 <h1><%= t(:new_page) %></h1>
 
-<% form_tag("/#{@path}?create", :method => :post) do %>
+<% form_tag("/#{@path};create", :method => :post) do %>
   <%= hidden_field_tag "parent_id", @parent_id %>
   <%= hidden_field_tag "sid", @sid %>
   <p>
