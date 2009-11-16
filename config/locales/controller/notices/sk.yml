@@ -5,7 +5,7 @@ sk:
   can_view_error: "Nemôžeš zmeniť svoje vlasné práva na prezeranie, ak si v manažérskej skupine stránky. Ak chceš spraviť stránku verejne dostupnou, použi odkaz pre rýchle nastavenie uvedený nižšie."
   can_edit_error: "Nemôžeš zmeniť svoje vlasné práva na upravovanie, ak si v  manažérskej skupine stránky. Ak chces spraviť stránku verejne editovateľnou, použi odkaz pre rýchle nastavenie uvedený nižšie."
   page_created: "Stránka bola úspešne vytvorená."
-  page_updated: "Stránka bola úspešne aktualizavaná."                                                                            s
+  page_updated: "Stránka bola úspešne aktualizavaná."
   page_part_added: "Sekcia stránky bola úspešne pridaná."
   file_not_match: "Typ súboru nesedí. Žiadny súbor nebol nahraný."
   file_uploaded: "Súbor bol úspešne nahraný."
