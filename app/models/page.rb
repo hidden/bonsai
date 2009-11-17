@@ -81,25 +81,22 @@ class Page < ActiveRecord::Base
 
   def files
     path = 'shared/upload' + get_path
+    return_files = Array.new
 
-    #subory z file_systemu
     if File.directory?(path)
       entries = Dir.entries(path).reject do |file|
         !File.file?(path + file)
       end
+      tmp = []
+      files_in_db = self.uploaded_files.reverse
+      for file in files_in_db
+        if (entries.include?(file.filename) && !tmp.include?(file.filename))
+          return_files.push(file)
+          tmp = return_files.collect(&:filename)
+        end
+      end
     else
        entries =  []
-    end
-
-    #subory z databazy ktore su na disku
-    return_files = Array.new
-    tmp = []
-    files_in_db = self.uploaded_files.reverse
-    for file in files_in_db
-      if (entries.include?(file.filename) && !tmp.include?(file.filename))
-        return_files.push(file)
-        tmp = return_files.collect(&:filename)
-      end
     end
 
     #subory bez uploadera

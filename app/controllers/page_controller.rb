@@ -432,13 +432,20 @@ class PageController < ApplicationController
            @uploaded_file.page = @page
            @uploaded_file.user = @current_user
            @uploaded_file.rename(@name) unless @name.nil?
-           if @uploaded_file.save
-             flash[:notice] = t(:file_uploaded)
-             redirect_to @page.get_path
+           same_page = @path
+           same_page.push(@uploaded_file.filename)
+           if Page.find_by_path(same_page).nil?
+             if @uploaded_file.save
+              flash[:notice] = t(:file_uploaded)
+              redirect_to @page.get_path
+             else
+              error_message = ""
+              @uploaded_file.errors.each_full { |msg| error_message << msg }
+              flash[:notice] = error_message
+              render :action => :edit
+             end
            else
-             error_message = ""
-             @uploaded_file.errors.each_full { |msg| error_message << msg }
-             flash[:notice] = error_message
+             flash[:notice] = t(:same_as_page)
              render :action => :edit
            end
          end
@@ -483,7 +490,7 @@ class PageController < ApplicationController
 
   def is_file
     # is it a file?
-    if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
+    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or File.file?("shared/upload/" + @path.join('/')))
       process_file
       return
     end

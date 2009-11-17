@@ -10,6 +10,7 @@ en:
     file_not_match: "Type of file not match. No file uploaded."
     file_exists: "File already exists!"
     file_uploaded: "File was successfully uploaded."
+    same_as_page: "Error! There is a page with the same name."
     group_created: "Group was successfully created."
     group_updated: "Group was successfully updated."
     user_not_found: "Username not found!"

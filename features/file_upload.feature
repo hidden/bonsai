@@ -176,3 +176,28 @@ Feature: Secure file uploads
     Then I should see "File already exists"
     When I follow "files"
     Then I should see "bio"
+
+  Scenario: User wants to upload file with no ext
+    When I go to the main page
+    And I login as "bio"
+    And I create "/" page
+    And I follow "edit"
+    And I attach the file at "readme" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded."
+    When I go to /readme
+    Then I should see "Some text in file."
+
+
+  Scenario: User wants to upload file with no ext and there is a page with the same name
+    When I go to the main page
+    And I login as "bio"
+    And I create "/" page
+    And I create "/readme/" page with title "citaj ma"
+    And I go to the main page
+    And I follow "edit"
+    And I attach the file at "readme" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    Then I should see "There is a page with the same name."
+    When I go to /readme
+    Then I should see "citaj ma"
