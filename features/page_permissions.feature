@@ -197,3 +197,37 @@ Feature: Secure wiki
     Then I should see "Permission denied"
     And I should not see "Edit"
     And I should not see "Manage"
+
+  Scenario: User creates private group, another user should not be able to add permissions for this group
+    Given user "jozo" exists
+    Given user "fero" exists
+    When I go to the main page
+    And I login as "fero"
+    And I create "/" page
+    And I create "TestPrivate" group
+    And I add "jozo" viewer to "TestPrivate" group
+    Then I should see "jozo"
+    When I logout
+    And I login as "jano"
+    And I create "a" page
+    And I follow "Manage"
+    And I fill in "add_group" with "TestPrivate"
+    And I check "can_view"
+    And I press "Set"
+    And I follow "Manage"
+    And I should not see "TestPrivate"
+
+  Scenario: User creates private group, autocomplete should not suggest this group to another user
+    Given user "jozo" exists
+    Given user "fero" exists
+    When I go to the main page
+    And I login as "fero"
+    And I create "/" page
+    And I create "TestPrivate" group
+    And I add "jozo" viewer to "TestPrivate" group
+    Then I should see "jozo"
+    When I logout
+    And I login as "jano"
+    And I create "/test" page
+    And I go to /groups/autocomplete_for_groups?prefix=Test
+    And I should not see "TestPrivate"

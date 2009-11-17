@@ -334,9 +334,14 @@ class PageController < ApplicationController
     for addedgroup in addedgroups
       groups = Group.find_all_by_name(addedgroup)
       for group in groups
-        @page.add_viewer group if params[:can_view]
-        @page.add_editor group if params[:can_edit]
-        @page.add_manager group if params[:can_manage]
+        users = group.users
+        retVal = group.is_public?
+        retValUsers = users.include?(@current_user)
+        if (retVal || retValUsers)
+          @page.add_viewer group if params[:can_view]
+          @page.add_editor group if params[:can_edit]
+          @page.add_manager group if params[:can_manage]
+        end
       end
     end
     redirect_to @page.get_path + "?manage"

@@ -120,3 +120,19 @@ Feature: Wiki
     When I follow "New group"
     And I follow "Return to page"
     Then I should see "Nested title"
+
+  Scenario: User creates new group, another user should see this group and should not see all user groups in Groups Management
+    Given user "jozo" exists
+    Given user "fero" exists
+    Given user "peto" exists
+    When I go to the main page
+    And I login as "jano"
+    And I create "/" page
+    And I create "TestGroup" group
+    When I logout
+    And I login as "jozo"
+    When I follow "Groups"
+    Then I should see "TestGroup"
+    And I should not see "fero (fero)"
+    And I should not see "peto (peto)"
+    And I should not see "jano jano (jano)"

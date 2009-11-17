@@ -16,6 +16,16 @@ class GroupsController < ApplicationController
   end
   def autocomplete_for_groups
       @groups = Group.all(:conditions => ["name LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'name')
+      @auto_groups = @groups.clone
+      for group in @groups
+        users = group.users
+        retVal = group.is_public?
+        retValUsers = users.include?(@current_user)
+        if (retVal || retValUsers)
+        else
+          @auto_groups.delete(group)
+        end
+      end
       render :partial => 'autocomplete_groups'
     end
   
@@ -28,9 +38,16 @@ class GroupsController < ApplicationController
       redirect_to groups_path
       return
     end
-    @groups = @current_user.visible_groups + Group.groups_visible_for_all
+    #@groups = @current_user.visible_groups + Group.groups_visible_for_all
     #uniq! removes duplicate elements from self but returns nil if no changes are made (that is, no duplicates are found).
-    @groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
+    #@groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
+
+    stmnt =  "SELECT GROUP_PERMISSIONS.group_id as id, GROUPS.name  FROM GROUP_PERMISSIONS JOIN GROUPS on GROUP_PERMISSIONS.GROUP_ID = groups.id LEFT JOIN users on users.name = groups.name where user_id = ??? and users.id is null"
+    stmnt["???"] = @current_user.id.to_s()
+    visible_for_user = Group.find_by_sql(stmnt)
+    public =  Group.find_by_sql("SELECT GROUP_PERMISSIONS.group_id as id, GROUPS.name  FROM GROUP_PERMISSIONS JOIN GROUPS on GROUP_PERMISSIONS.GROUP_ID = groups.id LEFT JOIN USERS ON users.name = groups.name WHERE ((GROUP_PERMISSIONS.CAN_VIEW = 0 OR GROUP_PERMISSIONS.CAN_VIEW = NULL) AND users.id is null) ")
+    @groups = visible_for_user + public
+    @groups = @groups.uniq!.nil? ? (visible_for_user + public):@groups
 
     respond_to do |format|
       format.html # index.html.erb
