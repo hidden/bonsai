@@ -9,7 +9,7 @@ module ApplicationHelper
   end
 
   def edit_page_path(page)
-    page_path(page.get_rel_path, :edit)
+    "#{page.get_path};edit"
   end
 
   def update_page_path(page)
@@ -21,15 +21,15 @@ module ApplicationHelper
   end
   
   def page_history_path(page)
-    page_path(page.get_rel_path, :show_history)
+   "#{page.get_path};show_history"
   end
   
   def manage_page_path(page)
-    page_path(page.get_rel_path, :manage)
+    "#{page.get_path};manage"
   end
   
   def list_files_path(page)
-    page_path(page.get_rel_path, :files)
+    "#{page.get_path};files"
   end
   
   def remove_permission_path(page, index)

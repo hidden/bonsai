@@ -8,6 +8,7 @@ en:
     page_updated: "Page successfully updated."
     page_part_added: "Page part successfully added."
     file_not_match: "Type of file not match. No file uploaded."
+    file_exists: "File already exists!"
     file_uploaded: "File was successfully uploaded."
     group_created: "Group was successfully created."
     group_updated: "Group was successfully updated."

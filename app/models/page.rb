@@ -80,13 +80,35 @@ class Page < ActiveRecord::Base
   
 
   def files
-    uploaded_file_names = self.uploaded_files.collect(&:filename)
     path = 'shared/upload' + get_path
-    entries = File.directory?(path) ? Dir.entries(path) : []
-    files_from_file_system = entries.reject do |file|
-      uploaded_file_names.include?(file) or !File.file?(path + file) 
+
+    #subory z file_systemu
+    if File.directory?(path)
+      entries = Dir.entries(path).reject do |file|
+        !File.file?(path + file)
+      end
+    else
+       entries =  []
     end
-    self.uploaded_files + files_from_file_system
+
+    #subory z databazy ktore su na disku
+    return_files = Array.new
+    tmp = []
+    files_in_db = self.uploaded_files.reverse
+    for file in files_in_db
+      if (entries.include?(file.filename) && !tmp.include?(file.filename))
+        return_files.push(file)
+        tmp = return_files.collect(&:filename)
+      end
+    end
+
+    #subory bez uploadera
+    tmp = return_files.collect(&:filename)
+    entries.reject! do |file|
+      tmp.include?(file)
+    end
+    
+    return_files + entries
   end
 
   def add_viewer group

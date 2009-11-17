@@ -8,6 +8,7 @@ sk:
   page_updated: "Stránka bola úspešne aktualizavaná."
   page_part_added: "Sekcia stránky bola úspešne pridaná."
   file_not_match: "Typ súboru nesedí. Žiadny súbor nebol nahraný."
+  file_exists:  "Súbor už existuje!"
   file_uploaded: "Súbor bol úspešne nahraný."
   group_created: "Skupina bola úspešne vytvorená."
   group_updated: "Skupina bola úspešne aktualizovaná."

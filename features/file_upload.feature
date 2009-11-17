@@ -160,3 +160,19 @@ Feature: Secure file uploads
     And I login as "crutch"
     And I go to ;files
     Then I should see "Permission denied."
+
+  Scenario: User tries to reupload existing file
+    When I go to the main page
+    And I login as "bio"
+    And I create "/" page
+    And I follow "edit"
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I logout
+    And I login as "Ted"
+    And I follow "edit"
+    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    Then I should see "File already exists"
+    When I follow "files"
+    Then I should see "bio"

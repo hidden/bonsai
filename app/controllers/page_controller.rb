@@ -409,28 +409,39 @@ class PageController < ApplicationController
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
     sleep(2) # TODO get rid of this
     @name = params[:uploaded_file_filename]
-    if @uploaded_file.filename.nil?
+
+     if @uploaded_file.filename.nil?
       flash[:notice] = t(:no_files_selected)
       redirect_to @page.get_path
-    else
-      if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-        flash[:notice] = t(:file_not_match)
-        redirect_to @page.get_path
-      else
-        @uploaded_file.page = @page
-        @uploaded_file.user = @current_user
-        @uploaded_file.rename(@name) unless @name.nil?
-        if @uploaded_file.save
-          flash[:notice] = t(:file_uploaded)
-          redirect_to @page.get_path
-        else
-          error_message = ""
-          @uploaded_file.errors.each_full { |msg| error_message << msg }
-          flash[:notice] = error_message
-          render :action => :edit
-        end
-      end
+     else
+
+       if @uploaded_file.exist?(@page.get_path)
+         flash[:notice] = t(:file_exists)
+         redirect_to @page.get_path
+       else
+
+         if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
+           flash[:notice] = t(:file_not_match)
+           redirect_to @page.get_path
+         else
+           @uploaded_file.page = @page
+           @uploaded_file.user = @current_user
+           @uploaded_file.rename(@name) unless @name.nil?
+           if @uploaded_file.save
+             flash[:notice] = t(:file_uploaded)
+             redirect_to @page.get_path
+           else
+             error_message = ""
+             @uploaded_file.errors.each_full { |msg| error_message << msg }
+             flash[:notice] = error_message
+             render :action => :edit
+           end
+         end
+
+       end
+
     end
+
   end
 
   def files
