@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   def login
+    session[:return_to] = request.referer if params[:commit]
     if APP_CONFIG['authentication_method'] == 'openid' then
       open_id_authentication
     else
@@ -16,9 +17,6 @@ class UsersController < ApplicationController
   end
 
   private
-
-
-
 
   def ldap_authentification
     return unless params[:username]
@@ -44,14 +42,12 @@ class UsersController < ApplicationController
   end
 
   def open_id_authentication
-
     identity_url = params[:openid_identifier]
 
-    if !Rails.env.production?
+    if Rails.env.test?
         if !validate_url(identity_url)
           failed_login
         else
-          #name = profile['nickname'] || "openid"
           name = "openid"
           user = User.find_or_create_by_username(:username => identity_url, :name => name)
           successful_login(user)
@@ -73,12 +69,12 @@ class UsersController < ApplicationController
     session[:user_id] = user.id
     cookies[:token] = {:value => user.token, :expires => 1.month.from_now}
     flash[:notice] = t(:login_successful)
-    redirect_to :back
+    redirect_to session[:return_to]
   end
 
   def failed_login
     flash[:error] = t(:login_error)
-    redirect_to :back
+    redirect_to session[:return_to]
   end
   
 end
