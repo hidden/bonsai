@@ -144,6 +144,7 @@ class PageController < ApplicationController
  
 
   def pagesib
+    @user_name=@current_user.logged? ?  @current_user.username : 'nil';
      render :action =>'page_siblings'
   end
 

@@ -21,15 +21,20 @@ class Page < ActiveRecord::Base
        Page.all(:conditions => ["parent_id IS NOT NULL and parent_id = ?", self.id])
     end
 
-    def get_children_tree page
-       Page.all(:include => [:page_permissions],
-                :conditions => ["(lft BETWEEN ? AND ?)
-                                 AND (page_permissions.can_view = ?
-                                      OR page_permissions.can_edit = ?
-                                      OR page_permissions.can_manage = ?
-                                 )", page.lft, page.rgt,true,true,true],
-                 :order => "lft")
-    end  
+  def get_children_tree page,user
+    Page.find_by_sql("SELECT  p.* FROM pages p
+                      left join (
+                      select page_id,
+                             sum(can_view) sum_can_view,
+                             sum(can_edit) sum_can_edit
+                       from page_permissions group by page_id) w on w.page_id=p.id
+                      left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
+                      left join groups q
+                      ON q.id = a.group_id and q.name='#{user}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
+                      where (p.lft BETWEEN #{page.lft} AND #{page.rgt})
+                      and ((sum_can_view=0 and sum_can_edit=0)or (q.id is not null))
+                      order by p.lft")
+  end 
 
   def self.find_by_path path
     full_path = [nil] + path
