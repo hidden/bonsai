@@ -180,3 +180,13 @@ Scenario: User without rights wants to view subpages tree
       And I follow "Summary"
       Then I should not see "Some title1" within "body"
     
+Scenario: User create code text in page
+     When I go to the main page
+      And I login as "johno"
+      And I create "/" page with title "hello world" string body
+      """
+          <?php echo'hello world'; ?php>
+      {:class=php}
+      """
+      Then I should see "<?php echo'hello world'; ?php>" within "body"
+

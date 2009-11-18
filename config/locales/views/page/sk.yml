@@ -65,7 +65,7 @@ sk:
   item1: "1. prvá položka"
   item2: "2. druhá položka"
   item3: "3. tretia položka"
-  code_blocks: "Úseky kódu: --- odsaď každý riadok bloku kódu 4 medzerami alebo tabulátorom"
+  code_blocks: "Úseky kódu: --- odsaď každý riadok bloku kódu 4 medzerami alebo tabulátorom a prezvýraznenie syntaxe pridaj na druhy riadok {:class=jazyk}"
   more_info: "Tu môžes nájsť viac informácii o"
   this_is: "Toto je"
   inline_link: "odkaz."
