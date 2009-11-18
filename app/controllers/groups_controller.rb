@@ -42,10 +42,10 @@ class GroupsController < ApplicationController
     #uniq! removes duplicate elements from self but returns nil if no changes are made (that is, no duplicates are found).
     #@groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
 
-    stmnt =  "SELECT GROUP_PERMISSIONS.group_id as id, GROUPS.name  FROM GROUP_PERMISSIONS JOIN GROUPS on GROUP_PERMISSIONS.GROUP_ID = groups.id LEFT JOIN users on users.name = groups.name where user_id = ??? and users.id is null"
+    stmnt =  "SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users on users.name = groups.name where user_id = ??? and users.id is null"
     stmnt["???"] = @current_user.id.to_s()
     visible_for_user = Group.find_by_sql(stmnt)
-    public =  Group.find_by_sql("SELECT GROUP_PERMISSIONS.group_id as id, GROUPS.name  FROM GROUP_PERMISSIONS JOIN GROUPS on GROUP_PERMISSIONS.GROUP_ID = groups.id LEFT JOIN USERS ON users.name = groups.name WHERE ((GROUP_PERMISSIONS.CAN_VIEW = 0 OR GROUP_PERMISSIONS.CAN_VIEW = NULL) AND users.id is null) ")
+    public =  Group.find_by_sql("SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users ON users.name = groups.name WHERE ((group_permissions.can_view = 0 OR group_permissions.can_view = NULL) AND users.id is null) ")
     @groups = visible_for_user + public
     @groups = @groups.uniq!.nil? ? (visible_for_user + public):@groups
 
