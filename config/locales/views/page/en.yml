@@ -25,6 +25,8 @@ en:
   no_files_uploaded: "No files uploaded for this page."
   file: "File"
   uploader: "Uploader"
+  size: "Size"
+  time: "Time"
   unknown: "unknown"
   file_not_found: "File not found."
   you_can: "You can "

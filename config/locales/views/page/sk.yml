@@ -25,6 +25,8 @@ sk:
   no_files_uploaded: "Pre stránku neboli nahrané žiadne súbory."
   file: "Súbor"
   uploader: "Autor"
+  size: "Veľkosť"
+  time: "Čas"
   unknown: "neznámy"
   file_not_found: "Súbor nenájdený."
   you_can: "Možeš "
