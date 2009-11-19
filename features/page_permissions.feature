@@ -3,6 +3,9 @@ Feature: Secure wiki
   A user
   Should be able to set permissions for viewing, editing and managing pages.
 
+  Background:
+    Given LDAP is used
+  
   Scenario: Wiki page viewable by one user
     When I go to the main page
     And I login as "johno"
@@ -231,3 +234,4 @@ Feature: Secure wiki
     And I create "/test" page
     And I go to /groups/autocomplete_for_groups?prefix=Test
     And I should not see "TestPrivate"
+

@@ -16,9 +16,22 @@ function toggleDiv(event) {
     return false;
 }
 
-function toggleTreeElement(Li,UI){
-  Li.className= Li.className=="Expanded"? "Collapsed":"Expanded";
-  Element.toggle(UI);
+function toggleTreeElement(Li,evt){
+
+if(evt.stopPropagation) {evt.stopPropagation();}
+evt.cancelBubble = true;
+
+if(Li.className=="Expanded"){
+  Li.className="Collapsed";
+}else{
+  Li.className="Expanded";
 }
+  Element.toggle(Li.children[1]);
+}
+
+function link_visible(element,show){
+    element.children[0].style.display = show;
+}
+
 
 Event.observe(window, 'load', initialize);

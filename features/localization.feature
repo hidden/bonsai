@@ -1,3 +1,6 @@
+Background:
+    Given LDAP is used
+  
 Scenario: User log in, set SK locale and should see slovak page
   When I go to the main page
   And I login as "martinerko"

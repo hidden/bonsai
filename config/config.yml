@@ -1,0 +1,11 @@
+defaults: &defaults
+  authentication_method: ldap #ldap, openid
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

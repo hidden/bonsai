@@ -5,7 +5,8 @@ Feature: Secure file uploads
 
   Background:
     Given there are no files uploaded
-
+    Given LDAP is used
+    
   Scenario: User tries do download a bogus file
     When I go to /bogus_file.txt
     Then I should see "File not found."

@@ -3,7 +3,9 @@ Feature: Wiki
   A user
   Should be able to create and manage wiki groups
 
-
+  Background:
+    Given LDAP is used
+    
   Scenario: User wants to create new group
     When I go to the main page
     And I login as "martinerko"
@@ -136,3 +138,4 @@ Feature: Wiki
     And I should not see "fero (fero)"
     And I should not see "peto (peto)"
     And I should not see "jano jano (jano)"
+

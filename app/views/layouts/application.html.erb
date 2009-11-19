@@ -7,6 +7,21 @@
     <title><%=h @page.full_title unless @page.nil? %></title>
     <%= stylesheet_link_tag 'bonsai' %>
     <%= stylesheet_link_tag 'default' %>
+    <!-- Start Syntax Highlight -->
+    <%= stylesheet_link_tag 'SyntaxHighlighter.css' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushRuby.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushPhp.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushXml.js' %>
+     <%= javascript_include_tag 'SyntaxHighlighter/shBrushCpp.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushCSharp.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushCss.js' %>
+     <%= javascript_include_tag 'SyntaxHighlighter/shBrushDelphi.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushJava.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushJScript.js' %>
+     <%= javascript_include_tag 'SyntaxHighlighter/shBrushPython.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shBrushSql.js' %>
+    <!-- End Syntax Highlight -->
     <%= javascript_include_tag :defaults, :cache => true %>
     <%= render :partial => 'shared/rss_link' %>
   </head>
@@ -17,5 +32,9 @@
     <%= yield %>
     </div>
   <%= render :partial => 'shared/analytics' %>
+  <script language="javascript">
+    dp.SyntaxHighlighter.ClipboardSwf = "/javascripts/SyntaxHighlighter/clipboard.swf";
+    dp.SyntaxHighlighter.HighlightAll('code');
+    </script>
   </body>
 </html>

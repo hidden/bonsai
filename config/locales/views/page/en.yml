@@ -67,7 +67,7 @@ en:
   item1: "1. first item"
   item2: "2. second item"
   item3: "3. third item"
-  code_blocks: "Code Blocks: --- indent every line of the block by at least 4 spaces or 1 tab"
+  code_blocks: "Code Blocks: --- indent every line of the block by at least 4 spaces or 1 tab and for syntax highlighting add {:class=language} on next line"
   more_info: "Here you can find further information related to"
   this_is: "This is"
   inline_link: "Inline link"

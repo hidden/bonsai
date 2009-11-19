@@ -3,7 +3,9 @@ Feature: Wiki
   A user
   Should be able to see rss changes
 
-
+  Background:
+      Given LDAP is used
+   
   Scenario: check if RSS feeds from page menu works properly
     When I go to the main page
     And I login as "johno"
