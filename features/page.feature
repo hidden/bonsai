@@ -67,16 +67,9 @@ Feature: Wiki
     And I follow "Summary"
     Then I should not see "Some title1" within "body"
 
-
-  @wip
-  Scenario: User wants to go to page without /
-    When I create "/" page with title "Root page" body "Root body!"
-    And I create "/nested/" page with title "Nested page" body "[linka](test_file.txt)"
-    And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    And I go to /nested
-    When I follow "linka"
-    Then I should not see "File not found"
+  Scenario: User wants to go to page without slash
+    When I create "/" page
+    And I create "/nested" page with address in body
+    Then I should see "Address: /nested/"
     
   

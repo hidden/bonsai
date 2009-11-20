@@ -62,3 +62,11 @@ When /^I create "([^"]*)" page with title "([^"]*)" string body$/ do |url, title
   fill_in('summary', :with => "summary")
   click_button('Create')
 end
+
+When /^I create "([^"]*)" page with address in body$/ do |url|
+  visit url
+  fill_in('title', :with => 'Some title')
+  fill_in('body',:with => 'Address: ' + request.env['PATH_INFO'])
+  fill_in('summary', :with => "summary")
+  click_button('Create')
+end

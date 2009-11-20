@@ -31,6 +31,7 @@ en:
   file_not_found: "File not found."
   you_can: "You can "
   upload_this_file: " upload this file"
+  upload_new_file: " upload new file"
   upload_file: "Upload a File"
   btn_upload: "Upload"
   rss_recent_changes: "Recent changes for wiki page "

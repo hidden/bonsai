@@ -32,3 +32,10 @@
       </tbody>
     </table>
 <% end %>
+<p><%= t(:you_can)%> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_new_file)%></a>.</p>
+<div style="display: none;">
+  <% form_for(:uploaded_file, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
+      <p><label for="uploaded_file"><%= t(:upload_file)%><br/><%= f.file_field :uploaded_data %>
+      </label><%= submit_tag t(:btn_upload) %></p>
+  <% end %>
+</div>

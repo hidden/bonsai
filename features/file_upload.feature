@@ -6,9 +6,10 @@ Feature: Secure file uploads
   Background:
     Given there are no files uploaded
     And I am logged in
-    
+   
   Scenario: User tries do download a bogus file
-    When I go to /bogus_file.txt
+    Given I am not logged in
+    And I go to /bogus_file.txt
     Then I should see "File not found."
     When I go to /a/nested/bogus_file.txt
     Then I should see "File not found."
@@ -66,8 +67,9 @@ Feature: Secure file uploads
     When I go to /bogus_still_file.txt
     Then I should see "File not found."
 
-  Scenario: User tries do download a bogus file
-    When I go to /bogus_still_file.txt
+  Scenario: Anonymous user tries do download a bogus file
+    Given I am not logged in
+    And I go to /bogus_file.txt
     Then I should see "File not found."
     And I should not see "You can upload this file."
 
@@ -158,11 +160,11 @@ Feature: Secure file uploads
     And I press "Upload"
     Then I should see "File already exists"
     When I follow "files"
-    Then I should see "bio"
+    Then I should see "testuser"
 
-  Scenario: User wants to upload file with no ext
+  Scenario: User wants to upload file with no ext trough file page
     When I create "/" page
-    And I follow "edit"
+    And I follow "files"
     And I attach the file at "readme" to "uploaded_file_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
