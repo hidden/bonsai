@@ -4,6 +4,7 @@
     <table>
       <thead>
       <tr>
+        <th></th>
         <th><%= t(:file) %></th>
         <th><%= t(:uploader) %></th>
         <th><%= t(:size) %></th>
@@ -12,13 +13,15 @@
       </thead>
       <tbody>
       <% for file in @page.files %>
-          <tr>
+        <tr>
             <% if file.respond_to? :user %>
+                <td><%= image_tag('icons/file_types/' + @page.file_type(file.filename), :alt => '') %></td>
                 <td><%= link_to file.filename, file.filename %></td>
                 <td><% if file.user.nil? %><%= t(:unknown) %><% else %><%= h file.user.full_name %><% end %></td>
                 <td><%= number_to_human_size(File.size("shared/upload" + @page.get_path + file.filename), :precision => 2) %></td>
                 <td><%= File.atime("shared/upload" + @page.get_path + file.filename).localtime.strftime("%H:%M:%S %d %b %Y") %></td>
             <% else %>
+                <td><%= image_tag('icons/file_types/' + @page.file_type(file), :alt => '') %></td>
                 <td><%= link_to file, file %></td>
                 <td><%= t(:unknown) %></td>
                 <td><%= number_to_human_size(File.size("shared/upload" + @page.get_path + file), :precision => 2) %></td>

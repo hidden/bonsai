@@ -104,6 +104,11 @@ class Page < ActiveRecord::Base
        entries =  []
     end
 
+    def file_type (filename)
+      type = APP_CONFIG['file_' + File.extname(filename).delete!(".")]
+      return type.nil? ? APP_CONFIG['file_default'] : type
+    end
+
     #subory bez uploadera
     tmp = return_files.collect(&:filename)
     entries.reject! do |file|
