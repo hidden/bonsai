@@ -105,8 +105,12 @@ class Page < ActiveRecord::Base
     end
 
     def file_type (filename)
-      type = APP_CONFIG['file_' + File.extname(filename).delete!(".")]
-      return type.nil? ? APP_CONFIG['file_default'] : type
+      unless File.extname(filename) == ""
+        type = APP_CONFIG['file_' + File.extname(filename).delete!(".")]
+        return type.nil? ? APP_CONFIG['file_default'] : type
+      else
+        return APP_CONFIG['file_default']
+      end
     end
 
     #subory bez uploadera
