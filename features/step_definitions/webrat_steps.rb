@@ -197,15 +197,3 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
-
-Then /^I should see a link to "([^\"]*)" with text "([^\"]*)"$/ do |url, text|
-  response_body.should have_selector("a[href='#{ url }']") do |element|
-    element.should contain(text)
-  end
-end
-
-Then /^the source should contain tag "([^\"]*)" with id "([^\"]*)"$/ do |tag, tagid|
-  #response_body.should have_tag(tag, id)
-  response_body.should have_selector("#{tag}[id='#{ tagid }']")
-end
-

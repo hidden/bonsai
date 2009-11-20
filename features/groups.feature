@@ -4,38 +4,29 @@ Feature: Wiki
   Should be able to create and manage wiki groups
 
   Background:
-    Given LDAP is used
+    Given I am logged in
     
   Scenario: User wants to create new group
-    When I go to the main page
-    And I login as "martinerko"
-    And I create "/" page
+    When I create "/" page
     And I create "New group" group
     Then I should see "Group was successfully created."
 
-
   Scenario: User wants to change name of group
-    When I go to the main page
-    And I login as "martinerko"
-    And I create "/" page
+    When I create "/" page
     And I create "Newgroup" group
     And I change "Newgroup" group name to "MyNewNameOfgroup"
     Then I should see "Group was successfully updated."
     And I should see "MyNewNameOfgroup"
 
   Scenario: User wants to change name of group, just after he/she creates new group
-    When I go to the main page
-    And I login as "martinerko"
-    And I create "/" page
+    When I create "/" page
     And I create "MyNewGroup" group
     And I fill in "group_name" with "MyNewNameOfgroup"
     And I press "Update"
     Then I should see "Group was successfully updated."
     
   Scenario: User wants to delete group
-    When I go to the main page
-    And I login as "martinerko"
-    And I create "/" page
+    When I create "/" page
     And I create "MyNewGroup" group
     And I follow "Back"
     Then I should see "Groups Management"
@@ -46,36 +37,27 @@ Feature: Wiki
     And I follow "Groups"
     Then I should not see "MyNewGroup"
 
-
-
   Scenario: User wants to add permisions within his group to another user
-    Given user "TestUser" exists
-    When I go to the main page
-    And I login as "martinerko"
-    And I create "/" page
+    Given user "crutch" exists
+    When I create "/" page
     And I create "MyNewGroup" group
-    And I add "TestUser" editor to "MyNewGroup" group
-    Then I should see "TestUser"
+    And I add "crutch" editor to "MyNewGroup" group
+    Then I should see "crutch"
 
 
   Scenario: User wants to remove another user from his group
-    Given user "TestUser" exists
-    When I go to the main page
-    And I login as "martinerko"
-    And I create "/" page
+    Given user "crutch" exists
+    When I create "/" page
     And I create "MyNewGroup" group
-    And I add "TestUser" editor to "MyNewGroup" group
-    Then I should see "TestUser"
-    When I remove "TestUser" member from "MyNewGroup" group
-    Then I should not see "TestUser"
+    And I add "crutch" editor to "MyNewGroup" group
+    Then I should see "crutch"
+    When I remove "crutch" member from "MyNewGroup" group
+    Then I should not see "crutch"
 
 
   Scenario: User was given permission to manage group. He wants to manage group, we check if he has permission
-    Given user "matell" exists
     Given user "crutch" exists
-    When I go to the main page
-    And I login as "matell"
-    And I create "/" page
+    When I create "/" page
     And I create "MyNewGroup" group
     And I add "crutch" editor to "MyNewGroup" group
     When I logout
@@ -88,11 +70,8 @@ Feature: Wiki
     Then I should see "Group MyNewGroup"
 
   Scenario: User was not given permission to manage group. He wants to manage group, we check if he has permission
-    Given user "matell" exists
     Given user "crutch" exists
-    When I go to the main page
-    And I login as "matell"
-    And I create "/" page
+    When I create "/" page
     And I create "MyNewGroup" group
     And I add "crutch" viewer to "MyNewGroup" group
     When I logout
@@ -103,18 +82,14 @@ Feature: Wiki
     And I should not see "Destroy"
 
   Scenario: Return to main page
-    When I go to the main page
-    And I login as "bio"
-    And I create "/" page with title "Root title"
+    When I create "/" page with title "Root title"
     And I follow "Groups"
     Then I should see "Groups Management"
     When I follow "Return to page"
     Then I should see "Root title"
 
   Scenario: Return to nested page
-    When I go to the main page
-    And I login as "bio"
-    And I create "/" page with title "Root title"
+    When I create "/" page with title "Root title"
     And I create "/nested_page/" page with title "Nested title"
     And I go to /nested_page/
     And I follow "Groups"
@@ -122,20 +97,4 @@ Feature: Wiki
     When I follow "New group"
     And I follow "Return to page"
     Then I should see "Nested title"
-
-  Scenario: User creates new group, another user should see this group and should not see all user groups in Groups Management
-    Given user "jozo" exists
-    Given user "fero" exists
-    Given user "peto" exists
-    When I go to the main page
-    And I login as "jano"
-    And I create "/" page
-    And I create "TestGroup" group
-    When I logout
-    And I login as "jozo"
-    When I follow "Groups"
-    Then I should see "TestGroup"
-    And I should not see "fero (fero)"
-    And I should not see "peto (peto)"
-    And I should not see "jano jano (jano)"
-
+    

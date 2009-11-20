@@ -5,7 +5,7 @@ Feature: Secure file uploads
 
   Background:
     Given there are no files uploaded
-    Given LDAP is used
+    And I am logged in
     
   Scenario: User tries do download a bogus file
     When I go to /bogus_file.txt
@@ -14,9 +14,7 @@ Feature: Secure file uploads
     Then I should see "File not found."
 
   Scenario: User wants to upload a file
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     #And I upload "test_file.txt" file
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
@@ -26,8 +24,8 @@ Feature: Secure file uploads
     Then I should see "Some text in file."
 
   Scenario: User uploads a file under a restricted page and different user wants to download it
-    When I go to the main page
-    And I login as "johno"
+    Given I am not logged in
+    When I login as "johno"
     And I create "/" page
     And page "/" is viewable by "johno"
     And I follow "edit"
@@ -41,9 +39,7 @@ Feature: Secure file uploads
     Then I should see "Permission denied."
 
   Scenario: User tries do download a bogus file and then upload it
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I go to /test_file2.txt
     Then I should see "File not found."
     When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
@@ -51,9 +47,7 @@ Feature: Secure file uploads
     Then I should see "File was successfully uploaded."
 
   Scenario: User tries do download a bogus file and then upload it with diffrent name
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I go to /bogus_file.txt
     Then I should see "File not found."
     When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
@@ -63,9 +57,7 @@ Feature: Secure file uploads
     Then I should see "Some text in file."
 
   Scenario: User tries do download a bogus file and then upload difrent type of file
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I go to /bogus_still_file.txt
     Then I should see "File not found."
     When I attach the file at "picture.jpg" to "uploaded_file_uploaded_data"
@@ -80,9 +72,7 @@ Feature: Secure file uploads
     And I should not see "You can upload this file."
 
   Scenario: User tries do download a bogus file and then upload difrent type of file
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I create "/new_page/" page
     And I go to /new_page/link.txt
     Then I should see "File not found."
@@ -93,9 +83,7 @@ Feature: Secure file uploads
     Then I should see "File not found."
 
   Scenario: User tries do download a bogus file and then upload difrent name
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I create "/new_page/" page
     And I go to /new_page/link.txt
     Then I should see "File not found."
@@ -106,9 +94,7 @@ Feature: Secure file uploads
     Then I should see "Some text in file."
 
   Scenario: User uploads some files and wants to see them all
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
@@ -122,16 +108,12 @@ Feature: Secure file uploads
     And I should see "test_file2.txt"
 
   Scenario: User uploads no files and tries to view a listing
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I follow "Files"
     Then I should see "No files uploaded for this page"
 
   Scenario: User uploads some files and wants to see them without listing subdirectories
-    When I go to the main page
-    And I login as "johno"
-    And I create "/" page
+    When I create "/" page
     And I follow "Edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
@@ -143,8 +125,10 @@ Feature: Secure file uploads
     When I follow "Files"
     Then I should see "test_file.txt"
     And I should not see "nested"
+    
 
   Scenario: User tries to view files list without permissions
+    Given I am not logged in
     When I go to the main page
     And I login as "bio"
     And I create "/" page
@@ -163,9 +147,7 @@ Feature: Secure file uploads
     Then I should see "Permission denied."
 
   Scenario: User tries to reupload existing file
-    When I go to the main page
-    And I login as "bio"
-    And I create "/" page
+    When I create "/" page
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
@@ -179,9 +161,7 @@ Feature: Secure file uploads
     Then I should see "bio"
 
   Scenario: User wants to upload file with no ext
-    When I go to the main page
-    And I login as "bio"
-    And I create "/" page
+    When I create "/" page
     And I follow "edit"
     And I attach the file at "readme" to "uploaded_file_uploaded_data"
     And I press "Upload"
@@ -191,9 +171,7 @@ Feature: Secure file uploads
 
 
   Scenario: User wants to upload file with no ext and there is a page with the same name
-    When I go to the main page
-    And I login as "bio"
-    And I create "/" page
+    When I create "/" page
     And I create "/readme/" page with title "citaj ma"
     And I go to the main page
     And I follow "edit"
