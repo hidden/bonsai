@@ -3,6 +3,12 @@ module PageHelper
     return value ? image_tag("icons/accept.png", :alt => 'Yes', :title => title) : image_tag("icons/delete.png", :alt => 'No', :title => title);
   end
 
+  def file_type_image_tag(file)
+   icon = APP_CONFIG['extension_icons'][file.extension]
+   icon = APP_CONFIG['extension_icons']['default'] if icon.nil?
+   image_tag("icons/file_types/#{icon}", :size => "16x16", :alt => "")
+  end
+
   def rss_url page, user
     token_string = user.token.nil? ? '' : "?token=#{user.token}"
     page.get_path + ';rss' + token_string

@@ -2,7 +2,6 @@ class Page < ActiveRecord::Base
   acts_as_nested_set
   validates_uniqueness_of :sid, :scope => :parent_id
 
-
   has_many :page_parts, :dependent => :destroy, :order => 'name'
   has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC, id DESC'
 
@@ -12,14 +11,6 @@ class Page < ActiveRecord::Base
   has_many :manager_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_manage = ?', true]
 
   has_many :uploaded_files, :dependent => :destroy
-
-  def get_page id
-           Page.all(:conditions => ["id = ?", id])
-   end
-
-    def get_siblings
-       Page.all(:conditions => ["parent_id IS NOT NULL and parent_id = ?", self.id])
-    end
 
   def get_children_tree page,user
     Page.find_by_sql("SELECT  p.* FROM pages p
@@ -48,17 +39,17 @@ class Page < ActiveRecord::Base
   end
 
   def get_path
-    self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
+    self_and_ancestors.collect(&:sid).join('/') + '/'
   end
 
   def get_rel_path
-    a = self.self_and_ancestors.collect {|node| node.sid }
-    a.delete_at(0)
-    return a
+    path = self_and_ancestors.collect(&:sid)
+    path.shift
+    path
   end
 
   def full_title
-    self.self_and_ancestors.collect {|node| node.title}.reverse.join(' | ')
+    self_and_ancestors.collect(&:title).reverse.join(' | ')
   end
 
   def resolve_layout
@@ -75,51 +66,24 @@ class Page < ActiveRecord::Base
   end
 
   def get_page_parts_by_date revision
-      page_parts = Array.new
-      for part in self.page_parts
-        current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
-        page_parts << current_part if current_part
-      end
-      return page_parts
+    page_parts = []
+    for part in self.page_parts
+      current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
+      page_parts << current_part if current_part
     end
-  
+    return page_parts
+  end
 
   def files
     path = 'shared/upload' + get_path
-    return_files = Array.new
-
-    if File.directory?(path)
-      entries = Dir.entries(path).reject do |file|
-        !File.file?(path + file)
-      end
-      tmp = []
-      files_in_db = self.uploaded_files.reverse
-      for file in files_in_db
-        if (entries.include?(file.filename) && !tmp.include?(file.filename))
-          return_files.push(file)
-          tmp = return_files.collect(&:filename)
-        end
-      end
-    else
-       entries =  []
+    entries = []
+    entries = Dir.entries(path).select {|file| File.file?(path + file) } if File.directory?(path)
+    uploaded_filenames = uploaded_files.collect(&:filename)
+    files_without_db_entry = entries.collect do |file|
+      UploadedFile.new(:filename => file) unless uploaded_filenames.include?(file)
     end
-
-    def file_type (filename)
-      unless File.extname(filename) == ""
-        type = APP_CONFIG['file_' + File.extname(filename).delete!(".")]
-        return type.nil? ? APP_CONFIG['file_default'] : type
-      else
-        return APP_CONFIG['file_default']
-      end
-    end
-
-    #subory bez uploadera
-    tmp = return_files.collect(&:filename)
-    entries.reject! do |file|
-      tmp.include?(file)
-    end
-    
-    return_files + entries
+    uploaded = uploaded_files.select {|file| entries.include?(file.filename)}
+    (files_without_db_entry.compact + uploaded).sort_by(&:filename)
   end
 
   def add_viewer group

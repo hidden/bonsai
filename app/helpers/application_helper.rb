@@ -61,11 +61,11 @@ module ApplicationHelper
   end
 
    def markdown(text)
-    text.blank? ? "" :  hihtlight(Maruku.new(text).to_html)
+    text.blank? ? "" :  highlight(Maruku.new(text).to_html)
   end
 
-  def hihtlight(text)
-    return text.gsub(/(<pre class='[a-z0-9-]+)/,'\1:nogutter:nocontrols').gsub(/<.?code>/," ").gsub("<pre ",'<pre name="code" ')
+  def highlight(html)
+    return html.gsub(/(<pre class='[a-z0-9-]+)/,'\1:nogutter:nocontrols').gsub(/<.?code>/," ").gsub("<pre ",'<pre name="code" ')
   end
 
   def login_form
