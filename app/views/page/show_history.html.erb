@@ -2,7 +2,6 @@
   <h1><%= t(:changes_for_page) %> <%= @page.title %></h1>
   <% form_tag("#{@page.get_path};diff", {:method => :get}) do %>
     <%= submit_tag t(:btn_compare), :name => nil %>
-    <%= hidden_field_tag 'diff' %>
     <ul>
       <% number_of_revisions = @page.page_parts_revisions.length %>
       <% @page.page_parts_revisions.each_with_index do |revision, index| %>

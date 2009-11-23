@@ -35,7 +35,6 @@ class PageController < ApplicationController
 
   def diff
       @page = PageAtRevision.find_by_path(@path)
-      puts "*****************************************************************************************"
          if (params[:first_revision].to_i < params[:second_revision].to_i)
            first = params[:second_revision]
            second = params[:first_revision]
@@ -60,8 +59,6 @@ class PageController < ApplicationController
                  new_revision<< part.body << "\n"
                end
              end
-      p old_revision
-      p new_revision
          compare(old_revision, new_revision)
          render :action => 'diff'
     end
@@ -138,14 +135,13 @@ class PageController < ApplicationController
                  @output << ['*',temp]
                  end
           end
-       p @output
       end
     end
- 
+
 
   def pagesib
     @user_name=@current_user.logged? ?  @current_user.username : 'nil';
-     render :action =>'page_siblings'
+    render :action =>'page_siblings'
   end
 
   def show_revision
