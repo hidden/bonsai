@@ -1,11 +1,12 @@
 <div class="bonsai">
   <h1><%= t(:diff_for) %> <%=h @page.title %></h1>
   <div class="diff">
-    <% for item in @output %>
+    <% for item in @changes %>
+        <% item[1] = " " if item[1].blank? %>
         <% if (item[0] == '=')%><div class="line"><%=h item[1] %></div><% end %>
         <% if (item[0] == '+')%><div class="line addition"><%=h item[1] %></div><% end %>
         <% if (item[0] == '-')%><div class="line deletion"><%=h item[1] %></div><% end %>
-        <% if (item[0] == '*')%><div class="line"><% for diff_item in item[1] %><% if (diff_item[0] == '=')%><%=h diff_item[1]%><% end %><% if (diff_item[0] == '+')%><span class="addition"><%=h diff_item[1]%></span><% end %><% if (diff_item[0] == '-')%><span class="deletion"><%=h diff_item[1]%></span><% end %><% end %></div><% end %>
+        <% if (item[0] == '!')%><div class="line"><% for diff_item in item[1] %><% if (diff_item[0] == '=')%><%=h diff_item[1]%><% elsif (diff_item[0] == '+')%><span class="addition"><%=h diff_item[1]%></span><% elsif (diff_item[0] == '-')%><span class="deletion"><%=h diff_item[1]%></span><% end %><% end %></div><% end %>
     <% end %>
   </div>
 </div>

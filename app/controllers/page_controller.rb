@@ -59,84 +59,61 @@ class PageController < ApplicationController
                  new_revision<< part.body << "\n"
                end
              end
-         compare(old_revision, new_revision)
+         @changes = compare(old_revision, new_revision)
          render :action => 'diff'
     end
 
-   def compare old,new
-     @output = []
-       data_old = old.split(/\n/)
-       data_new = new.split(/\n/)
-       diffs = Diff::LCS.sdiff(data_old, data_new)
-       #p diffs
+  def compare old,new
+    output = []
+    data_old = old.split(/\r?\n/)
+    data_new = new.split(/\r?\n/)
+    diffs = Diff::LCS.sdiff(data_old, data_new)
 
-      for diff in diffs
-         data_old_parse = ""
-         data_new_parse = ""
-         act_sign = ""
-         act_str = ""
-         temp = []
-        if((diff.action == '=')||(diff.action == '-')||(diff.action == '+'))
-          begin
-            if(diff.action == '-')
-              @output << [diff.action, diff.old_element]
-            else
-              @output << [diff.action, diff.new_element]
+    for diff in diffs
+      if(['=', '-', '+'].include?(diff.action))
+        if(diff.action == '-')
+          output << [diff.action, diff.old_element]
+        else
+          output << [diff.action, diff.new_element]
+        end
+      else
+        temp = []
+        changes = Diff::LCS.sdiff(diff.old_element.split(''), diff.new_element.split(''))
+        act_sign = changes.first.action
+        old_string = ""
+        new_string = ""
+        for change in changes
+          new_sign = change.action
+          if (new_sign != act_sign)
+            case act_sign
+              when '+', '=' then temp << [act_sign, new_string]
+              when '-' then temp << [act_sign, old_string]
+              when '!' then
+                temp << ['-', old_string]
+                temp << ["+", new_string]
             end
+            old_string = ""
+            new_string = ""
+            act_sign = new_sign
           end
-        else begin
-                data_old_parse = diff.old_element.split("")
-                data_new_parse = diff.new_element.split("")
-                diffs_parsed = Diff::LCS.sdiff(data_old_parse, data_new_parse)
-                   for parsed_diff in diffs_parsed
-                     if(act_sign == "")
-                       act_sign = parsed_diff.action
-                     end
-                     case parsed_diff.action
-                       when '=' then if(act_sign == "=")
-                                            act_str << parsed_diff.old_element
-                                          else begin
-                                            temp << [act_sign, act_str]
-                                            act_sign = parsed_diff.action
-                                            if(act_sign=="-")
-                                              act_str = parsed_diff.old_element
-                                            else
-                                              act_str = parsed_diff.new_element
-                                            end
-                                            end
-                                         end
-                           when '-' then if(act_sign == "-")
-                                            act_str << parsed_diff.old_element
-                                          else begin
-                                            temp << [act_sign, act_str]
-                                            act_sign = parsed_diff.action
-                                           if(act_sign=="-")
-                                              act_str = parsed_diff.old_element
-                                            else
-                                              act_str = parsed_diff.new_element
-                                            end
-                                            end
-                                         end
-                           when '+' then if(act_sign == "+")
-                                            act_str << parsed_diff.new_element
-                                          else begin
-                                            temp << [act_sign, act_str]
-                                            act_sign = parsed_diff.action
-                                           if(act_sign=="-")
-                                              act_str = parsed_diff.old_element
-                                            else
-                                              act_str = parsed_diff.new_element
-                                            end
-                                            end
-                                         end
-                     end
-                   end
-                 temp << [act_sign, act_str]
-                 @output << ['*',temp]
-                 end
-          end
+          old_string << change.old_element unless change.old_element.nil?
+          new_string << change.new_element unless change.new_element.nil?
+        end
+        case act_sign
+          when '+' then
+            temp << [act_sign, new_string]
+          when '-' then
+            temp << [act_sign, old_string]
+          when '=' then
+            temp << [act_sign, new_string]
+          when '!' then
+            temp << ['-', old_string]; temp << ["+", new_string]
+        end
+        output << ['!', temp]
       end
     end
+    output
+  end
 
 
   def pagesib
