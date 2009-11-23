@@ -10,7 +10,7 @@ class GroupPermissionsController < ApplicationController
   def create
     users = User.find_all_by_username(params[:add_user][:usernames].split(/[ ]*, */))
     if users.empty?
-      flash[:notice] = 'Username not found!'
+      flash[:notice] = t(:user_not_found)
     else
       for user in users do
         Group.find(params[:group_id]).add_viewer user if params[:add_user][:type] == 'viewer'

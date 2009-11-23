@@ -1,0 +1,26 @@
+#this file is used as global configuration file
+defaults: &defaults
+  authentication_method: ldap #ldap, openid
+  #ldap means that wiki will be accessible only for users having ldap accound
+  #openid means that wiki will be accessible only for users having openid accound
+
+  #file_types
+  file_default: page_white.png
+  file_pdf: page_white_acrobat.png
+  file_jpg: page_white_picture.png
+  file_png: page_white_picture.png
+  file_txt: page_white_text.png
+  file_doc: page_white_word.png
+  file_ppt: page_white_powerpoint.png
+  file_zip: page_white_zip.png
+  file_xls: page_white_excel.png
+  #end file_types
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

@@ -38,5 +38,3 @@ Given /^page "\/?(.*)\/?" is manageable by "(.*)"$/ do |url, group|
   page = Page.find_by_path(url.split("/"))
   page.add_manager Group.find_by_name(group)
 end
-
-

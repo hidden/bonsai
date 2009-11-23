@@ -16,6 +16,16 @@ class GroupsController < ApplicationController
   end
   def autocomplete_for_groups
       @groups = Group.all(:conditions => ["name LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'name')
+      @auto_groups = @groups.clone
+      for group in @groups
+        users = group.users
+        retVal = group.is_public?
+        retValUsers = users.include?(@current_user)
+        if (retVal || retValUsers)
+        else
+          @auto_groups.delete(group)
+        end
+      end
       render :partial => 'autocomplete_groups'
     end
   
@@ -23,9 +33,21 @@ class GroupsController < ApplicationController
   # GET /groups
   # GET /groups.xml
   def index
-    @groups = @current_user.visible_groups + Group.groups_visible_for_all
+    if params.include? 'back'
+      session[:link_back] = params['back']
+      redirect_to groups_path
+      return
+    end
+    #@groups = @current_user.visible_groups + Group.groups_visible_for_all
     #uniq! removes duplicate elements from self but returns nil if no changes are made (that is, no duplicates are found).
-    @groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
+    #@groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
+
+    stmnt =  "SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users on users.name = groups.name where user_id = ??? and users.id is null"
+    stmnt["???"] = @current_user.id.to_s()
+    visible_for_user = Group.find_by_sql(stmnt)
+    public =  Group.find_by_sql("SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users ON users.name = groups.name WHERE ((group_permissions.can_view = 0 OR group_permissions.can_view = NULL) AND users.id is null) ")
+    @groups = visible_for_user + public
+    @groups = @groups.uniq!.nil? ? (visible_for_user + public):@groups
 
     respond_to do |format|
       format.html # index.html.erb
@@ -56,7 +78,7 @@ class GroupsController < ApplicationController
     respond_to do |format|
       if @group.save
         @group.add_editor @current_user
-        flash[:notice] = 'Group was successfully created.'
+        flash[:notice] = t(:group_created)
         format.html { redirect_to edit_group_path(@group) }
         format.xml  { render :xml => @group, :status => :created, :location => @group }
       else
@@ -73,7 +95,7 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       if @group.update_attributes(params[:group])
-        flash[:notice] = 'Group was successfully updated.'
+        flash[:notice] = t(:group_updated)
         format.html { redirect_to groups_path }
         format.xml  { head :ok }
       else

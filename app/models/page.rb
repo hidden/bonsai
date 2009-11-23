@@ -2,6 +2,7 @@ class Page < ActiveRecord::Base
   acts_as_nested_set
   validates_uniqueness_of :sid, :scope => :parent_id
 
+
   has_many :page_parts, :dependent => :destroy, :order => 'name'
   has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC, id DESC'
 
@@ -11,6 +12,29 @@ class Page < ActiveRecord::Base
   has_many :manager_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_manage = ?', true]
 
   has_many :uploaded_files, :dependent => :destroy
+
+  def get_page id
+           Page.all(:conditions => ["id = ?", id])
+   end
+
+    def get_siblings
+       Page.all(:conditions => ["parent_id IS NOT NULL and parent_id = ?", self.id])
+    end
+
+  def get_children_tree page,user
+    Page.find_by_sql("SELECT  p.* FROM pages p
+                      left join (
+                      select page_id,
+                             sum(can_view) sum_can_view,
+                             sum(can_edit) sum_can_edit
+                       from page_permissions group by page_id) w on w.page_id=p.id
+                      left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
+                      left join groups q
+                      ON q.id = a.group_id and q.name='#{user}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
+                      where (p.lft BETWEEN #{page.lft} AND #{page.rgt})
+                      and ((sum_can_view=0 and sum_can_edit=0)or (q.id is not null))
+                      order by p.lft")
+  end 
 
   def self.find_by_path path
     full_path = [nil] + path
@@ -25,6 +49,12 @@ class Page < ActiveRecord::Base
 
   def get_path
     self.self_and_ancestors.collect {|node| node.sid}.join('/') + '/'
+  end
+
+  def get_rel_path
+    a = self.self_and_ancestors.collect {|node| node.sid }
+    a.delete_at(0)
+    return a
   end
 
   def full_title
@@ -44,14 +74,52 @@ class Page < ActiveRecord::Base
     latest_part_revision.nil? ? nil : latest_part_revision.body
   end
 
-  def files
-    uploaded_file_names = self.uploaded_files.collect(&:filename)
-    path = 'shared/upload' + get_path
-    entries = File.directory?(path) ? Dir.entries(path) : []
-    files_from_file_system = entries.reject do |file|
-      uploaded_file_names.include?(file) or !File.file?(path + file) 
+  def get_page_parts_by_date revision
+      page_parts = Array.new
+      for part in self.page_parts
+        current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
+        page_parts << current_part if current_part
+      end
+      return page_parts
     end
-    self.uploaded_files + files_from_file_system
+  
+
+  def files
+    path = 'shared/upload' + get_path
+    return_files = Array.new
+
+    if File.directory?(path)
+      entries = Dir.entries(path).reject do |file|
+        !File.file?(path + file)
+      end
+      tmp = []
+      files_in_db = self.uploaded_files.reverse
+      for file in files_in_db
+        if (entries.include?(file.filename) && !tmp.include?(file.filename))
+          return_files.push(file)
+          tmp = return_files.collect(&:filename)
+        end
+      end
+    else
+       entries =  []
+    end
+
+    def file_type (filename)
+      unless File.extname(filename) == ""
+        type = APP_CONFIG['file_' + File.extname(filename).delete!(".")]
+        return type.nil? ? APP_CONFIG['file_default'] : type
+      else
+        return APP_CONFIG['file_default']
+      end
+    end
+
+    #subory bez uploadera
+    tmp = return_files.collect(&:filename)
+    entries.reject! do |file|
+      tmp.include?(file)
+    end
+    
+    return_files + entries
   end
 
   def add_viewer group

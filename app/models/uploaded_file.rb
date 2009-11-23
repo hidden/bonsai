@@ -23,6 +23,10 @@ class UploadedFile < ActiveRecord::Base
       self.save
   end
 
+  def exist?(page_path)
+      file = 'shared/upload' + page_path + self.filename
+      return File.file?(file)
+  end
 
   # overrwrite this to do your own app-specific partitioning.
   # you can thank Jamis Buck for this: http://www.37signals.com/svn/archives2/id_partitioning.php 

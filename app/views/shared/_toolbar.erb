@@ -1,23 +1,26 @@
 <div id="toolbar" class="bonsai">
   <% unless @current_user.logged? %>
-    <% form_tag login_path do %>
-      <p class="login"><label>Login: <%= text_field_tag 'username', nil, :size => 10 %></label>
-        <label>Password: <%= password_field_tag 'password', nil, :size => 15 %></label>
-      <%= submit_tag 'Log in' %></p>
-    <% end %>
+   <%= login_form  %>
   <% else %>
-    <p class="login">Logged in as: <%= @current_user.full_name %> | <%= link_to "Log out", logout_path %></p>
+    <p class="login"><%= t(:logged_as) %> <%= @current_user.full_name %> | <%= link_to t(:log_out), logout_path %></p>
   <% end %>
   <% unless @page.nil? || @no_toolbar %>
     <p class="actions">
-      <% unless @hide_view_in_toolbar %><%= link_to image_tag('icons/page_white_text.png', :alt => '') + " View", @page.get_path %><% end %>
-      <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/page_white_stack.png', :alt => '') + " History", '?history' %><% end %>
-      <% if @current_user.can_edit_page? @page %><%= link_to image_tag('icons/page_white_edit.png', :alt => '') + ' Edit', '?edit' %><% end %>
+      <% unless @hide_view_in_toolbar %><%= link_to image_tag('icons/page_white_text.png', :alt => '') + " " + t(:view), @page.get_path %><% end %>
+      <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/page_white_stack.png', :alt => '') + " " + t(:history), page_history_path(@page) %><% end %>
+      <% if @current_user.can_edit_page? @page %><%= link_to image_tag('icons/page_white_edit.png', :alt => '') + " " + t(:edit), edit_page_path(@page) %><% end %>
 
-      <% if @current_user.can_manage_page? @page %><%= link_to image_tag('icons/page_white_key.png', :alt => '') + " Manage", '?manage' %><% end %>
-      <% if @current_user.logged? %><%= link_to image_tag('icons/group.png', :alt => '') + " Groups", groups_path %><% end %>
-      <% if @current_user.can_edit_page? @page %><%= link_to image_tag('icons/page_white_link.png', :alt => '') + " Files", '?files' %><% end %>
-      <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => "RSS feed of page changes" %><% end %>
+      <% if @current_user.can_manage_page? @page %><%= link_to image_tag('icons/page_white_key.png', :alt => '') + " " + t(:manage),  manage_page_path(@page) %><% end %>
+      <% if @current_user.logged? %><%= link_to image_tag('icons/group.png', :alt => '') + " " + t(:groups), groups_page_path(@page) %><% end %>
+      <% if @current_user.can_edit_page? @page %><%= link_to image_tag('icons/page_white_link.png', :alt => '') + " " + t(:files), list_files_path(@page) %><% end %>
+      <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/view_design_summary.png', :alt => '') + " " + t(:summary), summary_page_path(@page)%><% end %>
+      <% if @current_user.can_view_page? @page %><%= link_to image_tag('icons/rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %><% end %>
     </p>
     <% end %>
+  <% unless session[:link_back].nil? %>
+      <p class="return">
+        <%= link_to image_tag('icons/arrow_up.png', :alt => '') + t(:return), session[:link_back] %>
+      </p>
+    <% end %>  
 </div>
+

@@ -21,3 +21,37 @@ p.breadcrumb {
 }
 
 h1 { margin-top: 1em; }
+
+
+
+/* Tree view structure class*/
+
+.TreeView LI
+{
+  padding: 0 0 0 18px;
+  float: left;
+  width: 100%;
+  list-style: none;
+ }
+
+
+LI.Expanded
+{
+background: url('../images/icons/minus.gif') no-repeat left top;
+}
+
+
+LI.Collapsed
+{
+background: url('../images/icons/plus.gif') no-repeat left top;
+}
+
+.TreeView A
+{
+ display:none;
+ border: 1px solid #999;
+ background-color: #f0f0f0;
+}
+
+
+

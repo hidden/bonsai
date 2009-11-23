@@ -1,84 +1,24 @@
 class PageController < ApplicationController
-  def handle
-    @path = params[:path]
+  before_filter :load_page
+  before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
+  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,:new_part, :files]
+  prepend_before_filter :slash_check, :only => [:view]  
+  before_filter :can_view_page_check, :only => [:view, :show_history, :show_revision, :diff]
+  before_filter :is_file, :only => [:view]
+  before_filter :is_blank_page, :only => [:view]
 
-    # is it a file?
-    if !@path.empty? and @path.last.match(/[\w-]+\.\w+/)
-      process_file
-      return
+  def rss
+    user_from_token = User.find_by_token params[:token]
+    user_from_token = AnonymousUser.new if user_from_token.nil?
+    if user_from_token.can_view_page? @page
+      rss_history
+    else
+      render :nothing => true, :status => :forbidden
     end
-
-    @page = Page.find_by_path(@path)
-    if @page.nil?
-      unless @current_user.logged?
-        unprivileged
-      else
-        params.include?('create') ? create : new
-      end
-      return
-    end
-
-    # manager actions
-    if @current_user.can_manage_page? @page
-      if params.include? 'manage' then
-        render :action => :manage and return
-      elsif params.include? 'change-permission' then
-        change_permission and return
-      elsif params.include? 'set-permissions' then
-        set_permissions and return
-      elsif params.include? 'remove-permission' then
-        remove_permission and return
-      elsif params.include? 'switch-public' then
-        switch_public and return
-      elsif params.include? 'switch-editable' then
-        switch_editable and return
-      end
-    end
-
-    # editor actions
-    if @current_user.can_edit_page? @page
-      if params.include? 'edit' then
-        edit and return
-      elsif params.include? 'update' then
-        update and return
-      elsif params.include? 'upload' then
-        upload and return
-      elsif params.include? 'undo' then
-        undo and return
-      elsif params.include? 'new-part' then
-        new_part and return
-      end
-    end
-
-    # viewer actions
-    if params.include? 'rss'
-      user_from_token = User.find_by_token params[:token]
-      user_from_token = AnonymousUser.new if user_from_token.nil?
-      if user_from_token.can_view_page? @page
-        rss_history
-      else
-        render :nothing => true, :status => :forbidden
-      end
-      return
-    end
-
-    if @current_user.can_view_page? @page
-      if params.include? 'history' then
-        render :action => :show_history and return
-      elsif params.include? 'revision' then
-        show_revision and return
-      elsif params.include? 'diff' then
-        diff and return
-      elsif params.include? 'files' then
-        files and return
-      else
-        view and return
-      end
-    end
-    unprivileged
   end
 
   def view
+    unless session[:link_back].nil? then session[:link_back]= nil end
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
@@ -89,10 +29,123 @@ class PageController < ApplicationController
     render :action => :unprivileged
   end
 
+  def show_history
+    render :action => :show_history
+  end
+
   def diff
-    @first_revision = @page.page_parts_revisions[params[:first_revision].to_i]
-    @second_revision = @page.page_parts_revisions[params[:second_revision].to_i]
-    render :action => 'diff'
+      @page = PageAtRevision.find_by_path(@path)
+      puts "*****************************************************************************************"
+         if (params[:first_revision].to_i < params[:second_revision].to_i)
+           first = params[:second_revision]
+           second = params[:first_revision]
+         else
+           second = params[:second_revision]
+           first = params[:first_revision]
+         end
+
+         @page.revision_date = @page.page_parts_revisions[first.to_i].created_at
+         @first_revision = @page.get_page_parts_by_date(first)
+             old_revision = ""
+             for part in @first_revision
+               unless part.was_deleted
+                 old_revision<< part.body << "\n"
+               end
+             end
+         @page.revision_date = @page.page_parts_revisions[second.to_i].created_at
+         @second_revision = @page.get_page_parts_by_date(second)
+             new_revision = ""
+             for part in @second_revision
+               unless part.was_deleted
+                 new_revision<< part.body << "\n"
+               end
+             end
+      p old_revision
+      p new_revision
+         compare(old_revision, new_revision)
+         render :action => 'diff'
+    end
+
+   def compare old,new
+     @output = []
+       data_old = old.split(/\n/)
+       data_new = new.split(/\n/)
+       diffs = Diff::LCS.sdiff(data_old, data_new)
+       #p diffs
+
+      for diff in diffs
+         data_old_parse = ""
+         data_new_parse = ""
+         act_sign = ""
+         act_str = ""
+         temp = []
+        if((diff.action == '=')||(diff.action == '-')||(diff.action == '+'))
+          begin
+            if(diff.action == '-')
+              @output << [diff.action, diff.old_element]
+            else
+              @output << [diff.action, diff.new_element]
+            end
+          end
+        else begin
+                data_old_parse = diff.old_element.split("")
+                data_new_parse = diff.new_element.split("")
+                diffs_parsed = Diff::LCS.sdiff(data_old_parse, data_new_parse)
+                   for parsed_diff in diffs_parsed
+                     if(act_sign == "")
+                       act_sign = parsed_diff.action
+                     end
+                     case parsed_diff.action
+                       when '=' then if(act_sign == "=")
+                                            act_str << parsed_diff.old_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                            if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                           when '-' then if(act_sign == "-")
+                                            act_str << parsed_diff.old_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                           if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                           when '+' then if(act_sign == "+")
+                                            act_str << parsed_diff.new_element
+                                          else begin
+                                            temp << [act_sign, act_str]
+                                            act_sign = parsed_diff.action
+                                           if(act_sign=="-")
+                                              act_str = parsed_diff.old_element
+                                            else
+                                              act_str = parsed_diff.new_element
+                                            end
+                                            end
+                                         end
+                     end
+                   end
+                 temp << [act_sign, act_str]
+                 @output << ['*',temp]
+                 end
+          end
+       p @output
+      end
+    end
+ 
+
+  def pagesib
+    @user_name=@current_user.logged? ?  @current_user.username : 'nil';
+     render :action =>'page_siblings'
   end
 
   def show_revision
@@ -128,7 +181,7 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
 
   def switch_editable
@@ -141,20 +194,20 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
 
   def change_permission
     page_permission = @page.page_permissions[params[:index].to_i]
     if (params[:permission] == "can_view")
       if (page_permission.group.users.include? @current_user)
-        flash[:notice] = "You cannot disable your own view permission if you are in the manager group of the page. If you want to make this page public, you should use the quick setup link below"
+        flash[:notice] = t(:can_view_error)
       else
         page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
       end
     elsif (params[:permission] == "can_edit")
       if (page_permission.group.users.include? @current_user)
-        flash[:notice] = "You cannot disable your own edit permission if you are in the manager group of the page. If you want to make this page editable by anyone, you should use the quick setup link below"
+        flash[:notice] = t(:can_edit_error)
       else
         page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
       end
@@ -162,13 +215,13 @@ class PageController < ApplicationController
       page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
     end
     page_permission.save
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
 
   def remove_permission
     page_permission = @page.page_permissions[params[:index].to_i]
     page_permission.destroy
-    redirect_to @page.get_path + "?manage"
+    redirect_to @page.get_path + ";manage"
   end
 
   def process_file
@@ -246,7 +299,7 @@ class PageController < ApplicationController
         return
       end
       if (first_revision.save)
-        flash[:notice] = 'Page successfully created.'
+        flash[:notice] = t(:page_created)
         page_part.current_page_part_revision = first_revision
         page_part.save!
       end
@@ -260,24 +313,36 @@ class PageController < ApplicationController
     end
   end
 
-  def rss_history
+  def _history
     @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
     render :action => :rss_history, :layout => false
   end
 
-  private
+
+  def rss_history
+      @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
+      @revision_count = @page.page_parts_revisions.count
+      render :action => :rss_history, :layout => false
+  end
+
+  
   def edit
     render :action => :edit
   end
-
+  
   def set_permissions
     addedgroups = params[:add_group].split(",")
     for addedgroup in addedgroups
       groups = Group.find_all_by_name(addedgroup)
       for group in groups
-        @page.add_viewer group if params[:can_view]
-        @page.add_editor group if params[:can_edit]
-        @page.add_manager group if params[:can_manage]
+        users = group.users
+        retVal = group.is_public?
+        retValUsers = users.include?(@current_user)
+        if (retVal || retValUsers)
+          @page.add_viewer group if params[:can_view]
+          @page.add_editor group if params[:can_edit]
+          @page.add_manager group if params[:can_manage]
+        end
       end
     end
     redirect_to @page.get_path + "?manage"
@@ -324,9 +389,10 @@ class PageController < ApplicationController
         page_part.save!
       end
     end
-    flash[:notice] = 'Page successfully updated.'
+    flash[:notice] = t(:page_updated)
     redirect_to @page.get_path
   end
+
 
   def new_part
     page_part = @page.page_parts.find_or_create_by_name(:name => params[:new_page_part_name], :current_page_part_revision_id => 0)
@@ -341,34 +407,105 @@ class PageController < ApplicationController
     page_part_revision.save
     page_part.current_page_part_revision = page_part_revision
     page_part.save!
-    flash[:notice] = 'Page part successfully added.'
-    redirect_to @page.get_path + "?edit"
+    flash[:notice] = t(:page_part_added)
+    redirect_to @page.get_path + ";edit"
   end
 
   def upload
     @uploaded_file = UploadedFile.new(params[:uploaded_file])
     sleep(2) # TODO get rid of this
     @name = params[:uploaded_file_filename]
-    if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-      flash[:notice] = 'Type of file not match. No file uploaded.'
+
+     if @uploaded_file.filename.nil?
+      flash[:notice] = t(:no_files_selected)
       redirect_to @page.get_path
-    else
-      @uploaded_file.page = @page
-      @uploaded_file.user = @current_user
-      @uploaded_file.rename(@name) unless @name.nil?
-      if @uploaded_file.save
-        flash[:notice] = 'File was successfully uploaded.'
-        redirect_to @page.get_path
-      else
-        error_message = ""
-        @uploaded_file.errors.each_full { |msg| error_message << msg }
-        flash[:notice] = error_message
-        render :action => :edit
-      end
+     else
+
+       if @uploaded_file.exist?(@page.get_path)
+         flash[:notice] = t(:file_exists)
+         redirect_to @page.get_path
+       else
+
+         if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
+           flash[:notice] = t(:file_not_match)
+           redirect_to @page.get_path
+         else
+           @uploaded_file.page = @page
+           @uploaded_file.user = @current_user
+           @uploaded_file.rename(@name) unless @name.nil?
+           same_page = @path
+           same_page.push(@uploaded_file.filename)
+           if Page.find_by_path(same_page).nil?
+             if @uploaded_file.save
+              flash[:notice] = t(:file_uploaded)
+              redirect_to @page.get_path
+             else
+              error_message = ""
+              @uploaded_file.errors.each_full { |msg| error_message << msg }
+              flash[:notice] = error_message
+              render :action => :edit
+             end
+           else
+             flash[:notice] = t(:same_as_page)
+             render :action => :edit
+           end
+         end
+
+       end
+
     end
+
   end
 
   def files
     render :action => :files
   end
+
+  private
+  def load_page
+    @path = params[:path]
+    @page = Page.find_by_path(@path)
+  end
+  
+  def can_manage_page_check
+   unless @current_user.can_manage_page? @page then unprivileged end
+  end
+  
+  def can_edit_page_check
+    unless @current_user.can_edit_page? @page then unprivileged end
+  end
+
+  def slash_check
+    link = request.env['PATH_INFO']
+    unless link.ends_with?('/')
+      redirect_to link + '/'
+      return
+    end
+  end
+
+  def can_view_page_check
+    unless @page.nil?
+      unless @current_user.can_view_page? @page then unprivileged end
+    end
+  end
+
+  def is_file
+    # is it a file?
+    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or File.file?("shared/upload/" + @path.join('/')))
+      process_file
+      return
+    end
+  end
+
+  def is_blank_page
+    if @page.nil?
+      unless @current_user.logged?
+        unprivileged
+      else
+        params.include?('create') ? create : new
+      end
+      return
+    end
+  end
+
 end

@@ -4,8 +4,7 @@ Feature: Parallel editing
   Should be able to edit page with other users
 
   Background:
-    When I go to the main page
-    And I login
+    Given I am logged in
     And I create "/" page    
 
   Scenario: Two users edit different page parts simultaneously    

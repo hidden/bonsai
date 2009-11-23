@@ -1,0 +1,7 @@
+<% form_tag login_path do %>
+    <p class="login">
+    <%= image_tag('icons/openid.png', :alt => '') %>
+    <%= text_field_tag "openid_identifier" %>
+    <%= submit_tag t(:btn_log_in) %>
+    </p>
+<% end %>

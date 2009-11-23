@@ -74,11 +74,16 @@ body {
     padding: 0;
 }
 
-.bonsai .line-unchanged {}
-.bonsai .line-changed { background-color: yellow; }
-.bonsai .line-removed { background-color: red; }
-.bonsai .line-added { background-color: green; }
+.bonsai .diff span { white-space: pre; }
+.bonsai .line-unchanged { text-align: left; background-color: #F8F8FF;}
+.bonsai .line-removed { text-align: left; background-color: #FFDDDD; }
+.bonsai .line-added { text-align: left; background-color: #DDFFDD; }
+.bonsai .line-changed { text-align: left; background-color: #F8F8FF; }
+.bonsai .line-changed-same { text-align: left; background-color: #F8F8FF;}
+.bonsai .line-changed-del { text-align: left; background-color: #FFDDDD; }
+.bonsai .line-changed-add { text-align: left; background-color: #DDFFDD; }
 .bonsai textarea { width: 100% }
+
 
 
 #holder {

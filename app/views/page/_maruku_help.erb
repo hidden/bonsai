@@ -1,39 +1,63 @@
-<p><%= link_to "Syntax Help", nil, :onclick => "return toggleDiv(event);" %></p>
+<p><%= link_to t(:syntax_help), nil, :onclick => "return toggleDiv(event);" %></p>
 <div style="display: none;">
   <ul>
-    <li>Paragraphs --- simply one or more consecutive lines of text, separated by one or more blank lines</li>
+     <li><%= t(:links)%>
+      <ul>
+        <li><%= t(:this_is)%> [an example](http://example.com/ "Title") <%= t(:inline_link)%></li>
+        <li><%= t(:see_my)%> [About](/about/) <%= t(:for_details)%> </li>
+        <li><%= t(:automatic_links)%> < http://example.com/></li>
+      </ul>
+    </li>
     <li>
-      Headings
+      <%= t(:image)%>
       <ul>
-        <li># This is an H1 </li>
-        <li>## This is an H2</li>
-        <li>###### This is an H6</li>
-      </ul>
-    </li>
-    <li>Lists
-      <ul>
-        <li>Use asterisks (*), pluses (+), and hyphens (-) as list markers:
-          <p>
-            * itemA<br/>
-            * itemB<br/>
-            * itemC<br/>
-          </p>
+        <li>
+          ![Alt text](/path/to/img.jpg)
         </li>
-        <li>Ordered lists use numbers followed by periods:
-          <p>
-            1. first item<br/>
-            2. second item<br/>
-            3. third item<br/>
-          </p>
+        <li>
+          ![Alt text](/path/to/img.jpg "Optional title")
         </li>
       </ul>
     </li>
-    <li>Links
+    <li><%= t(:paragraphs)%></li>
+    <li>
+      <%= t(:headings)%>
       <ul>
-        <li>This is [an example](http://example.com/ "Title") inline link.</li>
-        <li>See my [About](/about/) page for details.</li>
+        <li><%= t(:h1)%> </li>
+        <li><%= t(:h2)%></li>
+        <li><%= t(:h6)%></li>
       </ul>
     </li>
+    <li>
+      <%= t(:preformatted_text)%>
+      <ul>
+        <li><%= t(:bold)%> --/**text--/**</li>
+        <li><%= t(:italic)%> -/*text-/*</li>
+      </ul>
+    </li>
+    <li><%= t(:lists)%>
+      <ul>
+        <li><%= t(:lists_p1)%>
+          <p>
+            <%= t(:itemA)%><br/>
+            <%= t(:itemB)%><br/>
+            <%= t(:itemC)%><br/>
+          </p>
+        </li>
+        <li><%= t(:lists_p2)%>
+          <p>
+            <%= t(:item1)%><br/>
+            <%= t(:item2)%><br/>
+            <%= t(:item3)%><br/>
+          </p>
+        </li>
+      </ul>
+    </li>
+    <li>
+     <%= t(:code_blocks)%>
+    </li>
+
   </ul>
-  <p>Here you can find further information related to <a href="http://daringfireball.net/projects/markdown/syntax">markdown syntax</a></p>
+  <p><%= t(:more_info)%>
+    <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown syntax</a></p>
 </div>

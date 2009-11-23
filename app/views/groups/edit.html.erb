@@ -1,20 +1,20 @@
 <div class="bonsai">
-<h1>Group <%=h @group.name %></h1>
+<h1><%= t(:group) %> <%=h @group.name %></h1>
 
 <% form_for(@group) do |f| %>
   <%= f.error_messages %>
 
   <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %><%= f.submit "Update" %>
+    <%= f.label t(:name) %><br />
+    <%= f.text_field :name %><%= f.submit t(:btn_update) %>
   </p>
-  <h2>Group members</h2>
+  <h2><%= t(:group_members) %></h2>
   <table id="Groups_memberstable">
     <thead>
       <tr>
-        <th>User</th>
-        <th>Viewer</th>
-        <th>Editor</th>
+        <th><%= t(:user) %></th>
+        <th><%= t(:viewer) %></th>
+        <th><%= t(:editor) %></th>
         <th></th>
       </tr>
     </thead>
@@ -23,27 +23,27 @@
         <tr>
           <td><%=h permission.user.full_name %></td>
           <% if permission.user == @current_user %>
-            <td><%= image_boolean(permission.can_view, 'You cannot change your own permission')  %></td>
-            <td><%= image_boolean(permission.can_edit, 'You cannot change your own permission') %></td>
+            <td><%= image_boolean(permission.can_view, t(:err_change_permission))  %></td>
+            <td><%= image_boolean(permission.can_edit, t(:err_change_permission)) %></td>
           <% else %>
-            <td><%= link_to(image_boolean(permission.can_view, 'Toggle permission'), switch_view_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
-            <td><%= link_to(image_boolean(permission.can_edit, 'Toggle permission'), switch_edit_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
+            <td><%= link_to(image_boolean(permission.can_view, t(:toggle)), switch_view_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
+            <td><%= link_to(image_boolean(permission.can_edit, t(:toggle)), switch_edit_group_permission_path(permission, :group_id => permission.group_id), :method => :put) %></td>
           <% end %>
-          <td><%= link_to "Remove member", group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => 'Are you sure?', :id => "Remove_member_#{permission.user.id}" %></td>
+          <td><%= link_to t(:remove_member), group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => t(:destroy_question), :id => "Remove_member_#{permission.user.id}" %></td>
         </tr>
       <% end %>
       <tr>
-        <td>Everyone</td>
-        <td><%= link_to(image_boolean(@group.is_public?, 'Toggle permission'), switch_public_group_path(@group), :method => :put)%></td>
-        <td><%= link_to(image_boolean(@group.is_editable?, 'Toggle permission'), switch_editable_group_path(@group), :method => :put)%></td>
+        <td><%= t(:everyone) %></td>
+        <td><%= link_to(image_boolean(@group.is_public?, t(:toggle)), switch_public_group_path(@group), :method => :put)%></td>
+        <td><%= link_to(image_boolean(@group.is_editable?, t(:toggle)), switch_editable_group_path(@group), :method => :put)%></td>
       </tr>
 
     </tbody>
   </table>
 <% end %>
-<h2>Add new user</h2>
+<h2><%= t(:add_new_user) %></h2>
 <% form_tag group_permissions_path(:group_id => @group.id), :method => :post do %>
-  <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', ['editor', 'viewer']) %><%= submit_tag("Add") %></p>
+  <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', ['editor', 'viewer']) %><%= submit_tag(t(:btn_add)) %></p>
   <div id="autocomplete" style="display: none;" class="autocomplete"></div>
   <script type="text/javascript">
   //<![CDATA[
@@ -52,5 +52,5 @@
 </script>
 <% end %>
 
-<%= link_to 'Back', groups_path %>
+<%= link_to t(:back), groups_path %>
 </div>

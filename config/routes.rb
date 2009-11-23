@@ -1,4 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
+  ActionController::Routing::SEPARATORS <<  ";" unless ActionController::Routing::SEPARATORS.include?(";")
+
+
   map.resources :groups, :member => {:switch_public => :put, :switch_editable => :put}, :collection => { :autocomplete_for_user => :get, :autocomplete_for_groups => :get }
   map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
   map.resources :pages do |page|
@@ -6,7 +9,11 @@ ActionController::Routing::Routes.draw do |map|
       page_part.resources :page_part_revisions
     end
   end
+
   map.connect 'page/new', :controller => "page", :action => "create"
+
+  map.page '*path;:action', :controller => "page"
+
   map.connect 'users/:action', :controller => "users"
 
 
@@ -44,10 +51,10 @@ ActionController::Routing::Routes.draw do |map|
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   # map.root :controller => "welcome"
 
-  map.root :controller => 'page', :action => 'handle', :path => []
+  map.root :controller => 'page', :action => 'view', :path => []
 
   # See how all your routes lay out with "rake routes"
-  map.connect '*path' , :controller => 'page', :action => 'handle'
+  map.connect '*path' , :controller => 'page', :action => 'view'
 
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should

@@ -1,28 +1,41 @@
 <% if @page.files.empty? then %>
-    <p>No files uploaded for this page.</p>
+    <p><%= t(:no_files_uploaded) %></p>
 <% else %>
     <table>
       <thead>
       <tr>
-        <th>File</th>
-        <th>Uploader</th>
+        <th></th>
+        <th><%= t(:file) %></th>
+        <th><%= t(:uploader) %></th>
+        <th><%= t(:size) %></th>
+        <th><%= t(:time) %></th>
       </tr>
       </thead>
       <tbody>
       <% for file in @page.files %>
-          <tr>
+        <tr>
             <% if file.respond_to? :user %>
+                <td><%= image_tag('icons/file_types/' + @page.file_type(file.filename), :alt => '') %></td>
                 <td><%= link_to file.filename, file.filename %></td>
-                <td><% if file.user.nil? %>unknown<% else %><%= h file.user.full_name %><% end %></td>
+                <td><% if file.user.nil? %><%= t(:unknown) %><% else %><%= h file.user.full_name %><% end %></td>
+                <td><%= number_to_human_size(File.size("shared/upload" + @page.get_path + file.filename), :precision => 2) %></td>
+                <td><%= File.atime("shared/upload" + @page.get_path + file.filename).localtime.strftime("%H:%M:%S %d %b %Y") %></td>
             <% else %>
+                <td><%= image_tag('icons/file_types/' + @page.file_type(file), :alt => '') %></td>
                 <td><%= link_to file, file %></td>
-                <td>unknown</td>
+                <td><%= t(:unknown) %></td>
+                <td><%= number_to_human_size(File.size("shared/upload" + @page.get_path + file), :precision => 2) %></td>
+                <td><%= File.atime("shared/upload" + @page.get_path + file).localtime.strftime("%H:%M:%S %d %b %Y") %></td>
             <% end %>
           </tr>
       <% end %>
       </tbody>
     </table>
 <% end %>
-
-
-
+<p><%= t(:you_can)%> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_new_file)%></a>.</p>
+<div style="display: none;">
+  <% form_for(:uploaded_file, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
+      <p><label for="uploaded_file"><%= t(:upload_file)%><br/><%= f.file_field :uploaded_data %>
+      </label><%= submit_tag t(:btn_upload) %></p>
+  <% end %>
+</div>
