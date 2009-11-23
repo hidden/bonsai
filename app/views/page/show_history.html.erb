@@ -16,7 +16,7 @@
           <% if @current_user.can_edit_page? @page %>
             <%=  link_to t(:revert) + " #{counter}", page_path(@page.get_rel_path, :undo, :revision => index.to_s), {:method => :post} %>
           <% end %>
-          <%=  link_to  t(:show_from) + " #{counter}", page_path(@page.get_rel_path, :show_revision, :revision => index.to_s) %>
+          <%=  link_to  t(:show_from) + " #{counter}", page_path(@page.get_rel_path, :revision, :revision => index.to_s) %>
         </li>
       <% end %>
     </ul>

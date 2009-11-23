@@ -1,9 +1,9 @@
 class PageController < ApplicationController
   before_filter :load_page
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
-  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,:new_part, :files]
-  prepend_before_filter :slash_check, :only => [:view]  
-  before_filter :can_view_page_check, :only => [:view, :show_history, :show_revision, :diff]
+  before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
+  prepend_before_filter :slash_check, :only => [:view]
+  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff]
   before_filter :is_file, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
 
@@ -29,7 +29,7 @@ class PageController < ApplicationController
     render :action => :unprivileged
   end
 
-  def show_history
+  def history
     render :action => :show_history
   end
 
@@ -140,11 +140,11 @@ class PageController < ApplicationController
 
 
   def pagesib
-    @user_name=@current_user.logged? ?  @current_user.username : 'nil';
-    render :action =>'page_siblings'
+    @user_name = @current_user.logged? ?  @current_user.username : 'nil';
+    render :action => 'page_siblings'
   end
 
-  def show_revision
+  def revision
     @page = PageAtRevision.find_by_path(@path)
 
     revision_date = @page.page_parts_revisions[params[:revision].to_i].created_at
@@ -177,7 +177,7 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to @page.get_path + ";manage"
+    redirect_to manage_page_path(@page)
   end
 
   def switch_editable
@@ -190,7 +190,7 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to @page.get_path + ";manage"
+    redirect_to manage_page_path(@page)
   end
 
   def change_permission
@@ -211,13 +211,13 @@ class PageController < ApplicationController
       page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
     end
     page_permission.save
-    redirect_to @page.get_path + ";manage"
+    redirect_to manage_page_path(@page)
   end
 
   def remove_permission
     page_permission = @page.page_permissions[params[:index].to_i]
     page_permission.destroy
-    redirect_to @page.get_path + ";manage"
+    redirect_to manage_page_path(@page)
   end
 
   def process_file
@@ -304,16 +304,7 @@ class PageController < ApplicationController
   end
 
   def show_history
-    if params.include? 'diff'
-      render :action => "diff"
-    end
   end
-
-  def _history
-    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
-    render :action => :rss_history, :layout => false
-  end
-
 
   def rss_history
       @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
@@ -341,7 +332,7 @@ class PageController < ApplicationController
         end
       end
     end
-    redirect_to @page.get_path + "?manage"
+    redirect_to manage_page_path(@page)
   end
 
   def update
@@ -404,7 +395,7 @@ class PageController < ApplicationController
     page_part.current_page_part_revision = page_part_revision
     page_part.save!
     flash[:notice] = t(:page_part_added)
-    redirect_to @page.get_path + ";edit"
+    redirect_to edit_page_path(@page)
   end
 
   def upload
@@ -464,11 +455,15 @@ class PageController < ApplicationController
   end
   
   def can_manage_page_check
-   unless @current_user.can_manage_page? @page then unprivileged end
+   unprivileged unless @current_user.can_manage_page?(@page)
   end
   
   def can_edit_page_check
-    unless @current_user.can_edit_page? @page then unprivileged end
+    unprivileged unless @current_user.can_edit_page?(@page)
+  end
+
+  def can_view_page_check
+    unprivileged unless @page.nil? or @current_user.can_view_page?(@page)
   end
 
   def slash_check
@@ -476,12 +471,6 @@ class PageController < ApplicationController
     unless link.ends_with?('/')
       redirect_to link + '/'
       return
-    end
-  end
-
-  def can_view_page_check
-    unless @page.nil?
-      unless @current_user.can_view_page? @page then unprivileged end
     end
   end
 
@@ -503,5 +492,4 @@ class PageController < ApplicationController
       return
     end
   end
-
 end
