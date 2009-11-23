@@ -78,8 +78,10 @@ body {
     background-color: #F8F8FF;
     margin: 0.5em 0;
 }
-.bonsai .diff .deletion { background-color: #FFDDDD; }
-.bonsai .diff .addition { background-color: #DDFFDD; }
+.bonsai .diff .deletion { background-color: #fdd; }
+.bonsai .diff .addition { background-color: #dfd; }
+.bonsai .diff .line .deletion {background-color: #faa; }
+.bonsai .diff .line .addition {background-color: #afa; }
 .bonsai textarea { width: 100% }
 
 
