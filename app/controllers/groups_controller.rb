@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_filter :verify_editor_permission, :only => [:remove, :add]
-  before_filter :verify_editor_permission_by_id, :only => [:destroy, :edit, :update, :make_public, :make_editable]
+  before_filter :verify_editor_permission_by_id, :only => [:destroy, :edit, :update, :switch_public, :switch_editable]
 
   def verify_editor_permission_by_id
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:id])
