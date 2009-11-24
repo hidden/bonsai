@@ -8,8 +8,12 @@
     <%= stylesheet_link_tag 'bonsai' %>
     <%= stylesheet_link_tag 'default' %>
     <!-- Start Syntax Highlight -->
-    <%= stylesheet_link_tag 'SyntaxHighlighter.css' %>
+    <%= stylesheet_link_tag 'SyntaxHighlighter/shCore.css' %>
+    <%= stylesheet_link_tag 'SyntaxHighlighter/shThemeDefault.css' %>
+
     <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
+    <%= javascript_include_tag 'SyntaxHighlighter/shLegacy.js' %>
+    
     <%= javascript_include_tag 'SyntaxHighlighter/shBrushRuby.js' %>
     <%= javascript_include_tag 'SyntaxHighlighter/shBrushPhp.js' %>
     <%= javascript_include_tag 'SyntaxHighlighter/shBrushXml.js' %>
@@ -32,9 +36,9 @@
     <%= yield %>
     </div>
   <%= render :partial => 'shared/analytics' %>
-  <script language="javascript">
-    dp.SyntaxHighlighter.ClipboardSwf = "/javascripts/SyntaxHighlighter/clipboard.swf";
-    dp.SyntaxHighlighter.HighlightAll('code');
-    </script>
+  <script type="text/javascript">
+      SyntaxHighlighter.all();
+     dp.SyntaxHighlighter.HighlightAll('code');
+13</script>
   </body>
 </html>
