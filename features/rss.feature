@@ -46,5 +46,12 @@ Feature: Wiki
     When I go to /?rss
     Then I should not see "Some title changes"
 
+  Scenario: check link on diff in rss feeds
+    Given I am not logged in
+    And that a "main" page with multiple revisions exist
+    And I am logged in
+    And I follow "RSS feed of page changes"
+    Then I should see ";diff?first_revision=0&second_revision=1"
+    
 
     

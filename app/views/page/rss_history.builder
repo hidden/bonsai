@@ -14,7 +14,7 @@ xml.rss :version => "2.0" do
         if index<1
           xml.link root_url.chomp('/') + @page.get_path
         else
-          xml.link root_url.chomp('/') + '?diff&first_revision='+(@revision_count - index - 1).to_s + '&second_revision='+(@revision_count - index).to_s()
+          xml.link root_url.chomp('/') + ';diff?first_revision='+(@revision_count - index - 1).to_s + '&second_revision='+(@revision_count - index).to_s()
         end
         end
     end
