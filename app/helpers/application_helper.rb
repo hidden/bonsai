@@ -5,7 +5,7 @@ module ApplicationHelper
   end
 
   def highlight(html)
-    return html.gsub(/(<pre class='[a-z0-9-]+)/,'\1:nogutter:nocontrols').gsub(/<.?code>/," ").gsub("<pre ",'<pre name="code" ')
+    return html.gsub(/(<pre class='[a-z0-9-]+)/,'\1;').gsub("<pre class='","<pre class='brush:").gsub(/<.?code>/," ").gsub("<pre ",'<pre ')
   end
 
   def login_form

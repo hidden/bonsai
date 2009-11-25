@@ -1,5 +1,8 @@
 <ul>
 <% for group in  @auto_groups %>
- <li><%=h group.name %></li>
+  <li>
+     <span class="groupname"><%= h(group.name).gsub(@infix, "<strong>#{@infix}</strong>") %></span>
+     (<%= group.users.first(3).collect(&:name).join(', ') %><% if (group.users.length > 3) %>&hellip;<% end %>)
+  </li>
 <% end %>
 </ul>

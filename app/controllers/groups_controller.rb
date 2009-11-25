@@ -16,19 +16,18 @@ class GroupsController < ApplicationController
   end
   
   def autocomplete_for_groups
-      @groups = Group.all(:conditions => ["name LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'name')
-      @auto_groups = @groups.clone
-      for group in @groups
-        users = group.users
-        retVal = group.is_public?
-        retValUsers = users.include?(@current_user)
-        if (retVal || retValUsers)
-        else
-          @auto_groups.delete(group)
-        end
+    @infix = params[:infix]
+    @groups = Group.all(:conditions => ["name LIKE ?", "%#{@infix}%"], :limit => 10, :order => 'name')
+    @auto_groups = @groups.clone
+    for group in @groups
+      users = group.users
+      if (group.is_public? || users.include?(@current_user))
+          else
+            @auto_groups.delete(group)
       end
-      render :partial => 'autocomplete_groups'
     end
+    render :partial => 'autocomplete_groups'
+   end
   
 
   # GET /groups

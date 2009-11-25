@@ -185,4 +185,17 @@ Feature: Secure wiki
     Then I should see "Permission denied"
     And I should not see "Edit"
     And I should not see "Manage"
-    
+
+  Scenario: User creates group with 2 users, in autocomplete for groups he/she should see name of group and users in brackets
+    Given user "jozo" exists
+    Given user "fero" exists
+    When I go to the main page
+    And I login as "jano"
+    And I create "/" page
+    And I create "TestGroup" group
+    And I add "jozo" viewer to "TestGroup" group
+    And I add "fero" viewer to "TestGroup" group
+    And I go to /groups/autocomplete_for_groups?infix=Test
+    And I should see "TestGroup"
+    And I should see "(jano, jozo, fero)"
+  
