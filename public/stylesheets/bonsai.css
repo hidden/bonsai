@@ -74,7 +74,6 @@ body {
     padding: 0;
 }
 .bonsai .diff .line {
-    white-space: pre;
     background-color: #F8F8FF;
     margin: 0.5em 0;
 }

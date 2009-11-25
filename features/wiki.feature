@@ -7,13 +7,13 @@ Feature: Wiki
     Given I am logged in
 
   @wip
-  Scenario: User wants to see the diff of two page revisions
+   Scenario: User wants to see the diff of two page revisions
     Given I am not logged in
     And that a "main" page with multiple revisions exist
     And I am logged in
     And I follow "history"
     And I compare revision "first_revision_1" with "second_revision_2"
-    Then I should see "This is second revision" within ".line-added"
+    Then I should see "This is second revision" within ".line addition"
 
   Scenario: User wants to revert a revision
     Given I am not logged in

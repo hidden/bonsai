@@ -34,88 +34,11 @@ class PageController < ApplicationController
   end
 
   def diff
-      @page = PageAtRevision.find_by_path(@path)
-         if (params[:first_revision].to_i < params[:second_revision].to_i)
-           first = params[:second_revision]
-           second = params[:first_revision]
-         else
-           second = params[:second_revision]
-           first = params[:first_revision]
-         end
-
-         @page.revision_date = @page.page_parts_revisions[first.to_i].created_at
-         @first_revision = @page.get_page_parts_by_date(first)
-             old_revision = ""
-             for part in @first_revision
-               unless part.was_deleted
-                 old_revision<< part.body << "\n"
-               end
-             end
-         @page.revision_date = @page.page_parts_revisions[second.to_i].created_at
-         @second_revision = @page.get_page_parts_by_date(second)
-             new_revision = ""
-             for part in @second_revision
-               unless part.was_deleted
-                 new_revision<< part.body << "\n"
-               end
-             end
-         @changes = compare(old_revision, new_revision)
-         render :action => 'diff'
-    end
-
-  def compare old,new
-    output = []
-    data_old = old.split(/\r?\n/)
-    data_new = new.split(/\r?\n/)
-    diffs = Diff::LCS.sdiff(data_old, data_new)
-
-    for diff in diffs
-      if(['=', '-', '+'].include?(diff.action))
-        if(diff.action == '-')
-          output << [diff.action, diff.old_element]
-        else
-          output << [diff.action, diff.new_element]
-        end
-      else
-        temp = []
-        changes = Diff::LCS.sdiff(diff.old_element.split(''), diff.new_element.split(''))
-        act_sign = changes.first.action
-        old_string = ""
-        new_string = ""
-        for change in changes
-          new_sign = change.action
-          if (new_sign != act_sign)
-            case act_sign
-              when '+', '=' then temp << [act_sign, new_string]
-              when '-' then temp << [act_sign, old_string]
-              when '!' then
-                temp << ['-', old_string]
-                temp << ["+", new_string]
-            end
-            old_string = ""
-            new_string = ""
-            act_sign = new_sign
-          end
-          old_string << change.old_element unless change.old_element.nil?
-          new_string << change.new_element unless change.new_element.nil?
-        end
-        case act_sign
-          when '+' then
-            temp << [act_sign, new_string]
-          when '-' then
-            temp << [act_sign, old_string]
-          when '=' then
-            temp << [act_sign, new_string]
-          when '!' then
-            temp << ['-', old_string]; temp << ["+", new_string]
-        end
-        output << ['!', temp]
-      end
-    end
-    output
+    @page = PageAtRevision.find_by_path(@path)
+    @changes = PageDifferencer.get_differences_by_revision(@page, params[:first_revision],params[:second_revision])
+    render :action => 'diff'
   end
-
-
+  
   def pagesib
     @user_name = @current_user.logged? ?  @current_user.username : 'nil';
     render :action => 'page_siblings'
