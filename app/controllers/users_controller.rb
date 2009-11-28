@@ -20,9 +20,10 @@ class UsersController < ApplicationController
 
   def ldap_authentification
     return unless params[:username]
-      authenticator = Rails.env.production? ? SimpleLDAP : SimpleLDAP::Stub
-      data = authenticator.authenticate(params[:username], params[:password], 'ldap.stuba.sk', 389, 'ou=People,dc=stuba,dc=sk')
-      if data.nil?
+      #authenticator = Rails.env.production? ? SimpleLDAP : SimpleLDAP::Stub
+      authenticator =  APP_CONFIG['authentication_method'] == 'ldap-stub' ? SimpleLDAP::Stub : SimpleLDAP 
+     data = authenticator.authenticate(params[:username], params[:password], APP_CONFIG['ldap']['host'], APP_CONFIG['ldap']['port'], APP_CONFIG['ldap']['base_dn'])
+    if data.nil?
         failed_login
       else
         user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
