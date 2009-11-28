@@ -34,8 +34,36 @@ class PageController < ApplicationController
   end
 
   def diff
-    @page = PageAtRevision.find_by_path(@path)
-    @changes = PageDifferencer.get_differences_by_revision(@page, params[:first_revision],params[:second_revision])
+    page = PageAtRevision.find_by_path(@path)
+    
+    first_revision = params[:first_revision]
+    second_revision = params[:second_revision]
+     if (first_revision.to_i < second_revision.to_i)
+      first = second_revision
+      second = first_revision
+    else
+      second = second_revision
+      first = first_revision
+     end
+
+    revision1 = page.page_parts_revisions[first.to_i].id
+    old_revision = ""
+    for part in page.page_parts
+      revision = part.page_part_revisions.first(:conditions => ["id <= ?", revision1])
+      unless revision.nil? or revision.was_deleted?
+        old_revision << revision.body << "\n"
+      end
+    end
+    
+    new_revision = ""
+    revision2 = page.page_parts_revisions[second.to_i].id
+    for part in page.page_parts
+      revision = part.page_part_revisions.first(:conditions => ["id <= ?", revision2])
+      unless revision.nil? or revision.was_deleted?
+        new_revision << revision.body << "\n"
+      end
+    end
+    @changes = SimpleDiff.diff(old_revision, new_revision)
     render :action => 'diff'
   end
   

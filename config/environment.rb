@@ -11,6 +11,7 @@ RAILS_GEM_VERSION = '2.3.4' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 
 require 'ldap/simple_ldap'
+require 'diff/simple_diff'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
