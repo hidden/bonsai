@@ -65,10 +65,10 @@ class Page < ActiveRecord::Base
     latest_part_revision.nil? ? nil : latest_part_revision.body
   end
 
-  def get_page_parts_by_date revision
+  def get_page_parts_by_date date
     page_parts = []
     for part in self.page_parts
-      current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', revision_date])
+      current_part = part.page_part_revisions.find(:first, :conditions => ['created_at <= ?', date], :order => "id DESC")
       page_parts << current_part if current_part
     end
     return page_parts

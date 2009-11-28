@@ -8,21 +8,20 @@ class PageDifferencer
       first = first_revision
     end
 
-    page.revision_date = page.page_parts_revisions[first.to_i].created_at
-    @first_revision = page.get_page_parts_by_date(first)
+    revision1 = page.page_parts_revisions[first.to_i].id
     old_revision = ""
-    for part in @first_revision
-      unless part.was_deleted
-        old_revision<< part.body << "\n"
+    for part in page.page_parts
+      revision = part.page_part_revisions.first(:conditions => ["id <= ?", revision1])
+      unless revision.nil? or revision.was_deleted?
+        old_revision << revision.body << "\n"
       end
     end
-
-    page.revision_date = page.page_parts_revisions[second.to_i].created_at
-    @second_revision = page.get_page_parts_by_date(second)
     new_revision = ""
-    for part in @second_revision
-      unless part.was_deleted
-        new_revision<< part.body << "\n"
+    revision2 = page.page_parts_revisions[second.to_i].id
+    for part in page.page_parts
+      revision = part.page_part_revisions.first(:conditions => ["id <= ?", revision2])
+      unless revision.nil? or revision.was_deleted?
+        new_revision << revision.body << "\n"
       end
     end
     render = compare(old_revision, new_revision)
@@ -34,7 +33,6 @@ class PageDifferencer
     data_old = old.split(/\n/)
     data_new = new.split(/\n/)
     diffs = Diff::LCS.sdiff(data_old, data_new)
-    #p diffs
 
     for diff in diffs
       data_old_parse = ""
