@@ -9,6 +9,8 @@ ActionController::Routing::Routes.draw do |map|
       page_part.resources :page_part_revisions
     end
   end
+  
+  map.connect 'dashboard', :controller => "dashboard"
 
   map.connect 'page/new', :controller => "page", :action => "create"
 

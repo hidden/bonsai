@@ -26,7 +26,7 @@ sk:
   file: "Súbor"
   uploader: "Autor"
   size: "Veľkosť"
-  time: "Čas"
+  creation_time: "Čas"
   unknown: "neznámy"
   file_not_found: "Súbor nenájdený."
   you_can: "Možeš "

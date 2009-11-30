@@ -10,6 +10,7 @@ sk:
   manage: "Manažment"
   files: "Súbory"
   groups: "Skupiny"
+  dashboard: "Dashboard"  #TODO: kratky a vystizny nazov v sk
   summary: "Sumár"
   return: "Návrat na stránku"
   rss_feed: "RSS kanál"

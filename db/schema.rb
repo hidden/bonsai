@@ -9,7 +9,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091114152258) do
+ActiveRecord::Schema.define(:version => 20091126132552) do
+
+  create_table "favorites", :force => true do |t|
+    t.integer "user_id", :null => false
+    t.integer "page_id", :null => false
+  end
+
+  add_index "favorites", ["user_id"], :name => "index_favorites_on_user_id"
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false

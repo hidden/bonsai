@@ -1,9 +1,9 @@
 class PageController < ApplicationController
   before_filter :load_page
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
-  before_filter :can_edit_page_check, :only => [:edit,:update,:upload,:undo,:new_part, :files]
-  prepend_before_filter :slash_check, :only => [:view]  
-  before_filter :can_view_page_check, :only => [:view, :show_history, :show_revision, :diff]
+  before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
+  prepend_before_filter :slash_check, :only => [:view]
+  before_filter :can_view_page_check, :only => [:view, :show_history, :show_revision, :diff, :toggle_favorite]
   before_filter :is_file, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
 
@@ -18,7 +18,9 @@ class PageController < ApplicationController
   end
 
   def view
-    unless session[:link_back].nil? then session[:link_back]= nil end
+    unless session[:link_back].nil? then
+      session[:link_back]= nil
+    end
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
@@ -34,118 +36,125 @@ class PageController < ApplicationController
   end
 
   def diff
-      @page = PageAtRevision.find_by_path(@path)
-      puts "*****************************************************************************************"
-         if (params[:first_revision].to_i < params[:second_revision].to_i)
-           first = params[:second_revision]
-           second = params[:first_revision]
-         else
-           second = params[:second_revision]
-           first = params[:first_revision]
-         end
-
-         @page.revision_date = @page.page_parts_revisions[first.to_i].created_at
-         @first_revision = @page.get_page_parts_by_date(first)
-             old_revision = ""
-             for part in @first_revision
-               unless part.was_deleted
-                 old_revision<< part.body << "\n"
-               end
-             end
-         @page.revision_date = @page.page_parts_revisions[second.to_i].created_at
-         @second_revision = @page.get_page_parts_by_date(second)
-             new_revision = ""
-             for part in @second_revision
-               unless part.was_deleted
-                 new_revision<< part.body << "\n"
-               end
-             end
-      p old_revision
-      p new_revision
-         compare(old_revision, new_revision)
-         render :action => 'diff'
+    @page = PageAtRevision.find_by_path(@path)
+    puts "*****************************************************************************************"
+    if (params[:first_revision].to_i < params[:second_revision].to_i)
+      first = params[:second_revision]
+      second = params[:first_revision]
+    else
+      second = params[:second_revision]
+      first = params[:first_revision]
     end
 
-   def compare old,new
-     @output = []
-       data_old = old.split(/\n/)
-       data_new = new.split(/\n/)
-       diffs = Diff::LCS.sdiff(data_old, data_new)
-       #p diffs
-
-      for diff in diffs
-         data_old_parse = ""
-         data_new_parse = ""
-         act_sign = ""
-         act_str = ""
-         temp = []
-        if((diff.action == '=')||(diff.action == '-')||(diff.action == '+'))
-          begin
-            if(diff.action == '-')
-              @output << [diff.action, diff.old_element]
-            else
-              @output << [diff.action, diff.new_element]
-            end
-          end
-        else begin
-                data_old_parse = diff.old_element.split("")
-                data_new_parse = diff.new_element.split("")
-                diffs_parsed = Diff::LCS.sdiff(data_old_parse, data_new_parse)
-                   for parsed_diff in diffs_parsed
-                     if(act_sign == "")
-                       act_sign = parsed_diff.action
-                     end
-                     case parsed_diff.action
-                       when '=' then if(act_sign == "=")
-                                            act_str << parsed_diff.old_element
-                                          else begin
-                                            temp << [act_sign, act_str]
-                                            act_sign = parsed_diff.action
-                                            if(act_sign=="-")
-                                              act_str = parsed_diff.old_element
-                                            else
-                                              act_str = parsed_diff.new_element
-                                            end
-                                            end
-                                         end
-                           when '-' then if(act_sign == "-")
-                                            act_str << parsed_diff.old_element
-                                          else begin
-                                            temp << [act_sign, act_str]
-                                            act_sign = parsed_diff.action
-                                           if(act_sign=="-")
-                                              act_str = parsed_diff.old_element
-                                            else
-                                              act_str = parsed_diff.new_element
-                                            end
-                                            end
-                                         end
-                           when '+' then if(act_sign == "+")
-                                            act_str << parsed_diff.new_element
-                                          else begin
-                                            temp << [act_sign, act_str]
-                                            act_sign = parsed_diff.action
-                                           if(act_sign=="-")
-                                              act_str = parsed_diff.old_element
-                                            else
-                                              act_str = parsed_diff.new_element
-                                            end
-                                            end
-                                         end
-                     end
-                   end
-                 temp << [act_sign, act_str]
-                 @output << ['*',temp]
-                 end
-          end
-       p @output
+    @page.revision_date = @page.page_parts_revisions[first.to_i].created_at
+    @first_revision = @page.get_page_parts_by_date(first)
+    old_revision = ""
+    for part in @first_revision
+      unless part.was_deleted
+        old_revision<< part.body << "\n"
       end
     end
- 
+    @page.revision_date = @page.page_parts_revisions[second.to_i].created_at
+    @second_revision = @page.get_page_parts_by_date(second)
+    new_revision = ""
+    for part in @second_revision
+      unless part.was_deleted
+        new_revision<< part.body << "\n"
+      end
+    end
+    p old_revision
+    p new_revision
+    compare(old_revision, new_revision)
+    render :action => 'diff'
+  end
+
+  def compare old, new
+    @output = []
+    data_old = old.split(/\n/)
+    data_new = new.split(/\n/)
+    diffs = Diff::LCS.sdiff(data_old, data_new)
+    #p diffs
+
+    for diff in diffs
+      data_old_parse = ""
+      data_new_parse = ""
+      act_sign = ""
+      act_str = ""
+      temp = []
+      if ((diff.action == '=')||(diff.action == '-')||(diff.action == '+'))
+        begin
+          if (diff.action == '-')
+            @output << [diff.action, diff.old_element]
+          else
+            @output << [diff.action, diff.new_element]
+          end
+        end
+      else
+        begin
+          data_old_parse = diff.old_element.split("")
+          data_new_parse = diff.new_element.split("")
+          diffs_parsed = Diff::LCS.sdiff(data_old_parse, data_new_parse)
+          for parsed_diff in diffs_parsed
+            if (act_sign == "")
+              act_sign = parsed_diff.action
+            end
+            case parsed_diff.action
+              when '=' then
+                if (act_sign == "=")
+                  act_str << parsed_diff.old_element
+                else
+                  begin
+                    temp << [act_sign, act_str]
+                    act_sign = parsed_diff.action
+                    if (act_sign=="-")
+                      act_str = parsed_diff.old_element
+                    else
+                      act_str = parsed_diff.new_element
+                    end
+                  end
+                end
+              when '-' then
+                if (act_sign == "-")
+                  act_str << parsed_diff.old_element
+                else
+                  begin
+                    temp << [act_sign, act_str]
+                    act_sign = parsed_diff.action
+                    if (act_sign=="-")
+                      act_str = parsed_diff.old_element
+                    else
+                      act_str = parsed_diff.new_element
+                    end
+                  end
+                end
+              when '+' then
+                if (act_sign == "+")
+                  act_str << parsed_diff.new_element
+                else
+                  begin
+                    temp << [act_sign, act_str]
+                    act_sign = parsed_diff.action
+                    if (act_sign=="-")
+                      act_str = parsed_diff.old_element
+                    else
+                      act_str = parsed_diff.new_element
+                    end
+                  end
+                end
+            end
+          end
+          temp << [act_sign, act_str]
+          @output << ['*', temp]
+        end
+      end
+      p @output
+    end
+  end
+
 
   def pagesib
-    @user_name=@current_user.logged? ?  @current_user.username : 'nil';
-     render :action =>'page_siblings'
+    @user_name=@current_user.logged? ? @current_user.username : 'nil';
+    render :action =>'page_siblings'
   end
 
   def show_revision
@@ -320,16 +329,16 @@ class PageController < ApplicationController
 
 
   def rss_history
-      @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
-      @revision_count = @page.page_parts_revisions.count
-      render :action => :rss_history, :layout => false
+    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
+    @revision_count = @page.page_parts_revisions.count
+    render :action => :rss_history, :layout => false
   end
 
-  
+
   def edit
     render :action => :edit
   end
-  
+
   def set_permissions
     addedgroups = params[:add_group].split(",")
     for addedgroup in addedgroups
@@ -412,46 +421,48 @@ class PageController < ApplicationController
   end
 
   def upload
-    @uploaded_file = UploadedFile.new(params[:uploaded_file])
-    sleep(2) # TODO get rid of this
     @name = params[:uploaded_file_filename]
+    tmp_file = UploadedFile.new(params[:uploaded_file])
+    @uploaded_file = UploadedFile.find_by_filename_and_page_id(tmp_file.filename, @page.id)
+    @uploaded_file = tmp_file if @uploaded_file.nil?
+    sleep(2) # TODO get rid of this    
 
-     if @uploaded_file.filename.nil?
+    if @uploaded_file.filename.nil?
       flash[:notice] = t(:no_files_selected)
       redirect_to @page.get_path
-     else
+    else
 
-       if @uploaded_file.exist?(@page.get_path)
-         flash[:notice] = t(:file_exists)
-         redirect_to @page.get_path
-       else
+#      if @uploaded_file.exist?(@page.get_path)
+#        flash[:notice] = t(:file_exists)
+#        redirect_to @page.get_path
+#      else
 
-         if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-           flash[:notice] = t(:file_not_match)
-           redirect_to @page.get_path
-         else
-           @uploaded_file.page = @page
-           @uploaded_file.user = @current_user
-           @uploaded_file.rename(@name) unless @name.nil?
-           same_page = @path
-           same_page.push(@uploaded_file.filename)
-           if Page.find_by_path(same_page).nil?
-             if @uploaded_file.save
+        if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
+          flash[:notice] = t(:file_not_match)
+          redirect_to @page.get_path
+        else
+          @uploaded_file.page = @page
+          @uploaded_file.user = @current_user
+          @uploaded_file.rename(@name) unless @name.nil?
+          same_page = @path
+          same_page.push(@uploaded_file.filename)
+          if Page.find_by_path(same_page).nil?
+            if @uploaded_file.save
               flash[:notice] = t(:file_uploaded)
               redirect_to @page.get_path
-             else
+            else
               error_message = ""
               @uploaded_file.errors.each_full { |msg| error_message << msg }
               flash[:notice] = error_message
               render :action => :edit
-             end
-           else
-             flash[:notice] = t(:same_as_page)
-             render :action => :edit
-           end
-         end
+            end
+          else
+            flash[:notice] = t(:same_as_page)
+            render :action => :edit
+          end
+        end
 
-       end
+      #end
 
     end
 
@@ -461,18 +472,46 @@ class PageController < ApplicationController
     render :action => :files
   end
 
+  def toggle_favorite
+    active = @current_user.favorite_pages.include?(@page)
+    if active
+      @current_user.favorite_pages.delete(@page)
+      icon = 'icons/watched_n.gif'
+      title = 'add to favorites'
+    else
+      @current_user.favorites.create(:page => @page)
+      icon = 'icons/watched_y.gif'
+      title = 'remove from favorites'
+    end
+
+    respond_to do |format|
+      format.js{
+        render :update do |page|
+          page.replace_html 'favourite', image_tag(icon, :id => 'fav_pic', :border => 0, :title => title, :alt => '')
+        end
+      }
+      format.html{
+        redirect_to @page.get_path
+      }
+    end
+  end
+
   private
   def load_page
     @path = params[:path]
     @page = Page.find_by_path(@path)
   end
-  
+
   def can_manage_page_check
-   unless @current_user.can_manage_page? @page then unprivileged end
+    unless @current_user.can_manage_page? @page then
+      unprivileged
+    end
   end
-  
+
   def can_edit_page_check
-    unless @current_user.can_edit_page? @page then unprivileged end
+    unless @current_user.can_edit_page? @page then
+      unprivileged
+    end
   end
 
   def slash_check
@@ -485,7 +524,9 @@ class PageController < ApplicationController
 
   def can_view_page_check
     unless @page.nil?
-      unless @current_user.can_view_page? @page then unprivileged end
+      unless @current_user.can_view_page? @page then
+        unprivileged
+      end
     end
   end
 
@@ -507,5 +548,4 @@ class PageController < ApplicationController
       return
     end
   end
-
 end

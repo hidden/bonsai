@@ -60,6 +60,10 @@ module ApplicationHelper
     groups_path+"?back=#{page.get_path}"
   end
 
+  def dashboard_page_path(page)
+    (url_for :controller => 'dashboard') + "?back=#{page.get_path}"
+  end
+
    def markdown(text)
     text.blank? ? "" :  hihtlight(Maruku.new(text).to_html)
   end

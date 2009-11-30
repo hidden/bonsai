@@ -32,6 +32,12 @@ body {
     color: white;
 }
 
+#toolbar .favourite a {
+    margin-right: 1em;
+    padding: 5px;
+    text-decoration: none;
+    border: 1px solid transparent;
+}
 
 #toolbar .login {
     float: right;
@@ -74,17 +80,48 @@ body {
     padding: 0;
 }
 
-.bonsai .diff span { white-space: pre; }
-.bonsai .line-unchanged { text-align: left; background-color: #F8F8FF;}
-.bonsai .line-removed { text-align: left; background-color: #FFDDDD; }
-.bonsai .line-added { text-align: left; background-color: #DDFFDD; }
-.bonsai .line-changed { text-align: left; background-color: #F8F8FF; }
-.bonsai .line-changed-same { text-align: left; background-color: #F8F8FF;}
-.bonsai .line-changed-del { text-align: left; background-color: #FFDDDD; }
-.bonsai .line-changed-add { text-align: left; background-color: #DDFFDD; }
-.bonsai textarea { width: 100% }
+.bonsai .diff span {
+    white-space: pre;
+}
 
+.bonsai .line-unchanged {
+    text-align: left;
+    background-color: #F8F8FF;
+}
 
+.bonsai .line-removed {
+    text-align: left;
+    background-color: #FFDDDD;
+}
+
+.bonsai .line-added {
+    text-align: left;
+    background-color: #DDFFDD;
+}
+
+.bonsai .line-changed {
+    text-align: left;
+    background-color: #F8F8FF;
+}
+
+.bonsai .line-changed-same {
+    text-align: left;
+    background-color: #F8F8FF;
+}
+
+.bonsai .line-changed-del {
+    text-align: left;
+    background-color: #FFDDDD;
+}
+
+.bonsai .line-changed-add {
+    text-align: left;
+    background-color: #DDFFDD;
+}
+
+.bonsai textarea {
+    width: 100%
+}
 
 #holder {
     margin: 2em;

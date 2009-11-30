@@ -148,19 +148,19 @@ Feature: Secure file uploads
     And I go to ;files
     Then I should see "Permission denied."
 
-  Scenario: User tries to reupload existing file
-    When I create "/" page
-    And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    And I logout
-    And I login as "Ted"
-    And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    Then I should see "File already exists"
-    When I follow "files"
-    Then I should see "testuser"
+#  Scenario: User tries to reupload existing file
+#    When I create "/" page
+#    And I follow "edit"
+#    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+#    And I press "Upload"
+#    And I logout
+#    And I login as "Ted"
+#    And I follow "edit"
+#    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+#    And I press "Upload"
+#    Then I should see "File already exists"
+#    When I follow "files"
+#    Then I should see "testuser"
 
   Scenario: User wants to upload file with no ext trough file page
     When I create "/" page

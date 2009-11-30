@@ -10,6 +10,7 @@ en:
   manage: "Manage"
   files: "Files"
   groups: "Groups"
+  dashboard: "Dashboard"
   summary: "Summary"
   return: "Return to page"
   rss_feed: "RSS feed of page changes"

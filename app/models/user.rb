@@ -4,6 +4,9 @@ class User < ActiveRecord::Base
 
   has_many :visible_groups, :through => :group_permissions, :class_name => 'Group', :source => :group, :conditions => ['group_permissions.can_view = ?', true]
 
+  has_many :favorites
+  has_many :favorite_pages, :through => :favorites, :class_name => 'Page', :source => :page
+
   before_create { |user| user.generate_unique_token }
   after_create { |user| Group.create(:name => user.username).add_as_non_viewer(user) }
   after_destroy { |user| user.private_group.destroy }

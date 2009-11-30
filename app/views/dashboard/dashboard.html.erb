@@ -1,0 +1,11 @@
+<h1>Hi, <%= @current_user.name %></h1>       <%#TODO: i18n%>
+                                              <%#TODO: find page%>
+<table id="Favourites">                                     <%#TODO: cez usera%>
+  <th>Pages watching: <%= @current_user.favorite_pages.length %></th><th></th>
+  <% for favourite in @current_user.favorite_pages %>
+      <tr>
+        <td><%= link_to favourite.title, favourite.get_path %></td>
+        <!--<td><%#= image_tag('icons/new.png', :border => 0, :alt => '') %></td> -->
+      </tr>
+  <% end %>
+</table>
