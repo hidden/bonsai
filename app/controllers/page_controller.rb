@@ -35,16 +35,16 @@ class PageController < ApplicationController
 
   def diff
     page = PageAtRevision.find_by_path(@path)
-    
+
     first_revision = params[:first_revision]
     second_revision = params[:second_revision]
-     if (first_revision.to_i < second_revision.to_i)
+    if (first_revision.to_i < second_revision.to_i)
       first = second_revision
       second = first_revision
     else
       second = second_revision
       first = first_revision
-     end
+    end
 
     revision1 = page.page_parts_revisions[first.to_i].id
     old_revision = ""
@@ -54,7 +54,7 @@ class PageController < ApplicationController
         old_revision << revision.body << "\n"
       end
     end
-    
+
     new_revision = ""
     revision2 = page.page_parts_revisions[second.to_i].id
     for part in page.page_parts
@@ -66,9 +66,9 @@ class PageController < ApplicationController
     @changes = SimpleDiff.diff(old_revision, new_revision)
     render :action => 'diff'
   end
-  
+
   def pagesib
-    @user_name = @current_user.logged? ?  @current_user.username : 'nil';
+    @user_name = @current_user.logged? ? @current_user.username : 'nil';
     render :action => 'page_siblings'
   end
 
@@ -235,16 +235,16 @@ class PageController < ApplicationController
   end
 
   def rss_history
-      @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
-      @revision_count = @page.page_parts_revisions.count
-      render :action => :rss_history, :layout => false
+    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
+    @revision_count = @page.page_parts_revisions.count
+    render :action => :rss_history, :layout => false
   end
 
-  
+
   def edit
     render :action => :edit
   end
-  
+
   def set_permissions
     addedgroups = params[:add_group].split(",")
     for addedgroup in addedgroups
@@ -329,8 +329,16 @@ class PageController < ApplicationController
   def upload
     @name = params[:uploaded_file_filename]
     tmp_file = UploadedFile.new(params[:uploaded_file])
-    @uploaded_file = UploadedFile.find_by_filename_and_page_id(tmp_file.filename, @page.id)
-    @uploaded_file = tmp_file if @uploaded_file.nil?
+    if @name.nil?
+      @uploaded_file = UploadedFile.find_by_filename_and_page_id(tmp_file.filename, @page.id)
+    else
+      @uploaded_file = UploadedFile.find_by_filename_and_page_id(@name, @page.id)
+    end
+    if @uploaded_file.nil?
+      @uploaded_file = tmp_file
+    else
+      @uploaded_file.temp_path = tmp_file.temp_path
+    end
     sleep(2) # TODO get rid of this    
 
     if @uploaded_file.filename.nil?
@@ -343,30 +351,30 @@ class PageController < ApplicationController
 #        redirect_to @page.get_path
 #      else
 
-        if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-          flash[:notice] = t(:file_not_match)
-          redirect_to @page.get_path
-        else
-          @uploaded_file.page = @page
-          @uploaded_file.user = @current_user
-          @uploaded_file.rename(@name) unless @name.nil?
-          same_page = @path
-          same_page.push(@uploaded_file.filename)
-          if Page.find_by_path(same_page).nil?
-            if @uploaded_file.save
-              flash[:notice] = t(:file_uploaded)
-              redirect_to @page.get_path
-            else
-              error_message = ""
-              @uploaded_file.errors.each_full { |msg| error_message << msg }
-              flash[:notice] = error_message
-              render :action => :edit
-            end
+      if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
+        flash[:notice] = t(:file_not_match)
+        redirect_to @page.get_path
+      else
+        @uploaded_file.page = @page
+        @uploaded_file.user = @current_user
+        @uploaded_file.rename(@name) unless @name.nil?
+        same_page = @path
+        same_page.push(@uploaded_file.filename)
+        if Page.find_by_path(same_page).nil?
+          if @uploaded_file.save
+            flash[:notice] = t(:file_uploaded)
+            redirect_to @page.get_path
           else
-            flash[:notice] = t(:same_as_page)
+            error_message = ""
+            @uploaded_file.errors.each_full { |msg| error_message << msg }
+            flash[:notice] = error_message
             render :action => :edit
           end
+        else
+          flash[:notice] = t(:same_as_page)
+          render :action => :edit
         end
+      end
 
       #end
 
@@ -407,11 +415,11 @@ class PageController < ApplicationController
     @path = params[:path]
     @page = Page.find_by_path(@path)
   end
-  
+
   def can_manage_page_check
-   unprivileged unless @current_user.can_manage_page?(@page)
+    unprivileged unless @current_user.can_manage_page?(@page)
   end
-  
+
   def can_edit_page_check
     unprivileged unless @current_user.can_edit_page?(@page)
   end
