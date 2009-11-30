@@ -6,14 +6,16 @@ Feature: Wiki
   Background:
     Given I am logged in
 
-  @wip
-  Scenario: User wants to see the diff of two page revisions
-    Given I am not logged in
-    And that a "main" page with multiple revisions exist
-    And I am logged in
+    Scenario: User wants to see the diff of two page revisions long version
+    When I create "/" page
+    When I follow "edit"
+    And I fill in "new_page_part_name" with "first"
+    And I fill in "new_page_part_text" with "This is first revision"
+    And I press "Add new page part"
+    And I press "Save"
     And I follow "history"
     And I compare revision "first_revision_1" with "second_revision_2"
-    Then I should see "This is second revision" within ".line-added"
+    Then I should see "This is first revision" within ".line.addition"
 
   Scenario: User wants to revert a revision
     Given I am not logged in
@@ -32,8 +34,6 @@ Feature: Wiki
     And I follow "history"
     When I follow "Show page from revision 1"
     Then I should see "This is first revision"
-
-
     
   Scenario: User wants to show a revision of page with inherited pagepart
     When I create "/" page

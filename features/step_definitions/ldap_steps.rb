@@ -1,5 +1,5 @@
 Given /^LDAP is used$/ do
-  APP_CONFIG['authentication_method'] = 'ldap'
+  APP_CONFIG['authentication_method'] = 'ldap-stub'
 end
 
 When /^I login$/ do

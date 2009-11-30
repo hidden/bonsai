@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_filter :verify_editor_permission, :only => [:remove, :add]
-  before_filter :verify_editor_permission_by_id, :only => [:destroy, :edit, :update, :make_public, :make_editable]
+  before_filter :verify_editor_permission_by_id, :only => [:destroy, :edit, :update, :switch_public, :switch_editable]
 
   def verify_editor_permission_by_id
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:id])
@@ -14,20 +14,20 @@ class GroupsController < ApplicationController
     @users = User.all(:conditions => ["username LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'username')
     render :partial => 'autocomplete_users'
   end
+  
   def autocomplete_for_groups
-      @groups = Group.all(:conditions => ["name LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'name')
-      @auto_groups = @groups.clone
-      for group in @groups
-        users = group.users
-        retVal = group.is_public?
-        retValUsers = users.include?(@current_user)
-        if (retVal || retValUsers)
-        else
-          @auto_groups.delete(group)
-        end
+    @infix = params[:infix]
+    @groups = Group.all(:conditions => ["name LIKE ?", "%#{@infix}%"], :limit => 10, :order => 'name')
+    @auto_groups = @groups.clone
+    for group in @groups
+      users = group.users
+      if (group.is_public? || users.include?(@current_user))
+          else
+            @auto_groups.delete(group)
       end
-      render :partial => 'autocomplete_groups'
     end
+    render :partial => 'autocomplete_groups'
+   end
   
 
   # GET /groups

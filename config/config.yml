@@ -1,20 +1,34 @@
 #this file is used as global configuration file
 defaults: &defaults
-  authentication_method: ldap #ldap, openid
+  authentication_method: ldap-stub #ldap, ldap-stub, openid
   #ldap means that wiki will be accessible only for users having ldap accound
+  #ldap-stub is ussualy used in develeopment enviroment (usernam==pasword)
   #openid means that wiki will be accessible only for users having openid accound
+  
+  ldap:
+    port: 389
+    host: ldap.stuba.sk
+    base_dn: ou=People,dc=stuba,dc=sk
 
-  #file_types
-  file_default: page_white.png
-  file_pdf: page_white_acrobat.png
-  file_jpg: page_white_picture.png
-  file_png: page_white_picture.png
-  file_txt: page_white_text.png
-  file_doc: page_white_word.png
-  file_ppt: page_white_powerpoint.png
-  file_zip: page_white_zip.png
-  file_xls: page_white_excel.png
-  #end file_types
+  extension_icons:
+    default: page_white.png
+    pdf: page_white_acrobat.png
+    gif: page_white_picture.png
+    jpg: page_white_picture.png
+    jpeg: page_white_picture.png
+    png: page_white_picture.png
+    txt: page_white_text.png
+    doc: page_white_word.png
+    docx: page_white_word.png
+    ppt: page_white_powerpoint.png
+    pptx: page_white_powerpoint.png
+    zip: page_white_zip.png
+    xls: page_white_excel.png
+    xlsx: page_white_excel.png
+    rb: page_white_ruby.png
+    c: page_white_c.png
+    h: page_white_h.png
+    php: page_white_php.png
 
 development:
   <<: *defaults
