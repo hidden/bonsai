@@ -11,24 +11,19 @@ class GroupsController < ApplicationController
   end
 
   def autocomplete_for_user
-    @users = User.all(:conditions => ["username LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'username')
+    @infix = params[:infix]
+    @users = User.all(:conditions => ["name LIKE :infix OR username LIKE :infix", {:infix => "%#{@infix}%"}], :limit => 10, :order => 'username')
     render :partial => 'autocomplete_users'
   end
   
   def autocomplete_for_groups
     @infix = params[:infix]
     groups = Group.all(:joins => {:group_permissions => :user}, :conditions => ["groups.name LIKE :infix OR users.name LIKE :infix OR users.username LIKE :infix", {:infix => "%#{@infix}%"}], :group => :id, :limit => 10)
-    @auto_groups = groups.clone
-    for group in groups
-      users = group.users
-      if (group.is_public? || users.include?(@current_user))
-          else
-            @auto_groups.delete(group)
-      end
+    @auto_groups = groups.select do |group|
+      group.is_public? or group.users.include?(@current_user)      
     end
     render :partial => 'autocomplete_groups'
-   end
-  
+   end  
 
   # GET /groups
   # GET /groups.xml

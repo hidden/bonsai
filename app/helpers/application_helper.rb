@@ -5,7 +5,12 @@ module ApplicationHelper
   end
 
   def highlight(html)
-    return html.gsub(/(<pre class='[a-z0-9-]+)/,'\1;').gsub("<pre class='","<pre class='brush:").gsub(/<.?code>/," ").gsub("<pre ",'<pre ')
+    html.gsub(/(<pre class='[a-z0-9-]+)/,'\1;').gsub("<pre class='","<pre class='brush:").gsub(/<.?code>/," ").gsub("<pre ",'<pre ')
+  end
+
+  def highlight_match(string, infix)
+    # TODO highlight with special characters ján with jan, jan with ján
+    string.gsub(/#{infix}/i, '<strong>\0</strong>')
   end
 
   def login_form

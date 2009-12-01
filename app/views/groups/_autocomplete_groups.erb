@@ -1,7 +1,7 @@
 <ul>
 <% for group in  @auto_groups %>
   <li>
-    <span class="groupname"><%= h(group.name).gsub(/#{@infix}/i, '<strong>\0</strong>') %></span>(
+    <span class="groupname"><%= highlight_match(h(group.name), @infix) %></span>(
     <% infix_users = Array.new %>
     <% users = Array.new %>
     <% for user in group.users %>
@@ -13,9 +13,9 @@
         <% end %>
     <% end %>
     <% for user in infix_users %>
-        <%= user.username.gsub(/#{@infix}/i, '<strong>\0</strong>')%>(<%= user.name.gsub(/#{@infix}/i, '<strong>\0</strong>')%>)<% if infix_users.length < 3 && users.length > 0 %>,<% end %>
+        <%= highlight_match(h(user.username), @infix) %>(<%= highlight_match(h(user.name), @infix)%>)<% if infix_users.length < 3 && users.length > 0 %>,<% end %>
     <% end %>
-    <%= users.first(3 - infix_users.length).collect(&:username).join(', ').gsub(@infix, "<strong>#{@infix}</strong>") %>
+    <%= highlight_match(h(users.first(3 - infix_users.length).collect(&:username).join(', ')), @infix) %>
     <% if (group.users.length > 3) %>&hellip;<% end %>)
   </li>
 <% end %>
