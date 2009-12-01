@@ -17,9 +17,9 @@ class GroupsController < ApplicationController
   
   def autocomplete_for_groups
     @infix = params[:infix]
-    @groups = Group.all(:conditions => ["name LIKE ?", "%#{@infix}%"], :limit => 10, :order => 'name')
-    @auto_groups = @groups.clone
-    for group in @groups
+    groups = Group.all(:joins => {:group_permissions => :user}, :conditions => ["groups.name LIKE :infix OR users.name LIKE :infix OR users.username LIKE :infix", {:infix => "%#{@infix}%"}], :group => :id, :limit => 10)
+    @auto_groups = groups.clone
+    for group in groups
       users = group.users
       if (group.is_public? || users.include?(@current_user))
           else

@@ -1,8 +1,22 @@
 <ul>
 <% for group in  @auto_groups %>
   <li>
-     <span class="groupname"><%= h(group.name).gsub(@infix, "<strong>#{@infix}</strong>") %></span>
-     (<%= group.users.first(3).collect(&:name).join(', ') %><% if (group.users.length > 3) %>&hellip;<% end %>)
+    <span class="groupname"><%= h(group.name).gsub(/#{@infix}/i, '<strong>\0</strong>') %></span>(
+    <% infix_users = Array.new %>
+    <% users = Array.new %>
+    <% for user in group.users %>
+        <% if user.username.downcase.include?(@infix.downcase) || user.name.downcase.include?(@infix.downcase) %>
+            <% infix_users << user %>
+            <% if infix_users.length >= 3 then break end %>
+        <% else %>
+            <% users << user %>
+        <% end %>
+    <% end %>
+    <% for user in infix_users %>
+        <%= user.username.gsub(/#{@infix}/i, '<strong>\0</strong>')%>(<%= user.name.gsub(/#{@infix}/i, '<strong>\0</strong>')%>)<% if infix_users.length < 3 && users.length > 0 %>,<% end %>
+    <% end %>
+    <%= users.first(3 - infix_users.length).collect(&:username).join(', ').gsub(@infix, "<strong>#{@infix}</strong>") %>
+    <% if (group.users.length > 3) %>&hellip;<% end %>)
   </li>
 <% end %>
 </ul>
