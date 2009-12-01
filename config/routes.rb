@@ -10,7 +10,7 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   
-  map.connect 'dashboard', :controller => "dashboard"
+  map.connect 'dashboard/:action/:id', :controller => "dashboard"
 
   map.connect 'page/new', :controller => "page", :action => "create"
 

@@ -130,3 +130,15 @@ body {
 .autocomplete .selected {
     background-color: #f0f0f0;
 }
+
+.favorite_table {
+    float:right;
+    margin: 10px;
+    position:relative;
+    right:5%;
+    max-width:30%;
+}
+
+.dashboard_news {
+    max-width:70%;
+}

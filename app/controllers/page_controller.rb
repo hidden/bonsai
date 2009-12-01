@@ -18,7 +18,7 @@ class PageController < ApplicationController
   end
 
   def view
-    unless session[:link_back].nil? then session[:link_back]= nil end
+    #unless session[:link_back].nil? then session[:link_back]= nil end
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     render :action => :view, :layout => layout
@@ -414,6 +414,7 @@ class PageController < ApplicationController
   def load_page
     @path = params[:path]
     @page = Page.find_by_path(@path)
+    unless session[:link_back].nil? then session[:link_back]= nil end
   end
 
   def can_manage_page_check
