@@ -147,7 +147,7 @@ Feature: Secure file uploads
     And I login as "crutch"
     And I go to ;files
     Then I should see "Permission denied."
-  @wip
+  
   Scenario: User tries to reupload existing file
     Given I am not logged in
     And I login as "user"
@@ -158,15 +158,15 @@ Feature: Secure file uploads
     And I press "Upload"
     And I go to /test_file2.txt
     Then I should see "Some text in file."
-    When I go to main page
+    When I go to the main page
     And I logout
     And I login as "bio"
     And I follow "edit"
-    And I attach the file at "test_file.txt2" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
     And I go to /test_file2.txt
     Then I should see "Different text in file."
-    When I go to main page
+    When I go to the main page
     And I follow "files"
     Then I should see "test_file2.txt"
     And I should see "bio"

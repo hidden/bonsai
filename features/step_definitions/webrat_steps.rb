@@ -122,7 +122,7 @@ When /^I attach the file at "(.*)" to "(.*)"$/ do |path, field|
   attach_file(field, File.join(Rails.root, 'features', 'fixtures', path))
 end
 
-Then /^I should see "([^\"]*)"$/ do |text|
+ Then /^I should see "([^\"]*)"$/ do |text|
   body = nil
   if response.body.is_a? Proc
     io = StringIO.new
