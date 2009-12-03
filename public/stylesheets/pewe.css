@@ -221,3 +221,10 @@ ul#history li {
 * html #footer p {
   height: 1%;
 }
+
+img.left {
+    clear: both;
+    float: left;
+    margin-right: 2em;
+    margin-bottom: 2em;
+}
