@@ -401,7 +401,7 @@ class PageController < ApplicationController
     respond_to do |format|
       format.js{
         render :update do |page|
-          page.replace_html 'favourite', image_tag(icon, :id => 'fav_pic', :border => 0, :title => title, :alt => '')
+          page.replace_html 'favorite_pic', image_tag(icon, :id => 'fav_pic', :border => 0, :title => title, :alt => '')
         end
       }
       format.html{

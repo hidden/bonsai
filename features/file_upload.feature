@@ -89,7 +89,7 @@ Feature: Secure file uploads
     And I create "/new_page/" page
     And I go to /new_page/link.txt
     Then I should see "File not found."
-    When I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
+    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     And I go to /new_page/link.txt
@@ -147,20 +147,30 @@ Feature: Secure file uploads
     And I login as "crutch"
     And I go to ;files
     Then I should see "Permission denied."
-
-#  Scenario: User tries to reupload existing file
-#    When I create "/" page
-#    And I follow "edit"
-#    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-#    And I press "Upload"
-#    And I logout
-#    And I login as "Ted"
-#    And I follow "edit"
-#    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-#    And I press "Upload"
-#    Then I should see "File already exists"
-#    When I follow "files"
-#    Then I should see "testuser"
+  @wip
+  Scenario: User tries to reupload existing file
+    Given I am not logged in
+    And I login as "user"
+    And I create "/" page
+    And I go to /test_file2.txt
+    Then I should see "File not found."
+    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I go to /test_file2.txt
+    Then I should see "Some text in file."
+    When I go to main page
+    And I logout
+    And I login as "bio"
+    And I follow "edit"
+    And I attach the file at "test_file.txt2" to "uploaded_file_uploaded_data"
+    And I press "Upload"
+    And I go to /test_file2.txt
+    Then I should see "Different text in file."
+    When I go to main page
+    And I follow "files"
+    Then I should see "test_file2.txt"
+    And I should see "bio"
+    And I should not see "user"
 
   Scenario: User wants to upload file with no ext trough file page
     When I create "/" page

@@ -1,21 +1,23 @@
-<h1>Hi, <%= @current_user.name %></h1>       <%#TODO: i18n%>
-<%#TODO: find page%>
-<table class="favorite_table" id="Favourites">
-  <th>Pages watching: <%= @current_user.favorite_pages.length %></th>
-  <th></th>
+<h1><%= t(:hello) %>, <%= @current_user.name %></h1>
+<table class="favorite_table" id="Favorites">
+  <th><%= t(:pages_watching) %></th>
+  <th><%= @current_user.favorite_pages.length %></th>
   <% for favorite in @current_user.favorite_pages %>
       <tr>
         <td><%= link_to favorite.title, favorite.get_path %></td>
-        <td><%= link_to_remote icon_tag('cancel.png', :border => 0, :title => 'remove from favorites', :alt => ''), {:url => { :controller => "dashboard", :action => "remove_favorite", :id => favorite.id }}, :href => url_for(:controller => "dashboard", :action => "remove_favorite", :id => favorite.id) %></td>
+        <td><%= link_to_remote icon_tag('cancel.png', :border => 0, :title => t(:remove_from_favorites), :alt => ''), {:url => { :controller => "dashboard", :action => "remove_favorite", :id => favorite.id }}, :href => url_for(:controller => "dashboard", :action => "remove_favorite", :id => favorite.id) %></td>
       </tr>
   <% end %>
 </table>
 <div class="dashboard_news">
-  <h2>News</h2>
-  <% for record in @news %>
-      <%= record['who'].capitalize %> edited <%= record['what'] %>
-      at <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-      on <%= record['when'].to_time.localtime.strftime("%H:%M, %d %b %Y") %> <%= link_to "Show revision", Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
-      <br/>
-  <% end %>
-</div>
+  <h2><%= t(:news) %></h2>
+    <% for record in @news %>
+      <div>
+        <%= record['who'].capitalize %> edited <%= record['what'] %>
+        at <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
+        <br/> <%= record['when'].to_time.localtime.strftime("%H:%M, %d %b %Y") %>
+        &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
+        <br/>
+      </div>
+    <% end %>
+    </div>
