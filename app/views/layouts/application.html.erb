@@ -26,10 +26,19 @@
      <%= javascript_include_tag 'SyntaxHighlighter/shBrushPython.js' %>
     <%= javascript_include_tag 'SyntaxHighlighter/shBrushSql.js' %>
     <!-- End Syntax Highlight -->
+    <!-- Start WMD Editor -->
+    <script type="text/javascript">
+        /***** Tell WMD not to start up automatically *****/
+        // Set this *before* you load wmd.js
+        wmd_options = { autostart: false };
+    </script>
+    <%= javascript_include_tag 'wmd_creator.js' %>
+    <%= javascript_include_tag 'wmd.js' %>
+    <!-- End WMD Editor -->
     <%= javascript_include_tag :defaults, :cache => true %>
     <%= render :partial => 'shared/rss_link' %>
   </head>
-  <body>
+  <body onLoad="javascript:findTextareasAndCreateEditor()">
     <%= render :partial => 'shared/toolbar' %>
     <div id="holder">
     <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>

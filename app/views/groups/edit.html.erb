@@ -47,7 +47,7 @@
   <div id="autocomplete" style="display: none;" class="autocomplete"></div>
   <script type="text/javascript">
   //<![CDATA[
-  var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '/groups/autocomplete_for_user', {paramName: 'prefix', method: 'get', select: 'username', tokens: ','});
+  var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '/groups/autocomplete_for_user', {paramName: 'infix', method: 'get', select: 'username', tokens: ','});
   //]]>
 </script>
 <% end %>

@@ -11,24 +11,19 @@ class GroupsController < ApplicationController
   end
 
   def autocomplete_for_user
-    @users = User.all(:conditions => ["username LIKE ?", "#{params[:prefix]}%"], :limit => 10, :order => 'username')
+    @infix = params[:infix]
+    @users = User.all(:conditions => ["name LIKE :infix OR username LIKE :infix", {:infix => "%#{@infix}%"}], :limit => 10, :order => 'username')
     render :partial => 'autocomplete_users'
   end
   
   def autocomplete_for_groups
     @infix = params[:infix]
-    @groups = Group.all(:conditions => ["name LIKE ?", "%#{@infix}%"], :limit => 10, :order => 'name')
-    @auto_groups = @groups.clone
-    for group in @groups
-      users = group.users
-      if (group.is_public? || users.include?(@current_user))
-          else
-            @auto_groups.delete(group)
-      end
+    groups = Group.all(:joins => {:group_permissions => :user}, :conditions => ["groups.name LIKE :infix OR users.name LIKE :infix OR users.username LIKE :infix", {:infix => "%#{@infix}%"}], :group => :id, :limit => 10)
+    @auto_groups = groups.select do |group|
+      group.is_public? or group.users.include?(@current_user)      
     end
     render :partial => 'autocomplete_groups'
-   end
-  
+   end  
 
   # GET /groups
   # GET /groups.xml
@@ -42,10 +37,10 @@ class GroupsController < ApplicationController
     #uniq! removes duplicate elements from self but returns nil if no changes are made (that is, no duplicates are found).
     #@groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups
 
-    stmnt =  "SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users on users.name = groups.name where user_id = ??? and users.id is null"
+    stmnt =  "SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users on users.username = groups.name where user_id = ??? and users.id is null"
     stmnt["???"] = @current_user.id.to_s()
     visible_for_user = Group.find_by_sql(stmnt)
-    public =  Group.find_by_sql("SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users ON users.name = groups.name WHERE ((group_permissions.can_view = 0 OR group_permissions.can_view = NULL) AND users.id is null) ")
+    public =  Group.find_by_sql("SELECT group_permissions.group_id as id, groups.name  FROM group_permissions JOIN groups on group_permissions.group_id = groups.id LEFT JOIN users ON users.username = groups.name WHERE ((group_permissions.can_view = 0 OR group_permissions.can_view = NULL) AND users.id is null) ")
     @groups = visible_for_user + public
     @groups = @groups.uniq!.nil? ? (visible_for_user + public):@groups
 
