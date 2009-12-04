@@ -15,3 +15,5 @@ en:
     group_updated: "Group was successfully updated."
     user_not_found: "Username not found!"
     no_files_selected: "No file selected."
+    page_updated_with_new_revisions: "Page successfully updated, but other user made another revision during your editing."
+    page_is_editing: "This page part is currently edited by another user. Do you want to continue?"     

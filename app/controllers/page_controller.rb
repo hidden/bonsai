@@ -1,5 +1,5 @@
 class PageController < ApplicationController
-  before_filter :load_page
+  before_filter :load_page, :except => [:add_lock, :update_locked]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   prepend_before_filter :slash_check, :only => [:view]
@@ -264,18 +264,30 @@ class PageController < ApplicationController
   end
 
   def update
+    @num_of_changed_page_parts = 0
     @page.title = params[:title]
     if @current_user.can_manage_page? @page
       @page.layout = params[:layout].empty? ? nil : params[:layout]
     end
+
     @page.save
     params[:parts].each do |part_name, body|
+
       page_part = PagePart.find_by_name_and_page_id(part_name, @page.id)
+      PagePartLock.delete_lock(page_part.id, @current_user)
       new_part_name = params["parts_name"][part_name]
+
       edited_revision_id = params["parts_revision"][part_name]
       delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
+
       edited_revision = page_part.page_part_revisions.find(:first, :conditions => {:id => edited_revision_id})
-      # TODO edit conflict if page_part.current_page_part_revision != edited_revision      
+
+      #for each page_part we check if there was not created newer revision
+      newest_revisions = page_part.page_part_revisions.first(:conditions => {:page_part_id => page_part.id})
+
+      if (newest_revisions.id > edited_revision_id.to_i)
+        @num_of_changed_page_parts += 1
+      end
 
       # update if part name changed
       if new_part_name != part_name
@@ -304,7 +316,12 @@ class PageController < ApplicationController
         page_part.save!
       end
     end
-    flash[:notice] = t(:page_updated)
+    
+    if @num_of_changed_page_parts > 0 then
+      flash[:notice] = t(:page_updated_with_new_revisions)
+    else
+      flash[:notice] = t(:page_updated)
+    end
     redirect_to @page.get_path
   end
 
@@ -375,6 +392,26 @@ class PageController < ApplicationController
   def files
     render :action => :files
   end
+
+
+  def add_lock
+   @add_part_id = params[:part_id]
+   @add_part_name = PagePart.find(@add_part_id).name
+   @editedbyanother = PagePartLock.check_lock?(@add_part_id, @current_user)
+   if !@editedbyanother then
+      PagePartLock.create_lock(@add_part_id, @current_user)
+   end
+
+  end
+
+  def update_lock
+   @up_part_id = params[:part_id]
+   PagePartLock.create_lock(@up_part_id, @current_user)
+  end
+
+
+
+
 
   private
   def load_page

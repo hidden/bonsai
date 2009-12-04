@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :group_permissions, :dependent => :destroy
   has_many :groups, :through => :group_permissions
+  has_many :page_part_locks
 
   has_many :visible_groups, :through => :group_permissions, :class_name => 'Group', :source => :group, :conditions => ['group_permissions.can_view = ?', true]
 

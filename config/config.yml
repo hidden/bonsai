@@ -10,6 +10,8 @@ defaults: &defaults
     host: ldap.stuba.sk
     base_dn: ou=People,dc=stuba,dc=sk
 
+  lock_timeout: 30
+
   extension_icons:
     default: page_white.png
     pdf: page_white_acrobat.png
@@ -29,6 +31,10 @@ defaults: &defaults
     c: page_white_c.png
     h: page_white_h.png
     php: page_white_php.png
+
+  page_part:
+    saving_time: 5
+
 
 development:
   <<: *defaults

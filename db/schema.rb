@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091114152258) do
+ActiveRecord::Schema.define(:version => 20091126123907) do
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -35,6 +35,13 @@ ActiveRecord::Schema.define(:version => 20091114152258) do
     t.integer "timestamp",  :null => false
     t.string  "server_url"
     t.string  "salt",       :null => false
+  end
+
+  create_table "page_part_locks", :force => true do |t|
+    t.integer  "part_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "page_part_revisions", :force => true do |t|

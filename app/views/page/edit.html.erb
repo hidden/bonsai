@@ -1,5 +1,41 @@
 <div class="bonsai">
-  <% form_tag update_page_path(@page) do %>
+  <script type="text/javascript">
+
+    var current_parts = new Array(<%= @page.page_parts.count %>);
+    function lost_focus(){
+       document.forms[0].elements["title"].focus();
+    }
+    
+    function set_focus(part_name){
+          document.forms[0].elements["parts["+part_name+"]"].focus();
+    }
+
+    function show_confirm(is_edited_by_another, part_id, part_name){
+        if(is_edited_by_another && (!check_lock(part_id))){
+            lost_focus();
+            if(confirm('<%= t(:page_is_editing) %>')){
+                add_lock(part_id);
+                set_focus(part_name);
+            } else{
+                lost_focus();
+                return false;
+            }
+        } else{
+            add_lock(part_id);
+        }
+    }
+
+    function add_lock(part_id){
+        current_parts.push(part_id);
+    }
+    
+    function check_lock(part_id){
+       return (current_parts.indexOf(part_id) != -1);
+    }
+  </script>
+
+  <%
+     form_tag update_page_path(@page) do %>
     <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
     <% if @current_user.can_manage_page? @page %>
       <p><%= label_tag t(:layout) %><br /><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
@@ -9,11 +45,26 @@
       <p><%= link_to part.name, nil, :onclick => "return toggleDiv(event);" %></p>
       <div<%= ' style="display:none;"' unless part.name == 'body' %>>
         <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
+
         <% if part == @page_part %>
           <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => 80 %>
-        <% else %>          
-          <%= text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80 %>
+        <% else %>
+            <%=
+                text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80,
+                              :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock" , :part_id => part.id}
+                            )
+            %>
+             <%= periodically_call_remote(
+                :url => {:controller => 'page', :action => 'update_lock', :part_id => part.id},
+                :frequency => APP_CONFIG['page_part']['saving_time'],
+                :condition => "(check_lock('#{part.id}') == true)"
+            )
+            %>
+
         <% end %>
+
+
+
         <%= render :partial => 'maruku_help' %>
         <p>
           <%= t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
