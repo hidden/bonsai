@@ -3,6 +3,7 @@ en:
   changes_for_page: "Changes for page:"
   btn_compare: "compare selected versions"
   edited: "edited "
+  at: "at"
   revert: "Revert to revision"
   show_from: "Show page from revision"
   no_parent: "Parent page does not exists."
@@ -80,3 +81,5 @@ en:
   remove_from_favorites: "remove from favorites"
   add_to_favorites: "add to favorites"
   news: "Last changes"
+  befor_date: ""
+  after_date: " ago"

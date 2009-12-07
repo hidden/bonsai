@@ -124,7 +124,6 @@ body {
     margin: 0;
     padding: 5px;
     cursor: pointer;
-    cursor: hand;
 }
 
 .autocomplete .selected {
@@ -132,6 +131,7 @@ body {
 }
 
 .favorite_table {
+    border-collapse:collapse;
     float:right;
     margin: 10px;
     position:relative;
@@ -139,9 +139,21 @@ body {
     max-width:30%;
 }
 
+.favorite_table th{
+    background-color: white;
+}
+
+.favorite_table tr:hover{
+    background-color: #f0f0f0;
+}
+
 .dashboard_news {
     max-width:70%;
 }
 .dashboard_news div {
    margin: 0 0 20px 10px;
+}
+
+.DashboardTree #user, #time {
+    font-weight:bold;    
 }

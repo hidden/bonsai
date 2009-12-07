@@ -79,14 +79,14 @@ sk:
         distance_in_words:
             half_a_minute: 'pol minutou'
             less_than_x_seconds:
-                one: 'asi pred sekundou'
-                other: 'asi pred {{count}} sekundami'
+                one: 'asi sekundou'
+                other: 'asi {{count}} sekundami'
             x_seconds:
                 one: 'sekundou'
                 other: '{{count}} sekundami'
             less_than_x_minutes:
-                one: 'pred necelou minútou'
-                other: 'pred ani nie {{count}} minútami'
+                one: 'necelou minútou'
+                other: 'ani nie {{count}} minútami'
             x_minutes:
                 one: 'minútou'
                 other: '{{count}} minútami'
@@ -106,7 +106,7 @@ sk:
                 one: 'asi rokom'
                 other: 'asi {{count}} rokmi'
             over_x_years:
-                one: 'pred viac ako rokom'
+                one: 'viac ako rokom'
                 other: 'viac ako {{count}} rokmi'
 
     # ActiveRecord validation messages

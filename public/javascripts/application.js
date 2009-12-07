@@ -1,7 +1,7 @@
 function initialize() {
     // find flash and hide it after to 10 seconds
     var flash = $('flash');
-    if(flash != null) {
+    if (flash != null) {
         Effect.Fade.delay(5, 'flash');
     }
 }
@@ -16,22 +16,30 @@ function toggleDiv(event) {
     return false;
 }
 
-function toggleTreeElement(Li,evt){
+function toggleTreeElement(Li, evt, child) {
 
-if(evt.stopPropagation) {evt.stopPropagation();}
-evt.cancelBubble = true;
+    child = (typeof child == 'undefined') ? 1 : child;
 
-if(Li.className=="Expanded"){
-  Li.className="Collapsed";
-}else{
-  Li.className="Expanded";
+
+    if (evt.stopPropagation) {
+        evt.stopPropagation();
+    }
+    evt.cancelBubble = true;
+
+    if (Li.className == "Expanded") {
+        Li.className = "Collapsed";
+    } else {
+        Li.className = "Expanded";
+    }
+    Element.toggle(Li.children[child]);
 }
-  Element.toggle(Li.children[1]);
-}
 
-function link_visible(element,show){
+function link_visible(element, show) {
     element.children[0].style.display = show;
 }
 
+function visible_remove_favorite(element, show) {
+    element.children[1].firstChild.style.visibility = show;
+}
 
 Event.observe(window, 'load', initialize);
