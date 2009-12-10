@@ -17,17 +17,11 @@ class UsersController < ApplicationController
   end
 
   def save_locale
-    @ignore_header = true
     I18n.locale = params[:locale]
-    if (@current_user.nil? || @current_user.instance_of?(AnonymousUser))
-      session[:locale] = params[:locale]
-      session[:ignore]= true
-    else
-      @current_user.prefered_locale = params[:locale]
-      @current_user.save!
-    end
-    flash[:notice] = t(:set_language)
-    redirect_to "/"
+    @current_user.prefered_locale = params[:locale]
+    @current_user.save if @current_user.respond_to? :save
+    flash[:notice] = translate(:set_language)
+    redirect_to :back
   end
 
   private

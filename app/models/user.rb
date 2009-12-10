@@ -49,6 +49,10 @@ class User < ActiveRecord::Base
 end
 
 class AnonymousUser
+  def initialize(session)
+    @session = session
+  end
+
   def logged?
     false
   end
@@ -67,5 +71,13 @@ class AnonymousUser
 
   def token
     nil
+  end
+
+  def prefered_locale
+    @session[:locale]
+  end
+
+  def prefered_locale=(locale)
+    @session[:locale] = locale
   end
 end

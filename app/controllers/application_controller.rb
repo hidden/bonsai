@@ -16,34 +16,22 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
 
   before_filter :set_user
+  before_filter :set_locale
 
   def set_user
     if session[:user_id].nil? and not cookies[:token].nil?
      user_from_token = User.find_by_token(cookies[:token])
      session[:user_id] = user_from_token.id unless user_from_token.nil?
     end
-    @current_user = session[:user_id].nil? ? AnonymousUser.new : User.find(session[:user_id])
+    @current_user = session[:user_id].nil? ? AnonymousUser.new(session) : User.find(session[:user_id])
   end
 
-  before_filter :set_locale
-   def set_locale
-      session[:ignore].nil? ? @ignore_header = false : @ignore_header = session[:ignore]
-      if @current_user.nil? || @current_user.instance_of?(AnonymousUser) #anonymous user, locale from session or browser settings
-        if !session[:locale].nil?
-          I18n.locale = session[:locale]
-        else
-          set_locale_from_header
-        end
-      else  #logged user, locale from DB or browser settings
-        if @current_user.prefered_locale.nil?
-           set_locale_from_header
-        else
-          I18n.locale = @current_user.prefered_locale
-       end
-      end
-     end
+  def set_locale
+    I18n.locale = @current_user.prefered_locale.nil? ? get_locale_from_header : @current_user.prefered_locale
+  end
+
   private
-    def set_locale_from_header
-      request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first unless request.env['HTTP_ACCEPT_LANGUAGE'].nil?
-    end 
+  def get_locale_from_header
+    request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first unless request.env['HTTP_ACCEPT_LANGUAGE'].nil?
+  end
 end
