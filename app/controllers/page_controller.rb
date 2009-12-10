@@ -9,7 +9,7 @@ class PageController < ApplicationController
 
   def rss
     user_from_token = User.find_by_token params[:token]
-    user_from_token = AnonymousUser.new if user_from_token.nil?
+    user_from_token = AnonymousUser.new(session) if user_from_token.nil?
     if user_from_token.can_view_page? @page
       rss_history
     else
@@ -254,9 +254,9 @@ class PageController < ApplicationController
         retVal = group.is_public?
         retValUsers = users.include?(@current_user)
         if (retVal || retValUsers)
-          @page.add_viewer group if params[:can_view]
-          @page.add_editor group if params[:can_edit]
-          @page.add_manager group if params[:can_manage]
+          @page.add_viewer group if params[:group_role][:type] == 'viewer'
+          @page.add_editor group if params[:group_role][:type] == 'editor'
+          @page.add_manager group if params[:group_role][:type] == 'manager'
         end
       end
     end

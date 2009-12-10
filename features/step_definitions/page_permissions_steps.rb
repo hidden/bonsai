@@ -3,7 +3,7 @@ When /^I add "([^"]*)" reader permission$/ do |user|
   visit path_to('/')
   click_link('Manage')
   fill_in('add_group', :with => user)
-  check('can_view')
+  select('viewer', :from => 'group_role_type')
   click_button('Set')
 end
 
@@ -12,7 +12,7 @@ When /^I add "([^"]*)" editor permission$/ do |user|
   visit path_to('/')
   click_link('Manage')
   fill_in('add_group', :with => user)
-  check('can_edit')
+  select('editor', :from => 'group_role_type')
   click_button('Set')
 end
 
@@ -20,7 +20,7 @@ When /^I add "([^"]*)" manager permission$/ do |user|
   visit path_to('/')
   click_link('Manage')
   fill_in('add_group', :with => user)
-  check('can_manage')
+  select('manager', :from => 'group_role_type')
   click_button('Set')
 end
 

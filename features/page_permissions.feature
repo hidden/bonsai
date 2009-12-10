@@ -88,10 +88,11 @@ Feature: Secure wiki
     And user "crutch" exists
     And I am logged in
     When I create "/" page
-    And I follow "Manage"
-    And I fill in "add_group" with "matell"
+    #And I follow "Manage"
+    #And I fill in "add_group" with "matell"
     #And I select "matell" from "groups_id"
-    And I check "can_view"
+    #And I check "can_view"
+    And I add "matell" reader permission
     And I press "Set"
     And I go to the main page
     Then I should not see "Permission denied."
