@@ -25,6 +25,8 @@
           <% if @current_user.can_edit_page? @page %><%= link_to icon_tag('page_white_link.png', :alt => '') + " " + t(:files), list_files_path(@page) %><% end %>
           <% if @current_user.can_view_page? @page %><%= link_to icon_tag('view_design_summary.png', :alt => '') + " " + t(:summary), summary_page_path(@page) %><% end %>
           <% if @current_user.can_view_page? @page %><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %><% end %>
+          <% if I18n.locale == "en" %><%= link_to icon_tag('sk.png', :alt => 'SK'), change_locale('sk') %>
+          <% else %><%= link_to icon_tag('en.png', :alt => 'EN'), change_locale('en') %><% end %>
         </span>
       </p>
   <% end %>

@@ -26,17 +26,24 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :set_locale
-    def set_locale
-      logger.debug "* Accept-Language: #{request.env['HTTP_ACCEPT_LANGUAGE']}"
-      if(extract_locale_from_accept_language_header == "sk" || extract_locale_from_accept_language_header == "en")
-          I18n.locale = extract_locale_from_accept_language_header
-      else
-        I18n.locale = :en
+   def set_locale
+      session[:ignore].nil? ? @ignore_header = false : @ignore_header = session[:ignore]
+      if @current_user.nil? || @current_user.instance_of?(AnonymousUser) #anonymous user, locale from session or browser settings
+        if !session[:locale].nil?
+          I18n.locale = session[:locale]
+        else
+          set_locale_from_header
+        end
+      else  #logged user, locale from DB or browser settings
+        if @current_user.prefered_locale.nil?
+           set_locale_from_header
+        else
+          I18n.locale = @current_user.prefered_locale
+       end
       end
-      logger.debug "* Locale set to '#{I18n.locale}'"
-    end
+     end
   private
-    def extract_locale_from_accept_language_header
+    def set_locale_from_header
       request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first unless request.env['HTTP_ACCEPT_LANGUAGE'].nil?
     end 
 end
