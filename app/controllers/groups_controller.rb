@@ -33,6 +33,9 @@ class GroupsController < ApplicationController
       redirect_to groups_path
       return
     end
+    if @current_user.instance_of?(AnonymousUser)
+      return render(:template => 'page/unprivileged')
+    end
     #@groups = @current_user.visible_groups + Group.groups_visible_for_all
     #uniq! removes duplicate elements from self but returns nil if no changes are made (that is, no duplicates are found).
     #@groups = @groups.uniq!.nil? ? (@current_user.visible_groups + Group.groups_visible_for_all):@groups

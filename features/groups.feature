@@ -115,3 +115,8 @@ Feature: Wiki
     Then I should see "New group"
     And I should not see "jozo"
     And I should not see "jano"
+
+  Scenario: Anonymous user should not be able to visit Groups Management
+    When I logout
+    And I go to /groups
+    Then I should see "Permission denied"
