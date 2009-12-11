@@ -17,7 +17,7 @@ class Page < ActiveRecord::Base
                       left join (
                       select page_id,
                              count(can_view) sum_can_view,
-                             count(can_edit) sum_can_edit
+                             count(can_edit) sum_can_edit 
                       from page_permissions group by page_id) w on w.page_id=p.id
                       left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
                       left join groups q
