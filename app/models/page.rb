@@ -16,9 +16,9 @@ class Page < ActiveRecord::Base
     Page.find_by_sql("SELECT  p.* FROM pages p
                       left join (
                       select page_id,
-                             sum(can_view) sum_can_view,
-                             sum(can_edit) sum_can_edit
-                       from page_permissions group by page_id) w on w.page_id=p.id
+                             count(can_view) sum_can_view,
+                             count(can_edit) sum_can_edit
+                      from page_permissions group by page_id) w on w.page_id=p.id
                       left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
                       left join groups q
                       ON q.id = a.group_id and q.name='#{user}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
