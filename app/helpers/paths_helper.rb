@@ -1,6 +1,6 @@
 module PathsHelper
   def login_path
-    url_for :controller => 'users', :action => 'login'
+    url_for :controller => 'users', :action => 'login', :only_path => false, :protocol => 'https'
   end
 
   def logout_path

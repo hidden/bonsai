@@ -4,6 +4,7 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   include PathsHelper # include paths as controller methods
+  include SslRequirement #include for https authentification
   filter_parameter_logging :password
 
   # See ActionController::RequestForgeryProtection for details
@@ -14,6 +15,10 @@ class ApplicationController < ActionController::Base
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
+
+  def ssl_required?
+    	(APP_CONFIG['https_auth'] == 'enabled' and !session[:user_id].nil?)
+  end
 
   before_filter :set_user
   before_filter :set_locale

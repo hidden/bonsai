@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+
+    ssl_allowed :login
+
   def login
     session[:return_to] = request.referer if params[:commit]
     if APP_CONFIG['authentication_method'] == 'openid' then
