@@ -42,5 +42,8 @@ development:
 test:
   <<: *defaults
 
+cucumber:
+  <<: *defaults
+
 production:
   <<: *defaults

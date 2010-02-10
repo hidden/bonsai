@@ -15,6 +15,9 @@ test: &TEST
   username: bonsai
   password: bonsai
   host: localhost
+
+cucumber:
+  <<: *TEST
   
 production:
   adapter: mysql

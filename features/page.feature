@@ -47,7 +47,7 @@ Feature: Wiki
     And I follow "Some title"
     And I follow "Summary"
     And I should see "Subpages for page: Some title" within "body"
-    And I should see "   Some title" within "body"
+    And I should see " Some title" within "body"
     And I should see "Some title1" within "body"
     And I should see "Some title2" within "body"
     Then I should see "Some title3" within "body"
