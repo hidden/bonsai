@@ -67,11 +67,6 @@ class PageController < ApplicationController
     render :action => 'diff'
   end
 
-  def pagesib
-    @user_name = @current_user.logged? ? @current_user.username : 'nil';
-    render :action => 'page_siblings'
-  end
-
   def revision
     @page = PageAtRevision.find_by_path(@path)
 
