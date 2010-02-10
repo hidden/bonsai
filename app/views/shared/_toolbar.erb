@@ -6,27 +6,21 @@
   <% end %>
   <% unless @page.nil? || @no_toolbar %>
       <p>
-        <span class="favorite">
-          <% if @current_user.logged? and @hide_view_in_toolbar %>
-              <% unless @current_user.favorite_pages.include?(@page) %>
-                  <%= link_to_remote "<span id='favorite_pic'>" + icon_tag('watched_n.gif', :id => 'fav_pic', :border => 0, :title => t(:add_to_favorites), :alt => '') + "</span>", {:url => { :controller => "page", :action => "toggle_favorite"}}, :href => url_for(:controller => "page", :action => "toggle_favorite") %>
-              <% else %>
-                  <%= link_to_remote "<span id='favorite_pic'>" + icon_tag('watched_y.gif', :id => 'fav_pic', :border => 0, :title => t(:remove_from_favorites), :alt => '') + "</span>", {:url => { :controller => "page", :action => "toggle_favorite"}}, :href => url_for(:controller => "page", :action => "toggle_favorite") %>
-              <% end %>
-          <% end %>
-        </span>
         <span class="actions">
-          <% unless @hide_view_in_toolbar %><%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t(:view), @page.get_path %><% end %>
+          <% unless @hide_view_in_toolbar %>
+              <%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t(:view), @page.get_path %>
+          <% end %>
+          <% if @current_user.logged? %><%= render :partial => 'shared/favorite' %><% end %>
           <% if @current_user.logged? %><%= link_to image_tag('icons/user.png', :alt => '') + " " + t(:dashboard), dashboard_page_path(@page) %><% end %>
           <% if @current_user.can_view_page? @page %><%= link_to icon_tag('page_white_stack.png', :alt => '') + " " + t(:history), page_history_path(@page) %><% end %>
           <% if @current_user.can_edit_page? @page %><%= link_to icon_tag('page_white_edit.png', :alt => '') + " " + t(:edit), edit_page_path(@page) %><% end %>
-          <% if @current_user.can_manage_page? @page %><%= link_to icon_tag('page_white_key.png', :alt => '') + " " + t(:manage),  manage_page_path(@page) %><% end %>
+          <% if @current_user.can_manage_page? @page %><%= link_to icon_tag('page_white_key.png', :alt => '') + " " + t(:manage), manage_page_path(@page) %><% end %>
           <% if @current_user.logged? %><%= link_to icon_tag('group.png', :alt => '') + " " + t(:groups), groups_page_path(@page) %><% end %>
           <% if @current_user.can_edit_page? @page %><%= link_to icon_tag('page_white_link.png', :alt => '') + " " + t(:files), list_files_path(@page) %><% end %>
           <% if @current_user.can_view_page? @page %><%= link_to icon_tag('view_design_summary.png', :alt => '') + " " + t(:summary), summary_page_path(@page) %><% end %>
           <% if @current_user.can_view_page? @page %><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %><% end %>
-          <% if I18n.locale == "en" %><%= link_to icon_tag('sk.png', :alt => 'SK'), change_locale('sk') %>
-          <% else %><%= link_to icon_tag('en.png', :alt => 'EN'), change_locale('en') %><% end %>
+          <% if I18n.locale == "en" %><%= link_to icon_tag('sk.png', :alt => 'SK'), change_locale_path('sk') %>
+              <% else %><%= link_to icon_tag('en.png', :alt => 'EN'), change_locale_path('en') %><% end %>
         </span>
       </p>
   <% end %>
@@ -34,6 +28,6 @@
       <p class="actions">
         <%= link_to icon_tag('arrow_left.png') + " " + t(:return), session[:link_back] %>
       </p>
-    <% end %>  
+  <% end %>
 </div>
 

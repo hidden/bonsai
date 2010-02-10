@@ -32,7 +32,7 @@ body {
     color: white;
 }
 
-#toolbar .favorite a {
+#toolbar #favorite a {
     margin-right: 1em;
     padding: 5px;
     text-decoration: none;

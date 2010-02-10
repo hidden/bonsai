@@ -1,10 +1,18 @@
 module PathsHelper
   def login_path
-    url_for :controller => 'users', :action => 'login', :only_path => false, :protocol => 'https'
+    if APP_CONFIG['force_https']
+      url_for :controller => 'users', :action => 'login', :only_path => false, :protocol => 'https'
+    else
+      url_for :controller => 'users', :action => 'login'            
+    end
   end
 
   def logout_path
     url_for :controller => 'users', :action => 'logout'
+  end
+
+  def toggle_favorite_page_path(page)
+    url_for :controller => "page", :action => "toggle_favorite"
   end
 
   def edit_page_path(page)
@@ -44,7 +52,7 @@ module PathsHelper
   end
 
   def switch_editable(page)
-    "#{@page.get_path};switch_editable"
+    "#{page.get_path};switch_editable"
   end
 
   def view_page_path(page)

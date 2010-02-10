@@ -1,7 +1,7 @@
 #this file is used as global configuration file
 defaults: &defaults
-  https_auth: disabled #true for enabled https authentification [enabled/disabled]
-  authentication_method: ldap-stub #ldap, ldap-stub, openid
+  use_https: false # true for enabled https authentification [enabled/disabled]
+  authentication_method: ldap-stub # ldap, ldap-stub, openid
   #ldap means that wiki will be accessible only for users having ldap accound
   #ldap-stub is ussualy used in develeopment enviroment (usernam==pasword)
   #openid means that wiki will be accessible only for users having openid accound

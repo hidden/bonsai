@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_many :favorite_pages, :through => :favorites, :class_name => 'Page', :source => :page
 
   before_create { |user| user.generate_unique_token }
-  after_create { |user| Group.create(:name => user.username).add_as_non_viewer(user) }
+  after_create { |user| Group.create(:name => user.username, :usergroup => true).add_as_non_viewer(user) }
   after_destroy { |user| user.private_group.destroy }
 
   def full_name
@@ -45,39 +45,5 @@ class User < ActiveRecord::Base
 
   def logged?
     true
-  end
-end
-
-class AnonymousUser
-  def initialize(session)
-    @session = session
-  end
-
-  def logged?
-    false
-  end
-
-  def can_view_page? page
-    return page.is_public?
-  end
-
-  def can_edit_page? page
-    false
-  end
-
-  def can_manage_page? page
-    false
-  end
-
-  def token
-    nil
-  end
-
-  def prefered_locale
-    @session[:locale]
-  end
-
-  def prefered_locale=(locale)
-    @session[:locale] = locale
   end
 end

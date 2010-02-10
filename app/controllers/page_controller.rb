@@ -407,23 +407,17 @@ class PageController < ApplicationController
     active = @current_user.favorite_pages.include?(@page)
     if active
       @current_user.favorite_pages.delete(@page)
-      icon = 'icons/watched_n.gif'
-      title = 'add to favorites'
     else
       @current_user.favorites.create(:page => @page)
-      icon = 'icons/watched_y.gif'
-      title = 'remove from favorites'
     end
 
     respond_to do |format|
-      format.js{
+      format.js do
         render :update do |page|
-          page.replace_html 'favorite_pic', image_tag(icon, :id => 'fav_pic', :border => 0, :title => title, :alt => '')
+          page.replace_html 'favorite', :partial => 'shared/favorite'
         end
-      }
-      format.html{
-        redirect_to @page.get_path
-      }
+      end
+      format.html { redirect_to @page.get_path }
     end
   end
 

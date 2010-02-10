@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
 
   def ssl_required?
-    (APP_CONFIG['https_auth'] == 'enabled' and !session[:user_id].nil?)
+    (APP_CONFIG['use_https'] and !session[:user_id].nil?)
   end
 
   before_filter :set_user
