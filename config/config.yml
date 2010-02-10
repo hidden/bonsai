@@ -47,3 +47,5 @@ cucumber:
 
 production:
   <<: *defaults
+  use_https: true
+  authentication_method: ldap 
