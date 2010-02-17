@@ -228,3 +228,7 @@ img.left {
     margin-right: 2em;
     margin-bottom: 2em;
 }
+
+#content h3 {
+    clear: both;
+}
