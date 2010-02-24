@@ -143,6 +143,18 @@ class PageController < ApplicationController
     redirect_to manage_page_path(@page)
   end
 
+  def determine_content_type(filename)
+    extension=filename.split('.').last.downcase
+    mime_mappings = {
+      "jpg" => "image/jpeg",
+      "jpeg" => "image/jpeg",
+      "gif" => "image/gif",
+      "png" => "image/png",
+      "bmp" => "image/bmp",
+    }
+    return mime_mappings[extension].nil? ? "application/"+ extension : mime_mappings[extension]
+    end
+  
   def process_file
     @no_toolbar = true
     file_name = 'shared/upload/' + @path.join('/')
@@ -156,7 +168,7 @@ class PageController < ApplicationController
     return render(:action => :file_not_found) unless File.file?(file_name)
 
     if @current_user.can_view_page? @page
-      return send_file(file_name)
+      return send_file(file_name,:type => determine_content_type(file_name),:disposition => 'inline')
     else
       return render(:action => :unprivileged)
     end
