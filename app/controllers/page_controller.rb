@@ -1,11 +1,15 @@
 class PageController < ApplicationController
-  before_filter :load_page, :except => [:add_lock, :update_lock]
+  before_filter :load_page, :except => [:add_lock, :update_locked, :search]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :is_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
+
+  def search
+    @search_results = Page.search params[:search]
+  end
 
   def rss
     user_from_token = User.find_by_token params[:token]

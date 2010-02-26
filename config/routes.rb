@@ -16,6 +16,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.page '*path;:action', :controller => "page"
 
+  map.search 'search', :controller => 'page', :action => 'search'
+
   map.connect 'users/:action', :controller => "users"
 
 

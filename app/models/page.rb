@@ -13,7 +13,12 @@ class Page < ActiveRecord::Base
   has_many :uploaded_files, :dependent => :destroy
   has_many :file_versions, :through => :uploaded_files
 
-  def get_children_tree page, user
+  define_index do
+    indexes page_parts_revisions.body, :as => :page_part
+    #TODO: add more fields, sort, permitions
+  end
+
+  def get_children_tree page,user
     Page.find_by_sql("SELECT  p.* FROM pages p
                       left join (
                       select page_id,

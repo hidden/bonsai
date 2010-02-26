@@ -12,6 +12,8 @@ defaults: &defaults
 
   lock_timeout: 30
 
+  fulltext_search: true #Sphinx is needed
+
   extension_icons:
     default: page_white.png
     pdf: page_white_acrobat.png
