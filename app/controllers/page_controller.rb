@@ -11,6 +11,11 @@ class PageController < ApplicationController
     @search_results = Page.search params[:search], :page => params[:page], :per_page => APP_CONFIG['fulltext_page_results']
   end
 
+
+  def search
+    @search_results = Page.search params[:search], :per_page => APP_CONFIG['fulltext_page_results']
+  end
+
   def rss
     user_from_token = User.find_by_token params[:token]
     user_from_token = AnonymousUser.new(session) if user_from_token.nil?

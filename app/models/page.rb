@@ -19,6 +19,12 @@ class Page < ActiveRecord::Base
     indexes pages.title, :as => :page_title
   end
 
+  define_index do
+    indexes page_parts_revisions.body, :as => :page_part_body
+    indexes page_parts.name, :as => :page_part_name
+    indexes pages.title, :as => :page_title
+  end
+
   def get_children_tree page,user
     Page.find_by_sql("SELECT  p.* FROM pages p
                       left join (
