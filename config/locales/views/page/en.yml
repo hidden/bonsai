@@ -85,3 +85,5 @@ en:
   news: "Last changes"
   befor_date: ""
   after_date: " ago"
+  no_page_results_title: "We couldn't find anything!"
+  no_page_results_body: "Please try a different search."

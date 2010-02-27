@@ -8,7 +8,7 @@ class PageController < ApplicationController
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
 
   def search
-    @search_results = Page.search params[:search]
+    @search_results = Page.search params[:search], :per_page => APP_CONFIG['fulltext_page_results']
   end
 
   def rss

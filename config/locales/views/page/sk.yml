@@ -85,3 +85,5 @@ sk:
   news: "Posledné zmeny"
   befor_date: "pred "
   after_date: ""
+  no_page_results_title: "Nenašli sa žiadne záznamy!"
+  no_page_results_body: "Skúste hľadanie podľa iného kľúčového slova."

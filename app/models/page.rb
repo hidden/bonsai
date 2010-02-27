@@ -14,8 +14,9 @@ class Page < ActiveRecord::Base
   has_many :file_versions, :through => :uploaded_files
 
   define_index do
-    indexes page_parts_revisions.body, :as => :page_part
-    #TODO: add more fields, sort, permitions
+    indexes page_parts_revisions.body, :as => :page_part_body
+    indexes page_parts.name, :as => :page_part_name
+    indexes pages.title, :as => :page_title
   end
 
   def get_children_tree page,user

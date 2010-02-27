@@ -3,8 +3,8 @@ defaults: &defaults
   use_https: false # true for enabled https authentification [enabled/disabled]
   authentication_method: ldap-stub # ldap, ldap-stub, openid
   #ldap means that wiki will be accessible only for users having ldap accound
-  #ldap-stub is ussualy used in develeopment enviroment (usernam==pasword)
-  #openid means that wiki will be accessible only for users having openid accound
+  #ldap-stub is ussualy used in develeopment enviroment (username==pasword)
+  #openid means that wiki will be accessible only for users having openid account
   ldap:
     port: 389
     host: ldap.stuba.sk
@@ -13,7 +13,9 @@ defaults: &defaults
   lock_timeout: 30
 
   fulltext_search: true #Sphinx is needed
-
+  fulltext_body_length: 100
+  fulltext_page_results: 5
+  
   extension_icons:
     default: page_white.png
     pdf: page_white_acrobat.png
