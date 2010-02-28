@@ -2,7 +2,7 @@
 <% @search_results.each do |page| %>
     <% if @current_user.can_view_page? page %>
         <% @user_can_view+=1 %>
-        <h2><%=link_to h(page.title), page_path(page.get_rel_path) %></h2>
+        <h2><%=link_to h(page.title), page_view_path(page.get_rel_path) %></h2>
         <% for part in page.page_parts %>
             <% unless part.current_page_part_revision.was_deleted %>
                 <% @body = part.current_page_part_revision.body %>
