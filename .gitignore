@@ -7,3 +7,6 @@ shared
 config/database.yml
 *.*~
 rerun.txt
+db/sphinx
+config/development.sphinx.conf
+
