@@ -13,7 +13,7 @@ class PageController < ApplicationController
 
 
   def search
-    @search_results = Page.search params[:search], :per_page => APP_CONFIG['fulltext_page_results']
+    @search_results = Page.search params[:search], :page => params[:page], :per_page => APP_CONFIG['fulltext_page_results']
   end
 
   def rss
