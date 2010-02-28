@@ -1,5 +1,5 @@
 class PageController < ApplicationController
-  before_filter :load_page, :except => [:add_lock, :update_locked]
+  before_filter :load_page, :except => [:add_lock, :update_lock]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   prepend_before_filter :slash_check, :only => [:view]
@@ -145,9 +145,9 @@ class PageController < ApplicationController
 
   def process_file
     @no_toolbar = true
-    file_name = 'shared/upload/' + @path.join('/')
     parent_page_path = @path.clone
     @filename = parent_page_path.pop
+    file_name = 'shared/upload/' + @path.join('/') + "/" + @filename    
     @page = Page.find_by_path(parent_page_path)
 
     if params.include? 'upload' then
@@ -156,7 +156,7 @@ class PageController < ApplicationController
     return render(:action => :file_not_found) unless File.file?(file_name)
 
     if @current_user.can_view_page? @page
-      return send_file(file_name)
+      return send_file(file_name, :disposition => 'inline')  #TODO: get the newest file
     else
       return render(:action => :unprivileged)
     end
@@ -311,7 +311,7 @@ class PageController < ApplicationController
         page_part.save!
       end
     end
-    
+
     if @num_of_changed_page_parts > 0 then
       flash[:notice] = t(:page_updated_with_new_revisions)
     else
@@ -339,16 +339,18 @@ class PageController < ApplicationController
   end
 
   def upload
-    @name = params[:uploaded_file_filename]
+    @name = params[:uploaded_file_filename] #@name - ako sa subor musi volat pri file not found, inak nil
     tmp_file = UploadedFile.new(params[:uploaded_file])
+
     if @name.nil?
-      @uploaded_file = UploadedFile.find_by_filename_and_page_id(tmp_file.filename, @page.id)
+      @uploaded_file = UploadedFile.find_by_filename_and_page_id(tmp_file.filename, @page.id)  #ci uz existuje taky subor
     else
-      @uploaded_file = UploadedFile.find_by_filename_and_page_id(@name, @page.id)
+      @uploaded_file = UploadedFile.find_by_filename_and_page_id(@name, @page.id) #ci uz existuje taky subor
     end
     if @uploaded_file.nil?
       @uploaded_file = tmp_file
     else
+      #@uploaded_file.current_file_version += 1 #increment version   
       @uploaded_file.temp_path = tmp_file.temp_path
     end
     sleep(2) # TODO get rid of this    
@@ -375,7 +377,7 @@ class PageController < ApplicationController
         if Page.find_by_path(same_page).nil?
           if @uploaded_file.save
             flash[:notice] = t(:file_uploaded)
-            redirect_to @page.get_path
+            redirect_to list_files_path(@page)
           else
             error_message = ""
             @uploaded_file.errors.each_full { |msg| error_message << msg }
@@ -417,18 +419,18 @@ class PageController < ApplicationController
   end
 
   def add_lock
-   @add_part_id = params[:part_id]
-   @add_part_name = PagePart.find(@add_part_id).name
-   @editedbyanother = PagePartLock.check_lock?(@add_part_id, @current_user)
-   if !@editedbyanother then
+    @add_part_id = params[:part_id]
+    @add_part_name = PagePart.find(@add_part_id).name
+    @editedbyanother = PagePartLock.check_lock?(@add_part_id, @current_user)
+    if !@editedbyanother then
       PagePartLock.create_lock(@add_part_id, @current_user)
-   end
+    end
 
   end
 
   def update_lock
-   @up_part_id = params[:part_id]
-   PagePartLock.create_lock(@up_part_id, @current_user)
+    @up_part_id = params[:part_id]
+    PagePartLock.create_lock(@up_part_id, @current_user)
   end
 
 
@@ -436,7 +438,9 @@ class PageController < ApplicationController
   def load_page
     @path = params[:path]
     @page = Page.find_by_path(@path)
-    unless session[:link_back].nil? then session[:link_back]= nil end
+    unless session[:link_back].nil? then
+      session[:link_back]= nil
+    end
   end
 
   def can_manage_page_check
@@ -461,7 +465,7 @@ class PageController < ApplicationController
 
   def is_file
     # is it a file?
-    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or File.file?("shared/upload/" + @path.join('/')))
+    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or File.file?("shared/upload/" + @path.join('/') + '/' + @path.last))
       process_file
       return
     end

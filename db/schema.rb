@@ -93,14 +93,6 @@ ActiveRecord::Schema.define(:version => 20100210132733) do
   add_index "pages", ["lft", "rgt"], :name => "index_pages_on_lft_and_rgt"
   add_index "pages", ["parent_id", "sid"], :name => "index_pages_on_parent_id_and_sid"
 
-  create_table "uploaded_files", :force => true do |t|
-    t.integer "size"
-    t.string  "content_type"
-    t.string  "filename"
-    t.integer "page_id"
-    t.integer "user_id"
-  end
-
   create_table "users", :force => true do |t|
     t.string "username",                      :null => false
     t.string "name",                          :null => false

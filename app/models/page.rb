@@ -11,6 +11,7 @@ class Page < ActiveRecord::Base
   has_many :manager_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_manage = ?', true]
 
   has_many :uploaded_files, :dependent => :destroy
+  has_many :file_versions, :through => :uploaded_files
 
   def get_children_tree page,user
     Page.find_by_sql("SELECT  p.* FROM pages p
@@ -76,9 +77,9 @@ class Page < ActiveRecord::Base
 
   def files
     path = 'shared/upload' + get_path
-    entries = []
-    entries = Dir.entries(path).select {|file| File.file?(path + file) } if File.directory?(path)
-    uploaded_filenames = uploaded_files.collect(&:filename)
+    entries = []  #entries - vsetky subory co su v adresari
+    entries = Dir.entries(path).select {|file| File.file?(path + file + "/" + file) } if File.directory?(path)
+    uploaded_filenames = uploaded_files.collect(&:filename)          #uploaded_filenames - subory z db
     files_without_db_entry = entries.collect do |file|
       UploadedFile.new(:filename => file) unless uploaded_filenames.include?(file)
     end
