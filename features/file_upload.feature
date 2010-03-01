@@ -18,7 +18,7 @@ Feature: Secure file uploads
     When I create "/" page
     #And I upload "test_file.txt" file
     And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     When I go to /test_file.txt
@@ -30,7 +30,7 @@ Feature: Secure file uploads
     And I create "/" page
     And page "/" is viewable by "johno"
     And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     And I logout
     When I go to /test_file.txt
@@ -43,7 +43,7 @@ Feature: Secure file uploads
     When I create "/" page
     And I go to /test_file2.txt
     Then I should see "File not found."
-    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    When I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
 
@@ -51,7 +51,7 @@ Feature: Secure file uploads
     When I create "/" page
     And I go to /bogus_file.txt
     Then I should see "File not found."
-    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    When I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     When I go to /bogus_file.txt
@@ -61,7 +61,7 @@ Feature: Secure file uploads
     When I create "/" page
     And I go to /bogus_still_file.txt
     Then I should see "File not found."
-    When I attach the file at "picture.jpg" to "uploaded_file_uploaded_data"
+    When I attach the file at "picture.jpg" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "Type of file not match."
     When I go to /bogus_still_file.txt
@@ -78,7 +78,7 @@ Feature: Secure file uploads
     And I create "/new_page/" page
     And I go to /new_page/link.txt
     Then I should see "File not found."
-    When I attach the file at "picture.jpg" to "uploaded_file_uploaded_data"
+    When I attach the file at "picture.jpg" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "Type of file not match."
     And I go to /new_page/link.txt
@@ -89,7 +89,7 @@ Feature: Secure file uploads
     And I create "/new_page/" page
     And I go to /new_page/link.txt
     Then I should see "File not found."
-    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    When I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     And I go to /new_page/link.txt
@@ -98,11 +98,11 @@ Feature: Secure file uploads
   Scenario: User uploads some files and wants to see them all
     When I create "/" page
     And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     When I follow "edit"
-    And I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file2.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     When I follow "files"
@@ -117,11 +117,11 @@ Feature: Secure file uploads
   Scenario: User uploads some files and wants to see them without listing subdirectories
     When I create "/" page
     And I follow "Edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     And I create "/nested/" page
     And I follow "Edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     And I go to the main page
     When I follow "Files"
@@ -136,7 +136,7 @@ Feature: Secure file uploads
     And I create "/" page
     And page "/" is editable by "bio"
     And I follow "edit"
-    And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     And I follow "files"
     Then I should see "test_file.txt"
@@ -154,7 +154,7 @@ Feature: Secure file uploads
     And I create "/" page
     And I go to /test_file2.txt
     Then I should see "File not found."
-    When I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
+    When I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     And I go to /test_file2.txt
     Then I should see "Some text in file."
@@ -162,7 +162,7 @@ Feature: Secure file uploads
     And I logout
     And I login as "bio"
     And I follow "edit"
-    And I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
+    And I attach the file at "test_file2.txt" to "file_version_uploaded_data"
     And I press "Upload"
     And I go to /test_file2.txt
     Then I should see "Different text in file."
@@ -175,7 +175,7 @@ Feature: Secure file uploads
   Scenario: User wants to upload file with no ext trough file page
     When I create "/" page
     And I follow "files"
-    And I attach the file at "readme" to "uploaded_file_uploaded_data"
+    And I attach the file at "readme" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
     When I go to /readme
@@ -187,7 +187,7 @@ Feature: Secure file uploads
     And I create "/readme/" page with title "citaj ma"
     And I go to the main page
     And I follow "edit"
-    And I attach the file at "readme" to "uploaded_file_uploaded_data"
+    And I attach the file at "readme" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "There is a page with the same name."
     When I go to /readme

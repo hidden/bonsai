@@ -102,8 +102,8 @@
   </div>
   <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:attach_file) %></a>.</p>
   <div style="display: none;">
-    <% form_for(:uploaded_file, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
-      <p><label for="uploaded_file"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %></label><%= submit_tag t(:btn_upload) %></p>
-    <% end %>
-  </div>
+  <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
+      <p><label for="file_version"><%= t(:upload_file)%><br/><%= f.file_field :uploaded_data %></label><%= submit_tag t(:btn_upload) %></p>
+  <% end %>
+</div>
 </div>

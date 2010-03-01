@@ -4,7 +4,7 @@ module PageHelper
   end
 
   def file_type_image_tag(file)
-   icon = APP_CONFIG['extension_icons'][file.extension]
+   icon = APP_CONFIG['extension_icons'][file.current_file_version.extension]
    icon = APP_CONFIG['extension_icons']['default'] if icon.nil?
    image_tag("icons/file_types/#{icon}", :size => "16x16", :alt => "")
   end

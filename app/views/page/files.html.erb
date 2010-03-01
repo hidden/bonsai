@@ -15,10 +15,10 @@
       <% for file in @page.files %>
           <tr>
             <td><%= file_type_image_tag(file) %></td>
-            <td><%= link_to file.filename, file.filename %></td>
-            <td><% if file.user.nil? %><%= t(:unknown) %><% else %><%= h file.user.full_name %><% end %></td>
-            <td><%= number_to_human_size(File.size("shared/upload" + @page.get_path + file.filename), :precision => 2) %></td>
-            <td><%= File.mtime("shared/upload" + @page.get_path + file.filename).localtime.strftime("%H:%M:%S %d %b %Y") %></td>
+            <td><%= link_to file.attachment_filename, file.attachment_filename %></td>
+            <td><% if file.current_file_version.user.nil? %><%= t(:unknown) %><% else %><%= h file.current_file_version.user.full_name %><% end %></td>
+            <td><%= number_to_human_size(File.size("shared/upload" + @page.get_path + file.current_file_version.filename), :precision => 2) %></td>
+            <td><%= file.current_file_version.created_at.localtime.strftime("%H:%M:%S %d %b %Y") %></td>
           </tr>
       <% end %>
       </tbody>
@@ -26,8 +26,7 @@
 <% end %>
 <p><%= t(:you_can)%> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_new_file)%></a>.</p>
 <div style="display: none;">
-  <% form_for(:uploaded_file, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
-      <p><label for="uploaded_file"><%= t(:upload_file)%><br/><%= f.file_field :uploaded_data %>
-      </label><%= submit_tag t(:btn_upload) %></p>
+  <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
+      <p><label for="file_version"><%= t(:upload_file)%><br/><%= f.file_field :uploaded_data %></label><%= submit_tag t(:btn_upload) %></p>
   <% end %>
 </div>

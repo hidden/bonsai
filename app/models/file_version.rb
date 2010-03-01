@@ -6,7 +6,7 @@ class FileVersion < ActiveRecord::Base
   validates_as_attachment
 
   def full_filename(thumbnail = nil)
-    file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s + self.page.get_path.chomp("/") + "/" + self.filename
+    file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s + self.uploaded_file.page.get_path.chomp("/")
     File.join(RAILS_ROOT, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
   end
 

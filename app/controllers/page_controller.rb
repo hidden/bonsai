@@ -147,13 +147,24 @@ class PageController < ApplicationController
     @no_toolbar = true
     parent_page_path = @path.clone
     @filename = parent_page_path.pop
-    file_name = 'shared/upload/' + @path.join('/') + "/" + @filename    
+    file_name = 'shared/upload/' + @path.join('/')
     @page = Page.find_by_path(parent_page_path)
 
     if params.include? 'upload' then
       upload and return
     end
-    return render(:action => :file_not_found) unless File.file?(file_name)
+
+    unless File.file?(file_name)
+      file = UploadedFile.find_by_attachment_filename(@filename)
+      unless !file.nil? && File.file?('shared/upload' + file.page.get_path + file.current_file_version.filename)
+        return render(:action => :file_not_found)
+      else
+        file_name = 'shared/upload' + file.page.get_path + file.current_file_version.filename
+      end
+    end
+
+
+    #return render(:action => :file_not_found) unless File.file?(file_name)
 
     if @current_user.can_view_page? @page
       return send_file(file_name, :disposition => 'inline')  #TODO: get the newest file
@@ -340,54 +351,62 @@ class PageController < ApplicationController
 
   def upload
     @name = params[:uploaded_file_filename] #@name - ako sa subor musi volat pri file not found, inak nil
-    tmp_file = UploadedFile.new(params[:uploaded_file])
+    tmp_file = FileVersion.new(params[:file_version])
 
-    if @name.nil?
-      @uploaded_file = UploadedFile.find_by_filename_and_page_id(tmp_file.filename, @page.id)  #ci uz existuje taky subor
-    else
-      @uploaded_file = UploadedFile.find_by_filename_and_page_id(@name, @page.id) #ci uz existuje taky subor
-    end
-    if @uploaded_file.nil?
-      @uploaded_file = tmp_file
-    else
-      #@uploaded_file.current_file_version += 1 #increment version   
-      @uploaded_file.temp_path = tmp_file.temp_path
-    end
-    sleep(2) # TODO get rid of this    
-
-    if @uploaded_file.filename.nil?
+    if tmp_file.filename.nil?
       flash[:notice] = t(:no_files_selected)
       redirect_to @page.get_path
     else
+
+      same_page = @path
+      same_page.push(tmp_file.filename)
+      if Page.find_by_path(same_page).nil?
+
+        if @name.nil?
+          @uploaded_file = UploadedFile.find_by_attachment_filename_and_page_id(tmp_file.filename, @page.id)  #ci uz existuje taky subor
+        else
+          @uploaded_file = UploadedFile.find_by_attachment_filename_and_page_id(@name, @page.id) #ci uz existuje taky subor
+        end
+        if @uploaded_file.nil?
+          @uploaded_file = UploadedFile.new(:attachment_filename => tmp_file.filename, :page_id => @page.id)
+          @uploaded_file.save!
+          @file_version = tmp_file
+          @file_version.uploaded_file = @uploaded_file
+        else
+          tmp_file.version = @uploaded_file.current_file_version.version + 1
+          @file_version = tmp_file
+          @file_version.uploaded_file = @uploaded_file
+        end
+        sleep(2) # TODO get rid of this
 
 #      if @uploaded_file.exist?(@page.get_path)
 #        flash[:notice] = t(:file_exists)
 #        redirect_to @page.get_path
 #      else
 
-      if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-        flash[:notice] = t(:file_not_match)
-        redirect_to @page.get_path
-      else
-        @uploaded_file.page = @page
-        @uploaded_file.user = @current_user
-        @uploaded_file.rename(@name) unless @name.nil?
-        same_page = @path
-        same_page.push(@uploaded_file.filename)
-        if Page.find_by_path(same_page).nil?
-          if @uploaded_file.save
+        if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.attachment_filename)
+          flash[:notice] = t(:file_not_match)
+          redirect_to @page.get_path
+        else
+          @file_version.user = @current_user
+          @uploaded_file.rename(@name) unless @name.nil?
+          @file_version.rename((Digest::SHA1.hexdigest @uploaded_file.attachment_filename + @file_version.version.to_s() + @file_version.size.to_s()) + File.extname(@uploaded_file.attachment_filename))
+          if @file_version.save!
+            @uploaded_file.current_file_version = @file_version
+            @uploaded_file.save
             flash[:notice] = t(:file_uploaded)
             redirect_to list_files_path(@page)
           else
+            @uploaded_file.delete
             error_message = ""
-            @uploaded_file.errors.each_full { |msg| error_message << msg }
+            @file_version.errors.each_full { |msg| error_message << msg }
             flash[:notice] = error_message
             render :action => :edit
           end
-        else
-          flash[:notice] = t(:same_as_page)
-          render :action => :edit
         end
+      else
+        flash[:notice] = t(:same_as_page)
+        redirect_to list_files_path(@page)
       end
 
       #end
@@ -465,7 +484,8 @@ class PageController < ApplicationController
 
   def is_file
     # is it a file?
-    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or File.file?("shared/upload/" + @path.join('/') + '/' + @path.last))
+    file = UploadedFile.find_by_attachment_filename(@path.last)
+    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?("shared/upload/" + @path.join('/')) or (!file.nil? && (File.file?("shared/upload" + file.page.get_path  + file.current_file_version.filename)))))
       process_file
       return
     end

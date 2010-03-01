@@ -3,9 +3,10 @@ class CreateFileVersions < ActiveRecord::Migration
     create_table :file_versions do |t|
       t.integer :size
       t.string :content_type
-      t.integer :version, :null => false
-      t.reference :user, :null => false
-      t.reference :uploaded_file, :null => false
+      t.string :filename
+      t.integer :version, :null => false, :default => 1
+      t.references :user, :null => false
+      t.references :uploaded_file, :null => false
 
       t.timestamps
     end

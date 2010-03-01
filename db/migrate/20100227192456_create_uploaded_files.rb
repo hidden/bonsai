@@ -1,9 +1,9 @@
 class CreateUploadedFiles < ActiveRecord::Migration
   def self.up
     create_table :uploaded_files do |t|
-      t.string :file_name
-      t.reference :page, :null => false
-      t.reference :current_file_version, :null => false
+      t.string :attachment_filename
+      t.references :page, :null => false
+      t.references :current_file_version, :null => false, :default => 0
 
       t.timestamps
     end

@@ -78,13 +78,14 @@ class Page < ActiveRecord::Base
   def files
     path = 'shared/upload' + get_path
     entries = []  #entries - vsetky subory co su v adresari
-    entries = Dir.entries(path).select {|file| File.file?(path + file + "/" + file) } if File.directory?(path)
-    uploaded_filenames = uploaded_files.collect(&:filename)          #uploaded_filenames - subory z db
-    files_without_db_entry = entries.collect do |file|
-      UploadedFile.new(:filename => file) unless uploaded_filenames.include?(file)
-    end
-    uploaded = uploaded_files.select {|file| entries.include?(file.filename)}
-    (files_without_db_entry.compact + uploaded).sort_by(&:filename)
+    entries = Dir.entries(path).select {|file| File.file?(path + file) } if File.directory?(path)
+    uploaded_filenames = uploaded_files.collect(&:attachment_filename)          #uploaded_filenames - subory z db
+#    files_without_db_entry = entries.collect do |file|
+#      UploadedFile.new(:attachment_filename => file, :page_id => self.id) unless uploaded_filenames.include?(file)
+#    end
+    uploaded = uploaded_files.select {|file| entries.include?(file.current_file_version.filename)}
+    #(files_without_db_entry.compact + 
+    (uploaded).sort_by(&:attachment_filename)
   end
 
   def add_viewer group
