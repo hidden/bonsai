@@ -21,7 +21,7 @@ var _4="bold italic | link blockquote code image | ol ul heading hr";
 Attacklab.wmd_env.buttons=Attacklab.wmd_env.buttons||_4;
 };
 Attacklab.loadEnv();
-var _5=["showdown.js","wmd-base.js","wmd-plus.js"];
+var _5=["wmd-base.js","wmd-plus.js"];
 var _6=function(_7){
 };
 Attacklab.fileLoaded=function(_8){
@@ -70,4 +70,4 @@ _a(f,false);
 };
 Attacklab.wmd();
 }
-
+ 
