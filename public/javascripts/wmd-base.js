@@ -114,6 +114,8 @@ for(var _2e=0;_2e<4;_2e++){
 var _2f=_6.makeElement("div");
 _2b=_2f.style;
 _2b.overflow="hidden";
+//nastavenie pozadia
+_2b.backgroundColor="#f2f2f2";
 _2b.padding="0";
 _2b.margin="0";
 _2b.lineHeight="0px";
@@ -137,7 +139,7 @@ var _30=_6.makeElement("span");
 _2b=_30.style;
 _2b.height="100%";
 _2b.width=_2a;
-_2b.filter="progid:DXImageTransform.Microsoft."+"AlphaImageLoader(src='"+_2.basePath+"../images/wmd/bg.png')";
+//_2b.filter="progid:DXImageTransform.Microsoft."+"AlphaImageLoader(src='"+_2.basePath+"../images/wmd/bg.png')";
 _2b.position="absolute";
 if(_2e&1){
 _2b.top="0";
@@ -153,6 +155,7 @@ _2f.appendChild(_30);
 }else{
 _2b.backgroundImage="url("+_28+")";
 _2b.backgroundPosition=(_2e&2?"left":"right")+" "+(_2e&1?"top":"bottom");
+_2b.backgroundColor="#f2f2f2";
 }
 _27.appendChild(_2f);
 }
@@ -928,7 +931,7 @@ _dd.display="inline";
 _dd.cssFloat="left";
 _dd.overflow="visible";
 _dd.opacity="0.999";
-_b8.style.position="absolute";
+_b8.style.position="absolute"; 
 _ba.appendChild(_b8);
 _b0.style.marginTop="";
 var _de=_7.getTop(_b0);
@@ -1120,6 +1123,7 @@ return true;
 var _e0=function(){
 var _f9=_6.makeElement("div");
 var _fa=_f9.style;
+_fa.backgroundColor="#f2f2f2";
 _fa.paddingRight="15px";
 _fa.height="100%";
 _fa.display="block";
