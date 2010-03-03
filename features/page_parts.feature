@@ -27,7 +27,6 @@ Feature: Wiki layouting and many page parts
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
     Then I should see "Page part successfully added."
-    And I follow "View"
     Then I should see "This is a header"
     When I delete "testpage" page part
     Then I should see "Page successfully updated."
@@ -37,7 +36,6 @@ Feature: Wiki layouting and many page parts
   Scenario: User create a page part and rename it
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
-    And I follow "View"
     Then I should see "This is a header"
     And I edit "testpage" page part with text "testpage2"
     Then I should see "Page successfully updated."

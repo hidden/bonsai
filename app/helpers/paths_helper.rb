@@ -23,6 +23,10 @@ module PathsHelper
     "#{page.get_path};update"
   end
 
+   def save_edited_page_path(page)
+    "#{page.get_path};save_edit"
+  end
+
   def upload_file_path(page)
     "#{page.get_path};upload"
   end

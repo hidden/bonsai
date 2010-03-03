@@ -19,8 +19,9 @@ Feature: Secure file uploads
     #And I upload "test_file.txt" file
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    Then I should see "File was successfully uploaded."
+    And I press "Save"
+    And show me the page
+    Then I should see "Page successfully updated."
     When I go to /test_file.txt
     Then I should see "Some text in file."
 
@@ -31,7 +32,7 @@ Feature: Secure file uploads
     And page "/" is viewable by "johno"
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
+    And I press "Save"
     And I logout
     When I go to /test_file.txt
     Then I should see "Permission denied."
@@ -99,12 +100,12 @@ Feature: Secure file uploads
     When I create "/" page
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    Then I should see "File was successfully uploaded."
+    And I press "Save"
+    Then I should see "Page successfully updated."
     When I follow "edit"
     And I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
-    Then I should see "File was successfully uploaded."
+    And I press "Save"
+    Then I should see "Page successfully updated."
     When I follow "files"
     Then I should see "test_file.txt"
     And I should see "test_file2.txt"
@@ -118,11 +119,11 @@ Feature: Secure file uploads
     When I create "/" page
     And I follow "Edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
+    And I press "Save"
     And I create "/nested/" page
     And I follow "Edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
+    And I press "Save"
     And I go to the main page
     When I follow "Files"
     Then I should see "test_file.txt"
@@ -137,7 +138,7 @@ Feature: Secure file uploads
     And page "/" is editable by "bio"
     And I follow "edit"
     And I attach the file at "test_file.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
+    And I press "Save"
     And I follow "files"
     Then I should see "test_file.txt"
     When I logout
@@ -163,7 +164,7 @@ Feature: Secure file uploads
     And I login as "bio"
     And I follow "edit"
     And I attach the file at "test_file2.txt" to "uploaded_file_uploaded_data"
-    And I press "Upload"
+    And I press "Save"
     And I go to /test_file2.txt
     Then I should see "Different text in file."
     When I go to the main page
@@ -188,7 +189,7 @@ Feature: Secure file uploads
     And I go to the main page
     And I follow "edit"
     And I attach the file at "readme" to "uploaded_file_uploaded_data"
-    And I press "Upload"
+    And I press "Save"
     Then I should see "There is a page with the same name."
     When I go to /readme
     Then I should see "citaj ma"
