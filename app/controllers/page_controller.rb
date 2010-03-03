@@ -160,6 +160,11 @@ class PageController < ApplicationController
         return render(:action => :file_not_found)
       else
         file_name = 'shared/upload' + file.page.get_path + file.current_file_version.filename
+        hash = Digest::MD5.hexdigest(file.attachment_filename + file.current_file_version.version.to_s() + File.size(file_name).to_s())
+        if (!(params[:force]) && (!hash.eql?(File.basename(file_name).chomp(File.extname(file_name)))))
+          session[:link_back]= list_files_path(@page) 
+          return render(:action => :corrupted_file)
+        end
       end
     end
 
@@ -390,7 +395,7 @@ class PageController < ApplicationController
         else
           @file_version.user = @current_user
           @uploaded_file.rename(@name) unless @name.nil?
-          @file_version.rename((Digest::SHA1.hexdigest @uploaded_file.attachment_filename + @file_version.version.to_s() + @file_version.size.to_s()) + File.extname(@uploaded_file.attachment_filename))
+          @file_version.rename((Digest::MD5.hexdigest(@uploaded_file.attachment_filename + @file_version.version.to_s() + File.size(tmp_file.temp_path).to_s())) + File.extname(@uploaded_file.attachment_filename))
           if @file_version.save!
             @uploaded_file.current_file_version = @file_version
             @uploaded_file.save
