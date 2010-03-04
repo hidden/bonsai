@@ -28,8 +28,6 @@
         <%= link_to icon_tag('arrow_left.png') + " " + t(:return), session[:link_back] %>
       </p>
   <% end %>
-
   <%= render :partial => "shared/search_form" if APP_CONFIG['fulltext_search'] %>
-
 </div>
 

@@ -13,7 +13,7 @@ class PageController < ApplicationController
 
 
   def search
-    @search_results = Page.search params[:search], :page => params[:page], :per_page => APP_CONFIG['fulltext_page_results']
+    @search_results = Page.search params[:search], :page => params[:page], :per_page => APP_CONFIG['fulltext_page_results'], :conditions => ["id IN (?)", @current_user.find_all_accessible_pages]
   end
 
   def rss
