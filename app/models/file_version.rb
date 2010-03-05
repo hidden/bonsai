@@ -1,7 +1,7 @@
 class FileVersion < ActiveRecord::Base
   belongs_to :uploaded_file
   belongs_to :user
-  has_attachment :storage => :file_system, :path_prefix => "shared/upload", :size => 0.megabytes..15.megabytes
+  has_attachment :storage => :file_system, :path_prefix => Path::UP_HISTORY, :size => 0.megabytes..15.megabytes
 
   validates_as_attachment
 
@@ -16,7 +16,7 @@ class FileVersion < ActiveRecord::Base
   end
 
   def exist?(page_path)
-    file = 'shared/upload' + page_path + self.filename
+    file = Path::UP_HISTORY + page_path + self.filename
     File.file?(file)
   end
 

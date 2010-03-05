@@ -9,5 +9,9 @@ class UploadedFile < ActiveRecord::Base
     self.attachment_filename = name
     self.save
   end
+
+  def extension
+    File.extname(attachment_filename).delete(".").downcase
+  end
   
 end

@@ -8,7 +8,8 @@ Feature: Secure file uploads
     And I am logged in
    
   Scenario: User tries do download a bogus file
-    Given I am not logged in
+    When I create "/" page
+    And I logout
     And I go to /bogus_file.txt
     Then I should see "File not found."
     When I go to /a/nested/bogus_file.txt

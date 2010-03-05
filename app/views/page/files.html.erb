@@ -9,24 +9,45 @@
         <th><%= t(:uploader) %></th>
         <th><%= t(:size) %></th>
         <th><%= t(:creation_time) %></th>
+        <th><%= t(:history) %></th>
       </tr>
       </thead>
       <tbody>
       <% for file in @page.files %>
           <tr>
-            <td><%= file_type_image_tag(file) %></td>
-            <td><%= link_to file.attachment_filename, file.attachment_filename %></td>
-            <td><% if file.current_file_version.user.nil? %><%= t(:unknown) %><% else %><%= h file.current_file_version.user.full_name %><% end %></td>
-            <td><%= number_to_human_size(File.size("shared/upload" + @page.get_path + file.current_file_version.filename), :precision => 2) %></td>
-            <td><%= file.current_file_version.created_at.localtime.strftime("%H:%M:%S %d %b %Y") %></td>
+            <% if (not file.current_file_version.nil?) %>
+                <td><%= file_type_image_tag(file.current_file_version) %></td>
+                <td><%= link_to file.attachment_filename, file.attachment_filename %></td>
+                <td>
+                  <% if file.current_file_version.user.nil? %><%= t(:unknown) %>
+                      <% else %><%= h file.current_file_version.user.full_name %>
+                  <% end %></td>
+                <td><%= number_to_human_size(file.current_file_version.size, :precision => 2) %></td>
+                <td><%= file.current_file_version.created_at.localtime.strftime("%H:%M:%S %d %b %Y") %></td>
+                <td>
+                  <% if (file.file_versions.length > 1) %>
+                    <%= link_to icon_tag('file_rev.png', :alt => 'show file\'s history'), file_history_page_path(@page, file.attachment_filename) %>
+                <% else %>
+                    <%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %>
+                <% end %>
+                  </td>
+            <% else %>
+                <td><%= file_type_image_tag(file) %></td>
+                <td><%= link_to file.attachment_filename, file.attachment_filename %></td>
+                <td><%= t(:unknown) %></td>
+                <td><%= number_to_human_size(File.size(Path::ANONYM_UPLOAD_PATH + @page.get_path + file.attachment_filename), :precision => 2) %></td>
+                <td><%= File.ctime(Path::ANONYM_UPLOAD_PATH + @page.get_path + file.attachment_filename).localtime.strftime("%H:%M:%S %d %b %Y") %></td>
+                <td><%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %></td>
+            <% end %>
           </tr>
       <% end %>
       </tbody>
     </table>
 <% end %>
-<p><%= t(:you_can)%> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_new_file)%></a>.</p>
+<p><%= t(:you_can) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_new_file) %></a>.</p>
 <div style="display: none;">
   <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
-      <p><label for="file_version"><%= t(:upload_file)%><br/><%= f.file_field :uploaded_data %></label><%= submit_tag t(:btn_upload) %></p>
+      <p><label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %>
+      </label><%= submit_tag t(:btn_upload) %></p>
   <% end %>
 </div>

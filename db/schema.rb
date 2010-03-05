@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100227195553) do
+ActiveRecord::Schema.define(:version => 20100303212746) do
 
   create_table "favorites", :force => true do |t|
     t.integer "user_id", :null => false
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(:version => 20100227195553) do
     t.integer  "user_id",                         :null => false
     t.integer  "uploaded_file_id",                :null => false
     t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "md5"
   end
 
   create_table "group_permissions", :force => true do |t|
@@ -105,11 +105,9 @@ ActiveRecord::Schema.define(:version => 20100227195553) do
   add_index "pages", ["parent_id", "sid"], :name => "index_pages_on_parent_id_and_sid"
 
   create_table "uploaded_files", :force => true do |t|
-    t.string   "attachment_filename"
-    t.integer  "page_id",                                :null => false
-    t.integer  "current_file_version_id", :default => 0, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string  "attachment_filename"
+    t.integer "page_id",                                :null => false
+    t.integer "current_file_version_id", :default => 0, :null => false
   end
 
   create_table "users", :force => true do |t|

@@ -2,7 +2,8 @@ require 'fileutils'
 
 Given /there are no files uploaded/ do
   UploadedFile.destroy_all
-  FileUtils.rm_rf 'shared/upload'
+  FileUtils.rm_rf Path::UP_HISTORY
+  FileUtils.rm_rf Path::ANONYM_UPLOAD_PATH
 end
 
 When /^I upload "(.*)" file$/ do |file_name|

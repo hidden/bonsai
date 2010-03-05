@@ -8,7 +8,7 @@ class CreateFileVersions < ActiveRecord::Migration
       t.references :user, :null => false
       t.references :uploaded_file, :null => false
 
-      t.timestamps
+      t.datetime :created_at
     end
   end
 

@@ -198,7 +198,9 @@ Feature: Secure wiki
     And I add "fero" viewer to "TestGroup" group
     And I go to /groups/autocomplete_for_groups?infix=Test
     And I should see "TestGroup"
-    And I should see "jano, jozo, fero"
+    And I should see "jano"
+    And I should see "jozo"
+    And I should see "fero"
 
   Scenario: User creates group with 2 users, in autocomplete for groups he/she should see name of group and users in brackets
     Given user "jozo" exists

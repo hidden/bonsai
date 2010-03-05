@@ -7,7 +7,7 @@
 ENV["RAILS_ENV"] ||= "cucumber"
 require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
 
-# require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
+#require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
 require 'cucumber/rails/rspec'
 require 'cucumber/rails/world'
 require 'cucumber/rails/active_record'
@@ -49,6 +49,10 @@ Cucumber::Rails::World.use_transactional_fixtures = true
 
 # How to clean your database when transactions are turned off. See
 # http://github.com/bmabey/database_cleaner for more info.
-require 'database_cleaner'
-DatabaseCleaner.strategy = :truncation
-
+if defined?(ActiveRecord::Base)
+  begin
+    require 'database_cleaner'
+    DatabaseCleaner.strategy = :truncation
+  rescue LoadError => ignore_if_database_cleaner_not_present
+  end
+end

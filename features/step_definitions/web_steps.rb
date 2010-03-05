@@ -127,15 +127,15 @@ When /^(?:|I )attach the file "([^\"]*)" to "([^\"]*)"$/ do |path, field|
 
   case type
   when "jpg"
-    type = "image/jpg"
+    type = "image/jpg" 
   when "jpeg"
-    type = "image/jpeg"
+    type = "image/jpeg" 
   when "png"
-    type = "image/png"
+    type = "image/png" 
   when "gif"
     type = "image/gif"
   end
-
+  
   attach_file(field, path, type)
 end
 
@@ -160,7 +160,8 @@ Then /^(?:|I )should see "([^\"]*)" within "([^\"]*)"$/ do |text, selector|
     if defined?(Spec::Rails::Matchers)
       content.should contain(text)
     else
-      assert content.include?(text)
+      hc = Webrat::Matchers::HasContent.new(text)
+      assert hc.matches?(content), hc.failure_message
     end
   end
 end
@@ -170,7 +171,7 @@ Then /^(?:|I )should see \/([^\/]*)\/$/ do |regexp|
   if defined?(Spec::Rails::Matchers)
     response.should contain(regexp)
   else
-    assert_contain regexp
+    assert_match(regexp, response_body)
   end
 end
 
@@ -180,7 +181,7 @@ Then /^(?:|I )should see \/([^\/]*)\/ within "([^\"]*)"$/ do |regexp, selector|
     if defined?(Spec::Rails::Matchers)
       content.should contain(regexp)
     else
-      assert content =~ regexp
+      assert_match(regexp, content)
     end
   end
 end
@@ -189,16 +190,17 @@ Then /^(?:|I )should not see "([^\"]*)"$/ do |text|
   if defined?(Spec::Rails::Matchers)
     response.should_not contain(text)
   else
-    assert_not_contain text
+    assert_not_contain(text)
   end
 end
 
 Then /^(?:|I )should not see "([^\"]*)" within "([^\"]*)"$/ do |text, selector|
   within(selector) do |content|
     if defined?(Spec::Rails::Matchers)
-        content.should_not contain(text)
+      content.should_not contain(text)
     else
-        assert !content.include?(text)
+      hc = Webrat::Matchers::HasContent.new(text)
+      assert !hc.matches?(content), hc.negative_failure_message
     end
   end
 end
@@ -208,7 +210,7 @@ Then /^(?:|I )should not see \/([^\/]*)\/$/ do |regexp|
   if defined?(Spec::Rails::Matchers)
     response.should_not contain(regexp)
   else
-    assert_not_contain regexp
+    assert_not_contain(regexp)
   end
 end
 
@@ -218,7 +220,7 @@ Then /^(?:|I )should not see \/([^\/]*)\/ within "([^\"]*)"$/ do |regexp, select
     if defined?(Spec::Rails::Matchers)
       content.should_not contain(regexp)
     else
-      assert content !~ regexp
+      assert_no_match(regexp, content)
     end
   end
 end
@@ -256,11 +258,21 @@ Then /^the "([^\"]*)" checkbox should not be checked$/ do |label|
 end
 
 Then /^(?:|I )should be on (.+)$/ do |page_name|
-  current_path = URI.parse(current_url).select(:path, :query).compact.join('?')
   if defined?(Spec::Rails::Matchers)
-    current_path.should == path_to(page_name)
+    URI.parse(current_url).path.should == path_to(page_name)
   else
-    assert_equal path_to(page_name), current_path
+    assert_equal path_to(page_name), URI.parse(current_url).path
+  end
+end
+
+Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
+  actual_params   = CGI.parse(URI.parse(current_url).query)
+  expected_params = Hash[expected_pairs.rows_hash.map{|k,v| [k,[v]]}]
+ 
+  if defined?(Spec::Rails::Matchers)
+    actual_params.should == expected_params
+  else
+    assert_equal expected_params, actual_params
   end
 end
 

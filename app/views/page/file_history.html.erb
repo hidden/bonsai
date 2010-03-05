@@ -1,0 +1,39 @@
+<% file = UploadedFile.find_by_attachment_filename_and_page_id(params[:path].last, @page.id) %>
+<% if file.nil? %>
+    <%= "History page doesn't exist!" %>
+    <p>
+      <%= link_to "Back to files", list_files_path(@page) %>
+    </p>
+<% else %>
+    <table>
+      <thead>
+      <tr>
+        <th></th>
+        <th><%= t(:file) %></th>
+        <th><%= t(:version) %></th>
+        <th><%= t(:uploader) %></th>
+        <th><%= t(:size) %></th>
+        <th><%= t(:creation_time) %></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% for version in @page.file_versions(file) %>
+          <tr>
+            <td><%= file_type_image_tag(version) %></td>
+            <td><%= link_to version.uploaded_file.attachment_filename, version.uploaded_file.attachment_filename + '?version=' + version.version.to_s() %></td> <%#version.filename%> 
+            <td><%= version.version %></td>
+            <td>
+              <% if version.user.nil? %><%= t(:unknown) %>
+                  <% else %><%= h version.user.full_name %>
+              <% end %></td>
+            <td><%= number_to_human_size(version.size, :precision => 2) %></td>
+            <td><%= version.created_at.localtime.strftime("%H:%M:%S %d %b %Y") %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <p>
+      <%= link_to "Back", list_files_path(@page) %>
+    </p>
+<% end %>

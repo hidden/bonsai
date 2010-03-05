@@ -68,6 +68,10 @@ module PathsHelper
   end
 
   def dashboard_page_path(page)
-    (url_for :controller => 'dashboard') + "?back=#{page.get_path}"
+    url_for :controller => 'dashboard', :back => page.get_path
+  end
+
+  def file_history_page_path(page, name)
+    "#{page.get_path}#{name};history"
   end
 end
