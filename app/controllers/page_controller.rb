@@ -270,7 +270,6 @@ class PageController < ApplicationController
   end
 
   def save_edit
-     p params
      @error_flash_msg = ""
      @notice_flash_msg = ""
 
