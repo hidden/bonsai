@@ -1,6 +1,6 @@
 <p><%= t(:file_not_found) %></p>
 
-<% if @current_user.can_edit_page? @page %>
+<% if (!@page.nil?) && (@current_user.can_edit_page? @page) %>
     <p><%= t(:you_can) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_this_file) %></a>.</p>
     <div style="display: none;">
       <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
