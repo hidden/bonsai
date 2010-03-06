@@ -17,7 +17,7 @@ Feature: Parallel editing
     Then I should see "This is my new header!"
     And I should see "This is new content from someone"
 
-  @wip
-  Scenario: Two users edit same page parts simultaneusly 
+  #@wip
+  #Scenario: Two users edit same page parts simultaneusly 
     
 

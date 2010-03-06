@@ -198,7 +198,9 @@ Feature: Secure wiki
     And I add "fero" viewer to "TestGroup" group
     And I go to /groups/autocomplete_for_groups?infix=Test
     And I should see "TestGroup"
-    And I should see "jano, jozo, fero"
+    And I should see "jano"
+    And I should see "jozo"
+    And I should see "fero"
 
   Scenario: User creates group with 2 users, in autocomplete for groups he/she should see name of group and users in brackets
     Given user "jozo" exists
@@ -211,3 +213,17 @@ Feature: Secure wiki
     And I add "fero" viewer to "TestGroup" group
     And I go to /groups/autocomplete_for_groups?infix=jan
     And I should see "TestGroup"
+
+  @wip  
+  Scenario: User creates group, addd permissions for this group, then erases this group and in page management he should not see this group
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I create "MyNewGroup" group    
+    And I add "MyNewGroup" reader permission
+    And I follow "Manage"
+    And I should see "MyNewGroup"
+    When I delete "MyNewGroup" group
+    And I go to the main page
+    And I follow "Manage"
+    Then I should not see "MyNewGroup"

@@ -1,3 +1,3 @@
-When /^I set locale to sk/ do
- header('Accept-Language','sk-SK')
+When /^I set locale to "(.*)"/ do |language|
+ header('Accept-Language', language)
 end
