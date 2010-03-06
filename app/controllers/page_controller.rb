@@ -168,38 +168,38 @@ class PageController < ApplicationController
       upload and return
     end
 
-    if ( not File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')))
-      unless File.file?(file_name)
-        file = UploadedFile.find_by_attachment_filename_and_page_id(@filename, @page.id) unless @page.nil?
-        unless !file.nil? && File.file?(Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename)
+    unless File.file?(file_name)
+      file = UploadedFile.find_by_attachment_filename_and_page_id(@filename, @page.id) unless @page.nil?
+      unless !file.nil? && File.file?(Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename)
+        if ( File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')))
+          file_name = Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')
+          content_type = 'application/octet-stream'
+        else
           if params.include? 'version' then
             return render(:action => :file_deleted)
           else
             return render(:action => :file_not_found)
           end
-        else
-          curr_file = file.current_file_version
-          file_name = Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename
-          hash = Digest::MD5.hexdigest(file.attachment_filename + file.current_file_version.version.to_s() + File.size(file_name).to_s())
-          if (!(params[:force]) && (!hash.eql?(file.current_file_version.md5)))
-            session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
-            return render(:action => :corrupted_file)
-          end
         end
       else
-        file = FileVersion.find_by_filename(@filename)
-        curr_file = file
-        hash = Digest::MD5.hexdigest(file.uploaded_file.attachment_filename + file.version.to_s() + File.size(file_name).to_s())
-        if (!(params[:force]) && (!hash.eql?(file.md5)))
+        curr_file = file.current_file_version
+        file_name = Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename
+        hash = Digest::MD5.hexdigest(file.attachment_filename + file.current_file_version.version.to_s() + File.size(file_name).to_s())
+        if (!(params[:force]) && (!hash.eql?(file.current_file_version.md5)))
           session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
           return render(:action => :corrupted_file)
         end
       end
-      content_type = curr_file.content_type
     else
-      file_name = Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')
-      content_type = 'application/octet-stream'
+      file = FileVersion.find_by_filename(@filename)
+      curr_file = file
+      hash = Digest::MD5.hexdigest(file.uploaded_file.attachment_filename + file.version.to_s() + File.size(file_name).to_s())
+      if (!(params[:force]) && (!hash.eql?(file.md5)))
+        session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
+        return render(:action => :corrupted_file)
+      end
     end
+    content_type = curr_file.content_type unless curr_file.nil? 
 
     if @current_user.can_view_page? @page
       return send_file(file_name, :type => content_type, :disposition => 'inline')  #TODO: get the newest file
@@ -572,7 +572,7 @@ class PageController < ApplicationController
       page = Page.find_by_path(path)
     end
     file = UploadedFile.find_by_attachment_filename_and_page_id(@path.last, page.id) unless page.nil?
-    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?(Path::UP_HISTORY + '/' + @path.join('/')) or (!file.nil? && (File.file?(Path::UP_HISTORY + file.page.get_path  + file.current_file_version.filename)))))
+    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?(Path::UP_HISTORY + '/' + @path.join('/'))) or (File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')) or (!file.nil? && (File.file?(Path::UP_HISTORY + file.page.get_path  + file.current_file_version.filename)))))
       @page = page
       process_file unless ret
       return true
