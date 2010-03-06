@@ -4,8 +4,8 @@ class PageController < ApplicationController
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :is_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
-  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
   before_filter :is_blank_page, :only => [:view]
+  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]  
 
   def rss
     user_from_token = User.find_by_token params[:token]
@@ -494,15 +494,15 @@ class PageController < ApplicationController
   end
 
   def can_manage_page_check
-    unprivileged unless @current_user.can_manage_page?(@page)
+    unprivileged unless !@page.nil? && @current_user.can_manage_page?(@page)
   end
 
   def can_edit_page_check
-    unprivileged unless @current_user.can_edit_page?(@page)
+    unprivileged unless !@page.nil? && @current_user.can_edit_page?(@page)
   end
 
   def can_view_page_check
-    unprivileged unless @page.nil? or @current_user.can_view_page?(@page)
+    unprivileged unless (!@page.nil? || is_file(true)) && @current_user.can_view_page?(@page)
   end
 
   def slash_check

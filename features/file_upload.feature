@@ -6,7 +6,7 @@ Feature: Secure file uploads
   Background:
     Given there are no files uploaded
     And I am logged in
-   
+
   Scenario: User tries do download a bogus file
     When I create "/" page
     And I logout
@@ -17,7 +17,7 @@ Feature: Secure file uploads
 
   Scenario: User wants to upload a file
     When I create "/" page
-    #And I upload "test_file.txt" file
+  #And I upload "test_file.txt" file
     And I follow "edit"
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
@@ -128,7 +128,7 @@ Feature: Secure file uploads
     When I follow "Files"
     Then I should see "test_file.txt"
     And I should not see "nested"
-    
+
 
   Scenario: User tries to view files list without permissions
     Given I am not logged in
@@ -148,7 +148,7 @@ Feature: Secure file uploads
     And I login as "crutch"
     And I go to ;files
     Then I should see "Permission denied."
-  
+
   Scenario: User tries to reupload existing file
     Given I am not logged in
     And I login as "user"
@@ -193,3 +193,62 @@ Feature: Secure file uploads
     Then I should see "There is a page with the same name."
     When I go to /readme
     Then I should see "citaj ma"
+
+  Scenario: User wants download file from non existing page
+    When I create "/" page
+    And I go to /a/nested/bogus_file.txt
+    Then I should see "File not found."
+
+  Scenario: Two different users upload 2 versions of the same file
+    Given I am not logged in
+    When I login as "user"
+    And I create "/" page
+    And I follow "edit"
+    And I attach the file at "readme" to "file_version_uploaded_data"
+    And I press "Upload"
+    Then I logout
+    When I login as "bio"
+    And I go to the main page
+    And I follow "edit"
+    And I attach the file at "version2/readme" to "file_version_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded."
+    When I follow "files"
+    And I follow "show file's history"
+    And show me the page
+    Then I should see "readme 1 user"
+    And I should see "readme 2 bio"
+    When I go to /readme?version=1
+    Then I should see "Some text in file."
+    When I go to /readme?version=2
+    Then I should see "Readme here version 2."
+
+  Scenario: Two files with same name on two different pages
+    When I create "/" page
+    And I follow "edit"
+    And I attach the file at "readme" to "file_version_uploaded_data"
+    And I press "Upload"
+    And I create "/nested/" page
+    And I follow "edit"
+    And I attach the file at "version2/readme" to "file_version_uploaded_data"
+    And I press "Upload"
+    And I go to the main page
+    And I go to /readme
+    Then I should see "Some text in file."
+    And I go to /nested/readme
+    Then I should see "Readme here version 2."
+  
+  Scenario: User wants to download latest version of file
+    When I create "/" page
+    And I follow "edit"
+    And I attach the file at "readme" to "file_version_uploaded_data"
+    And I press "Upload"
+    And I go to the main page
+    And I follow "edit"
+    And I attach the file at "version2/readme" to "file_version_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded."
+    When I follow "files"
+    Then I should see "readme"
+    When I go to readme
+    Then I should see "Readme here version 2."
