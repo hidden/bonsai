@@ -3,5 +3,15 @@ class UploadedFile < ActiveRecord::Base
   has_many :file_versions, :order => 'version DESC', :dependent => :destroy
   belongs_to :current_file_version, :class_name => 'FileVersion'
 
-  validates_presence_of :file_name
+  validates_presence_of :attachment_filename
+
+  def rename(name)
+    self.attachment_filename = name
+    self.save
+  end
+
+  def extension
+    File.extname(attachment_filename).delete(".").downcase
+  end
+  
 end

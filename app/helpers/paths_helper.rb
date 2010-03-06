@@ -23,6 +23,10 @@ module PathsHelper
     "#{page.get_path};update"
   end
 
+   def save_edited_page_path(page)
+    "#{page.get_path};save_edit"
+  end
+
   def upload_file_path(page)
     "#{page.get_path};upload"
   end
@@ -68,6 +72,10 @@ module PathsHelper
   end
 
   def dashboard_page_path(page)
-    (url_for :controller => 'dashboard') + "?back=#{page.get_path}"
+    url_for :controller => 'dashboard', :back => page.get_path
+  end
+
+  def file_history_page_path(page, name)
+    "#{page.get_path}#{name};history"
   end
 end

@@ -13,7 +13,7 @@ class Page < ActiveRecord::Base
   has_many :uploaded_files, :dependent => :destroy
   has_many :file_versions, :through => :uploaded_files
 
-  def get_children_tree page,user
+  def get_children_tree page, user
     Page.find_by_sql("SELECT  p.* FROM pages p
                       left join (
                       select page_id,
@@ -26,7 +26,7 @@ class Page < ActiveRecord::Base
                       where (p.lft BETWEEN #{page.lft} AND #{page.rgt})
                       and ((sum_can_view=0 and sum_can_edit=0)or (q.id is not null))
                       order by p.lft")
-  end 
+  end
 
   def self.find_by_path path
     full_path = [nil] + path
@@ -76,15 +76,27 @@ class Page < ActiveRecord::Base
   end
 
   def files
-    path = 'shared/upload' + get_path
-    entries = []  #entries - vsetky subory co su v adresari
-    entries = Dir.entries(path).select {|file| File.file?(path + file + "/" + file) } if File.directory?(path)
-    uploaded_filenames = uploaded_files.collect(&:filename)          #uploaded_filenames - subory z db
-    files_without_db_entry = entries.collect do |file|
-      UploadedFile.new(:filename => file) unless uploaded_filenames.include?(file)
+    path = Path::UP_HISTORY + get_path
+    entries = []  #entries - vsetky subory co su v adresari upload_history pre page
+    files_without_db_entries = []  #files_without_db_entries - vsetky subory co su v adresari upload pre page
+    entries = Dir.entries(path).select {|file| File.file?(path + file) } if File.directory?(path)
+    uploaded = uploaded_files.select {|file| entries.include?(file.current_file_version.filename)}
+
+    anonym_path = Path::ANONYM_UPLOAD_PATH + get_path
+    files_without_db_entries = Dir.entries(anonym_path).select {|file| File.file?(anonym_path + file) } if File.directory?(anonym_path)
+    anonym_files = files_without_db_entries.collect do |file|
+      UploadedFile.new(:attachment_filename => file, :page_id => self.id)
     end
-    uploaded = uploaded_files.select {|file| entries.include?(file.filename)}
-    (files_without_db_entry.compact + uploaded).sort_by(&:filename)
+
+    (anonym_files.compact + uploaded).sort_by(&:attachment_filename)
+  end
+
+  def file_versions(file)
+    if ((not file.nil?) and (file.page == self))
+      file.file_versions
+    else
+      file = nil
+    end
   end
 
   def add_viewer group

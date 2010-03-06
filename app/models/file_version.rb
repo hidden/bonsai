@@ -1,12 +1,12 @@
 class FileVersion < ActiveRecord::Base
   belongs_to :uploaded_file
   belongs_to :user
-  has_attachment :storage => :file_system, :path_prefix => "shared/upload", :size => 0.megabytes..15.megabytes
+  has_attachment :storage => :file_system, :path_prefix => Path::UP_HISTORY, :size => 0.megabytes..15.megabytes
 
   validates_as_attachment
 
   def full_filename(thumbnail = nil)
-    file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s + self.page.get_path.chomp("/") + "/" + self.filename
+    file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s + self.uploaded_file.page.get_path.chomp("/")
     File.join(RAILS_ROOT, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
   end
 
@@ -16,7 +16,7 @@ class FileVersion < ActiveRecord::Base
   end
 
   def exist?(page_path)
-    file = 'shared/upload' + page_path + self.filename
+    file = Path::UP_HISTORY + page_path + self.filename
     File.file?(file)
   end
 

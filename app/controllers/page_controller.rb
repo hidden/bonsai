@@ -2,10 +2,10 @@ class PageController < ApplicationController
   before_filter :load_page, :except => [:add_lock, :update_lock]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
-  prepend_before_filter :slash_check, :only => [:view]
-  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
   before_filter :is_file, :only => [:view]
+  before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
+  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
 
   def rss
     user_from_token = User.find_by_token params[:token]
@@ -30,7 +30,11 @@ class PageController < ApplicationController
   end
 
   def history
-    render :action => :show_history
+    if (is_file(true))
+      render :action => :file_history
+    else
+      render :action => :show_history
+    end
   end
 
   def diff
@@ -147,16 +151,58 @@ class PageController < ApplicationController
     @no_toolbar = true
     parent_page_path = @path.clone
     @filename = parent_page_path.pop
-    file_name = 'shared/upload/' + @path.join('/') + "/" + @filename    
+    file_name = Path::UP_HISTORY + '/' + @path.join('/')
     @page = Page.find_by_path(parent_page_path)
+
+    if params.include? 'version' then
+      unless @filename.rindex('.').nil?
+        @filename[@filename.rindex('.')] = '_version' + params[:version] + '.'
+        file_name[file_name.rindex('.')] = '_version' + params[:version] + '.'
+      else
+        @filename << '_version' + params[:version]
+        file_name << '_version' + params[:version]
+      end
+    end
 
     if params.include? 'upload' then
       upload and return
     end
-    return render(:action => :file_not_found) unless File.file?(file_name)
+
+    if ( not File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')))
+      unless File.file?(file_name)
+        file = UploadedFile.find_by_attachment_filename_and_page_id(@filename, @page.id) unless @page.nil?
+        unless !file.nil? && File.file?(Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename)
+          if params.include? 'version' then
+            return render(:action => :file_deleted)
+          else
+            return render(:action => :file_not_found)
+          end
+        else
+          curr_file = file.current_file_version
+          file_name = Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename
+          hash = Digest::MD5.hexdigest(file.attachment_filename + file.current_file_version.version.to_s() + File.size(file_name).to_s())
+          if (!(params[:force]) && (!hash.eql?(file.current_file_version.md5)))
+            session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
+            return render(:action => :corrupted_file)
+          end
+        end
+      else
+        file = FileVersion.find_by_filename(@filename)
+        curr_file = file
+        hash = Digest::MD5.hexdigest(file.uploaded_file.attachment_filename + file.version.to_s() + File.size(file_name).to_s())
+        if (!(params[:force]) && (!hash.eql?(file.md5)))
+          session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
+          return render(:action => :corrupted_file)
+        end
+      end
+      content_type = curr_file.content_type
+    else
+      file_name = Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')
+      content_type = 'application/octet-stream'
+    end
 
     if @current_user.can_view_page? @page
-      return send_file(file_name, :disposition => 'inline')  #TODO: get the newest file
+      return send_file(file_name, :type => content_type, :disposition => 'inline')  #TODO: get the newest file
     else
       return render(:action => :unprivileged)
     end
@@ -235,7 +281,6 @@ class PageController < ApplicationController
     render :action => :rss_history, :layout => false
   end
 
-
   def edit
     render :action => :edit
   end
@@ -256,6 +301,25 @@ class PageController < ApplicationController
       end
     end
     redirect_to manage_page_path(@page)
+  end
+
+  def save_edit
+    @error_flash_msg = ""
+    @notice_flash_msg = ""
+
+    if not params[:file_version].nil?
+      upload
+    end
+
+    if not (params[:new_page_part_name].empty? and params[:new_page_part_text].empty?)
+      new_part
+    end
+
+    update
+
+    flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
+    flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty?
+    redirect_to @page.get_path
   end
 
   def update
@@ -301,8 +365,12 @@ class PageController < ApplicationController
           revision.errors.each_full { |msg| error_message << msg }
           @page_part = page_part
           @page_revision = revision
-          flash[:error] = error_message
-          render :action => "edit"
+          if params[:non_redirect].nil?
+            flash[:error] = error_message
+            render :action => :edit
+          else
+            @error_flash_msg = @error_flash_msg + error_message + "\r\n"
+          end
           return true
         end
         revision.save!
@@ -313,11 +381,16 @@ class PageController < ApplicationController
     end
 
     if @num_of_changed_page_parts > 0 then
-      flash[:notice] = t(:page_updated_with_new_revisions)
+      notice = t(:page_updated_with_new_revisions)
     else
-      flash[:notice] = t(:page_updated)
+      notice = t(:page_updated)
     end
-    redirect_to @page.get_path
+    if params[:non_redirect].nil?
+      flash[:notice] = notice
+      redirect_to @page.get_path
+    else
+      @notice_flash_msg = @notice_flash_msg + notice + "\r\n"
+    end
   end
 
 
@@ -326,74 +399,102 @@ class PageController < ApplicationController
     unless page_part.valid?
       error_message = ""
       page_part.errors.each_full { |msg| error_message << msg }
-      flash[:error] = error_message
-      render :action => "edit"
+      if params[:non_redirect].nil?
+        flash[:error] = error_message
+        render :action => :edit
+      else
+        @error_flash_msg = @error_flash_msg + error_message + "\r\n"
+      end
       return true
     end
     page_part_revision = page_part.page_part_revisions.create(:user => @current_user, :body => params[:new_page_part_text], :summary => "init")
     page_part_revision.save
     page_part.current_page_part_revision = page_part_revision
     page_part.save!
-    flash[:notice] = t(:page_part_added)
-    redirect_to edit_page_path(@page)
+    if params[:non_redirect].nil?
+      flash[:notice] = t(:page_part_added)
+      redirect_to edit_page_path(@page)
+    else
+      @notice_flash_msg = @notice_flash_msg + t(:page_part_added) + "\r\n"
+    end
   end
 
   def upload
     @name = params[:uploaded_file_filename] #@name - ako sa subor musi volat pri file not found, inak nil
-    tmp_file = UploadedFile.new(params[:uploaded_file])
+    tmp_file = FileVersion.new(params[:file_version])
 
-    if @name.nil?
-      @uploaded_file = UploadedFile.find_by_filename_and_page_id(tmp_file.filename, @page.id)  #ci uz existuje taky subor
-    else
-      @uploaded_file = UploadedFile.find_by_filename_and_page_id(@name, @page.id) #ci uz existuje taky subor
-    end
-    if @uploaded_file.nil?
-      @uploaded_file = tmp_file
-    else
-      #@uploaded_file.current_file_version += 1 #increment version   
-      @uploaded_file.temp_path = tmp_file.temp_path
-    end
-    sleep(2) # TODO get rid of this    
-
-    if @uploaded_file.filename.nil?
-      flash[:notice] = t(:no_files_selected)
-      redirect_to @page.get_path
-    else
-
-#      if @uploaded_file.exist?(@page.get_path)
-#        flash[:notice] = t(:file_exists)
-#        redirect_to @page.get_path
-#      else
-
-      if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.filename)
-        flash[:notice] = t(:file_not_match)
+    if tmp_file.filename.nil?
+      if params[:non_redirect].nil?
+        flash[:notice] = t(:no_files_selected)
         redirect_to @page.get_path
       else
-        @uploaded_file.page = @page
-        @uploaded_file.user = @current_user
-        @uploaded_file.rename(@name) unless @name.nil?
-        same_page = @path
-        same_page.push(@uploaded_file.filename)
-        if Page.find_by_path(same_page).nil?
-          if @uploaded_file.save
-            flash[:notice] = t(:file_uploaded)
-            redirect_to list_files_path(@page)
+        @notice_flash_msg = @notice_flash_msg + t(:no_files_selected) + "\r\n"
+      end
+    else
+      same_page = @path
+      same_page.push(tmp_file.filename)
+      if Page.find_by_path(same_page).nil?
+        if @name.nil?
+          @uploaded_file = UploadedFile.find_by_attachment_filename_and_page_id(tmp_file.filename, @page.id)  #ci uz existuje taky subor
+        else
+          @uploaded_file = UploadedFile.find_by_attachment_filename_and_page_id(@name, @page.id) #ci uz existuje taky subor
+        end
+        if @uploaded_file.nil?
+          @uploaded_file = UploadedFile.new(:attachment_filename => tmp_file.filename, :page_id => @page.id)
+          @uploaded_file.save!
+          @file_version = tmp_file
+          @file_version.uploaded_file = @uploaded_file
+        else
+          tmp_file.version = @uploaded_file.current_file_version.version + 1
+          @file_version = tmp_file
+          @file_version.uploaded_file = @uploaded_file
+        end
+        sleep(2) # TODO get rid of this
+
+        if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.attachment_filename)
+          @uploaded_file.delete
+          if params[:non_redirect].nil?
+            flash[:notice] = t(:file_not_match)
+            redirect_to @page.get_path
           else
-            error_message = ""
-            @uploaded_file.errors.each_full { |msg| error_message << msg }
-            flash[:notice] = error_message
-            render :action => :edit
+            @notice_flash_msg = @notice_flash_msg + t(:file_not_match) + "\r\n"
           end
         else
+          @file_version.user = @current_user
+          @uploaded_file.rename(@name) unless @name.nil?
+          @file_version.md5 = Digest::MD5.hexdigest(@uploaded_file.attachment_filename + @file_version.version.to_s() + File.size(tmp_file.temp_path).to_s())
+          extension = File.extname(@uploaded_file.attachment_filename)
+          @file_version.rename(@uploaded_file.attachment_filename.chomp(extension) + "_version" + @file_version.version.to_s() + extension)
+          if @file_version.save!
+            @uploaded_file.current_file_version = @file_version
+            @uploaded_file.save
+            if params[:non_redirect].nil?
+              flash[:notice] = t(:file_uploaded)
+              redirect_to list_files_path(@page)
+            else
+              @notice_flash_msg = @notice_flash_msg + t(:file_uploaded) + "\r\n"
+            end
+          else
+            @uploaded_file.delete
+            error_message = ""
+            @uploaded_file.errors.each_full { |msg| error_message << msg }
+            if params[:non_redirect].nil?
+              flash[:notice] = error_message
+              render :action => :edit
+            else
+              @error_flash_msg = @error_flash_msg + error_message + "\r\n"
+            end
+          end
+        end
+      else
+        if params[:non_redirect].nil?
           flash[:notice] = t(:same_as_page)
           render :action => :edit
+        else
+          @notice_flash_msg = @notice_flash_msg + t(:same_as_page) + "\r\n"
         end
       end
-
-      #end
-
     end
-
   end
 
   def files
@@ -433,7 +534,6 @@ class PageController < ApplicationController
     PagePartLock.create_lock(@up_part_id, @current_user)
   end
 
-
   private
   def load_page
     @path = params[:path]
@@ -444,15 +544,15 @@ class PageController < ApplicationController
   end
 
   def can_manage_page_check
-    unprivileged unless @current_user.can_manage_page?(@page)
+    unprivileged unless !@page.nil? && @current_user.can_manage_page?(@page)
   end
 
   def can_edit_page_check
-    unprivileged unless @current_user.can_edit_page?(@page)
+    unprivileged unless !@page.nil? && @current_user.can_edit_page?(@page)
   end
 
   def can_view_page_check
-    unprivileged unless @page.nil? or @current_user.can_view_page?(@page)
+    unprivileged unless (!@page.nil? || is_file(true)) && @current_user.can_view_page?(@page)
   end
 
   def slash_check
@@ -463,11 +563,21 @@ class PageController < ApplicationController
     end
   end
 
-  def is_file
+  def is_file(ret=false)
     # is it a file?
-    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or File.file?("shared/upload/" + @path.join('/') + '/' + @path.last))
-      process_file
-      return
+    path = @path.clone
+    page = @page
+    if (page.nil?)
+      path.pop
+      page = Page.find_by_path(path)
+    end
+    file = UploadedFile.find_by_attachment_filename_and_page_id(@path.last, page.id) unless page.nil?
+    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?(Path::UP_HISTORY + '/' + @path.join('/')) or (!file.nil? && (File.file?(Path::UP_HISTORY + file.page.get_path  + file.current_file_version.filename)))))
+      @page = page
+      process_file unless ret
+      return true
+    elsif (ret)
+      return false
     end
   end
 

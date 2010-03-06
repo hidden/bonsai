@@ -34,8 +34,7 @@
     }
   </script>
 
-  <%
-     form_tag update_page_path(@page) do %>
+  <% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true}) do |f| %>
     <p><label><%= label_tag :title %><br /><%= text_field_tag('title', @page.title) %></label></p>
     <% if @current_user.can_manage_page? @page %>
       <p><%= label_tag t(:layout) %><br /><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
@@ -63,8 +62,6 @@
 
         <% end %>
 
-
-
         <%= render :partial => 'maruku_help' %>
         <p>
           <%= t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
@@ -83,27 +80,25 @@
         <%= text_field_tag('summary', nil, :size => 40) %>
       <% end %>
     </p>
+
+    <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:add_new_page_part) %></a>.</p>
+      <div style="display: none;">
+          <p>
+            <%= label_tag t(:new_part_name) %><br />
+            <%= text_field_tag('new_page_part_name') %>
+          </p>
+          <p>
+            <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80} %>
+          </p>
+          <%= render :partial => 'maruku_help' %>
+      </div>
+
+       <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:attach_file) %></a>.</p>
+          <div style="display: none;">
+              <p><label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %></label>
+          </div>
+
+     <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
     <p><%= submit_tag t(:save) %></p>
   <% end %>
-
-  <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:add_new_page_part) %></a>.</p>
-  <div style="display: none;">
-    <% form_tag ";new_part" do %>
-      <p>
-        <%= label_tag t(:new_part_name) %><br />
-        <%= text_field_tag('new_page_part_name') %>
-      </p>
-      <p>
-        <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80} %>
-      </p>
-      <%= render :partial => 'maruku_help' %>
-      <p><%= submit_tag t(:btn_new_page_part) %></p>
-    <% end %>
-  </div>
-  <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:attach_file) %></a>.</p>
-  <div style="display: none;">
-    <% form_for(:uploaded_file, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
-      <p><label for="uploaded_file"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %></label><%= submit_tag t(:btn_upload) %></p>
-    <% end %>
-  </div>
 </div>
