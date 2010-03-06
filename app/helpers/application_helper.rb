@@ -4,6 +4,10 @@ module ApplicationHelper
     text.blank? ? "" : syntax_highlight(Maruku.new(text).to_html)
   end
 
+  def without_markdown(text)
+    text.blank? ? "" : syntax_highlight(Maruku.new(text, :filter_html => true).to_html)
+  end
+
   def syntax_highlight(html)
     html.gsub(/(<pre class='[a-z0-9-]+)/, '\1;').gsub("<pre class='", "<pre class='brush:").gsub(/<.?code>/, " ").gsub("<pre ", '<pre ')
   end

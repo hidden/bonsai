@@ -1,10 +1,10 @@
 <% @search_results.each do |page| %>
-    <h2><%=link_to h(page.title), page_view_path(page.get_rel_path) %></h2>
+    <h2><a href="<%=page_view_path(page.get_rel_path)%>" title="<%= page.title %>"><%= page.excerpts.title %></a></h2>
     <% for part in page.page_parts %>
         <% unless part.current_page_part_revision.was_deleted %>
             <% @body = part.current_page_part_revision.body %>
                 <% if @body.length <= APP_CONFIG['fulltext_body_length'] %>
-                    <%= markdown(part.current_page_part_revision.body) %>
+                    <%= markdown(@body) %>
                 <% else %>
                     <%= @body[0,APP_CONFIG['fulltext_body_length']]+"..." %>
                 <% end %>
