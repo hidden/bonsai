@@ -5,7 +5,7 @@ class PageController < ApplicationController
   before_filter :is_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
-  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]  
+  before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
 
   def rss
     user_from_token = User.find_by_token params[:token]
@@ -31,10 +31,10 @@ class PageController < ApplicationController
 
   def history
     if (is_file(true))
-     render :action => :file_history 
-      else
-    render :action => :show_history
-      end
+      render :action => :file_history
+    else
+      render :action => :show_history
+    end
   end
 
   def diff
@@ -156,8 +156,8 @@ class PageController < ApplicationController
 
     if params.include? 'version' then
       unless @filename.rindex('.').nil?
-      @filename[@filename.rindex('.')] = '_version' + params[:version] + '.'
-      file_name[file_name.rindex('.')] = '_version' + params[:version] + '.'
+        @filename[@filename.rindex('.')] = '_version' + params[:version] + '.'
+        file_name[file_name.rindex('.')] = '_version' + params[:version] + '.'
       else
         @filename << '_version' + params[:version]
         file_name << '_version' + params[:version]
@@ -281,7 +281,6 @@ class PageController < ApplicationController
     render :action => :rss_history, :layout => false
   end
 
-
   def edit
     render :action => :edit
   end
@@ -302,6 +301,25 @@ class PageController < ApplicationController
       end
     end
     redirect_to manage_page_path(@page)
+  end
+
+  def save_edit
+    @error_flash_msg = ""
+    @notice_flash_msg = ""
+
+    if not params[:file_version].nil?
+      upload
+    end
+
+    if not (params[:new_page_part_name].empty? and params[:new_page_part_text].empty?)
+      new_part
+    end
+
+    update
+
+    flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
+    flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty?
+    redirect_to @page.get_path
   end
 
   def update
@@ -347,8 +365,12 @@ class PageController < ApplicationController
           revision.errors.each_full { |msg| error_message << msg }
           @page_part = page_part
           @page_revision = revision
-          flash[:error] = error_message
-          render :action => "edit"
+          if params[:non_redirect].nil?
+            flash[:error] = error_message
+            render :action => :edit
+          else
+            @error_flash_msg = @error_flash_msg + error_message + "\r\n"
+          end
           return true
         end
         revision.save!
@@ -359,11 +381,16 @@ class PageController < ApplicationController
     end
 
     if @num_of_changed_page_parts > 0 then
-      flash[:notice] = t(:page_updated_with_new_revisions)
+      notice = t(:page_updated_with_new_revisions)
     else
-      flash[:notice] = t(:page_updated)
+      notice = t(:page_updated)
     end
-    redirect_to @page.get_path
+    if params[:non_redirect].nil?
+      flash[:notice] = notice
+      redirect_to @page.get_path
+    else
+      @notice_flash_msg = @notice_flash_msg + notice + "\r\n"
+    end
   end
 
 
@@ -372,16 +399,24 @@ class PageController < ApplicationController
     unless page_part.valid?
       error_message = ""
       page_part.errors.each_full { |msg| error_message << msg }
-      flash[:error] = error_message
-      render :action => "edit"
+      if params[:non_redirect].nil?
+        flash[:error] = error_message
+        render :action => :edit
+      else
+        @error_flash_msg = @error_flash_msg + error_message + "\r\n"
+      end
       return true
     end
     page_part_revision = page_part.page_part_revisions.create(:user => @current_user, :body => params[:new_page_part_text], :summary => "init")
     page_part_revision.save
     page_part.current_page_part_revision = page_part_revision
     page_part.save!
-    flash[:notice] = t(:page_part_added)
-    redirect_to edit_page_path(@page)
+    if params[:non_redirect].nil?
+      flash[:notice] = t(:page_part_added)
+      redirect_to edit_page_path(@page)
+    else
+      @notice_flash_msg = @notice_flash_msg + t(:page_part_added) + "\r\n"
+    end
   end
 
   def upload
@@ -389,8 +424,12 @@ class PageController < ApplicationController
     tmp_file = FileVersion.new(params[:file_version])
 
     if tmp_file.filename.nil?
-      flash[:notice] = t(:no_files_selected)
-      redirect_to @page.get_path
+      if params[:non_redirect].nil?
+        flash[:notice] = t(:no_files_selected)
+        redirect_to @page.get_path
+      else
+        @notice_flash_msg = @notice_flash_msg + t(:no_files_selected) + "\r\n"
+      end
     else
       same_page = @path
       same_page.push(tmp_file.filename)
@@ -413,9 +452,13 @@ class PageController < ApplicationController
         sleep(2) # TODO get rid of this
 
         if !@name.nil? && File.extname(@name) != File.extname(@uploaded_file.attachment_filename)
-          flash[:notice] = t(:file_not_match)
           @uploaded_file.delete
-          redirect_to @page.get_path
+          if params[:non_redirect].nil?
+            flash[:notice] = t(:file_not_match)
+            redirect_to @page.get_path
+          else
+            @notice_flash_msg = @notice_flash_msg + t(:file_not_match) + "\r\n"
+          end
         else
           @file_version.user = @current_user
           @uploaded_file.rename(@name) unless @name.nil?
@@ -425,25 +468,33 @@ class PageController < ApplicationController
           if @file_version.save!
             @uploaded_file.current_file_version = @file_version
             @uploaded_file.save
-            flash[:notice] = t(:file_uploaded)
-            redirect_to list_files_path(@page)
+            if params[:non_redirect].nil?
+              flash[:notice] = t(:file_uploaded)
+              redirect_to list_files_path(@page)
+            else
+              @notice_flash_msg = @notice_flash_msg + t(:file_uploaded) + "\r\n"
+            end
           else
             @uploaded_file.delete
             error_message = ""
-            @file_version.errors.each_full { |msg| error_message << msg }
-            flash[:notice] = error_message
-            render :action => :edit
+            @uploaded_file.errors.each_full { |msg| error_message << msg }
+            if params[:non_redirect].nil?
+              flash[:notice] = error_message
+              render :action => :edit
+            else
+              @error_flash_msg = @error_flash_msg + error_message + "\r\n"
+            end
           end
         end
       else
-        flash[:notice] = t(:same_as_page)
-        redirect_to list_files_path(@page)
+        if params[:non_redirect].nil?
+          flash[:notice] = t(:same_as_page)
+          render :action => :edit
+        else
+          @notice_flash_msg = @notice_flash_msg + t(:same_as_page) + "\r\n"
+        end
       end
-
-      #end
-
     end
-
   end
 
   def files
@@ -482,7 +533,6 @@ class PageController < ApplicationController
     @up_part_id = params[:part_id]
     PagePartLock.create_lock(@up_part_id, @current_user)
   end
-
 
   private
   def load_page
@@ -525,7 +575,7 @@ class PageController < ApplicationController
     if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?(Path::UP_HISTORY + '/' + @path.join('/')) or (!file.nil? && (File.file?(Path::UP_HISTORY + file.page.get_path  + file.current_file_version.filename)))))
       @page = page
       process_file unless ret
-     return true
+      return true
     elsif (ret)
       return false
     end

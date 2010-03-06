@@ -1,4 +1,4 @@
-class CreateUploadedFiles < ActiveRecord::Migration
+class ChangeUploadedFiles < ActiveRecord::Migration
   def self.up
     change_table :uploaded_files do |t|
       t.remove :size, :content_type, :filename, :page_id

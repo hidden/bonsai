@@ -13,21 +13,17 @@ Feature: Wiki layouting and many page parts
      And I login as "johno"
      And I add "menu" page part with text "This is a text of a new page part"
      Then I should see "Page part successfully added."
-     And I should see "menu"
      And I should see "This is a text of a new page part"
-     And I should not see "Page successfully updated."
 
   Scenario: User creates a page with header and pewe layout
     When I create "/" page with title "Root page" body "Root body!" and "PeWe Layout" layout
     And I add "navigation" page part with text "This is a header"
-    And I follow "View"
     Then I should see "This is a header" within "#nav"
 
   Scenario: User create a page part and then delete, it should not be seen from now on
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
     Then I should see "Page part successfully added."
-    And I follow "View"
     Then I should see "This is a header"
     When I delete "testpage" page part
     Then I should see "Page successfully updated."
@@ -37,7 +33,6 @@ Feature: Wiki layouting and many page parts
   Scenario: User create a page part and rename it
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
-    And I follow "View"
     Then I should see "This is a header"
     And I edit "testpage" page part with text "testpage2"
     Then I should see "Page successfully updated."

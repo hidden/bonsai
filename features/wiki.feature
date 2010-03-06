@@ -11,7 +11,6 @@ Feature: Wiki
     When I follow "edit"
     And I fill in "new_page_part_name" with "first"
     And I fill in "new_page_part_text" with "This is first revision"
-    And I press "Add new page part"
     And I press "Save"
     And I follow "history"
     And I compare revision "first_revision_1" with "second_revision_2"
@@ -43,7 +42,7 @@ Feature: Wiki
     When I follow "edit"
     And I fill in "new_page_part_name" with "caption"
     And I fill in "new_page_part_text" with "This is original caption."
-    And I press "Add new page part"
+    And I press "Save"
     And I create "/test" page
     And I go to the main page
     When I follow "edit"
