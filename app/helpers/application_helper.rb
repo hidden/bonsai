@@ -5,7 +5,7 @@ module ApplicationHelper
   end
 
   def without_markdown(text)
-    text.blank? ? "" : syntax_highlight(Maruku.new(text, :filter_html => true).to_html)
+    text.blank? ? "" : syntax_highlight(Maruku.new(text, :filter_html => true).to_s)
   end
 
   def syntax_highlight(html)

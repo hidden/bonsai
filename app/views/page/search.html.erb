@@ -4,7 +4,7 @@
         <% unless part.current_page_part_revision.was_deleted %>
             <% @body = part.current_page_part_revision.body %>
                 <% if @body.length <= APP_CONFIG['fulltext_body_length'] %>
-                    <%= markdown(@body) %>
+                    <%= without_markdown(@body) %>
                 <% else %>
                     <%= @body[0,APP_CONFIG['fulltext_body_length']]+"..." %>
                 <% end %>
