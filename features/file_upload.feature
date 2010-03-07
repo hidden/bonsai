@@ -20,9 +20,7 @@ Feature: Secure file uploads
   #And I upload "test_file.txt" file
     And I follow "edit"
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
-    And show me the page
     And I press "Save"
-    And show me the page
     Then I should see "Page successfully updated."
     When I go to /test_file.txt
     Then I should see "Some text in file."
