@@ -13,12 +13,6 @@ class Page < ActiveRecord::Base
   has_many :uploaded_files, :dependent => :destroy
   has_many :file_versions, :through => :uploaded_files
 
-  define_index do
-    indexes page_parts_revisions.body, :as => :page_part_body
-    indexes page_parts.name, :as => :page_part_name
-    indexes pages.title, :as => :page_title
-  end
-
   named_scope :find_all_public, :joins => "LEFT JOIN page_permissions pp ON pages.id = pp.page_id AND pp.can_view = 1", :conditions => "pp.id IS NULL"
 
   define_index do

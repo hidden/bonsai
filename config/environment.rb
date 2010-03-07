@@ -4,6 +4,11 @@
 # you don't control web/app server and can't set it the proper way
 # ENV['RAILS_ENV'] ||= 'production'
 
+module Path
+  UP_HISTORY = 'shared/upload_history'
+  ANONYM_UPLOAD_PATH = 'shared/upload'
+end
+
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.3.5' unless defined? RAILS_GEM_VERSION
 
