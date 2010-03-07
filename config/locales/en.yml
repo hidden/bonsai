@@ -3,3 +3,7 @@
 
 en:
   hello: "Hello world"
+  pagination:
+    prev_label: "Previous page"
+    next_label: "Next page"
+    

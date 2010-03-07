@@ -5,6 +5,10 @@
 # by Jozef Fulop (jofi-rails@silake.com)
 
 sk:
+  pagination:
+    prev_label: "Predosle"
+    next_label: "Nasledujuce"
+
     # ActiveSupport
     support:
         array:

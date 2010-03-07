@@ -14,7 +14,8 @@
 <% end %>
 
 <% if @search_results.size > 0 %>
-    <%= will_paginate @search_results %>
+    <%= will_paginate @search_results, :prev_label => t("pagination.prev_label"),
+:next_label => t("pagination.next_label") %>
 <% else %>
    <h2><%= t(:no_page_results_title) %></h2>
    <p><%= t(:no_page_results_body) %></p>
