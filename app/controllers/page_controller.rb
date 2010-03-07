@@ -8,7 +8,7 @@ class PageController < ApplicationController
   before_filter :is_blank_page, :only => [:view]
 
   def search
-    @search_results = Page.search params[:search], :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']#, :conditions => ["id IN (?)", @current_user.find_all_accessible_pages]
+    @search_results = Page.search params[:search], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
   end
   
   def rss
