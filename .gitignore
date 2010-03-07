@@ -6,3 +6,4 @@ shared
 .idea
 config/database.yml
 *.*~
+rerun.txt
