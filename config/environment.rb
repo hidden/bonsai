@@ -41,7 +41,7 @@ Rails::Initializer.run do |config|
   config.gem 'chronic', :version => ">= 0.2.3"
   config.gem 'whenever'
   config.gem 'will_paginate', :version => '>=2.3.11'
-  config.gem 'thinking-sphinx', :lib => 'thinking_sphinx', :version => '>=1.2'
+  config.gem 'thinking-sphinx', :lib => 'thinking_sphinx', :version => '>=1.3.2'
 
   # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.
