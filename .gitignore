@@ -1,7 +1,7 @@
 nbproject
 tmp
 log
-shared
+shared/*
 .idea
 config/database.yml
 *.*~
