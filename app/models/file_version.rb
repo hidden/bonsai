@@ -1,9 +1,24 @@
 class FileVersion < ActiveRecord::Base
-  belongs_to :uploaded_file
-  belongs_to :user
+  belongs_to :file, :class_name => "UploadedFile"
+  belongs_to :uploader, :class_name => "User"
+  
   has_attachment :storage => :file_system, :path_prefix => Path::UP_HISTORY, :size => 0.megabytes..15.megabytes
 
   validates_as_attachment
+
+  def filename
+    file.filename
+  end
+
+  def filename_with_version
+    name = file.filename
+    suffix = "_version#{version}"
+    extension = file.extension
+    return "#{name}#{suffix}" if extension.blank?
+    position = name.rindex(extension)
+    name[position] = "#{suffix}."
+    name
+  end
 
   def full_filename(thumbnail = nil)
     file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s + self.uploaded_file.page.get_path.chomp("/")

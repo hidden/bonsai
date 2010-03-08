@@ -1,17 +1,9 @@
 class UploadedFile < ActiveRecord::Base
   belongs_to :page
-  has_many :file_versions, :order => 'version DESC', :dependent => :destroy
-  belongs_to :current_file_version, :class_name => 'FileVersion'
-
-  validates_presence_of :attachment_filename
-
-  def rename(name)
-    self.attachment_filename = name
-    self.save
-  end
+  has_many :versions, :class_name => "FileVersion", :order => 'version DESC', :dependent => :destroy
+  belongs_to :current_version, :class_name => "FileVersion"
 
   def extension
-    File.extname(attachment_filename).delete(".").downcase
+    File.extname(filename)
   end
-  
 end
