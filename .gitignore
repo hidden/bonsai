@@ -1,12 +1,12 @@
 nbproject
 tmp
 log
-public/upload
 shared
 .idea
 config/database.yml
 *.*~
 rerun.txt
 db/sphinx
-config/development.sphinx.conf
+config/*.sphinx.conf
+
 
