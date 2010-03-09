@@ -1,22 +1,22 @@
-<% @search_results.each do |page| %>
-    <h2><a href="<%=page_view_path(page.get_rel_path)%>" title="<%= page.title %>"><%= page.excerpts.title %></a></h2>
-    <% for part in page.page_parts %>
-        <% unless part.current_page_part_revision.was_deleted %>
-            <% @body = part.current_page_part_revision.body %>
-                <% if @body.length <= APP_CONFIG['fulltext_body_length'] %>
-                    <%= without_markdown(@body) %>
-                <% else %>
-                    <%= @body[0,APP_CONFIG['fulltext_body_length']]+"..." %>
-                <% end %>
-            <% break %>
+<% if @search_results.total_entries == 0 %>
+    <h2><%= t(:no_page_results_title) %></h2>
+    <p><%= t(:no_page_results_body) %></p>
+<% else %>
+
+    <% @search_results.each do |page| %>
+        <h2><%= link_to  page.excerpts.title, view_page_path(page) %></h2>
+        <% for part in page.page_parts %>
+            <% unless part.current_page_part_revision.was_deleted %>
+                <%
+                   body = without_markdown(part.current_page_part_revision.body)
+                   excerpt = excerpt(body, @query, :radius => 100)
+                   excerpt = body[0, APP_CONFIG['fulltext_body_length']] if excerpt.blank?
+                %>
+                <%= h excerpt %>
+            <% end %>
         <% end %>
     <% end %>
-<% end %>
-
-<% if @search_results.size > 0 %>
-    <%= will_paginate @search_results, :prev_label => t("pagination.prev_label"),
-:next_label => t("pagination.next_label") %>
-<% else %>
-   <h2><%= t(:no_page_results_title) %></h2>
-   <p><%= t(:no_page_results_body) %></p>
+    <% if @search_results.total_pages > 1 %>
+        <%= will_paginate @search_results, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
+    <% end %>
 <% end %>
