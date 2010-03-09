@@ -32,8 +32,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    I18n.locale = (defined? @current_user.prefered_locale) ? @current_user.prefered_locale : get_locale_from_header
-    I18n.locale = :en if (I18n.locale != 'en' && I18n.locale != 'sk') 
+    locale = @current_user.prefered_locale.nil? ? @current_user.prefered_locale : get_locale_from_header
+    I18n.locale = I18n.available_locales.include?(locale) ? locale : :en
   end
 
   private
