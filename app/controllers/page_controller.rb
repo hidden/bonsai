@@ -8,7 +8,13 @@ class PageController < ApplicationController
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
 
   def search
-    @search_results = Page.search params[:search], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
+    visible_page_ids = @current_user.find_all_accessible_pages.collect(&:id)
+    @search_results = Page.search(
+            params[:q],
+            :with => {:page_id => visible_page_ids},
+            :page => params[:page],
+            :per_page => APP_CONFIG['fulltext_page_results']
+    )
   end
   
   def rss
@@ -155,61 +161,29 @@ class PageController < ApplicationController
     @no_toolbar = true
     parent_page_path = @path.clone
     @filename = parent_page_path.pop
-    file_name = Path::UP_HISTORY + '/' + @path.join('/')
     @page = Page.find_by_path(parent_page_path)
+    return render(:action => :unprivileged) unless @current_user.can_view_page? @page
 
-    if params.include? 'version' then
-      unless @filename.rindex('.').nil?
-        @filename[@filename.rindex('.')] = '_version' + params[:version] + '.'
-        file_name[file_name.rindex('.')] = '_version' + params[:version] + '.'
+    full_filename = "shared/uploads/" + @path.join('/')    
+    file = @page.uploaded_files.find_by_filename(@filename)
+    if file.nil?
+      if File.file?(full_filename)
+        # file exists but not in db
+        return send_file(full_filename, :disposition => 'inline')
       else
-        @filename << '_version' + params[:version]
-        file_name << '_version' + params[:version]
+        return render(:action => :file_not_found)
       end
     end
 
-    if params.include? 'upload' then
-      upload and return
-    end
+    file_version = params[:version].blank? ? file.current_version : file.versions.find_by_version(params[:version])
+    return render(:action => :file_not_found) if file_version.nil?  
 
-    unless File.file?(file_name)
-      file = UploadedFile.find_by_attachment_filename_and_page_id(@filename, @page.id) unless @page.nil?
-      unless !file.nil? && File.file?(Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename)
-        if ( File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')))
-          file_name = Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')
-          content_type = 'application/octet-stream'
-        else
-          if params.include? 'version' then
-            return render(:action => :file_deleted)
-          else
-            return render(:action => :file_not_found)
-          end
-        end
-      else
-        curr_file = file.current_file_version
-        file_name = Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename
-        hash = Digest::MD5.hexdigest(file.attachment_filename + file.current_file_version.version.to_s() + File.size(file_name).to_s())
-        if (!(params[:force]) && (!hash.eql?(file.current_file_version.md5)))
-          session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
-          return render(:action => :corrupted_file)
-        end
-      end
-    else
-      file = FileVersion.find_by_filename(@filename)
-      curr_file = file
-      hash = Digest::MD5.hexdigest(file.uploaded_file.attachment_filename + file.version.to_s() + File.size(file_name).to_s())
-      if (!(params[:force]) && (!hash.eql?(file.md5)))
-        session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
-        return render(:action => :corrupted_file)
-      end
-    end
-    content_type = curr_file.content_type unless curr_file.nil?
-
-    if @current_user.can_view_page? @page
-      return send_file(file_name, :type => content_type, :disposition => 'inline')  #TODO: get the newest file
-    else
-      return render(:action => :unprivileged)
-    end
+    return send_file(
+            file_version.full_filename,
+            :filename => file_version.newest? ? file_version.filename : file_version.filename_with_version,
+            :type => file_version.content_type,
+            :disposition => "inline"
+    )
   end
 
   def new
@@ -575,8 +549,8 @@ class PageController < ApplicationController
       path.pop
       page = Page.find_by_path(path)
     end
-    file = UploadedFile.find_by_attachment_filename_and_page_id(@path.last, page.id) unless page.nil?
-    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?(Path::UP_HISTORY + '/' + @path.join('/'))) or (File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')) or (!file.nil? && (File.file?(Path::UP_HISTORY + file.page.get_path  + file.current_file_version.filename)))))
+    file = UploadedFile.find_by_filename_and_page_id(@path.last, page.id) unless page.nil?
+    if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?(Path::UP_HISTORY + '/' + @path.join('/'))) or (File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')) or (!file.nil? && (File.file?(Path::UP_HISTORY + file.page.get_path  + file.current_version.filename)))))
       @page = page
       process_file unless ret
       return true

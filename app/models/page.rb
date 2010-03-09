@@ -11,33 +11,18 @@ class Page < ActiveRecord::Base
   has_many :manager_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_manage = ?', true]
 
   has_many :uploaded_files, :dependent => :destroy
-  has_many :file_versions, :through => :uploaded_files
 
   named_scope :find_all_public, :joins => "LEFT JOIN page_permissions pp ON pages.id = pp.page_id AND pp.can_view = 1", :conditions => "pp.id IS NULL"
 
   define_index do
-    indexes page_parts_revisions.body, :as => :page_part_body
-    indexes page_parts.name, :as => :page_part_name
-    indexes pages.title, :as => :page_title
+    indexes :title
+    indexes page_parts.current_page_part_revision.body, :as => :body
+    indexes page_parts.name, :as => :part_name
+    has :id, :as => :page_id
   end
 
   def to_sym
     self.id
-  end
-
-  def get_children_tree page,user
-    Page.find_by_sql("SELECT  p.* FROM pages p
-                      left join (
-                      select page_id,
-                             count(can_view) sum_can_view,
-                             count(can_edit) sum_can_edit 
-                      from page_permissions group by page_id) w on w.page_id=p.id
-                      left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
-                      left join groups q
-                      ON q.id = a.group_id and q.name='#{user}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
-                      where (p.lft BETWEEN #{page.lft} AND #{page.rgt})
-                      and ((sum_can_view=0 and sum_can_edit=0)or (q.id is not null))
-                      order by p.lft")
   end
 
   def self.find_by_path path
