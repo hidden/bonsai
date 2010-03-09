@@ -9,8 +9,9 @@ class PageController < ApplicationController
 
   def search
     visible_page_ids = @current_user.find_all_accessible_pages.collect(&:id)
+    @query = params[:q]
     @search_results = Page.search(
-            params[:q],
+            @query,
             :with => {:page_id => visible_page_ids},
             :page => params[:page],
             :per_page => APP_CONFIG['fulltext_page_results']
