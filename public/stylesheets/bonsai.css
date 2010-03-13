@@ -5,6 +5,7 @@
 body {
     margin: 0;
     padding: 0;
+    background: #e7e7e7;
 }
 
 .bonsai a img {
@@ -329,3 +330,114 @@ input[type="submit"]#login_button{
     font-weight:bold;
 }
 
+/*hlavne telo stranky*/
+.wrapper{
+    margin:0 10px;
+    height:100%;
+}
+
+.holder{
+	background:#FFFFFF url('../images/layouts/left_shadow.png') repeat-y left;
+	padding:0px;
+	margin:0 0px;
+	float:left;
+	width:100%;
+    
+}
+
+
+.holder_right{
+	background: url('../images/layouts/right_shadow_light.png') repeat-y right;
+	float:right;
+	padding:0px;
+	margin:0px;
+	width:100%;
+}
+
+/*
+
+.holder_right_dark{
+	background: url('../images/layouts/right_shadow.png') repeat-y right;
+	float:right;
+	padding:0px;
+	margin:0px;
+	width:100%;
+}
+
+
+
+.header{
+	width:100%;
+	padding:0px;
+	margin:0px;
+	background: url('../images/layouts/header_bg.png') repeat-x left;
+    margin-top:10px;
+    height:57px;
+}
+
+.header_content{
+	background: url('../images/layouts/header_left.png') no-repeat left;
+	float:left;
+	height:37px;
+    padding: 15px 30px;
+    min-width:450px;
+}
+
+.header_right{
+	background: url('../images/layouts/header_right.png') no-repeat right;
+	height:67px;
+}
+
+
+.main_content{
+  height:100%;
+  float:left;
+  padding:0 33px;
+  white-space:nowrap;
+}
+
+.main_content_right{
+	height:100%;
+	float:right;
+	width:244px;
+	background:transparent;
+    padding:0 33px;
+}
+
+.footer{
+	background: #FFFFFF url('../images/layouts/bg_bottom.png') left bottom  repeat-x;
+	padding:0px;
+	margin:0px;
+    haight:18px;
+    padding:0px;
+	margin:0px;
+}
+
+.footer_left{
+	background: url('../images/layouts/left_bottom.png') left no-repeat;
+	float:left;
+	height:18px;
+	width:12px;
+    padding:0px;
+	margin:0px;
+
+}
+
+.footer_right_dark{
+	background: url('../images/layouts/right_bottom_dark.png') right no-repeat;
+	float:right;
+	width:304px;
+	height:18px;
+    padding:0px;
+	margin:0px;
+}
+
+.footer_right_light{
+	background: url('../images/layouts/right_bottom_light.png') right no-repeat;
+	float:right;
+	width:304px;
+	height:18px;
+    padding:0px;
+	margin:0px;
+}
+*/

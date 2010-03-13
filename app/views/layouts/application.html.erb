@@ -37,17 +37,40 @@
     <!-- End WMD Editor -->
     <%= javascript_include_tag :defaults, :cache => true %>
     <%= render :partial => 'shared/rss_link' %>
+    <%= javascript_include_tag 'menu.js' %>
+    
+   <script type="text/javascript">
+      function showLogin(){
+          var login = (document.getElementsByClassName("login_box"))[0];
+          if(login != null){
+
+              login.style.display = (login.style.display=='none') ? 'block' : 'none';
+          }
+      }
+  </script>
+
   </head>
-  <body onLoad="javascript:findTextareasAndCreateEditor()">
-    <%= render :partial => 'shared/toolbar' %>
-    <div id="holder">
-    <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
-    <%= yield %>
-    </div>
-  <%= render :partial => 'shared/analytics' %>
-  <script type="text/javascript">
-      SyntaxHighlighter.all();
-     dp.SyntaxHighlighter.HighlightAll('code');
-13</script>
-  </body>
+  <body onLoad="javascript:findTextareasAndCreateEditor();clickMenu('menu')">
+<%= render :partial => 'shared/toolbar' %>
+<% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
+  <% if not @page.nil? %>
+      <% if @page.self_and_ancestors.size > 1%>
+        <div class="breadcrumb">
+          <%= @page.self_and_ancestors.collect {|node| link_to_page node}.join " &gt; " %>
+        </div>
+      <% end %>
+  <% end %>
+
+  <div class="holder">
+  <%= yield %>
+  </div>
+
+
+<%= render :partial => 'shared/analytics' %>
+<script type="text/javascript">
+    SyntaxHighlighter.all();
+    dp.SyntaxHighlighter.HighlightAll('code');
+    13</script>
+
+</body>
 </html>

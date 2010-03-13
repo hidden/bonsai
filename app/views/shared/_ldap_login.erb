@@ -1,7 +1,7 @@
 <% form_tag login_path do %>
-    <p class="login">
-      <label><%= t(:login) %>  <%= text_field_tag 'username', nil, :size => 10 %></label>
-      <label><%= t(:password) %> <%= password_field_tag 'password', nil, :size => 15 %></label>
-      <%= submit_tag t(:btn_log_in) %>
-    </p>
+    <div class="login_area">
+      <label for="username"><%= t(:login) %></label>  <%= text_field_tag 'username', nil, :size => 10 %>
+      <label for="password"><%= t(:password) %></label> <%= password_field_tag 'password', nil, :size => 15 %>
+      <%= submit_tag t(:btn_log_in), :id => 'login_button' %>
+   </div>
 <% end %>
