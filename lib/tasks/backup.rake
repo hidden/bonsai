@@ -24,8 +24,8 @@ namespace :fileSystem do
     File.makedirs(backup_folder)
     cp_r(File.join('shared', 'upload_history'), backup_folder) unless not File.exist?(File.join('shared', 'upload_history'))
     cp_r(File.join('shared', 'upload'), backup_folder) unless not File.exist?(File.join('shared', 'upload'))
-    folders = Dir.entries(backup_path).sort.reject {|folder| folder == "." or folder == ".."}
 
+    folders = Dir.entries(backup_path).sort.reject {|folder| folder == "." or folder == ".."}
     if (folders.length > period)
       rm_rf File.join(backup_path, folders.first)
     end
