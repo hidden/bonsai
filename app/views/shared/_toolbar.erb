@@ -7,10 +7,10 @@
   <% unless @page.nil? || @no_toolbar %>
       <p>
         <span class="actions">
+          <% if @current_user.logged? %><%= render :partial => 'shared/favorite' %><% end %>
           <% unless @hide_view_in_toolbar %>
               <%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t(:view), @page.get_path %>
-          <% end %>
-          <% if @current_user.logged? %><%= render :partial => 'shared/favorite' %><% end %>
+          <% end %>          
           <% if @current_user.logged? %><%= link_to image_tag('icons/user.png', :alt => '') + " " + t(:dashboard), dashboard_page_path(@page) %><% end %>
           <% if @current_user.can_view_page? @page %><%= link_to icon_tag('page_white_stack.png', :alt => '') + " " + t(:history), page_history_path(@page) %><% end %>
           <% if @current_user.can_edit_page? @page %><%= link_to icon_tag('page_white_edit.png', :alt => '') + " " + t(:edit), edit_page_path(@page) %><% end %>

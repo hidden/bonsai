@@ -5,7 +5,7 @@ Feature: Wiki
 
   Background:
     Given I am logged in
-    
+
   Scenario: User wants to create new group
     When I create "/" page
     And I create "New group" group
@@ -24,7 +24,7 @@ Feature: Wiki
     And I fill in "group_name" with "MyNewNameOfgroup"
     And I press "Update"
     Then I should see "Group was successfully updated."
-    
+
   Scenario: User wants to delete group
     When I create "/" page
     And I create "MyNewGroup" group
@@ -120,3 +120,31 @@ Feature: Wiki
     When I logout
     And I go to /groups
     Then I should see "Permission denied"
+
+  Scenario: user with the same name as group login
+    When I create "/" page
+    And I create "pewe" group
+    Then I should see "Group was successfully created."
+    When I logout
+    And I login as "pewe"
+    Then I should see "You have successfully logged in."
+    Then I should see "Logged in as: pewe"
+    When I follow "Groups"
+    Then I should not see "pewe  "
+    And I should see "pewe_group"
+
+  Scenario: user with the same name as group login (2)
+    When I create "/" page
+    And I create "fero" group
+    And I should see "Group was successfully created."
+    And I go to the main page
+    And I create "fero_group" group
+    Then I should see "Group was successfully created."
+    When I logout
+    And I login as "fero"
+    Then I should see "You have successfully logged in."
+    Then I should see "Logged in as: fero"
+    When I follow "Groups"
+    Then I should not see "fero  "
+    And I should see "fero_group"
+    And I should see "fero_group2"
