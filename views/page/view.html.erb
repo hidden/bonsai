@@ -1,0 +1,7 @@
+<% if @page.self_and_ancestors.size > 1 %><p class="breadcrumb"><%= @page.self_and_ancestors.collect {|node| link_to_page node}.join " &gt; " %></p><% end %>
+<h1><%=h @page.title %></h1>
+<% for part in @page.page_parts %>
+  <% unless part.current_page_part_revision.was_deleted %>
+    <%= markdown(part.current_page_part_revision.body) %>
+  <% end %>
+<% end %>

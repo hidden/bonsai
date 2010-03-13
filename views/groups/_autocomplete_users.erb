@@ -1,0 +1,5 @@
+<ul>
+<% for user in @users %>
+ <li><span class="username"><%= highlight(h(user.username), @infix, :ignore_special_chars => true) %></span> (<%= highlight(h(user.name), @infix, :ignore_special_chars => true) %>)</li>
+<% end %>
+</ul>

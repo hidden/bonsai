@@ -1,0 +1,1 @@
+page.call 'show_confirm', @editedbyanother, @add_part_id, @add_part_name

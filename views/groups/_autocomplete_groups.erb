@@ -1,0 +1,19 @@
+<ul>
+<% for group in  @auto_groups %>
+  <li>
+    <span class="groupname"><%= highlight(h(group.name), @infix, :ignore_special_chars => true) %></span>
+    <p style="font-size: small">
+    <% infix_users =  group.users.all(:conditions => ["name LIKE :infix OR username LIKE :infix", {:infix => "%#{@infix}%"}]) %>
+    <% users = group.users.all(:conditions => ["name NOT LIKE :infix AND username NOT LIKE :infix", {:infix => "%#{@infix}%"}]) %>
+    <% for user in infix_users %>
+        <%= highlight(h(user.username), @infix, :ignore_special_chars => true)%>
+        <% if !user.username.downcase.include?(@infix.downcase) && user.name.downcase.include?(@infix.downcase)%>
+          (<%= highlight(h(user.name), @infix, :ignore_special_chars => true)%>)
+        <% end%><% if infix_users.length < 3 && users.length > 0 %>,<% end %>
+    <% end %>
+    <%= highlight(h(users.first(3 - infix_users.length).collect(&:username).join(', ')), @infix, :ignore_special_chars => true) %>
+    <% if (group.users.length > 3) %>&hellip;<% end %>
+    </p>
+  </li>
+<% end %>
+</ul>
