@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
   end
 
   def create_user_group
-    tmp_group = Group.find_by_name(self.username)
+    tmp_group = Group.find_by_name_and_usergroup(self.username, false)
     tmp_group.rename unless tmp_group.nil?
     Group.create(:name => self.username, :usergroup => true).add_as_non_viewer(self)
   end
