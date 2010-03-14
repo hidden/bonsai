@@ -593,6 +593,7 @@ input[type="submit"]#save_button{
 .header_content span.subtitle{
     font-size:32px;
     float:left;
+    margin-right:3px;
 }
 .header_content h1{
     margin:0 0;
