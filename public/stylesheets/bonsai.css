@@ -573,3 +573,16 @@ input[type="submit"]#save_button{
     width:73px;
     height:28px;
 }
+
+/*view */
+.breadcrumb {
+    padding: 10px  20px;
+    margin-right:400px;
+	position:relative;
+}
+.header_content h1{
+    margin:0 0;
+    background:none;
+    border:none;
+    color:#404040;
+}
