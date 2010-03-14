@@ -590,7 +590,7 @@ input[type="submit"]#save_button{
 .header_content{
     color:#9f9f9f;
 }
-.header_content span{
+.header_content span.subtitle{
     font-size:32px;
     float:left;
 }
