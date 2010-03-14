@@ -8,7 +8,7 @@ class PageController < ApplicationController
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
 
   def search
-    @search_results = Page.search params[:search], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
+    @search_results = Page.search params[:search_text], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
   end
   
   def rss
@@ -108,7 +108,7 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def switch_editable
@@ -121,28 +121,46 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def change_permission
     page_permission = @page.page_permissions[params[:index].to_i]
-    if (params[:permission] == "can_view")
+    if (params[:permission] == t(:viewer))
       if (page_permission.group.users.include? @current_user)
         flash[:notice] = t(:can_view_error)
       else
-        page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
+        #page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
+        @page.add_viewer(page_permission.group)
+
+        #znizenie prav, ak pouzivatel nejake mal
+        if(page_permission.can_edit?)
+          @page.remove_editor(page_permission.group)
+        end
+        if(page_permission.can_manage?)
+          @page.remove_manager(page_permission.group)
+        end
+
       end
-    elsif (params[:permission] == "can_edit")
+    elsif (params[:permission] == t(:editor))
       if (page_permission.group.users.include? @current_user)
         flash[:notice] = t(:can_edit_error)
       else
-        page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
+        #page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
+        @page.add_editor(page_permission.group)
+
+        #znizenie prav, ak pouzivatel nejake mal
+        if(page_permission.can_manage?)
+          @page.remove_manager(page_permission.group)
+        end
+        
       end
-    elsif (params[:permission] == "can_manage")
-      page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
+    elsif (params[:permission] == t(:manager))
+       #page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
+      @page.add_manager(page_permission.group)
     end
     page_permission.save
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def remove_permission
@@ -298,18 +316,70 @@ class PageController < ApplicationController
         retVal = group.is_public?
         retValUsers = users.include?(@current_user)
         if (retVal || retValUsers)
-          @page.add_viewer group if params[:group_role][:type] == 'viewer'
-          @page.add_editor group if params[:group_role][:type] == 'editor'
-          @page.add_manager group if params[:group_role][:type] == 'manager'
+          @page.add_viewer group if params[:group_role][:type] == t(:viewer)
+          @page.add_editor group if params[:group_role][:type] == t(:editor)
+          @page.add_manager group if params[:group_role][:type] == t(:manager)
         end
       end
     end
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def save_edit
     @error_flash_msg = ""
     @notice_flash_msg = ""
+
+    @page.page_permissions.each_with_index do |permission, index|
+        group_name_select = permission.group.name + "_select"
+        value = params[group_name_select]
+        if not value.nil?
+
+          params[:index] = index
+          params[:permission] = value
+
+          #ak je stranka public a zo selectu vyberiem "viewer" -> nic sa neudeje a zaroven, ak je stranka editable - vsetci maju pravu edit a zo selectu vyberiem "viewer"
+          #alebo "editor", tak sa tiez nic neuduje
+          if ( !(@page.is_public? && params[:permission] == t(:viewer)) && !(@page.is_editable? && (params[:permission] == t(:viewer) || params[:permission] == t(:editor))))
+             change_permission
+
+          #2 specialne pripady, nie uplne stastne riesenie
+          # 1.pripad, zmena managera na editora ak je stranka editable
+          # 2.pripad, zmena editora/managera na viewera ak je stranka public
+          else if @page.is_editable? && params[:permission] == t(:editor) && permission.can_manage?
+            @page.remove_manager(permission.group)
+          else if @page.is_public? && params[:permission] == t(:viewer)
+            if @page.can_manage?
+              @page.remove_manager(permission.group)
+            end
+            if @page.can_edit?
+              @page.remove_editor(permission.group)
+            end
+          end
+          end
+          end
+        end
+    end
+
+    #add group permission from autocomplete
+    if params[:add_group] != ""
+      set_permissions
+    end
+
+    #set page public or editable, ale bordel kod, toto by sa snad dalo napisat aj krajsie
+    if params[:everyone_select] == t(:can_view) && !@page.is_public?
+      switch_public
+    else if params[:everyone_select] == t(:can_edit) && !@page.is_editable?
+      switch_editable
+    else if params[:everyone_select] == "-"
+      if @page.is_editable?
+        switch_editable
+      else if  @page.is_public?
+        switch_public
+      end
+      end
+    end
+    end
+    end
 
     if not params[:file_version].nil?
       upload

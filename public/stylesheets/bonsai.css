@@ -76,8 +76,9 @@ body {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    background-color: white;
-    border: 2px solid #f0f0f0;
+    color:black;
+    background-color: #ffffff;
+    border: 2px solid #13a1ea;
 }
 
 .autocomplete li {
@@ -111,11 +112,11 @@ body {
     max-width:70%;
 }
 .dashboard_news div {
-   margin: 0 0 20px 10px;
+    margin: 0 0 20px 10px;
 }
 
 .DashboardTree #user, #time {
-    font-weight:bold;    
+    font-weight:bold;
 }
 
 form {
@@ -136,8 +137,8 @@ form {
     color: white;
 }
 #toolbar a.red{
-     color:red;
-     font-weight:bold;
+    color:red;
+    font-weight:bold;
 }
 
 #toolbar a img {
@@ -178,7 +179,7 @@ form {
     text-decoration:none;
 }
 .actions a:hover{
-    text-decoration:underline;    
+    text-decoration:underline;
 }
 
 
@@ -336,108 +337,239 @@ input[type="submit"]#login_button{
     height:100%;
 }
 
+
 .holder{
-	background:#FFFFFF url('../images/layouts/left_shadow.png') repeat-y left;
-	padding:0px;
-	margin:0 0px;
-	float:left;
-	width:100%;
-    
+    background:#FFFFFF url('../images/layouts/left_shadow.png') repeat-y left;
+    padding:0px;
+    margin:0px;
+    float:left;
+    width:100%;
 }
-
-
-.holder_right{
-	background: url('../images/layouts/right_shadow_light.png') repeat-y right;
-	float:right;
-	padding:0px;
-	margin:0px;
-	width:100%;
-}
-
-/*
 
 .holder_right_dark{
-	background: url('../images/layouts/right_shadow.png') repeat-y right;
-	float:right;
-	padding:0px;
-	margin:0px;
-	width:100%;
+    background: url('../images/layouts/right_shadow.png') repeat-y right;
+    float:right;
+    padding:0px;
+    margin:0px;
+    width:100%;
+}
+
+.holder_right{
+    background: url('../images/layouts/right_shadow_light.png') repeat-y right;
+    float:right;
+    padding:0px;
+    margin:0px;
+    width:100%;
 }
 
 
+.main_content{
+    height:100%;
+    float:left;
+    padding:0 33px;
+    white-space:nowrap;
+}
+
+.main_content_right{
+    height:100%;
+    float:right;
+    width:244px;
+    background:transparent;
+    padding:0 33px;
+}
 
 .header{
-	width:100%;
-	padding:0px;
-	margin:0px;
-	background: url('../images/layouts/header_bg.png') repeat-x left;
-    margin-top:10px;
-    height:57px;
+    width:100%;
+    padding:0px;
+    margin:0px;
+    background: url('../images/layouts/header_bg.png') repeat-x left;
+    height:67px;
 }
 
 .header_content{
-	background: url('../images/layouts/header_left.png') no-repeat left;
-	float:left;
-	height:37px;
+    background: url('../images/layouts/header_left.png') no-repeat left;
+    float:left;
+    height:37px;
     padding: 15px 30px;
     min-width:450px;
 }
 
 .header_right{
-	background: url('../images/layouts/header_right.png') no-repeat right;
-	height:67px;
-}
-
-
-.main_content{
-  height:100%;
-  float:left;
-  padding:0 33px;
-  white-space:nowrap;
-}
-
-.main_content_right{
-	height:100%;
-	float:right;
-	width:244px;
-	background:transparent;
-    padding:0 33px;
+    background: url('../images/layouts/header_right.png') no-repeat right;
+    height:67px;
 }
 
 .footer{
-	background: #FFFFFF url('../images/layouts/bg_bottom.png') left bottom  repeat-x;
-	padding:0px;
-	margin:0px;
-    haight:18px;
+    background: #FFFFFF url('../images/layouts/bg_bottom.png') bottom repeat-x;
     padding:0px;
-	margin:0px;
+    margin:0px;
+    font-size:16px;
 }
 
 .footer_left{
-	background: url('../images/layouts/left_bottom.png') left no-repeat;
-	float:left;
-	height:18px;
-	width:12px;
+    background: url('../images/layouts/left_bottom.png') left no-repeat;
+    float:left;
+    height:18px;
+    width:12px;
     padding:0px;
-	margin:0px;
+    margin:0px;
 
 }
 
 .footer_right_dark{
-	background: url('../images/layouts/right_bottom_dark.png') right no-repeat;
-	float:right;
-	width:304px;
-	height:18px;
+    background: url('../images/layouts/right_bottom_dark.png') right no-repeat;
+    float:right;
+    width:304px;
+    height:18px;
     padding:0px;
-	margin:0px;
+    margin:0px;
 }
 
 .footer_right_light{
-	background: url('../images/layouts/right_bottom_light.png') right no-repeat;
-	float:right;
-	width:304px;
-	height:18px;
+    background: url('../images/layouts/right_bottom_light.png') right no-repeat;
+    float:right;
+    width:304px;
+    height:18px;
     padding:0px;
-	margin:0px;
+    margin:0px;
 }
-*/
+
+/* telo inputy */
+
+.header_content input[type="text"]#title, .header_content input[type="text"]:focus#title{
+    width:100%;
+    background:#eff8ff;
+    border:1px solid #def1ff;
+    height:35px;
+    font-size:20px;
+    vertical-align:middle;
+    color: #404040;
+}
+
+textarea, input[type="text"]{
+    background:#f6f6f6;
+    border: 1px solid #dcdcdc;
+}
+
+
+textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:focus#title{
+    border:2px solid #13a1ea;
+}
+
+.info_warning{
+    color:red;
+    font-size:11px;
+}
+
+
+/*edit stranka */
+
+.page_part_listing{
+    background-color: #fcfcfc;
+    min-height:20px;
+    border: 1px solid #dcdcdc;
+    padding:3px;
+    margin: 3px 0;
+    font-size:16px;
+    font-weight:bold;
+    color: #404040;
+}
+
+.page_part_edit_link{
+    float:right;
+}
+
+.holder h2, .holder h3, .holder h4{
+    color: #404040;
+}
+
+a{
+    color:#3d8bce;
+}
+/*maruku help */
+a.info{
+    padding:0px 3px;
+    padding-left:17px;
+    font-weight:bold;
+    background: url('../images/buttons/icon_help.png') left top no-repeat;
+    position:relative; /*this is the key*/
+    z-index:24;
+    color: #3d8bce;
+    font-weight:bold;
+}
+
+
+a.info:hover{
+    z-index:25;
+}
+
+a.info div.syntax_belp{
+    display: none;
+}
+
+a.info:hover div.syntax_belp{
+    background: #daeeff;
+    color: #555759;
+    display:block;
+    position:absolute;
+    top:-470px; left:2em;
+    padding:10px 10px;
+    width:800px;
+    text-decoration:none;
+}
+
+
+a.info div ul li{
+    text-decoration:none;
+    font-weight:bold;
+    color: #404040;
+}
+
+a.info div ul li ul li{
+    color: #555759;
+    font-weight:normal;
+    text-decoration:none;
+}
+
+
+
+/*files */
+.lighter_bg{
+    background:#f2fdff;
+}
+.files{
+    font-size:11px;
+}
+table.files_history{
+    width:250px;
+}
+table.files_history thead th{
+    color: #555759;
+    font-weight:bold;
+}
+
+table.files_history td{
+    text-align:left;
+    padding:0px;
+    margin:0px;
+}
+
+table.page_permisions{
+    width:250px;
+    font-size:11px;
+}
+table.page_permisions td, table.page_permisions th{
+    text-align:left;
+}
+
+/*save */
+input[type="submit"]#save_button{
+    font-weight:bold;
+    color:white;
+    background:transparent;
+    border:0;
+    margin-top:2px;
+    background: url('../images/buttons/small_button.png') no-repeat right bottom;
+    width:73px;
+    height:28px;
+}
