@@ -484,7 +484,7 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
 }
 
 a{
-    color:#3d8bce;
+    color:#0c6ec2;
 }
 /*maruku help */
 a.info{
@@ -574,15 +574,60 @@ input[type="submit"]#save_button{
     height:28px;
 }
 
-/*view */
+/*breadcrumb*/
 .breadcrumb {
+    font-size:13px;
+    color:#bababa;
     padding: 10px  20px;
     margin-right:400px;
 	position:relative;
+}
+.breadcrumb a{
+    color: #3886c9;
+}
+
+/*view */
+.header_content{
+    color:#9f9f9f;
+}
+.header_content span{
+    font-size:32px;
+    float:left;
 }
 .header_content h1{
     margin:0 0;
     background:none;
     border:none;
     color:#404040;
+}
+/*history*/
+table.history{
+    border-spacing:0 0;
+}
+table.history thead{
+    background:#f0f0f0;
+
+}
+table.history thead th{
+    color: #404040;
+    font-size:13px;
+    font-weight:bold;
+
+}
+.history table tr td{
+    color:#727272;
+    font-size:14px;
+    border:none;
+    
+}
+
+input[type="submit"]#compare_button{
+    font-weight:bold;
+    color:white;
+    background:transparent;
+    border:0;
+    margin-top:2px;
+    background: url('../images/buttons/large_button.png') no-repeat right bottom;
+    width:223px;
+    height:30px;
 }
