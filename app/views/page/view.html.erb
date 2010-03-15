@@ -1,25 +1,28 @@
-  <div class="holder_right">
-    <div class="header">
-      <div class="header_content">
-        <h1><%=h @page.title %></h1>
-      </div>
-      <div class="header_right">
-      </div>
+<div class="holder_right">
+  <div class="header">
+    <div class="header_content">
+      <h1><%=h @page.title %></h1>
     </div>
-    <div class="main_content">
-      <% for part in @page.page_parts %>
-          <% unless part.current_page_part_revision.was_deleted %>
-              <%= markdown(part.current_page_part_revision.body) %>
-          <% end %>
-      <% end %>
+    <div class="header_right">
     </div>
   </div>
-  <div class="footer">
-      <div class="footer_left">
-        &nbsp;
-      </div>
-      <div class="footer_right_light">
-        &nbsp;
-      </div>
-    </div>
+  <div class="main_content">
+    <% for part in @page.page_parts %>
+        <% unless part.current_page_part_revision.was_deleted %>
+            <%= markdown(part.current_page_part_revision.body) %>
+        <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+  </div>
+  <div class="footer_right_light">
+  </div>
+</div>
+
+
+
+
+
 

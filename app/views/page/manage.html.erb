@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="main_content">
-      <p>
+
       <table class="history">
         <thead>
         <tr>
@@ -101,7 +101,7 @@
 
       <h2><%= t(:add_group_permission) %></h2>
       <% form_tag :controller => 'page', :action => 'set_permissions' do %>
-          <%= text_field_tag('add_group') %> <%= select('group_role', 'type', ['viewer', 'editor', 'manager']) %> <%= submit_tag t(:set) %><br/>
+          <%= text_field_tag('add_group') %> <%= select('group_role', 'type', ['viewer', 'editor', 'manager']) %> <%= submit_tag t(:set), :class=>'small_button' %><br/>
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
           <script type="text/javascript">
               //<![CDATA[
@@ -111,7 +111,7 @@
 
 
       <% end %>
-      </p>
+     
     </div>
   </div>
 </div>

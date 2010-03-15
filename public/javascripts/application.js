@@ -27,6 +27,16 @@ function toggleDivDiv(event) {
     return false;
 }
 
+function toggleDivDivDiv(event) {
+    var div = $(Event.element(event).parentNode.parentNode.parentNode).next();
+    if (div.visible()) {
+        div.blindUp();
+    } else {
+        div.blindDown();
+    }
+    return false;
+}
+
 function toggleTreeElement(Li, evt, child) {
 
     child = (typeof child == 'undefined') ? 1 : child;

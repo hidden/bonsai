@@ -1,6 +1,0 @@
-<h1><%=h @page.title %></h1>
-<% for part in @page_parts %>
-  <% unless part.was_deleted %>
-    <%= markdown(part.body) %>
-  <% end %>
-<% end %>

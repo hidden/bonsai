@@ -57,7 +57,8 @@ body {
 
 #flash {
     padding: 1em;
-    width: 300px;
+    width: 90%;
+    margin:0 auto;
 }
 
 #flash.notice {
@@ -131,6 +132,7 @@ form {
     padding: 0 20px;
     height:51px;
     background: url('../images/layouts/top_lista.png') repeat-x;
+    margin-bottom:5px;
 }
 
 #toolbar, #toolbar a {
@@ -175,6 +177,11 @@ form {
     float:left;
     margin-top:2px;
 }
+.search_input{
+    vertical-align:top;
+    float:left; margin-right:5px;
+}
+
 .actions a{
     text-decoration:none;
 }
@@ -183,22 +190,24 @@ form {
 }
 
 
-input[type="text"]#search_text{
-    background: url('../images/layouts/button_input.png') no-repeat center;
-    border:0px;
-    width:105px;
-    height:27px;
+input[type="text"].small_input, input[type="password"].small_input{
+    background: url('../images/layouts/input.png') no-repeat left top;
+    border:none;
+    width:95px;
+    height:16px;
+    padding:5px;
 }
 
-input[type="submit"]#search_button{
-    font-weight:bold;
-    color:white;
-    background:transparent;
-    border:0;
-    margin-top:2px;
-    background: url('../images/buttons/small_button.png') no-repeat right bottom;
-    width:73px;
-    height:28px;
+input[type="text"].large_input{
+    background: url('../images/layouts/large_input.png') no-repeat left top;
+    border:none;
+    width:145px;
+    height:16px;
+    padding:5px;
+}
+
+input[type="text"].small_input:focus, input[type="password"].small_input:focus, input[type="text"].large_input:focus{
+    border:none;
 }
 
 
@@ -285,50 +294,24 @@ ul#menu li ul li.small{
 /* login formular */
 .login_box{
     margin:0px 0px;
+    margin-top:-5px;
     width:100%;
     background-color:#515151;
     height:32px;
     padding:0px 0px;
 }
 
-
 .login_area{
     float:right;
     color:white;
     top:0;
     margin-right:25px;
+    margin-top:3px;
 }
-.login_area label{
-    padding: 0 5px;
-    margin:0 0;
-    color:white;
-    font-weight:bold;
-}
-
-
-input[type="text"]#username, input[type="password"]#password{
-    border:0;
-    padding:0;
-    margin:0;
-    width:105px;
-    height:25px;
-}
-input[type="text"]#username{
-    background: url('../images/layouts/button_input.png') no-repeat left top;
-}
-
-input[type="password"]#password{
-    background: url('../images/layouts/button_input.png') no-repeat left top;
-}
-
-input[type="submit"]#login_button{
-    background: transparent;
-    background: url('../images/buttons/small_button.png') no-repeat right bottom;
-    border:0px;
-    width:73px;
-    height:27px;
-    color:white;
-    font-weight:bold;
+.login_area .login_inputs{
+    float:left;
+    vertical-align:middle;
+    margin-right:5px;
 }
 
 /*hlavne telo stranky*/
@@ -366,7 +349,7 @@ input[type="submit"]#login_button{
 .main_content{
     height:100%;
     float:left;
-    padding:0 33px;
+    padding:10px 33px;
     white-space:nowrap;
 }
 
@@ -400,40 +383,43 @@ input[type="submit"]#login_button{
 }
 
 .footer{
-    background: #FFFFFF url('../images/layouts/bg_bottom.png') bottom repeat-x;
+    background: #FFFFFF url('../images/layouts/bg_bottom.png') left bottom repeat-x;
     padding:0px;
     margin:0px;
-    font-size:16px;
+    height:18px;
+    clear:both;
 }
 
 .footer_left{
-    background: url('../images/layouts/left_bottom.png') left no-repeat;
+    background: url('../images/layouts/left_bottom.png') left bottom no-repeat;
     float:left;
     height:18px;
     width:12px;
     padding:0px;
     margin:0px;
 
+
 }
 
 .footer_right_dark{
-    background: url('../images/layouts/right_bottom_dark.png') right no-repeat;
+    background: url('../images/layouts/right_bottom_dark.png') right bottom no-repeat;
     float:right;
     width:304px;
     height:18px;
     padding:0px;
     margin:0px;
+    vertical-align:bottom;
 }
 
 .footer_right_light{
-    background: url('../images/layouts/right_bottom_light.png') right no-repeat;
+    background: url('../images/layouts/right_bottom_light.png') right bottom no-repeat;
     float:right;
     width:304px;
     height:18px;
     padding:0px;
     margin:0px;
 }
-
+  
 /* telo inputy */
 
 .header_content input[type="text"]#title, .header_content input[type="text"]:focus#title{
@@ -463,7 +449,9 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
 
 
 /*edit stranka */
-
+.page_part_edit_link{
+    float:right;
+}
 .page_part_listing{
     background-color: #fcfcfc;
     min-height:20px;
@@ -474,16 +462,16 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
     font-weight:bold;
     color: #404040;
 }
-
-.page_part_edit_link{
-    float:right;
+.page_part_listing span{
+    float:left;
 }
+
 
 .holder h2, .holder h3, .holder h4{
     color: #404040;
 }
 
-a{
+a, .blue{
     color:#0c6ec2;
 }
 /*maruku help */
@@ -541,7 +529,7 @@ a.info div ul li ul li{
     font-size:11px;
 }
 table.files_history{
-    width:250px;
+    border-spacing: 0 0;
 }
 table.files_history thead th{
     color: #555759;
@@ -563,15 +551,14 @@ table.page_permisions td, table.page_permisions th{
 }
 
 /*save */
-input[type="submit"]#save_button{
+input[type="submit"].small_button{
     font-weight:bold;
     color:white;
     background:transparent;
     border:0;
-    margin-top:2px;
-    background: url('../images/buttons/small_button.png') no-repeat right bottom;
-    width:73px;
-    height:28px;
+    background: url('../images/buttons/small_button.png') no-repeat left top;
+    width:69px;
+    height:25px;
 }
 
 /*breadcrumb*/
@@ -604,6 +591,7 @@ input[type="submit"]#save_button{
 /*history*/
 table.history{
     border-spacing:0 0;
+    margin:5px 0;
 }
 table.history thead{
     background:#f0f0f0;
@@ -615,14 +603,18 @@ table.history thead th{
     font-weight:bold;
 
 }
-.history table tr td{
+table.history  tr td{
     color:#727272;
     font-size:14px;
     border:none;
     
 }
 
-input[type="submit"]#compare_button{
+table.history a img{
+    border:none;
+}
+
+input[type="submit"].large_button{
     font-weight:bold;
     color:white;
     background:transparent;
@@ -631,4 +623,20 @@ input[type="submit"]#compare_button{
     background: url('../images/buttons/large_button.png') no-repeat right bottom;
     width:223px;
     height:30px;
+}
+.center{
+    text-align:center;
+}
+
+/*dashboard */
+h2.dashboard, h3.favourites_title{
+    background:none;
+    border:none;
+}
+h3.favourites_title{
+    color: #0c6ec2;
+    
+}
+.DashboardTree #user, #time {
+    font-weight:bold;
 }

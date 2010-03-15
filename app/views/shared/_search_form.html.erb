@@ -1,4 +1,10 @@
 <% form_tag search_path do |f| %>
-<%= text_field_tag :search_text %>
-<%= submit_tag t(:btn_search_page), :id=>'search_button' %>
+<div>
+  <div class="search_input">
+<%= text_field_tag :search_text, nil, :class=> 'small_input' %>
+  </div>
+  <div>
+<%= submit_tag t(:btn_search_page), :class=>'small_button' %>
+    </div>
+</div>
 <% end %>

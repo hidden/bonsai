@@ -10,13 +10,13 @@
     </div>
     <div class="main_content">
 
-      <p>
+
         <% form_for(@group) do |f| %>
             <%= f.error_messages %>
 
           <p>
             <%= f.label t(:name) %><br />
-            <%= f.text_field :name %><%= f.submit t(:btn_update) %>
+            <%= f.text_field :name %>&nbsp;&nbsp;<%= f.submit t(:btn_update), :class=> "small_button" %>
           </p>
           <h2><%= t(:group_members) %></h2>
           <table id="Groups_memberstable">
@@ -53,7 +53,7 @@
       <% end %>
       <h2><%= t(:add_new_user) %></h2>
       <% form_tag group_permissions_path(:group_id => @group.id), :method => :post do %>
-          <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', ['editor', 'viewer']) %><%= submit_tag(t(:btn_add)) %></p>
+          <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', ['editor', 'viewer']) %>&nbsp;&nbsp;<%= submit_tag(t(:btn_add), :class=> "small_button") %></p>
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
           <script type="text/javascript">
               //<![CDATA[
@@ -63,15 +63,15 @@
       <% end %>
 
       <%= link_to t(:back), groups_path %>
-      </p>
+
     </div>
   </div>
-  <div class="footer">
-    <div class="footer_left">
-      &nbsp;
-    </div>
-    <div class="footer_right_light">
-      &nbsp;
-    </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+    &nbsp;
+  </div>
+  <div class="footer_right_light">
+    &nbsp;
   </div>
 </div>

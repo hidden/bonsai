@@ -9,77 +9,77 @@
       </div>
     </div>
     <div class="main_content">
-      <p>
+
       <% form_tag("#{@page.get_path};diff", {:method => :get}) do %>
           <div>
-          <%= submit_tag t(:btn_compare), :name => nil, :id=>'compare_button' %>
-          <table class="history">
-            <thead>
-            <tr>
-              <th>
-                <%= t(:version) %>
-              </th>
-              <th></th>
-              <th><%= t(:date) %></th>
-              <th>
-                <%= t(:author) %>
-              </th>
-              <th>
-                <%= t(:part) %>
-              </th>
-              <th></th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <% number_of_revisions = @page.page_parts_revisions.length %>
-            <% @page.page_parts_revisions.each_with_index do |revision, index| %>
-                <tr>
-                  <td>
-                  <% counter = number_of_revisions - index %>
-                  r<%= counter %>
-                  </td>
-                  <td>
-                  <%= radio_button_tag "first_revision" , index, false, :id => "first_revision_#{counter}" %>
-                  <%= radio_button_tag "second_revision" , index, false, :id => "second_revision_#{counter}" %>
-                  </td>
-                  <td>
-                    <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>
-                  </td>
-                  <td>
-                  <%=h revision.user.username %>
-                  </td>
-                  <td> <%= revision.page_part.name %></td>
-                  <!--
+            <%= submit_tag t(:btn_compare), :name => nil, :class=>'large_button' %>
+            <table class="history">
+              <thead>
+              <tr>
+                <th>
+                  <%= t(:version) %>
+                </th>
+                <th></th>
+                <th><%= t(:date) %></th>
+                <th>
+                  <%= t(:author) %>
+                </th>
+                <th>
+                  <%= t(:part) %>
+                </th>
+                <th></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% number_of_revisions = @page.page_parts_revisions.length %>
+              <% @page.page_parts_revisions.each_with_index do |revision, index| %>
+                  <tr>
+                    <td>
+                      <% counter = number_of_revisions - index %>
+                      r<%= counter %>
+                    </td>
+                    <td>
+                      <%= radio_button_tag "first_revision" , index, false, :id => "first_revision_#{counter}" %>
+                      <%= radio_button_tag "second_revision" , index, false, :id => "second_revision_#{counter}" %>
+                    </td>
+                    <td>
+                      <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>
+                    </td>
+                    <td>
+                      <%=h revision.user.username %>
+                    </td>
+                    <td> <%= revision.page_part.name %></td>
+                    <!--
                   <td>
                   <% unless revision.summary.empty? %>(<%=h revision.summary %>),<% end %>
                   </td>
                   -->
-                  <td>
-                  <% if @current_user.can_edit_page? @page %>
-                      <%=  link_to t(:revert) + " #{counter}", page_path(@page.get_rel_path, :undo, :revision => index.to_s), {:method => :post} %>
-                  <% end %>
-                  </td>
-                  <td>
-                  <%=  link_to  t(:show_from) + " #{counter}", page_path(@page.get_rel_path, :revision, :revision => index.to_s) %>
-                  </td>
-                </tr>
-            <% end %>
-            </tbody>
-          </table>
+                    <td>
+                      <% if @current_user.can_edit_page? @page %>
+                          <%=  link_to t(:revert) + " #{counter}", page_path(@page.get_rel_path, :undo, :revision => index.to_s), {:method => :post} %>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%=  link_to  t(:show_from) + " #{counter}", page_path(@page.get_rel_path, :revision, :revision => index.to_s) %>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+            </table>
 
-          <%= submit_tag t(:btn_compare), :name => nil, :id=>'compare_button' %>
+            <%= submit_tag t(:btn_compare), :name => nil, :class=>'large_button' %>
           </div>
       <% end %>
-      </p>
+
     </div>
   </div>
-  <div class="footer">
-    <div class="footer_left">
-      &nbsp;
-    </div>
-    <div class="footer_right_light">
-      &nbsp;
-    </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+    &nbsp;
+  </div>
+  <div class="footer_right_light">
+    &nbsp;
   </div>
 </div>

@@ -1,5 +1,6 @@
 en:
   permission_denied: "Permission denied."
+  please_login: "Please login to your account."
   changes_for_page: "Changes for page:"
   btn_compare: "compare selected versions"
   edited: "edited "
@@ -97,3 +98,7 @@ en:
   date: "Date"
   author: "Author"
   part: "Part"
+  file_history: "History of file: "
+  file_history_not_exist: "File's history doesn't exist!"
+  seach_results: "Search results"
+  pages_watching: "Favourites"

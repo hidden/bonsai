@@ -1,5 +1,6 @@
 sk:
   permission_denied: "Prístup zamietnutý."
+  please_login: "Prihláste sa prosím."
   changes_for_page: "Zmeny pre stránku:"
   btn_compare: "porovnať vybrané verzie"
   edited: "editoval(a)"
@@ -97,3 +98,7 @@ sk:
   date: "Dátum"
   author: "Autor"
   part: "časť"
+  file_history: "História súboru: "
+  file_history_not_exist: "História súboru neexistuje."
+  seach_results: "Výsledky hľadania"
+  pages_watching: "Sledované stránky"

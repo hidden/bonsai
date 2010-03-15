@@ -1,18 +1,37 @@
-<h1><%= t(:new_page) %></h1>
+<div class="holder_right">
+  <div class="header">
+    <div class="header_content">
+      <h1><%= t(:new_page) %></h1>
+    </div>
+    <div class="header_right">
+    </div>
+  </div>
+  <div class="main_content">
+    <% form_tag("/#{@path};create", :method => :post) do %>
+        <div>
+          <%= hidden_field_tag "parent_id", @parent_id %>
+          <%= hidden_field_tag "sid", @sid %>
+          <p>
+            <%= label_tag :title %><br />
+            <%= text_field_tag "title", :title %>
+          </p>
+          <p>
+            <%= label_tag :body %><br />
+            <%= text_area_tag "body", @body, :rows => 30, :cols => 80 %>
+            <%= render :partial => 'maruku_help' %>
+          </p>
+          <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
+          <p><%= label_tag t(:layout) %>:<%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @layout) %></p>
+           <p><%= submit_tag t(:save) , :class=> "small_button" %></p>
+        </div>
+    <% end %>
+  </div>
+</div>
 
-<% form_tag("/#{@path};create", :method => :post) do %>
-  <%= hidden_field_tag "parent_id", @parent_id %>
-  <%= hidden_field_tag "sid", @sid %>
-  <p>
-    <%= label_tag :title %><br />
-    <%= text_field_tag "title", :title %>
-  </p>
-  <p>
-    <%= label_tag :body %><br />
-    <%= text_area_tag "body", @body, :rows => 30, :cols => 80 %>
-    <%= render :partial => 'maruku_help' %>
-  </p>
-  <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
-  <p><%= label_tag t(:layout) %>:<%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @layout) %></p>
-  <p><%= submit_tag t(:btn_create) %></p>
-<% end %>
+
+<div class="footer">
+  <div class="footer_left">
+  </div>
+  <div class="footer_right_light">
+  </div>
+</div>
