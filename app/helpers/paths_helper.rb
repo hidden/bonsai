@@ -15,6 +15,10 @@ module PathsHelper
     url_for :controller => "page", :action => "toggle_favorite"
   end
 
+  def remove_page_part_path(page, id)
+     url_for :controller => "page", :action => "remove_page_part", :part_id => id
+  end
+
   def edit_page_path(page)
     "#{page.get_path};edit"
   end

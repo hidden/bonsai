@@ -50,40 +50,41 @@
       <% end %>
       <% for part in @page.page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
-              <div class="page_part_listing">
-                <span><%= part.name %></span>
-                <div class="page_part_edit_link" onclick="return toggleDivDiv(event)">
-                  <%= icon_tag ('edit_small.gif',:alt =>'') %>
+              <div id="zmaz_<%= part.id %>">
+                <div class="page_part_listing">
+                  <span><%= part.name %></span>
+
+                  <div class="page_part_edit_remove_link">
+                    <%= link_to_remote icon_tag('cancel.png', :title => t(:delete_page_part)), :update=> "zmaz_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part') %>
+                  </div>
+                  <div class="page_part_edit_remove_link" onclick="return toggleDivDiv(event)">
+                    <%= icon_tag ('edit_small.gif',:alt =>'') %>
+                  </div>
                 </div>
-              </div>
-              <div<%= ' style="display:none;"' unless part.name == 'body' %>>
-                <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
+                <div<%= ' style="display:none;"' unless part.name == 'body' %>>
+                  <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
 
-                <% if part == @page_part %>
-                    <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => 80 %>
-                <% else %>
-                    <%=
-                        text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80,
-                                      :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock" , :part_id => part.id}
-                                      )
-                    %>
-                    <%= periodically_call_remote(
-                            :url => {:controller => 'page', :action => 'update_lock', :part_id => part.id},
-                            :frequency => APP_CONFIG['page_part']['saving_time'],
-                            :condition => "(check_lock('#{part.id}') == true)"
-                    )
-                    %>
+                  <% if part == @page_part %>
+                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => 80 %>
+                  <% else %>
+                      <%=
+                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80,
+                                        :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock" , :part_id => part.id}
+                                        )
+                      %>
+                      <%= periodically_call_remote(
+                              :url => {:controller => 'page', :action => 'update_lock', :part_id => part.id},
+                              :frequency => APP_CONFIG['page_part']['saving_time'],
+                              :condition => "(check_lock('#{part.id}') == true)"
+                      )
+                      %>
 
-                <% end %>
-                <%= render :partial => 'maruku_help' %>
-                <p>
-                  <%= label_tag "parts_name[#{part.name}]", t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
-
-                  <%= label_tag "is_deleted[#{part.name}]", t(:delete_page_part) unless part.current_page_part_revision.was_deleted? %>
-                  <%= check_box_tag("is_deleted[#{part.name}]", 1, part.current_page_part_revision.was_deleted?) %>
-
-                  <%= label_tag 'uncheck to undelete this page_part' if part.current_page_part_revision.was_deleted? %>
-                </p>
+                  <% end %>
+                  <%= render :partial => 'maruku_help' %>
+                  <p>
+                    <%= label_tag "parts_name[#{part.name}]", t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
+                  </p>
+                </div>
               </div>
           <% end %>
       <% end %>

@@ -10,7 +10,7 @@ class PageController < ApplicationController
   def search
     @search_results = Page.search params[:search_text], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
   end
-  
+
   def rss
     user_from_token = User.find_by_token params[:token]
     user_from_token = AnonymousUser.new(session) if user_from_token.nil?
@@ -153,10 +153,10 @@ class PageController < ApplicationController
         if(page_permission.can_manage?)
           @page.remove_manager(page_permission.group)
         end
-        
+
       end
     elsif (params[:permission] == t(:manager))
-       #page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
+      #page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
       @page.add_manager(page_permission.group)
     end
     page_permission.save
@@ -325,39 +325,47 @@ class PageController < ApplicationController
     #redirect_to manage_page_path(@page)
   end
 
+  def remove_page_part
+    part_id = params[:part_id]
+    if not part_id.nil?
+      PagePart.delete(part_id)
+    end
+  end
+
+
   def save_edit
     @error_flash_msg = ""
     @notice_flash_msg = ""
 
     @page.page_permissions.each_with_index do |permission, index|
-        group_name_select = permission.group.name + "_select"
-        value = params[group_name_select]
-        if not value.nil?
+      group_name_select = permission.group.name + "_select"
+      value = params[group_name_select]
+      if not value.nil?
 
-          params[:index] = index
-          params[:permission] = value
+        params[:index] = index
+        params[:permission] = value
 
-          #ak je stranka public a zo selectu vyberiem "viewer" -> nic sa neudeje a zaroven, ak je stranka editable - vsetci maju pravu edit a zo selectu vyberiem "viewer"
-          #alebo "editor", tak sa tiez nic neuduje
-          if ( !(@page.is_public? && params[:permission] == t(:viewer)) && !(@page.is_editable? && (params[:permission] == t(:viewer) || params[:permission] == t(:editor))))
-             change_permission
+        #ak je stranka public a zo selectu vyberiem "viewer" -> nic sa neudeje a zaroven, ak je stranka editable - vsetci maju pravu edit a zo selectu vyberiem "viewer"
+        #alebo "editor", tak sa tiez nic neuduje
+        if ( !(@page.is_public? && params[:permission] == t(:viewer)) && !(@page.is_editable? && (params[:permission] == t(:viewer) || params[:permission] == t(:editor))))
+          change_permission
 
           #2 specialne pripady, nie uplne stastne riesenie
           # 1.pripad, zmena managera na editora ak je stranka editable
           # 2.pripad, zmena editora/managera na viewera ak je stranka public
-          else if @page.is_editable? && params[:permission] == t(:editor) && permission.can_manage?
+        else if @page.is_editable? && params[:permission] == t(:editor) && permission.can_manage?
+          @page.remove_manager(permission.group)
+        else if @page.is_public? && params[:permission] == t(:viewer)
+          if @page.can_manage?
             @page.remove_manager(permission.group)
-          else if @page.is_public? && params[:permission] == t(:viewer)
-            if @page.can_manage?
-              @page.remove_manager(permission.group)
-            end
-            if @page.can_edit?
-              @page.remove_editor(permission.group)
-            end
           end
-          end
+          if @page.can_edit?
+            @page.remove_editor(permission.group)
           end
         end
+        end
+        end
+      end
     end
 
     #add group permission from autocomplete
@@ -411,7 +419,8 @@ class PageController < ApplicationController
       new_part_name = params["parts_name"][part_name]
 
       edited_revision_id = params["parts_revision"][part_name]
-      delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
+      #delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
+      delete_part = false
 
       edited_revision = page_part.page_part_revisions.find(:first, :conditions => {:id => edited_revision_id})
 

@@ -1,7 +1,7 @@
 <span id="favorite">
 <% unless @current_user.favorite_pages.include?(@page) %>
-  <%= link_to_remote icon_tag('watched_n.gif', :title => t(:add_to_favorites), :alt => ''), {:url => toggle_favorite_page_path(@page)}, :href => toggle_favorite_page_path(@page) %>
+  <%= link_to_remote icon_tag('watched_n.gif', :title => t(:add_to_favorites), :alt => ''), {:url => toggle_favorite_page_path(@page)}, :href => toggle_favorite_page_path(@page), :update => "favorite" %>
 <% else %>
-  <%= link_to_remote icon_tag('watched_y.gif', :title => t(:remove_from_favorites)), {:url => toggle_favorite_page_path(@page)}, :href => toggle_favorite_page_path(@page) %>
+  <%= link_to_remote icon_tag('watched_y.gif', :title => t(:remove_from_favorites)), {:url => toggle_favorite_page_path(@page)}, :href => toggle_favorite_page_path(@page),  :update => "favorite"  %>
 <% end %>
 </span>
