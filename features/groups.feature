@@ -31,11 +31,18 @@ Feature: Wiki
     And I follow "Back"
     Then I should see "Groups Management"
     Then I should see "MyNewGroup"
+    And I add "MyNewGroup" reader permission
+    And I press "Set"
+    And I go to the main page
     When I delete "MyNewGroup" group
     Then I should not see "MyNewGroup"
     When I go to the main page
+    And I follow "Manage"
+    And I should not see "MyNewGroup"
     And I follow "Groups"
     Then I should not see "MyNewGroup"
+
+
 
   Scenario: User wants to add permisions within his group to another user
     Given user "crutch" exists
