@@ -21,10 +21,6 @@ class Page < ActiveRecord::Base
     indexes pages.title, :as => :page_title
   end
 
-  def to_sym
-    self.id
-  end
-
   def get_children_tree page,user
     Page.find_by_sql("SELECT  p.* FROM pages p
                       left join (
