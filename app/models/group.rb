@@ -1,6 +1,7 @@
 class Group < ActiveRecord::Base
-  has_many :group_permissions, :dependent => :destroy, :include => :user, :order => 'group_permissions.can_edit DESC, users.name ASC'
+  has_many :group_permissions, :include => :user, :order => 'group_permissions.can_edit DESC, users.name ASC', :dependent => :destroy
   has_many :users, :through => :group_permissions
+  has_many :page_permissions, :dependent => :destroy 
 
   has_many :viewer_users, :through => :group_permissions, :class_name => 'User', :source => :user, :conditions => ['group_permissions.can_view = ?', true]
   has_many :editor_users, :through => :group_permissions, :class_name => 'User', :source => :user, :conditions => ['group_permissions.can_edit = ?', true]
