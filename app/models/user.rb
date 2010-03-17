@@ -12,6 +12,10 @@ class User < ActiveRecord::Base
   after_create { |user| user.create_user_group }
   after_destroy { |user| user.private_group.destroy }
 
+  def user_group
+    Group.find_by_name_and_usergroup(self.username, true)  
+  end
+
   def find_all_accessible_pages
     group_accessible = Page.find :all,
                                  :select => "DISTINCT pages.id",

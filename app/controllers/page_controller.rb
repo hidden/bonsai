@@ -293,6 +293,11 @@ class PageController < ApplicationController
     addedgroups = params[:add_group].split(",")
     for addedgroup in addedgroups
       groups = Group.find_all_by_name(addedgroup)
+      unless groups.any? then
+        #create user group
+        tmp_user = User.create(:username => addedgroup, :name => "#{addedgroup} (tmp)")
+        groups = [tmp_user.user_group]
+      end
       for group in groups
         users = group.users
         retVal = group.is_public?

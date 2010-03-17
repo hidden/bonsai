@@ -38,6 +38,8 @@ class UsersController < ApplicationController
         failed_login
       else
         user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
+        user.name=data['cn'].first
+        user.save
         successful_login(user)
       end
   end
@@ -69,6 +71,8 @@ class UsersController < ApplicationController
         if result.successful?
           name = profile['nickname'] || "openid"
           user = User.find_or_create_by_username(:username => make_url(identity_url), :name => name)
+          user.name = name
+          user.save
           successful_login(user)
         else
           failed_login
