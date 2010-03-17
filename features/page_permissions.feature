@@ -232,6 +232,8 @@ Feature: Secure wiki
     When I create "/" page
     And I add "matell" reader permission
     And I press "Set"
+    And I should see "Add blank user(s) matell?"
+    And I press "Add blank user(s)"
     And I should see "matell"
     And I go to the main page
     Then I should not see "Permission denied."
