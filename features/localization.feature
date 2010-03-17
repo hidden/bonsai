@@ -5,8 +5,8 @@ Scenario: User log in, set SK locale and should see slovak page
   When I create "/" page
   And I follow "SK"
   Then I should see "Súbory"
-  And I follow "Manažment"
-  And I should see "Prístupové práva pre"
+  And I follow "Editovať"
+  And I should see "Prístupové práva"
   Then I follow "EN"
 
 Scenario: Anonymous user set language, after he/she returns, he/she should see wiki in selected language

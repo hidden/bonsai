@@ -53,7 +53,7 @@
       <% end %>
       <h2><%= t(:add_new_user) %></h2>
       <% form_tag group_permissions_path(:group_id => @group.id), :method => :post do %>
-          <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', ['editor', 'viewer']) %>&nbsp;&nbsp;<%= submit_tag(t(:btn_add), :class=> "small_button") %></p>
+          <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', {t(:viewer) => "1", t(:editor) => "2"}) %>&nbsp;&nbsp;<%= submit_tag(t(:btn_add), :class=> "small_button") %></p>
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
           <script type="text/javascript">
               //<![CDATA[

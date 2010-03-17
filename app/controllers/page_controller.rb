@@ -369,7 +369,7 @@ class PageController < ApplicationController
     end
 
     #add group permission from autocomplete
-    if params[:add_group] != ""
+    if not params[:add_group].nil?
       set_permissions
     end
 

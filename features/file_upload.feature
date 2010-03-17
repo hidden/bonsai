@@ -22,7 +22,7 @@ Feature: Secure file uploads
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Save"
     Then I should see "Page successfully updated."
-    When I go to /test_file.txt
+    When I go to /test_file.txt/?force=true
     Then I should see "Some text in file."
 
   Scenario: User uploads a file under a restricted page and different user wants to download it
@@ -34,10 +34,10 @@ Feature: Secure file uploads
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Save"
     And I logout
-    When I go to /test_file.txt
+    When I go to /test_file.txt/?force=true
     Then I should see "Permission denied."
     When I login as "crutch"
-    And I go to /test_file.txt
+    And I go to /test_file.txt/?force=true
     Then I should see "Permission denied."
 
   Scenario: User tries do download a bogus file and then upload it
@@ -55,7 +55,7 @@ Feature: Secure file uploads
     When I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
-    When I go to /bogus_file.txt
+    When I go to /bogus_file.txt/?force=true
     Then I should see "Some text in file."
 
   Scenario: User tries do download a bogus file and then upload difrent type of file
@@ -65,7 +65,7 @@ Feature: Secure file uploads
     When I attach the file at "picture.jpg" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "Type of file not match."
-    When I go to /bogus_still_file.txt
+    When I go to /bogus_still_file.txt/?force=true
     Then I should see "File not found."
 
   Scenario: Anonymous user tries do download a bogus file
@@ -93,7 +93,7 @@ Feature: Secure file uploads
     When I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
-    And I go to /new_page/link.txt
+    And I go to /new_page/link.txt/?force=true
     Then I should see "Some text in file."
 
   Scenario: User uploads some files and wants to see them all
@@ -157,15 +157,16 @@ Feature: Secure file uploads
     Then I should see "File not found."
     When I attach the file at "test_file.txt" to "file_version_uploaded_data"
     And I press "Upload"
-    And I go to /test_file2.txt
+    And I go to /test_file2.txt/?force=true
     Then I should see "Some text in file."
     When I go to the main page
     And I logout
     And I login as "bio"
     And I follow "edit"
     And I attach the file at "test_file2.txt" to "file_version_uploaded_data"
+    And show me the page
     And I press "Save"
-    And I go to /test_file2.txt
+    And I go to /test_file2.txt/?force=true
     Then I should see "Different text in file."
     When I go to the main page
     And I follow "files"
@@ -179,7 +180,7 @@ Feature: Secure file uploads
     And I attach the file at "readme" to "file_version_uploaded_data"
     And I press "Upload"
     Then I should see "File was successfully uploaded."
-    When I go to /readme
+    When I go to /readme/?force=true
     Then I should see "Some text in file."
 
 
@@ -191,7 +192,7 @@ Feature: Secure file uploads
     And I attach the file at "readme" to "file_version_uploaded_data"
     And I press "Save"
     Then I should see "There is a page with the same name."
-    When I go to /readme
+    When I go to /readme/?force=true
     Then I should see "citaj ma"
 
   Scenario: User wants download file from non existing page
@@ -203,13 +204,16 @@ Feature: Secure file uploads
     Given I am not logged in
     When I login as "user"
     And I create "/" page
-    And I follow "edit"
+    And I follow "Edit"
     And I attach the file at "readme" to "file_version_uploaded_data"
     And I press "Save"
     Then I logout
     When I login as "bio"
-    And I go to the main page
-    And I follow "edit"
+    And page "/" is editable by "bio"
+    When I go to the main page
+    And I should see "Edit"
+    And show me the page
+    And I follow "Edit"
     And I attach the file at "version2/readme" to "file_version_uploaded_data"
     And I press "Save"
     Then I should see "File was successfully uploaded."
@@ -217,9 +221,9 @@ Feature: Secure file uploads
     And I follow "show file's history"
     Then I should see "readme 1 user"
     And I should see "readme 2 bio"
-    When I go to /readme?version=1
+    When I go to /readme?version=1/?force=true
     Then I should see "Some text in file."
-    When I go to /readme?version=2
+    When I go to /readme?version=2/?force=true
     Then I should see "Readme here version 2."
 
   Scenario: Two files with same name on two different pages
@@ -232,9 +236,9 @@ Feature: Secure file uploads
     And I attach the file at "version2/readme" to "file_version_uploaded_data"
     And I press "Save"
     And I go to the main page
-    And I go to /readme
+    And I go to /readme/?force=true
     Then I should see "Some text in file."
-    And I go to /nested/readme
+    And I go to /nested/readme/?force=true
     Then I should see "Readme here version 2."
   
   Scenario: User wants to download latest version of file
@@ -249,5 +253,5 @@ Feature: Secure file uploads
     Then I should see "File was successfully uploaded."
     When I follow "files"
     Then I should see "readme"
-    When I go to readme
+    When I go to readme/?force=true
     Then I should see "Readme here version 2."

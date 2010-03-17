@@ -55,7 +55,7 @@
                   <span><%= part.name %></span>
                   <% if @page.page_parts.count > 1 %>
                   <div class="page_part_edit_remove_link">
-                    <%= link_to_remote icon_tag('cancel.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part') %>
+                    <%= link_to_remote icon_tag('cancel.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
                   </div>
                   <% end %>    
                   <div class="page_part_edit_remove_link" onclick="return toggleDivDiv(event)">
@@ -250,7 +250,7 @@
 
                   <td>
                     <% if linka == true %>
-                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_delete_part') %>
+                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
                     <% end %>
                   </td>
               <% end %>
