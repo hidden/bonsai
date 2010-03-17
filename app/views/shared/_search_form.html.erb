@@ -1,7 +1,7 @@
 <div class="search">
 <% form_tag search_path do |f| %>
 
-<%= text_field_tag :search %>
+<%= text_field_tag :search, params[:search] %>
 <%= submit_tag t(:btn_search_page) %>
 <% end %>
 </div>
