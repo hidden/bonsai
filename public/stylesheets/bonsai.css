@@ -55,18 +55,34 @@ body {
     margin: 2em;
 }
 
-#flash {
-    padding: 1em;
-    width: 90%;
+#flash, #errorflash {
+    padding: 10px;
+    width: 95%;
     margin:0 auto;
+    font-size:14px;
+    height:27px;
+    background: url('../images/layouts/flash_bg.png') repeat-x left top;
+    
 }
 
 #flash.notice {
-    background-color: #ffa;
+    color: #44b500;
+    background-color:#e7ffd8;
 }
 
-#flash.error {
-    background-color: #faa;
+#flash.error, #errorflash {
+    color: #b21f14;
+    background-color: #ffc7c3;
+}
+
+
+#errorflash div{
+    height: 16px;
+    width: 16px;
+    float:right;
+    padding: 6px 4px 0 0;
+
+    margin:-10px -10px 10px 10px;
 }
 
 .autocomplete {

@@ -47,8 +47,8 @@ module PathsHelper
     "#{page.get_path};files"
   end
 
-  def remove_permission_path(page, index)
-    "#{page.get_path};remove_permission&index=#{index}"
+  def _remove_permission_path(page, index)
+    "#{page.get_path};remove_permission?index=#{index}"
   end
 
   def change_permission_path(page, index, permission)

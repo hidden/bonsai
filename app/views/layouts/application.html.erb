@@ -41,12 +41,11 @@
   <%= javascript_include_tag 'menu.js' %>
 
   <script type="text/javascript">
-      function showLogin(){
-          var login = (document.getElementsByClassName("login_box"))[0];
-          if(login != null){
-
-              login.style.display = (login.style.display=='none') ? 'block' : 'none';
-          }
+      function removeNotice(el){
+          var closeLink = el;
+          var noticeBox = closeLink.parentNode;
+          noticeBox.removeChild(closeLink);
+          noticeBox.parentNode.removeChild(noticeBox);
       }
   </script>
 
@@ -54,7 +53,17 @@
 <body onLoad="javascript:clickMenu('menu');findTextareasAndCreateEditor();">
 <%= render :partial => 'shared/toolbar' %>
 <% unless flash.empty? %>
-    <p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
+
+    <% if flash.keys.first.to_s == "error" %>
+        <div id="errorflash"><%=h flash.values.first %>
+          <div onclick="javascript: removeNotice(this)">
+            <%= icon_tag('cancel.png', :alt => t(:close))%>
+          </div>
+        </div>
+    <% else %>
+        <p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p>
+    <% end %>
+<% end %>
 <% if not @page.nil? %>
     <% if @page.self_and_ancestors.size > 1%>
         <div class="breadcrumb">

@@ -126,7 +126,7 @@ class PageController < ApplicationController
 
   def change_permission
     page_permission = @page.page_permissions[params[:index].to_i]
-    if (params[:permission] == t(:viewer))
+    if (params[:permission] == "1")
       if (page_permission.group.users.include? @current_user)
         flash[:notice] = t(:can_view_error)
       else
@@ -142,7 +142,7 @@ class PageController < ApplicationController
         end
 
       end
-    elsif (params[:permission] == t(:editor))
+    elsif (params[:permission] == "2")
       if (page_permission.group.users.include? @current_user)
         flash[:notice] = t(:can_edit_error)
       else
@@ -155,7 +155,7 @@ class PageController < ApplicationController
         end
 
       end
-    elsif (params[:permission] == t(:manager))
+    elsif (params[:permission] == "3")
       #page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
       @page.add_manager(page_permission.group)
     end
@@ -166,7 +166,7 @@ class PageController < ApplicationController
   def remove_permission
     page_permission = @page.page_permissions[params[:index].to_i]
     page_permission.destroy
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def process_file
@@ -316,9 +316,9 @@ class PageController < ApplicationController
         retVal = group.is_public?
         retValUsers = users.include?(@current_user)
         if (retVal || retValUsers)
-          @page.add_viewer group if params[:group_role][:type] == t(:viewer)
-          @page.add_editor group if params[:group_role][:type] == t(:editor)
-          @page.add_manager group if params[:group_role][:type] == t(:manager)
+          @page.add_viewer group if params[:group_role][:type] == "1"
+          @page.add_editor group if params[:group_role][:type] == "2"
+          @page.add_manager group if params[:group_role][:type] == "3"
         end
       end
     end
@@ -347,15 +347,15 @@ class PageController < ApplicationController
 
         #ak je stranka public a zo selectu vyberiem "viewer" -> nic sa neudeje a zaroven, ak je stranka editable - vsetci maju pravu edit a zo selectu vyberiem "viewer"
         #alebo "editor", tak sa tiez nic neuduje
-        if ( !(@page.is_public? && params[:permission] == t(:viewer)) && !(@page.is_editable? && (params[:permission] == t(:viewer) || params[:permission] == t(:editor))))
+        if ( !(@page.is_public? && params[:permission] == "1") && !(@page.is_editable? && (params[:permission] == "1" || params[:permission] == "2")))
           change_permission
 
           #2 specialne pripady, nie uplne stastne riesenie
           # 1.pripad, zmena managera na editora ak je stranka editable
           # 2.pripad, zmena editora/managera na viewera ak je stranka public
-        else if @page.is_editable? && params[:permission] == t(:editor) && permission.can_manage?
+        else if @page.is_editable? && params[:permission] == "2" && permission.can_manage?
           @page.remove_manager(permission.group)
-        else if @page.is_public? && params[:permission] == t(:viewer)
+        else if @page.is_public? && params[:permission] == "1"
           if @page.can_manage?
             @page.remove_manager(permission.group)
           end
@@ -374,9 +374,9 @@ class PageController < ApplicationController
     end
 
     #set page public or editable, ale bordel kod, toto by sa snad dalo napisat aj krajsie
-    if params[:everyone_select] == t(:can_view) && !@page.is_public?
+    if params[:everyone_select] == "1" && !@page.is_public?
       switch_public
-    else if params[:everyone_select] == t(:can_edit) && !@page.is_editable?
+    else if params[:everyone_select] == "2" && !@page.is_editable?
       switch_editable
     else if params[:everyone_select] == "-"
       if @page.is_editable?
@@ -555,7 +555,9 @@ class PageController < ApplicationController
               flash[:notice] = t(:file_uploaded)
               redirect_to list_files_path(@page)
             else
-              @notice_flash_msg = @notice_flash_msg + t(:file_uploaded) + "\r\n"
+              unless @notice_flash_msg.nil?
+                @notice_flash_msg = @notice_flash_msg + t(:file_uploaded) + "\r\n"
+              end
             end
           else
             @uploaded_file.delete
