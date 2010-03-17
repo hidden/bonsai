@@ -55,4 +55,65 @@ Feature: Wiki
     And I go to /;diff?first_revision=0&second_revision=1
     Then I should see "Diff for main"
 
-    
+    Scenario: check if RSS for subtree works properly on init
+    When I create "/" page with title "Root page"
+    And I create "/nestedLeft" page with title "Left leaf"
+    And I create "/nestedRight" page with title "Right leaf"
+    When I go to the main page
+    And I follow "Subtree Rss"
+    Then I should see "Subtree of Root page changes"
+    And I should see "testuser (testuser) edited body (A summary.) of Root page"
+    And I should see "testuser (testuser) edited body (A summary.) of Left leaf"
+    And I should see "testuser (testuser) edited body (A summary.) of Right leaf"
+
+    Scenario: check if RSS for subtree works properly on change
+    When I create "/" page with title "Root page"
+    And I create "/nestedLeft" page with title "Left leaf"
+    And I create "/nestedRight" page with title "Right leaf"
+    When I go to the main page
+    And I follow "Subtree Rss"
+    Then I should see "Subtree of Root page changes"
+    And I should see "testuser (testuser) edited body (A summary.) of Root page"
+    And I should see "testuser (testuser) edited body (A summary.) of Left leaf"
+    And I should see "testuser (testuser) edited body (A summary.) of Right leaf"
+    When I go to the main page
+    And I edit "/" page with title "Some NEW title"
+    And I follow "Subtree Rss"
+    Then I should see "Subtree of Some NEW title changes"
+
+    Scenario: check if RSS for subtree works properly with different users
+    Given user "crutch" exists
+    When I create "/" page with title "Root page"
+    And I create "/nestedLeft" page with title "Left leaf"
+    And I create "/nestedRight" page with title "Right leaf"
+    And page "/nestedRight/" is viewable by "testuser"
+    When I go to the main page
+    And I follow "Subtree Rss"
+    And I should see "testuser (testuser) edited body (A summary.) of Root page"
+    And I should see "testuser (testuser) edited body (A summary.) of Left leaf"
+    And I should see "testuser (testuser) edited body (A summary.) of Right leaf"
+    Then I go to the main page
+    And I logout
+    And I login as "marosko"
+    Then I go to the main page
+    And I follow "Subtree Rss"
+    And I should see "testuser (testuser) edited body (A summary.) of Root page"
+    And I should see "testuser (testuser) edited body (A summary.) of Left leaf"
+    And I should not see "testuser (testuser) edited body (A summary.) of Right leaf"
+
+    Scenario: check if RSS for subtree works properly for anonymous user
+    When I create "/" page with title "Root page"
+    And I create "/nestedLeft" page with title "Left leaf"
+    And I create "/nestedRight" page with title "Right leaf"
+    And page "/nestedRight/" is viewable by "testuser"
+    When I go to the main page
+    And I follow "Subtree Rss"
+    And I should see "testuser (testuser) edited body (A summary.) of Root page"
+    And I should see "testuser (testuser) edited body (A summary.) of Left leaf"
+    And I should see "testuser (testuser) edited body (A summary.) of Right leaf"
+    Then I go to the main page
+    And I logout
+    And I follow "Subtree Rss"
+    And I should see "testuser (testuser) edited body (A summary.) of Root page"
+    And I should see "testuser (testuser) edited body (A summary.) of Left leaf"
+    And I should not see "testuser (testuser) edited body (A summary.) of Right leaf"
