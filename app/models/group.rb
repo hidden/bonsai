@@ -1,6 +1,7 @@
 class Group < ActiveRecord::Base
-  has_many :group_permissions, :dependent => :destroy, :include => :user, :order => 'group_permissions.can_edit DESC, users.name ASC'
+  has_many :group_permissions, :include => :user, :order => 'group_permissions.can_edit DESC, users.name ASC', :dependent => :destroy
   has_many :users, :through => :group_permissions
+  has_many :page_permissions, :dependent => :destroy 
 
   has_many :viewer_users, :through => :group_permissions, :class_name => 'User', :source => :user, :conditions => ['group_permissions.can_view = ?', true]
   has_many :editor_users, :through => :group_permissions, :class_name => 'User', :source => :user, :conditions => ['group_permissions.can_edit = ?', true]
@@ -11,7 +12,7 @@ class Group < ActiveRecord::Base
   def add_viewer user
     if self.viewer_users.empty?
       self.group_permissions.each do |permission|
-        if(permission.can_edit == true)
+        if (permission.can_edit == true)
           permission.can_view = true
         end
         permission.save
@@ -32,14 +33,14 @@ class Group < ActiveRecord::Base
   def remove_viewer user
     permission = GroupPermission.find_by_user_id_and_group_id(user.id, self.id)
     permission.destroy
-    if(self.users.empty?)
+    if (self.users.empty?)
       self.destroy
     end
   end
 
   def remove_editor user
     permission = GroupPermission.find_by_user_id_and_group_id(user.id, self.id)
-    if(self.editor_users.size == 1)
+    if (self.editor_users.size == 1)
       permission.destroy
       self.destroy
     else
@@ -56,7 +57,7 @@ class Group < ActiveRecord::Base
 
   def can_view_page? page
     # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
-    
+
     restriction_in_path = false
     # check if user belongs to a group that can view some of the ancestors or self
     for node in page.self_and_ancestors
@@ -68,7 +69,7 @@ class Group < ActiveRecord::Base
     end
     return !restriction_in_path
   end
-  
+
   def can_edit_page? page
     # TODO this is a smelly looping of selects, reconsider using a single hellish JOIN
 
@@ -95,5 +96,23 @@ class Group < ActiveRecord::Base
   def self.groups_visible_for_all
     groups = Group.find(:all, :joins => "JOIN group_permissions ON groups.id = group_permissions.group_id", :conditions => "group_permissions.can_view = 0 OR group_permissions.can_view = NULL")
     groups
+  end
+
+  def rename
+    i = 1
+
+    loop {
+      tmp_name = self.name + "_group"
+      tmp_name += i.to_s() unless i == 1
+      new_name = Group.find_by_name_and_usergroup(tmp_name, false)
+      i += 1
+      break if new_name.nil?
+    }
+
+    new_name = self.name + "_group"
+    new_name += (i-1).to_s() unless (i-1) == 1
+
+    self.name = new_name
+    self.save!
   end
 end

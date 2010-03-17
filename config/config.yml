@@ -39,6 +39,8 @@ defaults: &defaults
   page_part:
     saving_time: 5
 
+  backup_period: 14
+
 
 development:
   <<: *defaults

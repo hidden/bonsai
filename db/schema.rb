@@ -105,7 +105,6 @@ ActiveRecord::Schema.define(:version => 20100303212746) do
   add_index "pages", ["parent_id", "sid"], :name => "index_pages_on_parent_id_and_sid"
 
   create_table "uploaded_files", :force => true do |t|
-    t.integer "user_id"
     t.string  "attachment_filename"
     t.integer "page_id",                                :null => false
     t.integer "current_file_version_id", :default => 0, :null => false

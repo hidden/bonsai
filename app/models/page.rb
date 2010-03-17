@@ -3,7 +3,7 @@ class Page < ActiveRecord::Base
   validates_uniqueness_of :sid, :scope => :parent_id
 
   has_many :page_parts, :dependent => :destroy, :order => 'name'
-  has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC, id DESC'
+  has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'id DESC'
 
   has_many :page_permissions, :dependent => :destroy
   has_many :viewer_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_view = ?', true]
@@ -19,10 +19,6 @@ class Page < ActiveRecord::Base
     indexes page_parts_revisions.body, :as => :page_part_body
     indexes page_parts.name, :as => :page_part_name
     indexes pages.title, :as => :page_title
-  end
-
-  def to_sym
-    self.id
   end
 
   def get_subtree_ids_with_permissions page,user

@@ -214,7 +214,6 @@ Feature: Secure wiki
     And I go to /groups/autocomplete_for_groups?infix=jan
     And I should see "TestGroup"
 
-  @wip  
   Scenario: User creates group, addd permissions for this group, then erases this group and in page management he should not see this group
     When I go to the main page
     And I login as "johno"
@@ -227,3 +226,15 @@ Feature: Secure wiki
     And I go to the main page
     And I follow "Manage"
     Then I should not see "MyNewGroup"
+
+  Scenario: Manager adds a future user as a viewer to a public page
+    And I am logged in
+    When I create "/" page
+    And I add "matell" reader permission
+    And I press "Set"
+    And I should see "matell"
+    And I go to the main page
+    Then I should not see "Permission denied."
+    And I logout
+    And I login as "matell"
+    Then I should not see "Permission denied."
