@@ -43,15 +43,16 @@
       <div class="header_right">
       </div>
     </div>
-    <div class="main_content">
 
+
+    <div class="main_content">
       <% if @current_user.can_manage_page? @page %>
           <p><%= label_tag 'layout', t(:layout) %><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
       <% end %>
       <% for part in @page.page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
-              <div id="page_part_id_<%= part.id %>">
-                <div class="page_part_listing">
+              <div id="page_part_id_<%= part.id %>" style="width:100%">
+                <div class="page_part_listing" style="width:50%">
                   <span><%= part.name %></span>
                   <% if @page.page_parts.count > 1 %>
                   <div class="page_part_edit_remove_link">
@@ -62,14 +63,14 @@
                     <%= icon_tag ('edit_small.gif',:alt =>'') %>
                   </div>
                 </div>
-                <div<%= ' style="display:none;"' unless part.name == 'body' %>>
+                <div<%= ' style="display:none;"' unless part.name == 'body' %> style="width:100%" >
                   <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
 
                   <% if part == @page_part %>
-                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => 80 %>
+                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :style=>"width:100%" %>
                   <% else %>
                       <%=
-                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => 80,
+                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :style=>"width:100%",
                                         :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock" , :part_id => part.id}
                                         )
                       %>
@@ -118,7 +119,7 @@
 
     </div>
 
-    <div class="main_content_right">
+    <div class="main_content_right" style="width:244px;">
 
     <!-- FILES -->
     <h3><%= t(:files) %></h3>
@@ -304,7 +305,8 @@
                       <td><% if permission.can_manage?
                           opravnenie = 3
                       end %>
-                        <%= opravnenie %>
+                        <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
+                        <%= perm[opravnenie-1] %>
                       </td>
                       <td><%= ancestor.sid %></td>
                     </tr>

@@ -366,7 +366,6 @@ ul#menu li ul li.small{
     height:100%;
     float:left;
     padding:10px 33px;
-    white-space:nowrap;
 }
 
 .main_content_right{
@@ -656,6 +655,10 @@ input[type="submit"].large_button{
 }
 
 /*dashboard */
+.favourite_content{
+    position:absolute;
+    top:120px;
+}
 h2.dashboard, h3.favourites_title{
     background:none;
     border:none;
@@ -667,3 +670,4 @@ h3.favourites_title{
 .DashboardTree #user, #time {
     font-weight:bold;
 }
+
