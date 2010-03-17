@@ -1,6 +1,6 @@
 class PageController < ApplicationController
   before_filter :load_page, :except => [:add_lock, :update_locked, :search]
-  before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
+  before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :set_permission_to_blank_user, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :is_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
@@ -291,23 +291,39 @@ class PageController < ApplicationController
 
   def set_permissions
     addedgroups = params[:add_group].split(",")
+    @group_role_type = params[:group_role][:type]
+    @blank_users = Array.new
     for addedgroup in addedgroups
       groups = Group.find_all_by_name(addedgroup)
       unless groups.any? then
-        #create user group
-        tmp_user = User.create(:username => addedgroup, :name => "#{addedgroup} (tmp)")
-        groups = [tmp_user.user_group]
+        #add user to blank user list
+        @blank_users.push(addedgroup) if addedgroup.size > 1
       end
       for group in groups
         users = group.users
         retVal = group.is_public?
         retValUsers = users.include?(@current_user)
         if (retVal || retValUsers)
-          @page.add_viewer group if params[:group_role][:type] == 'viewer'
-          @page.add_editor group if params[:group_role][:type] == 'editor'
-          @page.add_manager group if params[:group_role][:type] == 'manager'
+          @page.add_viewer group if @group_role_type == 'viewer'
+          @page.add_editor group if @group_role_type == 'editor'
+          @page.add_manager group if @group_role_type == 'manager'
         end
       end
+    end
+    render :action => :manage
+  end
+
+  def set_permission_to_blank_user
+    blank_users = params[:blank_users].to_a
+    groups = Array.new
+    blank_users.each do |username|
+      tmp_user = User.create(:username => username, :name => "#{username} (tmp)")
+      groups.push(tmp_user.user_group)
+    end
+    for group in groups
+      @page.add_viewer group if params[:group_role] == 'viewer'
+      @page.add_editor group if params[:group_role] == 'editor'
+      @page.add_manager group if params[:group_role] == 'manager'
     end
     redirect_to manage_page_path(@page)
   end

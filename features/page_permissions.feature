@@ -227,16 +227,18 @@ Feature: Secure wiki
     And I follow "Manage"
     Then I should not see "MyNewGroup"
 
+  @wip
   Scenario: Manager adds a future user as a viewer to a public page
     And I am logged in
     When I create "/" page
-    And I add "matell" reader permission
+    And I add "matellko" reader permission
     And I press "Set"
-    And I should see "Add blank user(s) matell?"
-    And I press "Add blank user(s)"
-    And I should see "matell"
+    And show me the page
+    And I should see "Add blank user matellko?"
+    And I press "Add blank user"
+    And I should see "matellko"
     And I go to the main page
     Then I should not see "Permission denied."
     And I logout
-    And I login as "matell"
+    And I login as "matellko"
     Then I should not see "Permission denied."
