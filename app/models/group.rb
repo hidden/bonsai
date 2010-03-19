@@ -103,7 +103,7 @@ class Group < ActiveRecord::Base
     loop {
       tmp_name = self.name + "_group"
       tmp_name += i.to_s() unless i == 1
-      new_name = Group.find_by_name_and_usergroup(tmp_name, false)
+      new_name = Group.find_by_name(tmp_name)
       i += 1
       break if new_name.nil?
     }
