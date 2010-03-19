@@ -1,32 +1,52 @@
 <div class="bonsai">
-  <h1><%= t(:groups_management)%></h1>
-  <table id="Groups_table">
-    <thead>
-      <tr>
-        <th><%= t(:group)%></th>
-        <th><%= t(:users)%></th>
-        <th><%= t(:action)%></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% for group in @groups %>
+  <div class="holder_right">
+    <div class="header">
+      <div class="header_content">
+        <h1><%= t(:groups_management)%></h1>
+      </div>
+      <div class="header_right">
+      </div>
+    </div>
+    <div class="main_content">
+
+      <table class="history">
+        <thead>
         <tr>
-          <td><%=h group.name %></td>
-          <td><%=h group.users.collect {|user| user.full_name }.join(', ') %></td>
-          <td>
-            <% if((@current_user.can_edit_group? group) && (group.name != @current_user.username)) %>
-              <%= link_to t(:edit_group), edit_group_path(group), :id => "Edit_#{group.id}" %> <%= link_to t(:destroy_group), group, :id => "Destroy_#{group.id}", :confirm => t(:destroy_question), :method => :delete %>
-            <% else %>
-              -
-            <% end %>
-          </td>
-
+          <th><%= t(:group)%></th>
+          <th><%= t(:users)%></th>
+          <th><%= t(:action)%></th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+        <% for group in @groups %>
+            <tr>
+              <td><%=h group.name %></td>
+              <td><%=h group.users.collect {|user| user.full_name }.join(', ') %></td>
+              <td>
+                <% if((@current_user.can_edit_group? group) && (group.name != @current_user.username)) %>
+                    <%= link_to t(:edit_group), edit_group_path(group), :id => "Edit_#{group.id}" %> <%= link_to t(:destroy_group), group, :id => "Destroy_#{group.id}", :confirm => t(:destroy_question), :method => :delete %>
+                <% else %>
+                    -
+                <% end %>
+              </td>
 
-  <br />
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
 
-  <%= link_to link_to t(:new_group), new_group_path %>
+      <br />
+
+      <%= link_to link_to t(:new_group), new_group_path %>
+      
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+    &nbsp;
+  </div>
+  <div class="footer_right_light">
+    &nbsp;
+  </div>
 </div>

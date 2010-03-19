@@ -1,34 +1,86 @@
 <div id="toolbar" class="bonsai">
-  <% unless @current_user.logged? %>
-      <%= login_form %>
-  <% else %>
-      <p class="login"><%= t(:logged_as) %> <%= @current_user.full_name %> | <%= link_to t(:log_out), logout_path %></p>
-  <% end %>
-  <% unless @page.nil? || @no_toolbar %>
-      <p>
-        <span class="actions">
-          <% if @current_user.logged? %><%= render :partial => 'shared/favorite' %><% end %>
+  <div class="search_box">
+    <div class="actions">
+      <% unless session[:link_back].nil? %>
+          <%= link_to icon_tag('arrow_left.png') + " " + t(:return), session[:link_back] %>&nbsp;&nbsp;
+      <% end %>
+      <% unless @page.nil? || @no_toolbar %>
           <% unless @hide_view_in_toolbar %>
               <%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t(:view), @page.get_path %>
-          <% end %>          
-          <% if @current_user.logged? %><%= link_to image_tag('icons/user.png', :alt => '') + " " + t(:dashboard), dashboard_page_path(@page) %><% end %>
-          <% if @current_user.can_view_page? @page %><%= link_to icon_tag('page_white_stack.png', :alt => '') + " " + t(:history), page_history_path(@page) %><% end %>
-          <% if @current_user.can_edit_page? @page %><%= link_to icon_tag('page_white_edit.png', :alt => '') + " " + t(:edit), edit_page_path(@page) %><% end %>
-          <% if @current_user.can_manage_page? @page %><%= link_to icon_tag('page_white_key.png', :alt => '') + " " + t(:manage), manage_page_path(@page) %><% end %>
-          <% if @current_user.logged? %><%= link_to icon_tag('group.png', :alt => '') + " " + t(:groups), groups_page_path(@page) %><% end %>
-          <% if @current_user.can_edit_page? @page %><%= link_to icon_tag('page_white_link.png', :alt => '') + " " + t(:files), list_files_path(@page) %><% end %>
-          <% if @current_user.can_view_page? @page %><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %><% end %>
-          <% if @current_user.can_view_page? @page %><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_subtree_url(@page, @current_user), :title => "Subtree Rss" %><% end %>
-          <% if I18n.locale.to_s() == "en" %><%= link_to icon_tag('sk.png', :alt => 'SK'), change_locale_path('sk') %>
-              <% else %><%= link_to icon_tag('en.png', :alt => 'EN'), change_locale_path('en') %><% end %>
-        </span>
-      </p>
-  <% end %>
-  <% unless session[:link_back].nil? %>
-      <p class="actions">
-        <%= link_to icon_tag('arrow_left.png') + " " + t(:return), session[:link_back] %>
-      </p>
-  <% end %>
-  <%= render :partial => "shared/search_form" if APP_CONFIG['fulltext_search'] %>
-</div>
+          <% end %>
+          <% if @current_user.logged? %>
+              <%= render :partial => 'shared/favorite' %><% end %>
+      <% end %>
+    </div>
+    <div class="search">
+      <%= render :partial => "shared/search_form" if APP_CONFIG['fulltext_search'] %>
+    </div>
 
+  </div>
+  <div class="menu_box">
+    <div class="login">
+      <% unless @current_user.logged? %>
+          <noscript>
+            <span style="display:none" />
+          </noscript>
+          <%= link_to  t(:login), nil,  :onclick=>"return toggleDivDivDiv(event)"  %>
+          <noscript>
+            </span>
+          </noscript>
+      <% else %>
+          <%#= t(:logged_as) %><%= @current_user.full_name %> | <%= link_to t(:log_out), logout_path, :class => "red", :title=> t(:log_out) %>
+      <% end %>
+    </div>
+
+    <% unless @page.nil? || @no_toolbar %>
+
+        <div class="actions">
+          <% if @current_user.logged? %>
+              <%= link_to image_tag('icons/user.png', :alt => t(:dashboard)) + " " + t(:dashboard), dashboard_page_path(@page), :title=>t(:dashboard) %>
+          <% end %>
+        </div>
+        <ul id="menu">
+          <% if (( @current_user.can_edit_page? @page) || (@current_user.can_manage_page? @page) || (@current_user.logged?) || (@current_user.can_edit_page? @page))  %>
+              <li class="sub"><span><%= icon_tag('actions.png', :alt => t(:actions)) + " " + t(:actions) %></span>
+                <ul>
+                  <% if @current_user.can_edit_page? @page %><li><%= link_to icon_tag('page_white_edit.png', :alt => t(:edit)) + " " + t(:edit), edit_page_path(@page) %><% end %></li>
+                  <% if @current_user.logged? %><li><%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page) %></li><% end %>
+                  <% if @current_user.can_edit_page? @page %><li><%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page) %></li><% end %>
+                  <% if @current_user.can_view_page? @page %><li><%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %></li><% end %>
+                </ul>
+              </li>
+          <% else if (@page.is_public?) %>
+                  <%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %>
+                  <% end %><% end %>
+          <% if @current_user.can_view_page? @page %>
+              <li class="sub"><span><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %></span>
+                <ul>
+                  <li class="small"><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_subtree_url(@page, @current_user), :title => "Subtree Rss" %></li>
+                </ul>
+              </li>
+          <% end %>
+          <li class="sub"><%= icon_tag(I18n.locale.to_s()+'.png', :alt => '&nbsp;'+I18n.locale.to_s()+'&nbsp;') %>
+            <% locales = I18n.available_locales() %>
+            <ul>
+              <% for locale in locales %>
+                  <% unless locale.to_s() == I18n.locale.to_s() %><li class="small"><%= link_to icon_tag(locale.to_s().concat('.png'), :alt => locale.to_s()), change_locale_path(locale.to_s()), :title => locale.to_s() %></li><% end %>
+              <% end %>
+
+            </ul>
+          </li>
+        </ul>
+    <% end %>
+
+
+  </div>
+</div>
+<% unless @current_user.logged? %>
+    <div class="login_box" style="display:none">
+      <%= login_form %>
+    </div>
+    <noscript>
+      <div class="login_box">
+        <%= login_form %>
+      </div>
+    </noscript>
+<% end %>

@@ -53,7 +53,7 @@ Feature: Wiki
     And I follow "RSS feed of page changes"
     And I should see ";diff?first_revision=0&second_revision=1"
     And I go to /;diff?first_revision=0&second_revision=1
-    Then I should see "Diff for main"
+    Then I should see "Diff for: main"
 
     Scenario: check if RSS for subtree works properly on init
     When I create "/" page with title "Root page"

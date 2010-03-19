@@ -54,7 +54,7 @@ When /^I add "(.*)" editor to "(.*)" group$/ do |user, group|
   click_link('Groups')
   click_link("Edit_#{Group.find_by_name(group).id}")
   fill_in('add_user_usernames', :with => user)
-  select('editor', :from => 'add_user_type')
+  select('Editor', :from => 'add_user_type')
   click_button('Add')
 end
 
@@ -64,7 +64,7 @@ When /^I add "(.*)" viewer to "(.*)" group$/ do |user, group|
   click_link('Groups')
   click_link("Edit_#{Group.find_by_name(group).id}")
   fill_in('add_user_usernames', :with => user)
-  select('viewer', :from => 'add_user_type')
+  select('Viewer', :from => 'add_user_type')
   click_button('Add')
 end
 

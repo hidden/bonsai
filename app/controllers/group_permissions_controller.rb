@@ -13,8 +13,8 @@ class GroupPermissionsController < ApplicationController
       flash[:notice] = t(:user_not_found)
     else
       for user in users do
-        Group.find(params[:group_id]).add_viewer user if params[:add_user][:type] == 'viewer'
-        Group.find(params[:group_id]).add_editor user if params[:add_user][:type] == 'editor'
+        Group.find(params[:group_id]).add_viewer user if params[:add_user][:type] == '1'
+        Group.find(params[:group_id]).add_editor user if params[:add_user][:type] == '2'
       end
     end
     redirect_to edit_group_path(params[:group_id])
