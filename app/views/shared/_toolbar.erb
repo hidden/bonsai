@@ -18,6 +18,7 @@
           <% if @current_user.logged? %><%= link_to icon_tag('group.png', :alt => '') + " " + t(:groups), groups_page_path(@page) %><% end %>
           <% if @current_user.can_edit_page? @page %><%= link_to icon_tag('page_white_link.png', :alt => '') + " " + t(:files), list_files_path(@page) %><% end %>
           <% if @current_user.can_view_page? @page %><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %><% end %>
+          <% if @current_user.can_view_page? @page %><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_subtree_url(@page, @current_user), :title => "Subtree Rss" %><% end %>
           <% if I18n.locale.to_s() == "en" %><%= link_to icon_tag('sk.png', :alt => 'SK'), change_locale_path('sk') %>
               <% else %><%= link_to icon_tag('en.png', :alt => 'EN'), change_locale_path('en') %><% end %>
         </span>

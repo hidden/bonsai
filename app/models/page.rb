@@ -3,7 +3,7 @@ class Page < ActiveRecord::Base
   validates_uniqueness_of :sid, :scope => :parent_id
 
   has_many :page_parts, :dependent => :destroy, :order => 'name'
-  has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'created_at DESC, id DESC'
+  has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'id DESC'
 
   has_many :page_permissions, :dependent => :destroy
   has_many :viewer_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_view = ?', true]
@@ -21,23 +21,21 @@ class Page < ActiveRecord::Base
     indexes pages.title, :as => :page_title
   end
 
-  def to_sym
-    self.id
-  end
-
-  def get_children_tree page,user
-    Page.find_by_sql("SELECT  p.* FROM pages p
-                      left join (
+  def get_subtree_ids_with_permissions page,user
+    Page.find_by_sql("(SELECT  p.id FROM pages p
+		              left join (
                       select page_id,
                              count(can_view) sum_can_view,
-                             count(can_edit) sum_can_edit 
+                             count(can_edit) sum_can_edit
                       from page_permissions group by page_id) w on w.page_id=p.id
                       left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
                       left join groups q
-                      ON q.id = a.group_id and q.name='#{user}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
+                      ON q.id = a.group_id and q.id='#{user.id}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
                       where (p.lft BETWEEN #{page.lft} AND #{page.rgt})
                       and ((sum_can_view=0 and sum_can_edit=0)or (q.id is not null))
-                      order by p.lft")
+                      order by p.lft) union (select p.id from pages p
+                      left join page_permissions pp on p.id=pp.page_id and pp.can_view = 1
+                      where pp.id is null and (p.lft BETWEEN #{page.lft} AND #{page.rgt}))")
   end
 
   def self.find_by_path path

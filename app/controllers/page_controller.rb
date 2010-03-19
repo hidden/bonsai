@@ -21,6 +21,16 @@ class PageController < ApplicationController
     end
   end
 
+  def rss_subtree
+    user_from_token = User.find_by_token params[:token]
+    user_from_token = AnonymousUser.new(session) if user_from_token.nil?
+    if user_from_token.can_view_page? @page
+      rss_subtree_history
+    else
+      render :nothing => true, :status => :forbidden
+    end
+  end
+
   def view
     #unless session[:link_back].nil? then session[:link_back]= nil end
     @hide_view_in_toolbar = true
@@ -285,6 +295,12 @@ class PageController < ApplicationController
     render :action => :rss_history, :layout => false
   end
 
+  def rss_subtree_history
+    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id IN (?)", @page.get_subtree_ids_with_permissions(@page,@current_user)], :limit => 10, :order => "created_at DESC")
+    @revision_count = @page.page_parts_revisions.count
+    render :action => :rss_subtree_history, :layout => false
+  end
+
   def edit
     render :action => :edit
   end
@@ -293,6 +309,11 @@ class PageController < ApplicationController
     addedgroups = params[:add_group].split(",")
     for addedgroup in addedgroups
       groups = Group.find_all_by_name(addedgroup)
+      unless groups.any? then
+        #create user group
+        tmp_user = User.create(:username => addedgroup, :name => "#{addedgroup} (tmp)")
+        groups = [tmp_user.user_group]
+      end
       for group in groups
         users = group.users
         retVal = group.is_public?

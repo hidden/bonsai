@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   has_many :group_permissions, :dependent => :destroy
   has_many :groups, :through => :group_permissions
-  has_many :page_part_locks
+  has_many :page_part_locks, :dependent => :destroy
 
   has_many :visible_groups, :through => :group_permissions, :class_name => 'Group', :source => :group, :conditions => ['group_permissions.can_view = ?', true]
 
@@ -11,6 +11,10 @@ class User < ActiveRecord::Base
   before_create { |user| user.generate_unique_token }
   after_create { |user| user.create_user_group }
   after_destroy { |user| user.private_group.destroy }
+
+  def user_group
+    Group.find_by_name_and_usergroup(self.username, true)  
+  end
 
   def find_all_accessible_pages
     group_accessible = Page.find :all,
