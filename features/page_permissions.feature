@@ -228,3 +228,25 @@ Feature: Secure wiki
     And I go to the main page
     And I follow "Edit"
     Then I should not see "MyNewGroup"
+  Scenario: User create page with many managers and should not be allowed to remove all of them (there must be always at least 1 manager)
+    Given user "jozo" exists
+    Given user "fero" exists
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I add "jozo" manager permission
+    And I add "fero" manager permission
+    And I follow "Edit"
+    And I remove "fero" manager permission
+    And I remove "jozo" manager permission
+    And I remove "johno" manager permission
+    And I follow "Edit"
+    And I should see "Permissions"
+    And I logout
+    And I login as "fero"
+    When I follow "Edit"
+    Then I should see "You don't have manage permissions for this page."
+    And I logout
+    And I login as "jozo"
+    When I follow "Edit"
+    Then I should see "You don't have manage permissions for this page"

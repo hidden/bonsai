@@ -139,6 +139,7 @@ class PageController < ApplicationController
         end
         if(page_permission.can_manage?)
           @page.remove_manager(page_permission.group)
+params[:managers] -= 1
         end
 
       end
@@ -152,6 +153,7 @@ class PageController < ApplicationController
         #znizenie prav, ak pouzivatel nejake mal
         if(page_permission.can_manage?)
           @page.remove_manager(page_permission.group)
+params[:managers] -= 1
         end
 
       end
@@ -164,11 +166,24 @@ class PageController < ApplicationController
   end
 
   def remove_permission
+    managers = 0;
+    @page.page_permissions.each_with_index do |permission, index|
+      if permission.can_manage?
+        managers += 1
+      end
+    end
+
     page_permission = @page.page_permissions[params[:index].to_i]
-    page_permission.destroy
+    if page_permission.can_manage? && managers >= 2
+      page_permission.destroy
+      return true
+    else if (page_permission.can_edit? || page_permission.can_view?) && !page_permission.can_manage?
+       page_permission.destroy
+      return true
+    end
+    end
     #redirect_to manage_page_path(@page)
   end
-
   def process_file
     @no_toolbar = true
     parent_page_path = @path.clone
@@ -336,7 +351,13 @@ class PageController < ApplicationController
   def save_edit
     @error_flash_msg = ""
     @notice_flash_msg = ""
-
+    managers = 0;
+    @page.page_permissions.each_with_index do |permission, index|
+      if permission.can_manage?
+        managers += 1
+      end
+    end
+    params[:managers] = managers
     @page.page_permissions.each_with_index do |permission, index|
       group_name_select = permission.group.name + "_select"
       value = params[group_name_select]
@@ -353,11 +374,13 @@ class PageController < ApplicationController
           #2 specialne pripady, nie uplne stastne riesenie
           # 1.pripad, zmena managera na editora ak je stranka editable
           # 2.pripad, zmena editora/managera na viewera ak je stranka public
-        else if @page.is_editable? && params[:permission] == "2" && permission.can_manage?
+        else if @page.is_editable? && params[:permission] == "2" && permission.can_manage? && params[:managers] >= 2
           @page.remove_manager(permission.group)
+          params[:managers] -= 1
         else if @page.is_public? && params[:permission] == "1"
-          if @page.can_manage?
+          if @page.can_manage? && params[:managers] >= 2
             @page.remove_manager(permission.group)
+            params[:managers] -= 1
           end
           if @page.can_edit?
             @page.remove_editor(permission.group)

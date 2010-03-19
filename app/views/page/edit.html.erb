@@ -33,9 +33,22 @@
         return (current_parts.indexOf(part_id) != -1);
     }
 </script>
+<script type="text/javascript">
+    {
+        function test(managers)
+        {
+            alert(managers);
+            if (managers >= 2) return true;
+            else return false;
+        }
+        
+    }
+</script>
 <div class="bonsai">
 <div class="holder_right_dark">
-<% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true}) do |f| %>
+<% num_of_managers = 0 %>
+<% form_for(:file_version, :url => save_edited_page_path(@page, num_of_managers), :html => {:multipart => true}) do |f| %>
+
     <div class="header">
       <div class="header_content">
         <%= text_field_tag('title', @page.title) %>
@@ -196,7 +209,7 @@
         </tr>
         </thead>
         <tbody>
-
+ <% managers = 0%>
         <% @page.page_permissions.each_with_index do |permission, index| %>
             <tr id="group_<%= index %>">
               <% opravnenie = 0
@@ -237,7 +250,7 @@
                   <%# if permission.group.users.include? @current_user %>
                   <td><%=h  permission.group.name %></td>
                   <td>
-                    <select <%= (linka == true) ? "" : "disabled = 'true'" %> name="<%= permission.group.name%>_select" id="<%= permission.group.name%>_select">
+                    <select name="<%= permission.group.name%>_select" id="<%= permission.group.name%>_select">
                       <% if !(@page.is_editable?) %>
                           <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t(:viewer) %></option>
                       <% end %>
@@ -245,14 +258,16 @@
                       <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
                     </select>
                   </td>
+                  <% if opravnenie == 3
+                      managers += 1 end%>
                   <%# else %>
 
                   <%# end %>
 
                   <td>
-                    <% if linka == true %>
-                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
-                    <% end %>
+                   
+                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "test(#{managers})", :loaded => "managers -= 1", :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
+                   
                   </td>
               <% end %>
             </tr>

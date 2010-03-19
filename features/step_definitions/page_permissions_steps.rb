@@ -24,6 +24,12 @@ When /^I add "([^"]*)" manager permission$/ do |user|
   click_button('Save')
 end
 
+When /^I remove "([^"]*)" manager permission$/ do |user|
+  visit path_to('/')
+  click_link('Edit')
+  select('Editor', :from => user + '_select')
+  click_button('Save')
+end
 Given /^page "\/?(.*)\/?" is viewable by "(.*)"$/ do |url, group|
   page = Page.find_by_path(url.split("/"))
   page.add_viewer Group.find_by_name(group)
