@@ -27,8 +27,8 @@ module PathsHelper
     "#{page.get_path};update"
   end
 
-   def save_edited_page_path(page)
-    "#{page.get_path};save_edit"
+   def save_edited_page_path(page, managers)
+    "#{page.get_path};save_edit?managers=#{managers}"
   end
 
   def upload_file_path(page)
