@@ -106,3 +106,7 @@ sk:
   are_you_sure_to_remove_permission: "Naozaj chcete odobrať oprávnenie?"
   close: "Zatvoriť"
   by: "od autora"
+  changed_file: "Súbor bol zmenený"
+  file_corrupted: "Kontrolný súčet nesedí. Súbor môže byť poškodený!"
+  open: "Otvoriť "
+  anyway: " aj napriek tomu."

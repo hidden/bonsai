@@ -144,12 +144,12 @@ class PageController < ApplicationController
         @page.add_viewer(page_permission.group)
 
         #znizenie prav, ak pouzivatel nejake mal
-        if(page_permission.can_edit?)
+        if (page_permission.can_edit?)
           @page.remove_editor(page_permission.group)
         end
-        if(page_permission.can_manage?)
+        if (page_permission.can_manage?)
           @page.remove_manager(page_permission.group)
-params[:managers] -= 1
+          params[:managers] -= 1
         end
 
       end
@@ -161,9 +161,9 @@ params[:managers] -= 1
         @page.add_editor(page_permission.group)
 
         #znizenie prav, ak pouzivatel nejake mal
-        if(page_permission.can_manage?)
+        if (page_permission.can_manage?)
           @page.remove_manager(page_permission.group)
-params[:managers] -= 1
+          params[:managers] -= 1
         end
 
       end
@@ -187,13 +187,15 @@ params[:managers] -= 1
     if page_permission.can_manage? && managers >= 2
       page_permission.destroy
       return true
-    else if (page_permission.can_edit? || page_permission.can_view?) && !page_permission.can_manage?
-       page_permission.destroy
-      return true
-    end
+    else
+      if (page_permission.can_edit? || page_permission.can_view?) && !page_permission.can_manage?
+        page_permission.destroy
+        return true
+      end
     end
     #redirect_to manage_page_path(@page)
   end
+
   def process_file
     @no_toolbar = true
     parent_page_path = @path.clone
@@ -232,7 +234,7 @@ params[:managers] -= 1
         curr_file = file.current_file_version
         file_name = Path::UP_HISTORY + file.page.get_path + file.current_file_version.filename
         hash = Digest::MD5.hexdigest(file.attachment_filename + file.current_file_version.version.to_s() + File.size(file_name).to_s())
-        if (!(params[:force]) && (!hash.eql?(file.current_file_version.md5)))
+        unless ((params[:force]) || (hash.eql?(file.current_file_version.md5)))
           session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
           return render(:action => :corrupted_file)
         end
@@ -241,7 +243,7 @@ params[:managers] -= 1
       file = FileVersion.find_by_filename(@filename)
       curr_file = file
       hash = Digest::MD5.hexdigest(file.uploaded_file.attachment_filename + file.version.to_s() + File.size(file_name).to_s())
-      if (!(params[:force]) && (!hash.eql?(file.md5)))
+      unless ((params[:force]) || (hash.eql?(file.md5)))
         session[:link_back]= request.env['HTTP_REFERER']  #list_files_path(@page)
         return render(:action => :corrupted_file)
       end
@@ -329,7 +331,7 @@ params[:managers] -= 1
   end
 
   def rss_subtree_history
-    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id IN (?)", @page.get_subtree_ids_with_permissions(@page,@current_user)], :limit => 10, :order => "created_at DESC")
+    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id IN (?)", @page.get_subtree_ids_with_permissions(@page, @current_user)], :limit => 10, :order => "created_at DESC")
     @revision_count = @page.page_parts_revisions.count
     render :action => :rss_subtree_history, :layout => false
   end
@@ -395,19 +397,21 @@ params[:managers] -= 1
           #2 specialne pripady, nie uplne stastne riesenie
           # 1.pripad, zmena managera na editora ak je stranka editable
           # 2.pripad, zmena editora/managera na viewera ak je stranka public
-        else if @page.is_editable? && params[:permission] == "2" && permission.can_manage? && params[:managers] >= 2
-          @page.remove_manager(permission.group)
-          params[:managers] -= 1
-        else if @page.is_public? && params[:permission] == "1"
-          if @page.can_manage? && params[:managers] >= 2
+        else
+          if @page.is_editable? && params[:permission] == "2" && permission.can_manage? && params[:managers] >= 2
             @page.remove_manager(permission.group)
             params[:managers] -= 1
+          else
+            if @page.is_public? && params[:permission] == "1"
+              if @page.can_manage? && params[:managers] >= 2
+                @page.remove_manager(permission.group)
+                params[:managers] -= 1
+              end
+              if @page.can_edit?
+                @page.remove_editor(permission.group)
+              end
+            end
           end
-          if @page.can_edit?
-            @page.remove_editor(permission.group)
-          end
-        end
-        end
         end
       end
     end
@@ -420,17 +424,20 @@ params[:managers] -= 1
     #set page public or editable, ale bordel kod, toto by sa snad dalo napisat aj krajsie
     if params[:everyone_select] == "1" && !@page.is_public?
       switch_public
-    else if params[:everyone_select] == "2" && !@page.is_editable?
-      switch_editable
-    else if params[:everyone_select] == "-"
-      if @page.is_editable?
+    else
+      if params[:everyone_select] == "2" && !@page.is_editable?
         switch_editable
-      else if  @page.is_public?
-        switch_public
+      else
+        if params[:everyone_select] == "-"
+          if @page.is_editable?
+            switch_editable
+          else
+            if  @page.is_public?
+              switch_public
+            end
+          end
+        end
       end
-      end
-    end
-    end
     end
 
     if not params[:file_version].nil?

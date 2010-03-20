@@ -1,12 +1,27 @@
-<p><%= t(:file_not_found) %></p>
-
-<% if (!@page.nil?) && (@current_user.can_edit_page? @page) %>
-    <p><%= t(:you_can) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_this_file) %></a>.</p>
-    <div style="display: none;">
-      <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
-          <%= hidden_field_tag('uploaded_file_filename', @filename) %>
-          <p><label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %>
-          </label><%= submit_tag t(:btn_upload), :class=>'small_button' %></p>
-      <% end %>
+<div class="holder_right">
+  <div class="header">
+    <div class="header_content">
+      <h1><%= t(:file_not_found) %></h1>
     </div>
-<% end %>
+    <div class="header_right">
+    </div>
+  </div>
+  <div class="main_content">
+    <% if (!@page.nil?) && (@current_user.can_edit_page? @page) %>
+        <p><%= t(:you_can) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:upload_this_file) %></a>.</p>
+        <div style="display: none;">
+          <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
+              <%= hidden_field_tag('uploaded_file_filename', @filename) %>
+              <p><label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %>
+              </label><%= submit_tag t(:btn_upload), :class=>'small_button' %></p>
+          <% end %>
+        </div>
+    <% end %>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+  </div>
+  <div class="footer_right_light">
+  </div>
+</div>

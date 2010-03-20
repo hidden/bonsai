@@ -106,3 +106,7 @@ en:
   are_you_sure_to_remove_permission: "Are you sure to remove this permission?"
   close: "Close"
   by: "by"
+  changed_file: "File was changed"
+  file_corrupted: "The file's checksum is not valid. File can be corrupted!"
+  open: "Open "
+  anyway: " anyway."

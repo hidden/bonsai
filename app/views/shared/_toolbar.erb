@@ -23,7 +23,7 @@
           <noscript>
             <span style="display:none" />
           </noscript>
-          <%= link_to  t(:login), nil,  :onclick=>"return toggleDivDivDiv(event)"  %>
+          <%= link_to  t(:btn_log_in), nil,  :onclick=>"return toggleDivDivDiv(event)"  %>
           <noscript>
             </span>
           </noscript>
@@ -50,7 +50,7 @@
                 </ul>
               </li>
           <% else if (@page.is_public?) %>
-                  <%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %>
+                  <%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + t(:history), page_history_path(@page) %>
                   <% end %><% end %>
           <% if @current_user.can_view_page? @page %>
               <li class="sub"><span><%= icon_tag('rss.png', :alt => 'RSS')%></span>

@@ -128,7 +128,7 @@ Feature: Wiki
     When I logout
     And I login as "pewe"
     Then I should see "You have successfully logged in."
-    Then I should see "Logged in as: pewe"
+    Then I should see "pewe (pewe)"
     When I follow "Groups"
     Then I should not see "pewe  "
     And I should see "pewe_group"
@@ -143,7 +143,7 @@ Feature: Wiki
     When I logout
     And I login as "fero"
     Then I should see "You have successfully logged in."
-    Then I should see "Logged in as: fero"
+    Then I should see "fero (fero)"
     When I follow "Groups"
     Then I should not see "fero  "
     And I should see "fero_group"
