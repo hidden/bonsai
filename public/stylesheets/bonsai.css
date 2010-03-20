@@ -274,7 +274,7 @@ input[type="text"].small_input:focus, input[type="password"].small_input:focus, 
 ul#menu li.sub span:hover{text-decoration:underline;}
 #menu li.click { }
 
-#menu li.click ul li {margin-bottom:2px; border-right:0; width:100px;}
+#menu li.click ul li {margin-bottom:5px; border-right:0; width:100px;}
 #menu li ul li a{ padding-left:0px;}
 
 #menu li.click ul {left:0px; top:24px; background:#333333;}

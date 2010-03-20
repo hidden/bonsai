@@ -56,7 +56,7 @@
               <li class="sub"><span><%= icon_tag('rss.png', :alt => 'RSS')%></span>
                 <ul>
                   <li class="small"><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %></li>
-                  <li class="small"><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_subtree_url(@page, @current_user), :title => t(:rss_feed_subtree) %></li>
+                  <li class="small"><%= link_to icon_tag('rss_tree.png', :alt => 'RSS'), rss_subtree_url(@page, @current_user), :title => t(:rss_feed_subtree) %></li>
                 </ul>
               </li>
           <% end %>
