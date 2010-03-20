@@ -59,7 +59,7 @@
 
     <div class="main_content">
       <% if @current_user.can_manage_page? @page %>
-          <p><%= label_tag 'layout', t(:layout) %><%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
+          <p><%= label_tag 'layout', t(:layout) %> <%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
       <% end %>
       <% for part in @page.page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>

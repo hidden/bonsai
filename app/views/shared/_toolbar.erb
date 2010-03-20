@@ -53,13 +53,14 @@
                   <%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %>
                   <% end %><% end %>
           <% if @current_user.can_view_page? @page %>
-              <li class="sub"><span><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %></span>
+              <li class="sub"><span><%= icon_tag('rss.png', :alt => 'RSS')%></span>
                 <ul>
-                  <li class="small"><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_subtree_url(@page, @current_user), :title => "Subtree Rss" %></li>
+                  <li class="small"><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_url(@page, @current_user), :title => t(:rss_feed) %></li>
+                  <li class="small"><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_subtree_url(@page, @current_user), :title => t(:rss_feed_subtree) %></li>
                 </ul>
               </li>
           <% end %>
-          <li class="sub"><%= icon_tag(I18n.locale.to_s()+'.png', :alt => '&nbsp;'+I18n.locale.to_s()+'&nbsp;') %>
+          <li class="sub"><span><%= icon_tag(I18n.locale.to_s()+'.png', :alt => '&nbsp;'+I18n.locale.to_s()+'&nbsp;') %></span>
             <% locales = I18n.available_locales() %>
             <ul>
               <% for locale in locales %>

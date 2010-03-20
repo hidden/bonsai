@@ -3,66 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title><%=h @page.full_title unless @page.nil? %></title>
-  <%= stylesheet_link_tag 'bonsai' %>
+  <%= render :partial => 'shared/head_includes' %>
+  <!-- special layout style -->
   <%= stylesheet_link_tag 'default' %>
-  <!-- Start Syntax Highlight -->
-  <%= stylesheet_link_tag 'SyntaxHighlighter/shCore.css' %>
-  <%= stylesheet_link_tag 'SyntaxHighlighter/shThemeDefault.css' %>
-
-  <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shLegacy.js' %>
-
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushRuby.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushPhp.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushXml.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCpp.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCSharp.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCss.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushDelphi.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushJava.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushJScript.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushPython.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushSql.js' %>
-
-  <!-- End Syntax Highlight -->
-  <!-- Start WMD Editor -->
-  <script type="text/javascript">
-      /***** Tell WMD not to start up automatically *****/
-      // Set this *before* you load wmd.js
-      wmd_options = { autostart: false };
-  </script>
-  <%= javascript_include_tag 'wmd_creator.js' %>
-  <%= javascript_include_tag 'wmd.js' %>
-  <!-- End WMD Editor -->
-  <%= javascript_include_tag :defaults, :cache => true %>
-  <%= render :partial => 'shared/rss_link' %>
-  <%= javascript_include_tag 'menu.js' %>
-
-  <script type="text/javascript">
-      function removeNotice(el){
-          var closeLink = el;
-          var noticeBox = closeLink.parentNode;
-          noticeBox.removeChild(closeLink);
-          noticeBox.parentNode.removeChild(noticeBox);
-      }
-  </script>
-
-  <script type="text/javascript">
-      function setContentWidth(){
-          var w = document.body.clientWidth;
-          var wr = document.getElementsByClassName('main_content_right');
-          if(wr != null){
-              var new_width = (w - parseInt(wr[0].style.width));
-              var mycont = document.getElementsByClassName('main_content');
-              if(mycont != null){
-                mycont[0].style.width = (new_width-170)+"px";
-                mycont[0].style.float ="left";
-              }
-          }
-      }
-  </script>
 
 </head>
 <body onLoad="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
@@ -86,6 +29,7 @@
         </div>
     <% end %>
 <% end %>
+
 <div class="wrapper">
   <div class="holder">
     <%= yield %>

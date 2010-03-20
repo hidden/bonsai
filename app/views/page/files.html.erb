@@ -31,7 +31,7 @@
                       <% if file.current_file_version.user.nil? %><%= t(:unknown) %>
                           <% else %><%= h file.current_file_version.user.full_name %>
                       <% end %></td>
-                    <td><%#= number_to_human_size(file.current_file_version.size, :precision => 2) %></td>
+                    <td><%= number_to_human_size(file.current_file_version.size, :precision => 2) %></td>
                     <td><%= file.current_file_version.created_at.localtime.strftime("%H:%M:%S %d %b %Y") %></td>
                     <td>
                       <% if (file.file_versions.length > 1) %>

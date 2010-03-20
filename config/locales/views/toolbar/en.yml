@@ -13,6 +13,7 @@ en:
   dashboard: "Dashboard"
   summary: "Summary"
   return: "Return to page"
-  rss_feed: "RSS feed of page changes"
+  rss_feed: "RSS feed"
+  rss_feed_subtree: "RSS feed of subtree"
   btn_search_page: "Search"
   actions: "Actions"

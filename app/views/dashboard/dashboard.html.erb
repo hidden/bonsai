@@ -28,7 +28,7 @@
               </span>
                 <br/>
               <span id="time">
-                <%= t(:befor_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
+                <%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
               </span>
                 &nbsp;
                 <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
@@ -57,7 +57,7 @@
               </span>
               <br/>
               <span id="time">
-                <%= t(:befor_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
+                <%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
               </span>
               &nbsp;
               <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
