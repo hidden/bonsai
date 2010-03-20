@@ -14,7 +14,5 @@ end
 
 
 When /^I delete "([^"]*)" page part$/ do |part_name|
-  click_link('edit')
-  check("is_deleted_#{part_name}")
-  click_button('Save')
+  click_link("part_id_#{part_name}")
 end

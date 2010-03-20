@@ -14,7 +14,7 @@ Feature: LDAP
     When I go to the main page
     And I login as "johno"
     Then I should see "You have successfully logged in."
-    Then I should see "Logged in as: johno"
+    Then I should see "johno (johno) | Log out"
 
   Scenario: Anonymous user logs not successfully
     When I go to the main page

@@ -15,6 +15,10 @@ module PathsHelper
     url_for :controller => "page", :action => "toggle_favorite"
   end
 
+  def remove_page_part_path(page, id)
+     url_for :controller => "page", :action => "remove_page_part", :part_id => id
+  end
+
   def edit_page_path(page)
     "#{page.get_path};edit"
   end
@@ -23,8 +27,8 @@ module PathsHelper
     "#{page.get_path};update"
   end
 
-   def save_edited_page_path(page)
-    "#{page.get_path};save_edit"
+   def save_edited_page_path(page, managers)
+    "#{page.get_path};save_edit?managers=#{managers}"
   end
 
   def upload_file_path(page)
@@ -43,8 +47,8 @@ module PathsHelper
     "#{page.get_path};files"
   end
 
-  def remove_permission_path(page, index)
-    "#{page.get_path};remove_permission&index=#{index}"
+  def _remove_permission_path(page, index)
+    "#{page.get_path};remove_permission?index=#{index}"
   end
 
   def change_permission_path(page, index, permission)

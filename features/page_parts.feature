@@ -20,14 +20,14 @@ Feature: Wiki layouting and many page parts
     And I add "navigation" page part with text "This is a header"
     Then I should see "This is a header" within "#nav"
 
+  @wip    
   Scenario: User create a page part and then delete, it should not be seen from now on
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
     Then I should see "Page part successfully added."
     Then I should see "This is a header"
-    When I delete "testpage" page part
-    Then I should see "Page successfully updated."
     When I follow "Edit"
+    And I delete "testpage" page part
     Then I should not see "testpage"
 
   Scenario: User create a page part and rename it

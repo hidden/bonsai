@@ -5,4 +5,8 @@ class PagePart < ActiveRecord::Base
   belongs_to :current_page_part_revision, :class_name => 'PagePartRevision'
 
   validates_presence_of :name
+
+  def delete(part_id)
+    self.delete_all(["id = ?", part_id])
+  end
 end

@@ -1,5 +1,5 @@
 sk:
-  login: "Login"
+  login: "Login:"
   btn_log_in: "Prihlásiť"
   password: "Heslo:"
   logged_as: "Prihlásený ako: "
@@ -14,5 +14,7 @@ sk:
   summary: "Sumár"
   return: "Návrat na stránku"
   rss_feed: "RSS kanál"
-  btn_search_page: "Vyhladaj"
+  rss_feed_subtree: "RSS kanál podstromu"
+  btn_search_page: "Vyhľadaj"
+  actions: "Akcie"
 

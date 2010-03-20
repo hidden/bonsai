@@ -15,8 +15,9 @@ Feature: Secure wiki
   Scenario: Manager can edit page permissions and page
     Given I am logged in
     And I create "/" page
-    Then I should see "Manage"
     And I should see "Edit"
+    And I follow "Edit"
+    Then I should see "Permissions"
 
   Scenario: Editor cannot manage page permissions
     When I go to the main page
@@ -26,8 +27,9 @@ Feature: Secure wiki
     And I login as "crutch"
     And page "/" is editable by "crutch"
     When I go to the main page
-    Then I should not see "Manage"
     And I should see "Edit"
+    And I follow "Edit"
+    Then I should see "You don't have manage permissions for this page."
 
   Scenario: Viewer can only view page
     When I go to the main page
@@ -36,7 +38,6 @@ Feature: Secure wiki
     And page "/" is editable by "johno"
     And I logout
     And I login as "crutch"
-    Then I should not see "Manage"
     And I should not see "Edit"
 
   Scenario: Anonymous cannot see a restricted page
@@ -48,7 +49,6 @@ Feature: Secure wiki
     Then I should see "Permission denied."
     Then I should not see "History"
     Then I should not see "Edit"
-    Then I should not see "Manage"
 
   Scenario: Anonymous can see a public page
      Given I am logged in
@@ -78,10 +78,11 @@ Feature: Secure wiki
     And I add "matell" manager permission
     And I logout
     And I login as "crutch"
-    Then I should not see "Manage"
+    Then I should not see "Edit"
     And I logout
     And I login as "matell"
-    And I should see "Manage"
+    And I follow "Edit"
+    And I should see "Permissions"
 
   Scenario: Manager adds a viewer to a public page, so it is no longer public
     Given user "matell" exists
@@ -93,7 +94,6 @@ Feature: Secure wiki
     #And I select "matell" from "groups_id"
     #And I check "can_view"
     And I add "matell" reader permission
-    And I press "Set"
     And I go to the main page
     Then I should not see "Permission denied."
     And I logout
@@ -134,7 +134,8 @@ Feature: Secure wiki
     And I login as "matell"
     Then I should not see "Permission denied."
     And I should see "Edit"
-    And I should see "Manage"
+    And I follow "Edit"
+    And I should see "Permissions"
     And I logout
     And I login as "crutch"
     Then I should see "Permission denied."
@@ -155,13 +156,14 @@ Feature: Secure wiki
     And I go to the test page
     Then I should not see "Permission denied"
     And I should see "Edit"
-    And I should see "Manage"
+    And I follow "Edit"
+    And I should see "Permissions"
     And I logout
     And I login as "crutch"
     And I go to the test page
     Then I should see "Permission denied"
     And I should not see "Edit"
-    And I should not see "Manage"
+    
 
   @wip
   Scenario: Editor inherits permissions to view a non-public page
@@ -179,7 +181,7 @@ Feature: Secure wiki
     And I go to the test page
     Then I should not see "Permission denied"
     And I should see "Edit"
-    And I should not see "Manage"
+    And I should not see "Permissions"
     And I logout
     And I login as "bielikova"
     And I go to /test/
@@ -214,27 +216,38 @@ Feature: Secure wiki
     And I go to /groups/autocomplete_for_groups?infix=jan
     And I should see "TestGroup"
 
+  @wip  
   Scenario: User creates group, addd permissions for this group, then erases this group and in page management he should not see this group
     When I go to the main page
     And I login as "johno"
     And I create "/" page
     And I create "MyNewGroup" group    
     And I add "MyNewGroup" reader permission
-    And I follow "Manage"
+    And I follow "Edit"
     And I should see "MyNewGroup"
     When I delete "MyNewGroup" group
     And I go to the main page
-    And I follow "Manage"
+    And I follow "Edit"
     Then I should not see "MyNewGroup"
-
-  Scenario: Manager adds a future user as a viewer to a public page
-    And I am logged in
-    When I create "/" page
-    And I add "matell" reader permission
-    And I press "Set"
-    And I should see "matell"
-    And I go to the main page
-    Then I should not see "Permission denied."
+  Scenario: User create page with many managers and should not be allowed to remove all of them (there must be always at least 1 manager)
+    Given user "jozo" exists
+    Given user "fero" exists
+    When I go to the main page
+    And I login as "johno"
+    And I create "/" page
+    And I add "jozo" manager permission
+    And I add "fero" manager permission
+    And I follow "Edit"
+    And I remove "fero" manager permission
+    And I remove "jozo" manager permission
+    And I remove "johno" manager permission
+    And I follow "Edit"
+    And I should see "Permissions"
     And I logout
-    And I login as "matell"
-    Then I should not see "Permission denied."
+    And I login as "fero"
+    When I follow "Edit"
+    Then I should see "You don't have manage permissions for this page."
+    And I logout
+    And I login as "jozo"
+    When I follow "Edit"
+    Then I should see "You don't have manage permissions for this page"

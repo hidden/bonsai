@@ -1,0 +1,33 @@
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title><%=h @page.full_title unless @page.nil? %></title>
+  <!-- Start Syntax Highlight -->
+  <%= stylesheet_link_tag 'SyntaxHighlighter/shCore.css' %>
+  <%= stylesheet_link_tag 'SyntaxHighlighter/shThemeDefault.css' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shLegacy.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushRuby.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushPhp.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushXml.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCpp.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCSharp.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCss.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushDelphi.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushJava.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushJScript.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushPython.js' %>
+  <%= javascript_include_tag 'SyntaxHighlighter/shBrushSql.js' %>
+
+   <script type="text/javascript">
+      /***** Tell WMD not to start up automatically *****/
+      // Set this *before* you load wmd.js
+      wmd_options = { autostart: false };
+  </script>
+  <%= javascript_include_tag 'wmd_creator.js' %>
+  <%= javascript_include_tag 'wmd.js' %>
+  <!-- End WMD Editor -->
+  <%= javascript_include_tag :defaults, :cache => true %>
+  <%= render :partial => 'shared/rss_link' %>
+  <%= javascript_include_tag 'menu.js' %>
+  <%= javascript_include_tag 'addons.js' %>
+
+  <%= stylesheet_link_tag 'bonsai' %>

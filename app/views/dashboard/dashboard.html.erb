@@ -1,49 +1,96 @@
-<h1><%= t(:hello) %>, <%= @current_user.name %></h1>
-<table class="favorite_table" id="Favorites">
-  <th><%= t(:pages_watching) %></th>
-  <th><%= @current_user.favorite_pages.length %></th>
-  <% for favorite in @current_user.favorite_pages %>
-      <tr onmouseover="visible_remove_favorite(this, 'visible')" onmouseout="visible_remove_favorite(this, 'hidden')">
-        <td><%= link_to favorite.title, favorite.get_path %></td>
-        <td><%= link_to_remote icon_tag('cancel.png', :border => 0, :title => t(:remove_from_favorites), :alt => ''), {:url => { :controller => "dashboard", :action => "remove_favorite", :id => favorite.id }}, :href => url_for(:controller => "dashboard", :action => "remove_favorite", :id => favorite.id), :style => 'visibility:hidden' %></td>
-      </tr>
-  <% end %>
-</table>
-<div class="dashboard_news">
-  <h2><%= t(:news) %></h2>
-  <% last = nil %>
-  <% index = 0 %>
-  <ul class="DashboardTree">
-    <% for record in @news %>
-        <% index += 1 %>
-        <% if !last.nil? and (record['who'].eql?(last['who']) and record['page_id'].eql?(last['page_id'])) %>
-            <li>
-              <span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
-              <%= t(:at) %> <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-              <br/> <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
-              &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
-              <br/>
-            </li>
-        <% else %>
-            <% unless last.nil? %>
-                </ul>
-                </li>
-            <% end %>
-            <% if !@news[index].nil? and (record['who'].eql?(@news[index]['who']) and record['page_id'].eql?(@news[index]['page_id'])) %>
-                <li class="Collapsed" onclick="toggleTreeElement(this,event,6);">
-            <% else %>
-                <li>
-            <% end %>
-             <span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
-            <%= t(:at) %> <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-            <br/>  <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
-            &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
-            <br/>
-            <ul style="display:none;">
-        <% end %>
-
-        <% last = record.clone %>
-    <% end %>
-    </ul>
-    </li>
+<div class="holder_right_dark">
+  <div class="header">
+    <div class="header_content">
+      <h1><%= t(:hello) %>, <%= @current_user.name %></h1>
     </div>
+    <div class="header_right">
+    </div>
+  </div>
+  <div class="main_content">
+    <h2 class="dashboard"><%= t(:news) %></h2>
+    <% last = nil %>
+    <% index = 0 %>
+    <ul class="DashboardTree">
+      <% for record in @news %>
+          <% index += 1 %>
+          <% if !last.nil? and (record['who'].eql?(last['who']) and record['page_id'].eql?(last['page_id'])) %>
+              <li>
+                <h3 class="favourites_title">
+                  <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
+                </h3>
+                <%= t(:part) %>
+                <span id="part">
+                <%= record['what'] %>
+              </span>
+                <%= t(:edited) %>
+                <span id="user">
+                <%= record['who'] %>
+              </span>
+                <br/>
+              <span id="time">
+                <%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
+              </span>
+                &nbsp;
+                <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
+                <br/>
+              </li>
+          <% else %>
+              <% unless last.nil? %>
+                  </ul>
+                  </li>
+              <% end %>
+              <% if !@news[index].nil? and (record['who'].eql?(@news[index]['who']) and record['page_id'].eql?(@news[index]['page_id'])) %>
+                  <li class="Collapsed" onclick="toggleTreeElement(this,event,6);">
+              <% else %>
+                  <li>
+              <% end %>
+              <h3 class="favourites_title">
+                <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
+              </h3>
+              <%= t(:part) %>
+              <span id="part">
+                <%= record['what'] %>
+              </span>
+              <%= t(:edited) %>
+              <span id="user">
+                <%= record['who'] %>
+              </span>
+              <br/>
+              <span id="time">
+                <%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
+              </span>
+              &nbsp;
+              <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
+              <br/>
+              <ul style="display:none;">
+          <% end %>
+
+          <% last = record.clone %>
+      <% end %>
+      </ul>
+      </li>
+      </div>
+
+  <div class="main_content_right">
+    <div class="favourite_content">
+      <h2 class="favourites"><%= icon_tag('watched_y.gif', :alt => t(:star))%><%= t(:pages_watching)%>(<%= @current_user.favorite_pages.length %>)</h2>
+      
+      <% for favorite in @current_user.favorite_pages %>
+          <p onmouseover="visible_remove_favorite(this, 'visible')" onmouseout="visible_remove_favorite(this, 'hidden')">
+            <%= link_to favorite.title, favorite.get_path %>  <%= " " + t(:by) + " " + favorite.page_parts_revisions.last.user.username %>
+            <%= link_to_remote icon_tag('cancel.png', :border => 0, :title => t(:remove_from_favorites), :alt => ''), {:url => { :controller => "dashboard", :action => "remove_favorite", :id => favorite.id }}, :href => url_for(:controller => "dashboard", :action => "remove_favorite", :id => favorite.id), :style => 'visibility:hidden' %>
+          </p>
+      <% end %>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="footer">
+  <div class="footer_left">
+  </div>
+  <div class="footer_right_dark">
+  </div>
+</div>
+

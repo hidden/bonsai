@@ -3,14 +3,11 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <title><%=h @page.full_title unless @page.nil? %></title>
-    <%= stylesheet_link_tag 'bonsai' %>
+    <%= render :partial => 'shared/head_includes' %>
+    <!-- special layout style -->
     <%= stylesheet_link_tag 'pewe' %>
-    <%= javascript_include_tag :defaults, :cache => true %>
-    <%= render :partial => 'shared/rss_link' %>
   </head>
-  <body>
+  <body onLoad="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
     <%= render :partial => 'shared/toolbar' %>
     <% unless flash.empty? %><p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p><% end %>
     <div id="pewe-holder">

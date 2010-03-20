@@ -3,7 +3,7 @@ When /^I create "([^"]*)" page$/ do |url|
   fill_in('title', :with => 'Some title')
   fill_in('body', :with => 'Some content.')
   fill_in('summary', :with => 'A summary.')
-  click_button('Create')
+  click_button('Save')
 end
 
 #When /^I create "([^"]*)" page with file link$/ do |url|
@@ -19,7 +19,7 @@ When /^I create "([^"]*)" page with title "([^"]*)"$/ do |url, title|
   fill_in('title', :with => title)
   fill_in('body', :with => 'Some content.')
   fill_in('summary', :with => 'A summary.')
-  click_button('Create')
+  click_button('Save')
 end
 
 When /^I create "([^"]*)" page with title "([^"]*)" body "([^"]*)"$/ do |url, title, body|
@@ -27,7 +27,7 @@ When /^I create "([^"]*)" page with title "([^"]*)" body "([^"]*)"$/ do |url, ti
   fill_in('title', :with => title)
   fill_in('body', :with => body)
   fill_in('summary', :with => "summary")
-  click_button('Create')
+  click_button('Save')
 end
 
 
@@ -37,7 +37,7 @@ When /^I create "([^"]*)" page with title "([^"]*)" body "([^"]*)" and "([^"]*)"
   fill_in('body', :with => body)
   fill_in('summary', :with => "summary")
   select(my_layout, :from => 'layout')
-  click_button('Create')
+  click_button('Save')
 end
 
 When /^I edit "([^"]*)" page with title "([^"]*)"$/ do |url, title|
@@ -60,7 +60,7 @@ When /^I create "([^"]*)" page with title "([^"]*)" string body$/ do |url, title
   fill_in('title', :with => title)
   fill_in('body',:with => body)
   fill_in('summary', :with => "summary")
-  click_button('Create')
+  click_button('Save')
 end
 
 When /^I create "([^"]*)" page with address in body$/ do |url|
@@ -68,5 +68,5 @@ When /^I create "([^"]*)" page with address in body$/ do |url|
   fill_in('title', :with => 'Some title')
   fill_in('body',:with => 'Address: ' + request.env['PATH_INFO'])
   fill_in('summary', :with => "summary")
-  click_button('Create')
+  click_button('Save')
 end

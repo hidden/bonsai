@@ -8,9 +8,9 @@ class PageController < ApplicationController
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
 
   def search
-    @search_results = Page.search params[:search], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
+    @search_results = Page.search params[:search_text], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
   end
-  
+
   def rss
     user_from_token = User.find_by_token params[:token]
     user_from_token = AnonymousUser.new(session) if user_from_token.nil?
@@ -118,7 +118,7 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def switch_editable
@@ -131,36 +131,69 @@ class PageController < ApplicationController
         permission.save
       end
     end
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def change_permission
     page_permission = @page.page_permissions[params[:index].to_i]
-    if (params[:permission] == "can_view")
+    if (params[:permission] == "1")
       if (page_permission.group.users.include? @current_user)
         flash[:notice] = t(:can_view_error)
       else
-        page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
+        #page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
+        @page.add_viewer(page_permission.group)
+
+        #znizenie prav, ak pouzivatel nejake mal
+        if(page_permission.can_edit?)
+          @page.remove_editor(page_permission.group)
+        end
+        if(page_permission.can_manage?)
+          @page.remove_manager(page_permission.group)
+params[:managers] -= 1
+        end
+
       end
-    elsif (params[:permission] == "can_edit")
+    elsif (params[:permission] == "2")
       if (page_permission.group.users.include? @current_user)
         flash[:notice] = t(:can_edit_error)
       else
-        page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
+        #page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
+        @page.add_editor(page_permission.group)
+
+        #znizenie prav, ak pouzivatel nejake mal
+        if(page_permission.can_manage?)
+          @page.remove_manager(page_permission.group)
+params[:managers] -= 1
+        end
+
       end
-    elsif (params[:permission] == "can_manage")
-      page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
+    elsif (params[:permission] == "3")
+      #page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
+      @page.add_manager(page_permission.group)
     end
     page_permission.save
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
 
   def remove_permission
-    page_permission = @page.page_permissions[params[:index].to_i]
-    page_permission.destroy
-    redirect_to manage_page_path(@page)
-  end
+    managers = 0;
+    @page.page_permissions.each_with_index do |permission, index|
+      if permission.can_manage?
+        managers += 1
+      end
+    end
 
+    page_permission = @page.page_permissions[params[:index].to_i]
+    if page_permission.can_manage? && managers >= 2
+      page_permission.destroy
+      return true
+    else if (page_permission.can_edit? || page_permission.can_view?) && !page_permission.can_manage?
+       page_permission.destroy
+      return true
+    end
+    end
+    #redirect_to manage_page_path(@page)
+  end
   def process_file
     @no_toolbar = true
     parent_page_path = @path.clone
@@ -319,18 +352,86 @@ class PageController < ApplicationController
         retVal = group.is_public?
         retValUsers = users.include?(@current_user)
         if (retVal || retValUsers)
-          @page.add_viewer group if params[:group_role][:type] == 'viewer'
-          @page.add_editor group if params[:group_role][:type] == 'editor'
-          @page.add_manager group if params[:group_role][:type] == 'manager'
+          @page.add_viewer group if params[:group_role][:type] == "1"
+          @page.add_editor group if params[:group_role][:type] == "2"
+          @page.add_manager group if params[:group_role][:type] == "3"
         end
       end
     end
-    redirect_to manage_page_path(@page)
+    #redirect_to manage_page_path(@page)
   end
+
+  def remove_page_part
+    part_id = params[:part_id]
+    if not part_id.nil?
+      PagePart.delete(part_id)
+    end
+  end
+
 
   def save_edit
     @error_flash_msg = ""
     @notice_flash_msg = ""
+    managers = 0;
+    @page.page_permissions.each_with_index do |permission, index|
+      if permission.can_manage?
+        managers += 1
+      end
+    end
+    params[:managers] = managers
+    @page.page_permissions.each_with_index do |permission, index|
+      group_name_select = permission.group.name + "_select"
+      value = params[group_name_select]
+      if not value.nil?
+
+        params[:index] = index
+        params[:permission] = value
+
+        #ak je stranka public a zo selectu vyberiem "viewer" -> nic sa neudeje a zaroven, ak je stranka editable - vsetci maju pravu edit a zo selectu vyberiem "viewer"
+        #alebo "editor", tak sa tiez nic neuduje
+        if ( !(@page.is_public? && params[:permission] == "1") && !(@page.is_editable? && (params[:permission] == "1" || params[:permission] == "2")))
+          change_permission
+
+          #2 specialne pripady, nie uplne stastne riesenie
+          # 1.pripad, zmena managera na editora ak je stranka editable
+          # 2.pripad, zmena editora/managera na viewera ak je stranka public
+        else if @page.is_editable? && params[:permission] == "2" && permission.can_manage? && params[:managers] >= 2
+          @page.remove_manager(permission.group)
+          params[:managers] -= 1
+        else if @page.is_public? && params[:permission] == "1"
+          if @page.can_manage? && params[:managers] >= 2
+            @page.remove_manager(permission.group)
+            params[:managers] -= 1
+          end
+          if @page.can_edit?
+            @page.remove_editor(permission.group)
+          end
+        end
+        end
+        end
+      end
+    end
+
+    #add group permission from autocomplete
+    if not params[:add_group].nil?
+      set_permissions
+    end
+
+    #set page public or editable, ale bordel kod, toto by sa snad dalo napisat aj krajsie
+    if params[:everyone_select] == "1" && !@page.is_public?
+      switch_public
+    else if params[:everyone_select] == "2" && !@page.is_editable?
+      switch_editable
+    else if params[:everyone_select] == "-"
+      if @page.is_editable?
+        switch_editable
+      else if  @page.is_public?
+        switch_public
+      end
+      end
+    end
+    end
+    end
 
     if not params[:file_version].nil?
       upload
@@ -362,7 +463,8 @@ class PageController < ApplicationController
       new_part_name = params["parts_name"][part_name]
 
       edited_revision_id = params["parts_revision"][part_name]
-      delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
+      #delete_part = params[:is_deleted].blank? ? false : !params[:is_deleted][part_name].blank?
+      delete_part = false
 
       edited_revision = page_part.page_part_revisions.find(:first, :conditions => {:id => edited_revision_id})
 
@@ -497,7 +599,9 @@ class PageController < ApplicationController
               flash[:notice] = t(:file_uploaded)
               redirect_to list_files_path(@page)
             else
-              @notice_flash_msg = @notice_flash_msg + t(:file_uploaded) + "\r\n"
+              unless @notice_flash_msg.nil?
+                @notice_flash_msg = @notice_flash_msg + t(:file_uploaded) + "\r\n"
+              end
             end
           else
             @uploaded_file.delete
