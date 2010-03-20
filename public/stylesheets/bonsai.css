@@ -672,3 +672,9 @@ h3.favourites_title{
     font-weight:bold;
 }
 
+#layout_details{
+    width: 50%;
+    font-size:13px;
+    padding:5px 5px;
+    margin-bottom:10px;
+}

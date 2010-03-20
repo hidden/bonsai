@@ -1,3 +1,62 @@
+<% if @current_user.can_manage_page? @page %>
+    <% definition = get_layout_definitions %>
+
+    <% user_layouts = [['Inherit', nil] ] %>
+
+    <% unless definition.nil? %>
+
+    <script type="text/javascript">
+    function showLayoutsHelper(s){
+        var default_layout = 'default';
+        var selected_value = (s.value == null || s.value == "") ? 'default' : s.value;
+                    
+        //new array for layouts help
+        var layouts = new Array(<%= (definition.length + 1) %>)
+        //default layout params and structure
+        layouts[default_layout] = new Array(3);
+        layouts[default_layout]['name'] = 'Inherit';
+        layouts[default_layout]['compulsory'] = 'body';
+        layouts[default_layout]['optionally'] = '';
+            
+        <% for file in definition
+            params = get_layout_parameters(file)
+            user_layouts.push([params[1], params[0]])
+        %>
+        layouts['<%= params[0] %>'] = new Array(3);
+        layouts['<%= params[0] %>']['name'] = '<%= params[1] %>';
+        layouts['<%= params[0] %>']['compulsory'] = '<%= params[2] %>';
+        layouts['<%= params[0] %>']['optionally'] = '<%= params[3] %>';
+        <% end %>
+
+        var layout_help = document.getElementById('layout_details');
+        if(layout_help != null){
+
+            var layout_message = "";
+
+            if(!(layouts[selected_value]['name'] == null || layouts[selected_value]['name'] == "" )){
+               /*layout_message += "<strong>" + layouts[selected_value]['name'] + "</strong><br/>";*/
+               layout_message += "<%= t(:layout_help_title) %>:";
+            }
+            layout_message+="<ul>";
+            if(!(layouts[selected_value]['compulsory'] == null || layouts[selected_value]['compulsory'] == "" )){
+                layout_message += "<li><strong><%= t(:layout_help_compulsory) %>: </strong>" + layouts[selected_value]['compulsory'] + "</li>";
+            }
+
+            if(!(layouts[selected_value]['optionally'] == null || layouts[selected_value]['optionally'] == "" )){
+                layout_message += "<li><strong><%= t(:layout_help_optional) %>: </strong>" + layouts[selected_value]['optionally']+"</li>";
+            }
+            layout_message+="</ul>";
+            layout_help.innerHTML =  layout_message;
+            layout_help.blindDown();
+        }
+
+    }
+    </script>
+    <% end %>
+<% end %>
+
+
+
 
 <script type="text/javascript">
 
@@ -34,15 +93,11 @@
     }
 </script>
 <script type="text/javascript">
-    {
-        function test(managers)
-        {
-            if (managers >= 2) return true;
-            else return false;
-        }
-        
+    function test(managers){
+        return (managers >= 2) ? true : false;
     }
 </script>
+
 <div class="bonsai">
 <div class="holder_right_dark">
 <% num_of_managers = 0 %>
@@ -58,19 +113,27 @@
 
 
     <div class="main_content">
+
       <% if @current_user.can_manage_page? @page %>
-          <p><%= label_tag 'layout', t(:layout) %> <%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe'], ['Test Layout', 'test']], @page.layout) %></p>
+          <p><%= label_tag 'layout', t(:layout) %>
+
+          <%= select_tag :layout, options_for_select(user_layouts, @page.layout),
+               :onchange => 'javascript:showLayoutsHelper(this)' %>
+          </p>
+          <div id="layout_details" class="lighter_bg" style="display:none;">
+          </div>
       <% end %>
+
       <% for part in @page.page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
               <div id="page_part_id_<%= part.id %>" style="width:100%">
                 <div class="page_part_listing" style="width:50%">
                   <span><%= part.name %></span>
                   <% if @page.page_parts.count > 1 %>
-                  <div class="page_part_edit_remove_link">
-                    <%= link_to_remote image_tag ('icons/cancel_big.png',:alt =>''), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
-                  </div>
-                  <% end %>    
+                      <div class="page_part_edit_remove_link">
+                        <%= link_to_remote image_tag ('icons/cancel_big.png',:alt =>''), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
+                      </div>
+                  <% end %>
                   <div class="page_part_edit_remove_link" onclick="return toggleDivDiv(event)">
                     <%= image_tag ('icons/edit_big.gif',:alt =>'') %>
                   </div>
@@ -193,163 +256,163 @@
     </div>
     <!-- END OF FILES -->
 
-     <% if @current_user.can_manage_page? @page %>
-    <!--PAGE PERMISIONS -->
-    <h3><%= t(:permissions_for) %></h3>
-    <div class="lighter_bg" id="permissions">
+    <% if @current_user.can_manage_page? @page %>
+        <!--PAGE PERMISIONS -->
+        <h3><%= t(:permissions_for) %></h3>
+        <div class="lighter_bg" id="permissions">
 
-      <%#= render :partial => 'page/remove_permission' %>
-      <table class="page_permisions">
-        <thead>
-        <tr>
-          <th><%= t(:group)%></th>
-          <th><%= t(:permission)%></th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>
- <% managers = 0%>
-        <% @page.page_permissions.each_with_index do |permission, index| %>
-            <tr id="group_<%= index %>">
-              <% opravnenie = 0
-                 ciarky = 0
-                 linka = false
-              %>
-
-              <% if permission.group.users.include? @current_user %>
-                  <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) ||(permission.can_view?) )
-                      opravnenie = 1
-                  end %>
-
-                  <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
-                      opravnenie = 2
-                  end %>
-
-                  <% if permission.can_manage?
-                      opravnenie = 3
-                  end %>
-              <% else %>
-                  <% linka = true %>
-
-                  <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) || (permission.can_view?))
-                      opravnenie = 1
-                  end %>
-
-                  <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
-                      opravnenie = 2
-                  end %>
-
-                  <% if permission.can_manage?
-                      opravnenie = 3
-                  end %>
-              <% end %>
-
-
-              <% if opravnenie > 0 %>
-                  <%# if permission.group.users.include? @current_user %>
-                  <td><%=h  permission.group.name %></td>
-                  <td>
-                    <select name="<%= permission.group.name%>_select" id="<%= permission.group.name%>_select">
-                      <% if !(@page.is_editable?) %>
-                          <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t(:viewer) %></option>
-                      <% end %>
-                      <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t(:editor) %></option>
-                      <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
-                    </select>
-                  </td>
-                  <% if opravnenie == 3
-                      managers += 1 end%>
-                  <%# else %>
-
-                  <%# end %>
-
-                  <td>
-                   
-                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "test(#{managers})", :loaded => "managers -= 1", :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
-                   
-                  </td>
-              <% end %>
-            </tr>
-        <% end %>
-        <tr>
-          <td><%= t(:everyone) %></td>
-          <!-- <td><%#= link_to image_boolean(@page.is_public?, t(:toggle)), switch_public_path(@page), {:method => :post} %></td> -->
-          <td colspan="2"> <select name="everyone_select" id="everyone_select">
-            <option selected = "selected" >-</option>
-            <option value="1" <%= @page.is_public? ? selected = "selected": "" %> ><%= t(:can_view) %></option>
-            <option value="2" <%=  @page.is_editable? ? selected = "selected" : "" %> ><%= t(:can_edit) %></option>
-          </select>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-      <% unless @page.ancestors.empty? %>
-          <h3><%= t(:inherited_permissions) %></h3>
-          <table>
+          <%#= render :partial => 'page/remove_permission' %>
+          <table class="page_permisions">
             <thead>
             <tr>
-              <td><%= t(:group)%></td>
-              <td><%= t(:permission)%></td>
-              <td><%= t(:via)%></td>
+              <th><%= t(:group)%></th>
+              <th><%= t(:permission)%></th>
+              <th></th>
             </tr>
             </thead>
             <tbody>
-            <% @page.ancestors.each do |ancestor| %>
+            <% managers = 0%>
+            <% @page.page_permissions.each_with_index do |permission, index| %>
+                <tr id="group_<%= index %>">
+                  <% opravnenie = 0
+                     ciarky = 0
+                     linka = false
+                  %>
 
-                <% ancestor.page_permissions.each do |permission| %>
-                    <tr>
-                      <td><%=h  permission.group.name %></td>
+                  <% if permission.group.users.include? @current_user %>
+                      <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) ||(permission.can_view?) )
+                          opravnenie = 1
+                      end %>
 
-                      <% opravnenie = 0 %>
-                      <% if ancestor.is_public? %>
-                          <% opravnenie = 1 %>
-                      <% else %>
-                          <% if permission.can_view?
-                              opravnenie = 1
-                          end %>
-                      <% end %>
-                      <% if ancestor.is_editable? %>
-                          <% opravnenie = 2 %>
-                      <% else %>
-                          <% if permission.can_edit?
-                              opravnenie = 2
-                          end %>
-                      <% end %>
-                      <td><% if permission.can_manage?
+                      <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
+                          opravnenie = 2
+                      end %>
+
+                      <% if permission.can_manage?
                           opravnenie = 3
                       end %>
-                        <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
-                        <%= perm[opravnenie-1] %>
+                  <% else %>
+                      <% linka = true %>
+
+                      <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) || (permission.can_view?))
+                          opravnenie = 1
+                      end %>
+
+                      <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
+                          opravnenie = 2
+                      end %>
+
+                      <% if permission.can_manage?
+                          opravnenie = 3
+                      end %>
+                  <% end %>
+
+
+                  <% if opravnenie > 0 %>
+                      <%# if permission.group.users.include? @current_user %>
+                      <td><%=h  permission.group.name %></td>
+                      <td>
+                        <select name="<%= permission.group.name%>_select" id="<%= permission.group.name%>_select">
+                          <% if !(@page.is_editable?) %>
+                              <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t(:viewer) %></option>
+                          <% end %>
+                          <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t(:editor) %></option>
+                          <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
+                        </select>
                       </td>
-                      <td><%= ancestor.sid %></td>
-                    </tr>
-                <% end %>
+                      <% if opravnenie == 3
+                          managers += 1 end%>
+                      <%# else %>
+
+                      <%# end %>
+
+                      <td>
+
+                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "test(#{managers})", :loaded => "managers -= 1", :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
+
+                      </td>
+                  <% end %>
+                </tr>
             <% end %>
+            <tr>
+              <td><%= t(:everyone) %></td>
+              <!-- <td><%#= link_to image_boolean(@page.is_public?, t(:toggle)), switch_public_path(@page), {:method => :post} %></td> -->
+              <td colspan="2"> <select name="everyone_select" id="everyone_select">
+                <option selected = "selected" >-</option>
+                <option value="1" <%= @page.is_public? ? selected = "selected": "" %> ><%= t(:can_view) %></option>
+                <option value="2" <%=  @page.is_editable? ? selected = "selected" : "" %> ><%= t(:can_edit) %></option>
+              </select>
+              </td>
+            </tr>
             </tbody>
           </table>
-      <% end %>
+
+          <% unless @page.ancestors.empty? %>
+              <h3><%= t(:inherited_permissions) %></h3>
+              <table>
+                <thead>
+                <tr>
+                  <td><%= t(:group)%></td>
+                  <td><%= t(:permission)%></td>
+                  <td><%= t(:via)%></td>
+                </tr>
+                </thead>
+                <tbody>
+                <% @page.ancestors.each do |ancestor| %>
+
+                    <% ancestor.page_permissions.each do |permission| %>
+                        <tr>
+                          <td><%=h  permission.group.name %></td>
+
+                          <% opravnenie = 0 %>
+                          <% if ancestor.is_public? %>
+                              <% opravnenie = 1 %>
+                          <% else %>
+                              <% if permission.can_view?
+                                  opravnenie = 1
+                              end %>
+                          <% end %>
+                          <% if ancestor.is_editable? %>
+                              <% opravnenie = 2 %>
+                          <% else %>
+                              <% if permission.can_edit?
+                                  opravnenie = 2
+                              end %>
+                          <% end %>
+                          <td><% if permission.can_manage?
+                              opravnenie = 3
+                          end %>
+                            <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
+                            <%= perm[opravnenie-1] %>
+                          </td>
+                          <td><%= ancestor.sid %></td>
+                        </tr>
+                    <% end %>
+                <% end %>
+                </tbody>
+              </table>
+          <% end %>
 
 
-      <h4><%= t(:add_group_permission) %></h4>
-      <% form_tag :controller => 'page', :action => 'set_permissions' do %>
-          <%= text_field_tag('add_group') %> <%= select('group_role', 'type',{t(:viewer) => "1", t(:editor) => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %><br/>
-          <div id="autocomplete" style="display: none;" class="autocomplete"></div>
-          <script type="text/javascript">
-              //<![CDATA[
-              var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '/groups/autocomplete_for_groups', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
-              //]]>
-          </script>
-      <% end %>
-      <div class="info_warning">
-        <%= t(:permissions_warning)%>
-      </div>
-      <!-- END OF PAGE PERMISIONS -->
+          <h4><%= t(:add_group_permission) %></h4>
+          <% form_tag :controller => 'page', :action => 'set_permissions' do %>
+              <%= text_field_tag('add_group') %> <%= select('group_role', 'type',{t(:viewer) => "1", t(:editor) => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %><br/>
+              <div id="autocomplete" style="display: none;" class="autocomplete"></div>
+              <script type="text/javascript">
+                  //<![CDATA[
+                  var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '/groups/autocomplete_for_groups', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
+                  //]]>
+              </script>
+          <% end %>
+          <div class="info_warning">
+            <%= t(:permissions_warning)%>
+          </div>
+          <!-- END OF PAGE PERMISIONS -->
+        </div>
+    <%else%>
+        <%= t(:permissions_error)%>
+    <%end %>
     </div>
-<%else%>
-    <%= t(:permissions_error)%>
-<%end %>
-       </div>
 <% end %>
 </div>
 </div>

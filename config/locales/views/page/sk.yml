@@ -106,3 +106,6 @@ sk:
   are_you_sure_to_remove_permission: "Naozaj chcete odobrať oprávnenie?"
   close: "Zatvoriť"
   by: "od autora"
+  layout_help_title: "Pre toto rozloženie sú"
+  layout_help_compulsory: "povinné časti"
+  layout_help_optional: "volitelné časti"

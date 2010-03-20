@@ -1,0 +1,8 @@
+parameters:
+  id: pewe
+  name: PeWe Layout
+
+structure:
+  compulsory: body  
+  optionally: caption, navigation, footer
+

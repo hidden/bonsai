@@ -1,0 +1,7 @@
+parameters:
+  id: test
+  name: Test Layout
+
+structure:
+  compulsory: header, body
+  optionally: caption, navigation, footer

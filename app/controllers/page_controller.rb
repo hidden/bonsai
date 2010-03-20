@@ -1,11 +1,12 @@
 class PageController < ApplicationController
-  before_filter :load_page, :except => [:add_lock, :update_locked, :search]
+  before_filter :load_page, :except => [:add_lock, :update_locked, :search, :load_layout_definitions]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :is_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
+
 
   def search
     @search_results = Page.search params[:search_text], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']

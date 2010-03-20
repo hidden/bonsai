@@ -1,4 +1,20 @@
 module PageHelper
+  def get_layout_definitions
+    definitions = Dir.glob("public/layout_definitions/*.yml")
+    return definitions
+  end
+
+  def get_layout_parameters(file)
+    layout = YAML.load_file("#{RAILS_ROOT}/#{file}")
+    unless layout.nil?
+      conf =[ layout['parameters']['id'], layout['parameters']['name'], layout['structure']['compulsory'], layout['structure']['optionally'] ]
+      return conf
+    else
+      return "nil"
+    end
+  end
+
+
   def image_boolean(value, title = nil)
     return value ? image_tag("icons/accept.png", :alt => 'Yes', :title => title) : image_tag("icons/delete.png", :alt => 'No', :title => title);
   end
