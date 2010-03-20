@@ -83,7 +83,7 @@ en:
   remove_from_favorites: "remove from favorites"
   add_to_favorites: "add to favorites"
   news: "Last changes"
-  befor_date: ""
+  before_date: ""
   after_date: " ago"
   no_page_results_title: "We couldn't find anything!"
   no_page_results_body: "Please try a different search."

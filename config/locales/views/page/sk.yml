@@ -83,7 +83,7 @@ sk:
   remove_from_favorites: "odstrániť z obľúbených"
   add_to_favorites: "pridať medzi obľúbené"
   news: "Posledné zmeny"
-  befor_date: "pred "
+  before_date: "pred "
   after_date: ""
   no_page_results_title: "Nenašli sa žiadne záznamy!"
   no_page_results_body: "Skúste hľadanie podľa iného kľúčového slova."

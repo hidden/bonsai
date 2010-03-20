@@ -20,7 +20,7 @@
             <li>
               <span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
               <%= t(:at) %> <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-              <br/> <span id="time"><%= t(:befor_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
+              <br/> <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
               &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
               <br/>
             </li>
@@ -36,7 +36,7 @@
             <% end %>
              <span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
             <%= t(:at) %> <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-            <br/>  <span id="time"><%= t(:befor_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
+            <br/>  <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
             &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
             <br/>
             <ul style="display:none;">
