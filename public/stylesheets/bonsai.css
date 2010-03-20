@@ -334,6 +334,7 @@ ul#menu li ul li.small{
 .wrapper{
     margin:0 10px;
     height:100%;
+    clear:both;
 }
 
 
@@ -477,9 +478,9 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
     background:white;
     border-left: 1px solid #dcdcdc;
     width: 25px;
-    height:17px;
+    height:25px;
     vertical-align:middle;
-    padding:4px 0;
+    margin:0 0;
     text-align:center;
 }
 

@@ -1,5 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title><%=h @page.full_title unless @page.nil? %></title>
+
+  <!-- page layout style  -->
+  <%= stylesheet_link_tag 'bonsai' %>
+  <% unless @page.nil? %>
+      <!-- special layout style -->
+      <%= stylesheet_link_tag (@page.layout.nil?)? 'default' : @page.layout  %>
+  <% end %>
+  <!-- end of page layout style  -->
+
+
   <!-- Start Syntax Highlight -->
   <%= stylesheet_link_tag 'SyntaxHighlighter/shCore.css' %>
   <%= stylesheet_link_tag 'SyntaxHighlighter/shThemeDefault.css' %>
@@ -17,7 +32,7 @@
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushPython.js' %>
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushSql.js' %>
 
-   <script type="text/javascript">
+  <script type="text/javascript">
       /***** Tell WMD not to start up automatically *****/
       // Set this *before* you load wmd.js
       wmd_options = { autostart: false };
@@ -29,5 +44,10 @@
   <%= render :partial => 'shared/rss_link' %>
   <%= javascript_include_tag 'menu.js' %>
   <%= javascript_include_tag 'addons.js' %>
+</head>
+<body onLoad="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
 
-  <%= stylesheet_link_tag 'bonsai' %>
+<%= render :partial => 'shared/toolbar' %>
+<%= render :partial => 'shared/notice' %>
+<%= render :partial => 'shared/breadcrumb' %>
+  

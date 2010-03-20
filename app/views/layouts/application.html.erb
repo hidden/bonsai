@@ -1,34 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <%= render :partial => 'shared/head_includes' %>
-  <!-- special layout style -->
-  <%= stylesheet_link_tag 'default' %>
-
-</head>
-<body onLoad="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
-<%= render :partial => 'shared/toolbar' %>
-<% unless flash.empty? %>
-
-    <% if flash.keys.first.to_s == "error" %>
-        <div id="errorflash"><%=h flash.values.first %>
-          <div onclick="javascript: removeNotice(this)">
-            <%= icon_tag('cancel.png', :alt => t(:close))%>
-          </div>
-        </div>
-    <% else %>
-        <p id="flash" class="<%= flash.keys.first %>"><%=h flash.values.first %></p>
-    <% end %>
-<% end %>
-<% if not @page.nil? %>
-    <% if @page.self_and_ancestors.size > 1%>
-        <div class="breadcrumb">
-          <%= @page.self_and_ancestors.collect {|node| link_to_page node}.join " &gt; " %>
-        </div>
-    <% end %>
-<% end %>
+<%= render :partial => 'shared/header' %>
 
 <div class="wrapper">
   <div class="holder">
@@ -36,12 +6,4 @@
   </div>
 </div>
 
-
-<%= render :partial => 'shared/analytics' %>
-<script type="text/javascript">
-    SyntaxHighlighter.all();
-    dp.SyntaxHighlighter.HighlightAll('code');
-    13</script>
-
-</body>
-</html>
+<%= render :partial => 'shared/footer' %>

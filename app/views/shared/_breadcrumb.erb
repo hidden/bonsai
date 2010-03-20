@@ -1,0 +1,7 @@
+<% if not @page.nil? %>
+    <% if @page.self_and_ancestors.size > 1%>
+        <div class="breadcrumb">
+          <%= @page.self_and_ancestors.collect {|node| link_to_page node}.join " &gt; " %>
+        </div>
+    <% end %>
+<% end %>
