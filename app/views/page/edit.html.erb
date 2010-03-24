@@ -125,7 +125,8 @@
 
       <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
 
-      <p><%= submit_tag t(:save) , :class=> "small_button" %></p>
+      <p><%= submit_tag t(:save) , :class=> "small_button" %>
+      <%= submit_tag t(:preview), :name=>"Preview", :class=> "small_button", :target => 'preview' %></p>
 
 
 

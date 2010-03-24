@@ -276,13 +276,17 @@ class PageController < ApplicationController
   end
 
   def create
+    if params.include?('Preview')
+      generate_preview
+      return
+    end
     parent = nil
     unless params[:parent_id].blank?
       parent = Page.find_by_id(params[:parent_id])
       # TODO check if exists
     end
 
-    if (!parent.nil? && !(@current_user.can_edit_page? parent))
+    if ((!parent.nil? && !(@current_user.can_edit_page? parent)) || params[:title].nil?)
       unprivileged
     else
       sid = params[:sid].blank? ? nil : params[:sid]
@@ -372,6 +376,14 @@ class PageController < ApplicationController
 
 
   def save_edit
+    if params.include?('Preview')
+      generate_preview
+      return
+    end
+    if params[:parts].nil?
+      unprivileged
+      return
+    end
     @error_flash_msg = ""
     @notice_flash_msg = ""
     managers = 0;
@@ -444,9 +456,11 @@ class PageController < ApplicationController
       upload
     end
 
+
     if not (params[:new_page_part_name].empty? and params[:new_page_part_text].empty?)
       new_part
     end
+
 
     update
 
@@ -671,6 +685,42 @@ class PageController < ApplicationController
   end
 
   private
+  def generate_preview
+    parent = nil
+    unless params[:parent_id].blank?
+      parent = Page.find_by_id(params[:parent_id])
+      # TODO check if exists
+    end
+
+    if ((!parent.nil? && !(@current_user.can_edit_page? parent)) || params[:title].nil?)
+      unprivileged
+    else
+      sid = params[:sid].blank? ? nil : params[:sid]
+
+      @page = PreviewPage.new(:title => params[:title], :sid => sid, :parent_id => params[:parent_id])
+      layout = params[:layout].empty? ? @page.resolve_parent_layout : params[:layout]
+      @page.layout = layout
+      params[:body].nil? ? params[:parts].each do |name, body|
+        page_part = @page.page_parts.build(:name => name, :current_page_part_revision_id => 0)
+        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => body, :was_deleted => false)
+        page_part.current_page_part_revision = first_revision
+      end : begin
+        page_part = @page.page_parts.build(:name => "body", :current_page_part_revision_id => 0)
+        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:body], :was_deleted => false)
+        page_part.current_page_part_revision = first_revision
+      end
+
+      unless (params[:new_page_part_name].nil? || params[:new_page_part_name].empty?)
+        page_part = @page.page_parts.build(:name => params[:new_page_part_name],:current_page_part_revision_id => 0)
+        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:new_page_part_text], :was_deleted => false)
+        page_part.current_page_part_revision = first_revision
+      end
+      @page.page_parts.sort! {|x,y| x.name <=> y.name }
+      @no_toolbar = true
+      render :action => :preview, :layout => layout
+    end
+  end
+
   def load_page
     @path = params[:path]
     @page = Page.find_by_path(@path)

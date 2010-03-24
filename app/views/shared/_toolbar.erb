@@ -49,8 +49,8 @@
                   <% if @current_user.can_view_page? @page %><li><%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %></li><% end %>
                 </ul>
               </li>
-          <% else if (@page.is_public?) %>
-                  <%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + t(:history), page_history_path(@page) %>
+          <% else if (@current_user.can_view_page? @page) %>
+                  <%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %>
                   <% end %><% end %>
           <% if @current_user.can_view_page? @page %>
               <li class="sub"><span><%= icon_tag('rss.png', :alt => 'RSS')%></span>

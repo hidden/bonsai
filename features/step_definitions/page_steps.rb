@@ -30,6 +30,13 @@ When /^I create "([^"]*)" page with title "([^"]*)" body "([^"]*)"$/ do |url, ti
   click_button('Save')
 end
 
+When /^I create "([^"]*)" page with title "([^"]*)" body "([^"]*)" without saving$/ do |url, title, body|
+  visit url
+  fill_in('title', :with => title)
+  fill_in('body', :with => body)
+  fill_in('summary', :with => "summary")
+end
+
 
 When /^I create "([^"]*)" page with title "([^"]*)" body "([^"]*)" and "([^"]*)" layout$/ do |url, title, body, my_layout|
   visit url

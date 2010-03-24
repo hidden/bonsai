@@ -1,6 +1,7 @@
 en:
   permission_denied: "Permission denied."
   please_login: "Please login to your account."
+  access_denied: "You are not competent for this action!"
   changes_for_page: "Changes for page:"
   btn_compare: "compare selected versions"
   edited: "edited "
@@ -48,6 +49,7 @@ en:
   new_part_name: "New page part name"
   attach_file: "attach a file to this page"
   save: "Save"
+  preview: "Preview"
   diff_for: "Diff for"
   subpages: "Subpages for page:"
   revision: "Revision"

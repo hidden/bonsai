@@ -11,62 +11,36 @@
     <% last = nil %>
     <% index = 0 %>
     <ul class="DashboardTree">
-      <% for record in @news %>
-          <% index += 1 %>
-          <% if !last.nil? and (record['who'].eql?(last['who']) and record['page_id'].eql?(last['page_id'])) %>
-              <li>
-                <h3 class="favourites_title">
-                  <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-                </h3>
-                <%= t(:part) %>
-                <span id="part">
-                <%= record['what'] %>
-              </span>
-                <%= t(:edited) %>
-                <span id="user">
-                <%= record['who'] %>
-              </span>
-                <br/>
-              <span id="time">
-                <%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
-              </span>
-                &nbsp;
-                <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
-                <br/>
-              </li>
-          <% else %>
-              <% unless last.nil? %>
-                  </ul>
-                  </li>
-              <% end %>
-              <% if !@news[index].nil? and (record['who'].eql?(@news[index]['who']) and record['page_id'].eql?(@news[index]['page_id'])) %>
-                  <li class="Collapsed" onclick="toggleTreeElement(this,event,6);">
-              <% else %>
-                  <li>
-              <% end %>
-              <h3 class="favourites_title">
-                <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-              </h3>
-              <%= t(:part) %>
-              <span id="part">
-                <%= record['what'] %>
-              </span>
-              <%= t(:edited) %>
-              <span id="user">
-                <%= record['who'] %>
-              </span>
+     <% for record in @news %>
+        <% index += 1 %>
+        <% if !last.nil? and (record['who'].eql?(last['who']) and record['page_id'].eql?(last['page_id'])) %>
+            <li>
+              <span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
+              <%= t(:at) %> <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
+              <br/> <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
+              &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
               <br/>
-              <span id="time">
-                <%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %>
-              </span>
-              &nbsp;
-              <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
-              <br/>
-              <ul style="display:none;">
-          <% end %>
+            </li>
+        <% else %>
+            <% unless last.nil? %>
+                </ul>
+                </li>
+            <% end %>
+            <% if !@news[index].nil? and (record['who'].eql?(@news[index]['who']) and record['page_id'].eql?(@news[index]['page_id'])) %>
+                <li class="Collapsed" onclick="toggleTreeElement(this,event,6);">
+            <% else %>
+                <li>
+            <% end %>
+             <span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
+            <%= t(:at) %> <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
+            <br/>  <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
+            &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
+            <br/>
+            <ul style="display:none;">
+        <% end %>
 
-          <% last = record.clone %>
-      <% end %>
+        <% last = record.clone %>
+    <% end %>
       </ul>
       </li>
       </div>

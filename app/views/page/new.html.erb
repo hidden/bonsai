@@ -12,17 +12,19 @@
           <%= hidden_field_tag "parent_id", @parent_id %>
           <%= hidden_field_tag "sid", @sid %>
           <p>
-            <%= label_tag :title %><br />
+            <%= label_tag :title %><br/>
             <%= text_field_tag "title", :title %>
           </p>
           <p>
-            <%= label_tag :body %><br />
+            <%= label_tag :body %><br/>
             <%= text_area_tag "body", @body, :rows => 30, :cols => 80 %>
             <%= render :partial => 'maruku_help' %>
           </p>
           <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
-          <p><%= label_tag t(:layout) %>:<%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @layout) %></p>
-           <p><%= submit_tag t(:save) , :class=> "small_button" %></p>
+          <p><%= label_tag t(:layout) %>
+            :<%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @layout) %></p>
+          <p><%= submit_tag t(:save), :name=>"Save", :class=> "small_button" %>
+          <%= submit_tag t(:preview), :name=>"Preview", :class=> "small_button", :target => 'preview' %></p>
         </div>
     <% end %>
   </div>

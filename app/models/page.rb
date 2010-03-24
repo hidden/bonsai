@@ -63,6 +63,14 @@ class Page < ActiveRecord::Base
     self_and_ancestors.collect(&:title).reverse.join(' | ')
   end
 
+  def resolve_parent_layout
+    if self.parent.nil?
+      nil
+    else
+      self.parent.resolve_layout
+    end
+  end
+
   def resolve_layout
     node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
     return node_with_layout.nil? ? 'application' : node_with_layout.layout

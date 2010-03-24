@@ -31,5 +31,23 @@ Feature: Wiki
     When I create "/" page
     And I create "/nested" page with address in body
     Then I should see "Address: /nested/"
+
+  Scenario: User wants to see a preview of page
+    When I create "/" page with title "Title" body "Hello universe."
+    And I edit "body" page part with text "Changed body" without saving
+    And I press "Preview"
+    Then I should see "Changed body"
+    And I should not see "Hello universe."
+    When I go to the main page
+    Then I should see "Hello universe."
+    And I should not see "Changed body"
+
+  Scenario: User wants to see a preview of page
+    When I create "/" page with title "Title" body "Hello universe." without saving
+    And I press "Preview"
+    Then I should see "Hello universe."
+    When I go to /
+    Then I should see "Page does not exists. Do you want to create it?"
+    And I should not see "Hello universe."
     
   

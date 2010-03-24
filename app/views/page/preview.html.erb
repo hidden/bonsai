@@ -1,15 +1,19 @@
 <div class="holder_right">
   <div class="header">
     <div class="header_content">
-      <h1><%= t(:permission_denied) %></h1>
+      <h1><%= h @page.title %></h1>
     </div>
     <div class="header_right">
     </div>
   </div>
   <div class="main_content">
-    <%= t(:access_denied) %>
+    <% for part in @page.page_parts %>
+        <%= markdown(part.page_part_revisions.first.body) %>
+    <% end %>
+    <!-- <br/><a href="JavaScript:window.close()"><%#= t(:close) class="small_button"%></a> -->
   </div>
 </div>
+
 <div class="footer">
   <div class="footer_left">
   </div>

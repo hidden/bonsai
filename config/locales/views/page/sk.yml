@@ -1,6 +1,7 @@
 sk:
   permission_denied: "Prístup zamietnutý."
   please_login: "Prihláste sa prosím."
+  access_denied: "Na túto akciu nemáte právo!"
   changes_for_page: "Zmeny pre stránku:"
   btn_compare: "porovnať vybrané verzie"
   edited: "editoval(a)"
@@ -48,6 +49,7 @@ sk:
   new_part_name: "Meno novej časti stránky"
   attach_file: "priložiť súbor k tejto stránke"
   save: "Uložiť"
+  preview: "Náhľad"
   diff_for: "Porovnanie pre"
   subpages: "Podstránky pre stránku:"
   revision: "Revízia"
