@@ -9,14 +9,14 @@
     function showLayoutsHelper(s){
         var default_layout = 'default';
         var selected_value = (s.value == null || s.value == "") ? 'default' : s.value;
-                    
+        var translation = new Array();            
         //new array for layouts help
         var layouts = new Array(<%= (definition.length + 1) %>)
         //default layout params and structure
         layouts[default_layout] = new Array(3);
         layouts[default_layout]['name'] = 'Inherit';
-        layouts[default_layout]['compulsory'] = 'body';
-        layouts[default_layout]['optionally'] = '';
+        layouts[default_layout]['description'] = 'This is default bonsai layout';
+        layouts[default_layout]['page_parts'] = 'body';
             
         <% for file in definition
             params = get_layout_parameters(file)
@@ -24,27 +24,34 @@
         %>
         layouts['<%= params[0] %>'] = new Array(3);
         layouts['<%= params[0] %>']['name'] = '<%= params[1] %>';
-        layouts['<%= params[0] %>']['compulsory'] = '<%= params[2] %>';
-        layouts['<%= params[0] %>']['optionally'] = '<%= params[3] %>';
+        layouts['<%= params[0] %>']['description'] = '<%= t("layouts.#{params[0]}.description") %>';
+        layouts['<%= params[0] %>']['page_parts'] = <%= params[2].to_json %>;
+
+        translation['<%= params[0] %>'] = new Array(<%= params[2].length %>);
+        <% for p in params[2] do %>
+        translation['<%= "#{params[0]}" %>']['<%= "#{p}" %>'] = '<%= t("layouts.#{params[0]}.parts.#{p}") %>';
         <% end %>
+
+    <% end %>
 
         var layout_help = document.getElementById('layout_details');
         if(layout_help != null){
 
             var layout_message = "";
 
-            if(!(layouts[selected_value]['name'] == null || layouts[selected_value]['name'] == "" )){
-               /*layout_message += "<strong>" + layouts[selected_value]['name'] + "</strong><br/>";*/
-               layout_message += "<%= t(:layout_help_title) %>:";
+            if(!(layouts[selected_value]['description'] == null || layouts[selected_value]['description'] == "" )){
+               layout_message += "<h3>" + layouts[selected_value]['description'] + "</h3>";
             }
+            
+            layout_message += "<%= t(:layout_help_title) %>:";
             layout_message+="<ul>";
-            if(!(layouts[selected_value]['compulsory'] == null || layouts[selected_value]['compulsory'] == "" )){
-                layout_message += "<li><strong><%= t(:layout_help_compulsory) %>: </strong>" + layouts[selected_value]['compulsory'] + "</li>";
+            if(!(layouts[selected_value]['page_parts'] == null || layouts[selected_value]['page_parts'] == "" )){
+                var layout_pp = layouts[selected_value]['page_parts'];
+                for(i=0; i < layout_pp.length; i++) {
+                    layout_message += "<li><strong>" + layout_pp[i] +" "+ "</strong>" + " " + translation[selected_value][layout_pp[i]] + "</li>";
+                }
             }
 
-            if(!(layouts[selected_value]['optionally'] == null || layouts[selected_value]['optionally'] == "" )){
-                layout_message += "<li><strong><%= t(:layout_help_optional) %>: </strong>" + layouts[selected_value]['optionally']+"</li>";
-            }
             layout_message+="</ul>";
             layout_help.innerHTML =  layout_message;
             layout_help.blindDown();

@@ -1,17 +1,24 @@
 module PageHelper
+
   def get_layout_definitions
-    definitions = Dir.glob("public/layout_definitions/*.yml")
-    return definitions
+    directories =  Array.new
+    Dir.glob("vendor/layouts/*") do |directory|
+      if File::directory? directory
+        if File.exist? ("#{directory}/definition.yml")
+          directories.push directory
+        end
+      end
+    end
+    return directories
   end
 
   def get_layout_parameters(file)
-    layout = YAML.load_file("#{RAILS_ROOT}/#{file}")
+    layout = YAML.load_file("#{file}/definition.yml")
     unless layout.nil?
-      conf =[ layout['parameters']['id'], layout['parameters']['name'], layout['structure']['compulsory'], layout['structure']['optionally'] ]
-      return conf
-    else
-      return "nil"
+      layout_id = file[(file.rindex("/")+1)..-1]
+      parameters =[ layout_id, layout['name'], layout['parts'] ]
     end
+    return parameters
   end
 
 

@@ -1,0 +1,6 @@
+en:
+  layouts:
+    pewe:
+      description: toto je ruzovy layout
+      parts:
+        caption: toto sa zobrazi hore

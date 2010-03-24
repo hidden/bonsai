@@ -1,0 +1,10 @@
+en:
+  layouts:
+    pewe:
+      description: "This is a beautiful layout in silver and blue colors Web Publishing subject"
+      parts:
+        header: "This is main header of layout"
+        footer: "This part shows number of users online"
+        menu: "page menu"
+        body: "menu content"
+        caption: "caption of the page"

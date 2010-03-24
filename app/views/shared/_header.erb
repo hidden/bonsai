@@ -10,33 +10,13 @@
   <%= stylesheet_link_tag 'bonsai' %>
   <% unless @page.nil? %>
       <!-- special layout style -->
-      <%= stylesheet_link_tag (@page.layout.nil?)? 'default' : @page.layout  %>
+      <%= stylesheet_link_tag @page.resolve_layout  %>
   <% end %>
   <!-- end of page layout style  -->
 
 
   <!-- Start Syntax Highlight -->
-  <%= stylesheet_link_tag 'SyntaxHighlighter/shCore.css' %>
-  <%= stylesheet_link_tag 'SyntaxHighlighter/shThemeDefault.css' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shLegacy.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushRuby.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushPhp.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushXml.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCpp.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCSharp.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushCss.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushDelphi.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushJava.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushJScript.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushPython.js' %>
-  <%= javascript_include_tag 'SyntaxHighlighter/shBrushSql.js' %>
-
-  <script type="text/javascript">
-      /***** Tell WMD not to start up automatically *****/
-      // Set this *before* you load wmd.js
-      wmd_options = { autostart: false };
-  </script>
+  
   <%= javascript_include_tag 'wmd_creator.js' %>
   <%= javascript_include_tag 'wmd.js' %>
   <!-- End WMD Editor -->
@@ -45,9 +25,10 @@
   <%= javascript_include_tag 'menu.js' %>
   <%= javascript_include_tag 'addons.js' %>
 </head>
-<body onLoad="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
+<!--
+<body onload="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
+-->
+<body onload="javascript:clickMenu('menu');setContentWidth();">
 
 <%= render :partial => 'shared/toolbar' %>
-<%= render :partial => 'shared/notice' %>
-<%= render :partial => 'shared/breadcrumb' %>
   

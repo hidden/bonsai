@@ -106,6 +106,5 @@ en:
   are_you_sure_to_remove_permission: "Are you sure to remove this permission?"
   close: "Close"
   by: "by"
-  layout_help_title: "For this layout are"
-  layout_help_compulsory: "compulsory parts"
-  layout_help_optional: "optional parts"
+  layout_help_title: "Page parts predefined for this layout are:"
+  
