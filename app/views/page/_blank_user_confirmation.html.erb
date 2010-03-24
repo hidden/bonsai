@@ -1,6 +1,8 @@
-<p>Add blank user <%= @blank_users %>?</p>
+<p><%= t "add_blank_user" %> <%= @blank_users %>?</p>
 <% form_tag :controller => 'page', :action => :set_permission_to_blank_user do %>
-<%= hidden_field_tag "blank_users", @blank_users %>
+<% for user in  @blank_users %>
+    <%= hidden_field_tag "blank_users[]", user %>
+<% end %>
 <%= hidden_field_tag "group_role", @group_role_type %>
-<p><%= submit_tag "Add blank user" %> <%= button_to "Cancel" %></p>
+<p><%= submit_tag t("btn_new_user_confirmation") %> <%= button_to t("btn_cancel") %></p>
 <% end %>

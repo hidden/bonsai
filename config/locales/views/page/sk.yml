@@ -23,6 +23,9 @@ sk:
   add_group_permission: "Pridať práva skupine"
   reader: "Čitateľ"
   set: "Nastaviť"
+  btn_new_user_confirmation: "Vytvorit docasneho uzivatela" #TODO diakritika
+  add_blank_user: "Vytvorit docasneho uzivatela" #TODO diakritika
+  btn_cancel: "Zrusit" #TODO diakritika
   no_files_uploaded: "Pre stránku neboli nahrané žiadne súbory."
   file: "Súbor"
   uploader: "Autor"

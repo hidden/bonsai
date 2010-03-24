@@ -227,18 +227,31 @@ Feature: Secure wiki
     And I follow "Manage"
     Then I should not see "MyNewGroup"
 
-  @wip
-  Scenario: Manager adds a future user as a viewer to a public page
+  Scenario: Manager adds a non-existing user as a viewer to a public page
     And I am logged in
     When I create "/" page
     And I add "matellko" reader permission
-    And I press "Set"
-    And show me the page
-    And I should see "Add blank user matellko?"
-    And I press "Add blank user"
+    And I should see "Add blank user(s) matellko?"
+    And I press "Add blank user(s)"
     And I should see "matellko"
-    And I go to the main page
-    Then I should not see "Permission denied."
     And I logout
     And I login as "matellko"
+    Then I should not see "Permission denied."
+
+  Scenario: Manager want to add multiple non-existing users as a viewer to a public page
+    And I am logged in
+    When I create "/" page
+    And I follow "Manage"
+    And I fill in "add_group" with "mat, pat"
+    And I select "editor" from "group_role_type"
+    And I press "Set"
+    Then I should see "Add blank user(s) mat pat?"
+    And I press "Add blank user(s)"
+    And I should see "mat"
+    And I should see "pat"
+    And I logout
+    And I login as "mat"
+    Then I should not see "Permission denied."
+    And I logout
+    And I login as "pat"
     Then I should not see "Permission denied."
