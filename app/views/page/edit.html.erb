@@ -35,18 +35,22 @@
 </script>
 <script type="text/javascript">
     {
-        function test(managers)
+        function testManagers()
         {
-            if (managers >= 2) return true;
-            else return false;
+            var managers = document.getElementsByClassName("ManagerHidden");
+            if ((managers.length) >= 2) return true;
+            else
+            {
+                alert('You cannot delete permission, there must be at least one manager.');
+                return false;
+            }
         }
         
     }
 </script>
 <div class="bonsai">
 <div class="holder_right_dark">
-<% num_of_managers = 0 %>
-<% form_for(:file_version, :url => save_edited_page_path(@page, num_of_managers), :html => {:multipart => true}) do |f| %>
+<% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true}) do |f| %>
 
     <div class="header">
       <div class="header_content">
@@ -209,13 +213,9 @@
         </tr>
         </thead>
         <tbody>
- <% managers = 0%>
         <% @page.page_permissions.each_with_index do |permission, index| %>
             <tr id="group_<%= index %>">
-              <% opravnenie = 0
-                 ciarky = 0
-                 linka = false
-              %>
+              <% opravnenie = 0 %>
 
               <% if permission.group.users.include? @current_user %>
                   <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) ||(permission.can_view?) )
@@ -230,7 +230,6 @@
                       opravnenie = 3
                   end %>
               <% else %>
-                  <% linka = true %>
 
                   <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) || (permission.can_view?))
                       opravnenie = 1
@@ -247,7 +246,6 @@
 
 
               <% if opravnenie > 0 %>
-                  <%# if permission.group.users.include? @current_user %>
                   <td><%=h  permission.group.name %></td>
                   <td>
                     <select name="<%= permission.group.name%>_select" id="<%= permission.group.name%>_select">
@@ -258,16 +256,13 @@
                       <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
                     </select>
                   </td>
-                  <% if opravnenie == 3
-                      managers += 1 end%>
-                  <%# else %>
-
-                  <%# end %>
 
                   <td>
-                   
-                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "test(#{managers})", :loaded => "managers -= 1", :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
-                   
+                       <% if opravnenie == 3 %><div class="ManagerHidden" style="visibility:hidden"></div>
+                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers()", :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
+                    <% else %>
+                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
+                    <% end %>
                   </td>
               <% end %>
             </tr>
@@ -322,6 +317,7 @@
                       end %>
                         <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
                         <%= perm[opravnenie-1] %>
+                        <% if opravnenie == 3 %><div class="ManagerHidden" style="visibility:hidden"></div><% end %>
                       </td>
                       <td><%= ancestor.sid %></td>
                     </tr>
