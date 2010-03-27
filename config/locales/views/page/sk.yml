@@ -107,3 +107,4 @@ sk:
   close: "Zatvoriť"
   by: "od autora"
   layout_help_title: "Tento layout má preddefinované tieto časti:"
+  inherited_layout: "Tento layout je zdedený z wiki layoutu"

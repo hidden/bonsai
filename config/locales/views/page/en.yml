@@ -107,4 +107,5 @@ en:
   close: "Close"
   by: "by"
   layout_help_title: "Page parts predefined for this layout are:"
+  inherited_layout: "This layout is inherited from wiki layout"
   

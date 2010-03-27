@@ -164,7 +164,7 @@ params[:managers] -= 1
         #znizenie prav, ak pouzivatel nejake mal
         if(page_permission.can_manage?)
           @page.remove_manager(page_permission.group)
-params[:managers] -= 1
+          params[:managers] -= 1
         end
 
       end
@@ -256,16 +256,43 @@ params[:managers] -= 1
     end
   end
 
+  def parent_layout
+    if @path.empty?
+      layout_id = nil
+    else
+      parent_path = Array.new @path
+      parent_path.pop
+      parent = Page.find_by_path(parent_path)
+      render :action => 'no_parent' and return if parent.nil?
+      layout_id = parent.layout
+    end
+
+    if layout_id.nil?
+      node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+      return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+    end
+  end
+
   def new
     if @path.empty?
       @parent_id = nil
+      @parent_layout = nil
     else
       parent_path = Array.new @path
       parent_path.pop
       parent = Page.find_by_path(parent_path)
       render :action => 'no_parent' and return if parent.nil?
       @parent_id = parent.id
+      @parent_layout = parent.layout
     end
+    
+    unless @parent_id.nil?
+      if @parent_layout.nil?
+        node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+        @parent_layout =  (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+      end
+    end
+
     if (!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
       unprivileged
     else

@@ -1,4 +1,5 @@
 <% if @current_user.can_manage_page? @page %>
+
     <% definition = get_layout_definitions %>
     
     <% if (definition.length == 0)
@@ -13,6 +14,7 @@
 
     function showLayoutsHelper(s){
         var default_layout = 'inherited';
+        /*if option value is nil, it was inherited layout */
         var selected_value = (s.value == null || s.value == "") ? '<%= @page.inherited_layout %>' : s.value;
         //new array for layouts help
         var layouts = new Array(<%= (definition.length + 1) %>)
