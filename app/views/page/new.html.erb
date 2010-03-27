@@ -96,8 +96,8 @@
           <p>
             <%= label_tag :body %><br />
             <%= text_area_tag "body", @body, :rows => 30, :cols => 80 %>
-            <%= render :partial => 'maruku_help' %>
           </p>
+          <%= render :partial => 'maruku_help' %>
           <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
 
           <p><%= label_tag 'layout', t(:layout) %>
