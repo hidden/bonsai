@@ -1,6 +1,9 @@
 en:
   layouts:
     pewe:
-      description: toto je ruzovy layout
+      description: "This is a beautiful layout in silver and blue colors Web Publishing subject"
       parts:
-        caption: toto sa zobrazi hore
+        footer: "number of users online"
+        navigation: "page menu"
+        body: "main content"
+        caption: "caption of the page"

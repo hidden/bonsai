@@ -1,2 +1,2 @@
 name: Test Layout
-parts: [body, menu]
+parts: [body, footer]

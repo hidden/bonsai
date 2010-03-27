@@ -1,2 +1,2 @@
 name: PeWe Layout
-parts: [header, body, caption, footer, menu]
+parts: [navigation, body, caption, footer]

@@ -49,7 +49,7 @@ class Page < ActiveRecord::Base
 
   def resolve_layout
     node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
-    return node_with_layout.nil? ? 'application' : node_with_layout.layout
+    return (node_with_layout.nil? or node_with_layout.layout == 'default') ? 'application' : node_with_layout.layout
   end
 
   def resolve_part part_name
@@ -157,16 +157,19 @@ class Page < ActiveRecord::Base
     #PagePermission.first(:joins => :page, :conditions => ["? BETWEEN pages.lft AND pages.rgt AND page_permissions.can_edit = ?", self.lft, true]).nil?
   end
 
-  def get_layout_parts
-
-    definition = "#{RAILS_ROOT}/config/layouts/#{resolve_layout}/definition.yml"
-
-    if File.exist?(definition) 
-       layout = YAML.load_file(definition)
-        unless layout.nil?
-          return layout['parts']
-        end
+  def layout_parts
+    definition = "vendor/layouts/#{resolve_layout}/definition.yml"
+    if File.exist?(definition)
+      layout = YAML.load_file(definition)
+      unless layout.nil?
+        return layout['parts']
       end
+    end
   end
-  
+
+  def inherited_layout
+    node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
+    return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+  end
+
 end

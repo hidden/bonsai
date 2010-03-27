@@ -15,8 +15,8 @@ module PageHelper
   def get_layout_parameters(file)
     layout = YAML.load_file("#{file}/definition.yml")
     unless layout.nil?
-      layout_id = file[(file.rindex("/")+1)..-1]
-      parameters =[ layout_id, layout['name'], layout['parts'] ]
+      layout_value = file[(file.rindex("/")+1)..-1]
+      parameters =[ layout_value, layout['name'], layout['parts'] ]
     end
     return parameters
   end

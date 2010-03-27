@@ -1,36 +1,42 @@
 <% if @current_user.can_manage_page? @page %>
     <% definition = get_layout_definitions %>
-
-    <% user_layouts = [['Inherit', nil] ] %>
+    
+    <% if (definition.length == 0)
+        user_layouts = [['Inherit', nil]] 
+       else
+        user_layouts = []
+      end %>
 
     <% unless definition.nil? %>
 
     <script type="text/javascript">
+
     function showLayoutsHelper(s){
-        var default_layout = 'default';
-        var selected_value = (s.value == null || s.value == "") ? 'default' : s.value;
-        var translation = new Array();            
+        var default_layout = 'inherited';
+        var selected_value = (s.value == null || s.value == "") ? '<%= @page.inherited_layout %>' : s.value;
         //new array for layouts help
         var layouts = new Array(<%= (definition.length + 1) %>)
-        //default layout params and structure
-        layouts[default_layout] = new Array(3);
-        layouts[default_layout]['name'] = 'Inherit';
-        layouts[default_layout]['description'] = 'This is default bonsai layout';
-        layouts[default_layout]['page_parts'] = 'body';
-            
-        <% for file in definition
-            params = get_layout_parameters(file)
-            user_layouts.push([params[1], params[0]])
-        %>
+        var translation = new Array();
+    <% for file in definition
+        params = get_layout_parameters(file)
+        #if option_value has the same value as found inherited layout, we set a value to nil
+        option_value = (params[0] == @page.inherited_layout) ? @page.layout : params[0]
+        #if current page has parent, but page layout was set to nil and option_value has the same value as found inherited layout
+        #that means, this is inherited layout => we set prefix Inherited
+        option_text = (!@page.parent.nil? and @page.layout.nil? and params[0] == @page.inherited_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+        user_layouts.push([option_text, option_value]) %>
+        
         layouts['<%= params[0] %>'] = new Array(3);
         layouts['<%= params[0] %>']['name'] = '<%= params[1] %>';
         layouts['<%= params[0] %>']['description'] = '<%= t("layouts.#{params[0]}.description") %>';
         layouts['<%= params[0] %>']['page_parts'] = <%= params[2].to_json %>;
 
+     <% unless params[2].nil? %>
         translation['<%= params[0] %>'] = new Array(<%= params[2].length %>);
-        <% for p in params[2] do %>
+       <% for p in params[2] do %>
         translation['<%= "#{params[0]}" %>']['<%= "#{p}" %>'] = '<%= t("layouts.#{params[0]}.parts.#{p}") %>';
-        <% end %>
+       <% end %>
+     <% end %>
 
     <% end %>
 
@@ -43,26 +49,28 @@
                layout_message += "<h3>" + layouts[selected_value]['description'] + "</h3>";
             }
             
-            layout_message += "<%= t(:layout_help_title) %>:";
-            layout_message+="<ul>";
             if(!(layouts[selected_value]['page_parts'] == null || layouts[selected_value]['page_parts'] == "" )){
+                layout_message += "<%= t(:layout_help_title) %>";
+                layout_message += "<ul>";
                 var layout_pp = layouts[selected_value]['page_parts'];
                 for(i=0; i < layout_pp.length; i++) {
                     layout_message += "<li><strong>" + layout_pp[i] +" "+ "</strong>" + " " + translation[selected_value][layout_pp[i]] + "</li>";
                 }
+                layout_message += "</ul>";
             }
 
-            layout_message+="</ul>";
             layout_help.innerHTML =  layout_message;
-            layout_help.blindDown();
+            /*hack for IE */
+            if(navigator.appName == "Microsoft Internet Explorer")
+                layout_help.style.display='block';
+            else
+                layout_help.blindDown();
         }
 
     }
     </script>
     <% end %>
 <% end %>
-
-
 
 
 <script type="text/javascript">
@@ -410,10 +418,12 @@
                   var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '/groups/autocomplete_for_groups', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
                   //]]>
               </script>
+              <div class="info_warning">
+                <%= t(:permissions_warning)%>
+              </div>
           <% end %>
-          <div class="info_warning">
-            <%= t(:permissions_warning)%>
-          </div>
+
+
           <!-- END OF PAGE PERMISIONS -->
         </div>
     <%else%>

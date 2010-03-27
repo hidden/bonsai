@@ -1,0 +1,6 @@
+en:
+  layouts:
+    default:
+      description: "This is a default wiki layout"
+      parts:
+        
