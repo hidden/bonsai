@@ -15,13 +15,9 @@
         var selected_value = (s.value == null || s.value == "") ? default_layout : s.value;
         //new array for layouts help
         var layouts = new Array(<%= (definition.length + 1) %>)
-      /*
-        layouts[default_layout] =  new Array(3);
-        layouts[default_layout]['name'] = 'Inherit';
-        layouts[default_layout]['description'] = '<%= t(:inherited_layout) %>';
-        layouts[default_layout]['page_parts'] = ''
-        */
+   
         var translation = new Array();
+
     <% for file in definition
         params = get_layout_parameters(file)
         #if option_value has the same value as found inherited layout, we set a option_value to nil

@@ -108,3 +108,4 @@ sk:
   by: "od autora"
   layout_help_title: "Tento layout má preddefinované tieto časti:"
   inherited_layout: "Tento layout je zdedený z wiki layoutu"
+  layout_is_inherited: "Layout bude zdedený od rodičovskej stránky, ktorej layout je "

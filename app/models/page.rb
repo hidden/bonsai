@@ -171,4 +171,11 @@ class Page < ActiveRecord::Base
     node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
     return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
   end
+
+  def parent_layout
+    unless parent.nil?
+      node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+    end
+    return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+  end
 end
