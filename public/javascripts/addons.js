@@ -10,7 +10,7 @@ function removeNotice(el){
 function setContentWidth(){
   var w = document.body.clientWidth;
   var wr = document.getElementsByClassName('main_content_right');
-  if(wr != null){
+  if(wr[0] != null){
       var new_width = (w - parseInt(wr[0].style.width));
       var mycont = document.getElementsByClassName('main_content');
       if(mycont != null){

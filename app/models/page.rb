@@ -21,22 +21,6 @@ class Page < ActiveRecord::Base
     indexes pages.title, :as => :page_title
   end
 
-  def get_subtree_ids_with_permissions page,user
-    Page.find_by_sql("(SELECT  p.id FROM pages p
-		              left join (
-                      select page_id,
-                             count(can_view) sum_can_view,
-                             count(can_edit) sum_can_edit
-                      from page_permissions group by page_id) w on w.page_id=p.id
-                      left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
-                      left join groups q
-                      ON q.id = a.group_id and q.id='#{user.id}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
-                      where (p.lft BETWEEN #{page.lft} AND #{page.rgt})
-                      and ((sum_can_view=0 and sum_can_edit=0)or (q.id is not null))
-                      order by p.lft) union (select p.id from pages p
-                      left join page_permissions pp on p.id=pp.page_id and pp.can_view = 1
-                      where pp.id is null and (p.lft BETWEEN #{page.lft} AND #{page.rgt}))")
-  end
 
   def self.find_by_path path
     full_path = [nil] + path
@@ -73,7 +57,7 @@ class Page < ActiveRecord::Base
 
   def resolve_layout
     node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
-    return node_with_layout.nil? ? 'application' : node_with_layout.layout
+    return (node_with_layout.nil? or node_with_layout.layout == 'default') ? 'application' : node_with_layout.layout
   end
 
   def resolve_part part_name
@@ -179,5 +163,27 @@ class Page < ActiveRecord::Base
   def is_editable?
     self.editor_groups.empty?
     #PagePermission.first(:joins => :page, :conditions => ["? BETWEEN pages.lft AND pages.rgt AND page_permissions.can_edit = ?", self.lft, true]).nil?
+  end
+
+  def layout_parts
+    definition = "vendor/layouts/#{resolve_layout}/definition.yml"
+    if File.exist?(definition)
+      layout = YAML.load_file(definition)
+      unless layout.nil?
+        return layout['parts']
+      end
+    end
+  end
+
+  def inherited_layout
+    node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
+    return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+  end
+
+  def parent_layout
+    unless parent.nil?
+      node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+    end
+    return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
   end
 end

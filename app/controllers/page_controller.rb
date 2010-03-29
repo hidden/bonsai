@@ -1,11 +1,12 @@
 class PageController < ApplicationController
-  before_filter :load_page, :except => [:add_lock, :update_locked, :search]
+  before_filter :load_page, :except => [:add_lock, :update_locked, :search, :load_layout_definitions]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :is_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
+
 
   def search
     @search_results = Page.search params[:search_text], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
@@ -257,16 +258,43 @@ class PageController < ApplicationController
     end
   end
 
+  def parent_layout
+    if @path.empty?
+      layout_id = nil
+    else
+      parent_path = Array.new @path
+      parent_path.pop
+      parent = Page.find_by_path(parent_path)
+      render :action => 'no_parent' and return if parent.nil?
+      layout_id = parent.layout
+    end
+
+    if layout_id.nil?
+      node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+      return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+    end
+  end
+
   def new
     if @path.empty?
       @parent_id = nil
+      @parent_layout = nil
     else
       parent_path = Array.new @path
       parent_path.pop
       parent = Page.find_by_path(parent_path)
       render :action => 'no_parent' and return if parent.nil?
       @parent_id = parent.id
+      @parent_layout = parent.layout
     end
+    
+    unless @parent_id.nil?
+      if @parent_layout.nil?
+        node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+        @parent_layout =  (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+      end
+    end
+
     if (!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
       unprivileged
     else

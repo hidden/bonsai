@@ -7,8 +7,8 @@
     <div id="content">
       <div id="c2">
         <%= markdown(@page.resolve_part('body')) %>
-        <% for part in @page.page_parts %>        
-            <% unless part.current_page_part_revision.was_deleted or @page.layout_parts.include?(part.name) %>
+        <% for part in @page.page_parts %>
+            <% unless part.current_page_part_revision.was_deleted or ['caption', 'navigation', 'body', 'footer'].include?(part.name) %>
                 <div id="part-<%= part.name.parameterize %>">
                   <%= markdown(part.current_page_part_revision.body) %>
                 </div>
@@ -19,5 +19,6 @@
     <div id="footer"><%= markdown(@page.resolve_part('footer')) %></div>
   </div>
 </div>
+
 
 <%= render :partial => 'shared/footer' %>

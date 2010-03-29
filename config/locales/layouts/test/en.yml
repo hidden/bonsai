@@ -1,0 +1,7 @@
+en:
+  layouts:
+    test:
+      description: "This is a test layout in crazy colors"
+      parts:
+        footer: "number of users online"
+        body: "main content"
