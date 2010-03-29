@@ -79,6 +79,10 @@ module PathsHelper
     url_for :controller => 'dashboard', :back => page.get_path
   end
 
+  def toggle_news
+    url_for :controller => "dashboard", :action => "toggle_news"
+  end
+
   def file_history_page_path(page, name)
     "#{page.get_path}#{name};history"
   end

@@ -1,5 +1,5 @@
 class PageController < ApplicationController
-  before_filter :load_page, :except => [:add_lock, :update_locked, :search]
+  before_filter :load_page, :except => [:add_lock, :update_lock, :search]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :is_file, :only => [:view]
@@ -371,6 +371,18 @@ class PageController < ApplicationController
     part_id = params[:part_id]
     if not part_id.nil?
       PagePart.delete(part_id)
+#      revision = PagePart.find_by_id(part_id).current_page_part_revision
+#      revision.was_deleted = 1
+#      unless (revision.valid?)
+#          error_message = ""
+#          revision.errors.each_full { |msg| error_message << msg }
+#          @page_part = page_part
+#          @page_revision = revision
+#          flash[:error] = error_message
+#          render :action => "edit"
+#          return true
+#        end
+#        revision.save!
     end
   end
 
@@ -716,7 +728,7 @@ class PageController < ApplicationController
         page_part.current_page_part_revision = first_revision
       end
       @page.page_parts.sort! {|x,y| x.name <=> y.name }
-      @no_toolbar = true
+      @preview_toolbar = true
       render :action => :preview, :layout => layout
     end
   end

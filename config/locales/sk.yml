@@ -6,8 +6,8 @@
 
 sk:
   pagination:
-    prev_label: "Predosle"
-    next_label: "Nasledujuce"
+    prev_label: "Predchádzajúce"
+    next_label: "Nasledujúce"
 
   # ActiveSupport
   support:

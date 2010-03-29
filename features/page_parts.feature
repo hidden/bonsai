@@ -44,7 +44,8 @@ Feature: Wiki layouting and many page parts
     When I create "/nested" page with title "Nested page" body "Nested body!"
     And I add "second_part" page part with text "This is a second part" without saving
     And I press "Preview"
-    Then I should see "Nested body!"
+    Then I should see "This is preview"
+    And I should see "Nested body!"
     And I should see "This is a second part"
     When I go to /nested
     Then I should see "Nested body!"

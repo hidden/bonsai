@@ -24,6 +24,7 @@ class UsersController < ApplicationController
     @current_user.prefered_locale = params[:locale]
     @current_user.save if @current_user.respond_to? :save
     flash[:notice] = translate(:set_language)
+    session[:toggle_text] = nil
     redirect_to :back
   end
 
