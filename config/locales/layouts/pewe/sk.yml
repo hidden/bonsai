@@ -1,0 +1,11 @@
+sk:
+  layouts:
+    pewe:
+      description: "Toto je krásny šedo modrý layout predmetu Webové publikovanie"
+      parts:
+        caption: "tu sú uvedené tagy k článku"
+        navigation: "menu stránky"
+        body: "hlavný obsah"
+        footer: "spodná časť stránky zobrazujúca počet online uživateľov"
+
+        

@@ -1,0 +1,6 @@
+sk:
+  layouts:
+    default:
+      description: "Toto je základný wiki layout"
+      parts:
+              

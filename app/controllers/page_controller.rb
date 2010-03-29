@@ -1,5 +1,5 @@
 class PageController < ApplicationController
-  before_filter :load_page, :except => [:add_lock, :update_lock, :search]
+  before_filter :load_page, :except => [:add_lock, :update_lock, :search, :load_layout_definitions]
   before_filter :can_manage_page_check, :only => [:manage, :change_permission, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :is_file, :only => [:view]
@@ -257,16 +257,43 @@ class PageController < ApplicationController
     end
   end
 
+  def parent_layout
+    if @path.empty?
+      layout_id = nil
+    else
+      parent_path = Array.new @path
+      parent_path.pop
+      parent = Page.find_by_path(parent_path)
+      render :action => 'no_parent' and return if parent.nil?
+      layout_id = parent.layout
+    end
+
+    if layout_id.nil?
+      node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+      return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+    end
+  end
+
   def new
     if @path.empty?
       @parent_id = nil
+      @parent_layout = nil
     else
       parent_path = Array.new @path
       parent_path.pop
       parent = Page.find_by_path(parent_path)
       render :action => 'no_parent' and return if parent.nil?
       @parent_id = parent.id
+      @parent_layout = parent.layout
     end
+    
+    unless @parent_id.nil?
+      if @parent_layout.nil?
+        node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
+        @parent_layout =  (node_with_layout.nil? ? 'default' : node_with_layout.layout)
+      end
+    end
+
     if (!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
       unprivileged
     else
@@ -371,18 +398,6 @@ class PageController < ApplicationController
     part_id = params[:part_id]
     if not part_id.nil?
       PagePart.delete(part_id)
-#      revision = PagePart.find_by_id(part_id).current_page_part_revision
-#      revision.was_deleted = 1
-#      unless (revision.valid?)
-#          error_message = ""
-#          revision.errors.each_full { |msg| error_message << msg }
-#          @page_part = page_part
-#          @page_revision = revision
-#          flash[:error] = error_message
-#          render :action => "edit"
-#          return true
-#        end
-#        revision.save!
     end
   end
 

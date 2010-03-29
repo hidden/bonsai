@@ -61,7 +61,7 @@ body {
     margin:0 auto;
     font-size:14px;
     height:27px;
-    background: url('../images/layouts/flash_bg.png') repeat-x left top;
+    background: url('../images/bonsai/flash_bg.png') repeat-x left top;
     
 }
 
@@ -147,7 +147,7 @@ form {
     margin: 0 0;
     padding: 0 20px;
     height:51px;
-    background: url('../images/layouts/top_lista.png') repeat-x;
+    background: url('../images/bonsai/top_lista.png') repeat-x;
     margin-bottom:5px;
 }
 
@@ -214,7 +214,7 @@ form {
 
 
 input[type="text"].small_input, input[type="password"].small_input{
-    background: url('../images/layouts/input.png') no-repeat left top;
+    background: url('../images/bonsai/input.png') no-repeat left top;
     border:none;
     width:95px;
     height:16px;
@@ -222,7 +222,7 @@ input[type="text"].small_input, input[type="password"].small_input{
 }
 
 input[type="text"].large_input{
-    background: url('../images/layouts/large_input.png') no-repeat left top;
+    background: url('../images/bonsai/large_input.png') no-repeat left top;
     border:none;
     width:145px;
     height:16px;
@@ -341,11 +341,12 @@ ul#menu li ul li.small{
 .wrapper{
     margin:0 10px;
     height:100%;
+    clear:both;
 }
 
 
 .holder{
-    background:#FFFFFF url('../images/layouts/left_shadow.png') repeat-y left;
+    background:#FFFFFF url('../images/bonsai/left_shadow.png') repeat-y left;
     padding:0px;
     margin:0px;
     float:left;
@@ -353,7 +354,7 @@ ul#menu li ul li.small{
 }
 
 .holder_right_dark{
-    background: url('../images/layouts/right_shadow.png') repeat-y right;
+    background: url('../images/bonsai/right_shadow.png') repeat-y right;
     float:right;
     padding:0px;
     margin:0px;
@@ -361,7 +362,7 @@ ul#menu li ul li.small{
 }
 
 .holder_right{
-    background: url('../images/layouts/right_shadow_light.png') repeat-y right;
+    background: url('../images/bonsai/right_shadow_light.png') repeat-y right;
     float:right;
     padding:0px;
     margin:0px;
@@ -387,12 +388,12 @@ ul#menu li ul li.small{
     width:100%;
     padding:0px;
     margin:0px;
-    background: url('../images/layouts/header_bg.png') repeat-x left;
+    background: url('../images/bonsai/header_bg.png') repeat-x left;
     height:67px;
 }
 
 .header_content{
-    background: url('../images/layouts/header_left.png') no-repeat left;
+    background: url('../images/bonsai/header_left.png') no-repeat left;
     float:left;
     height:37px;
     padding: 15px 30px;
@@ -400,12 +401,12 @@ ul#menu li ul li.small{
 }
 
 .header_right{
-    background: url('../images/layouts/header_right.png') no-repeat right;
+    background: url('../images/bonsai/header_right.png') no-repeat right;
     height:67px;
 }
 
 .footer{
-    background: #FFFFFF url('../images/layouts/bg_bottom.png') left bottom repeat-x;
+    background: #FFFFFF url('../images/bonsai/bg_bottom.png') left bottom repeat-x;
     padding:0px;
     margin:0px;
     height:18px;
@@ -413,7 +414,7 @@ ul#menu li ul li.small{
 }
 
 .footer_left{
-    background: url('../images/layouts/left_bottom.png') left bottom no-repeat;
+    background: url('../images/bonsai/left_bottom.png') left bottom no-repeat;
     float:left;
     height:18px;
     width:12px;
@@ -424,7 +425,7 @@ ul#menu li ul li.small{
 }
 
 .footer_right_dark{
-    background: url('../images/layouts/right_bottom_dark.png') right bottom no-repeat;
+    background: url('../images/bonsai/right_bottom_dark.png') right bottom no-repeat;
     float:right;
     width:304px;
     height:18px;
@@ -434,7 +435,7 @@ ul#menu li ul li.small{
 }
 
 .footer_right_light{
-    background: url('../images/layouts/right_bottom_light.png') right bottom no-repeat;
+    background: url('../images/bonsai/right_bottom_light.png') right bottom no-repeat;
     float:right;
     width:304px;
     height:18px;
@@ -467,6 +468,7 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
 .info_warning{
     color:red;
     font-size:11px;
+    float:right;
 }
 
 
@@ -484,9 +486,9 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
     background:white;
     border-left: 1px solid #dcdcdc;
     width: 25px;
-    height:17px;
+    height:25px;
     vertical-align:middle;
-    padding:4px 0;
+    margin:0 0;
     text-align:center;
 }
 
@@ -620,6 +622,7 @@ input[type="submit"].small_button{
     background:none;
     border:none;
     color:#404040;
+    padding:0 0;
 }
 /*history*/
 table.history{
@@ -678,3 +681,10 @@ h3.favourites_title{
     font-weight:bold;
 }
 
+#layout_details{
+    width: 50%;
+    font-size:13px;
+    padding:5px 5px;
+    margin:0 0;
+    margin-bottom:10px;
+}

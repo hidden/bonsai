@@ -1,3 +1,101 @@
+<% if @current_user.can_manage_page? @page %>
+
+    <% definition = get_layout_definitions %>
+    
+    <% if (definition.length == 0)
+        user_layouts = [['Inherit', nil]] 
+       else
+        user_layouts = []
+      end %>
+
+    <% unless definition.nil? %>
+
+    <script type="text/javascript">
+
+    function showLayoutsHelper(s){
+        /*if option value is nil, it was inherited layout */
+        var selected_value = (s.value == null || s.value == "") ? '<%= @page.parent_layout %>' : s.value;
+        //new array for layouts help
+        var layouts = new Array(<%= (definition.length + 1) %>)
+        var translation = new Array();
+
+
+    <%
+    for file in definition
+        params = get_layout_parameters(file)
+        #if option_value has the same value as found inherited layout, we set a value to nil
+        option_value = (params[0] == @page.inherited_layout) ? @page.layout : params[0]
+        #if current page has parent, but page layout was set to nil and option_value has the same value as found inherited layout
+        #that means, this is inherited layout => we set prefix Inherited
+        option_text = (!@page.parent.nil? and @page.layout.nil? and params[0] == @page.inherited_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+
+        #display also option to inherit layout from parent page
+        if (!@page.parent.nil? and !@page.layout.nil? and params[0] == @page.parent_layout and @page.layout != @page.parent_layout)
+            option_text = 'Inherit (' + params[1] + ')'
+            option_value = ""
+        end
+
+        if @page.parent.nil? and @page.parent_layout == params[0]
+            option_value = ""
+        end
+        
+        user_layouts.push([option_text, option_value]) %>
+        
+        layouts['<%= params[0] %>'] = new Array(3);
+        layouts['<%= params[0] %>']['name'] = '<%= params[1] %>';
+        layouts['<%= params[0] %>']['description'] = '<%= t("layouts.#{params[0]}.description") %>';
+        layouts['<%= params[0] %>']['page_parts'] = <%= params[2].to_json %>;
+
+     <% unless params[2].nil? %>
+        translation['<%= params[0] %>'] = new Array(<%= params[2].length %>);
+       <% for p in params[2] do %>
+        translation['<%= "#{params[0]}" %>']['<%= "#{p}" %>'] = '<%= t("layouts.#{params[0]}.parts.#{p}") %>';
+       <% end %>
+     <% end %>
+
+    <% end %>
+
+        var layout_help = document.getElementById('layout_details');
+        if(layout_help != null){
+
+            var layout_message = "";
+
+            var index = s.selectedIndex;
+            var selected_text = s[index].text;
+            var find = 'Inherit ';
+
+            if(selected_text.search(find) != -1){
+                layout_message += "<p>"+'<%= t(:layout_is_inherited)%>'+"<strong>"+layouts[selected_value]['name']+"</strong></p>";                     
+
+            }
+
+            if(!(layouts[selected_value]['description'] == null || layouts[selected_value]['description'] == "" )){
+               layout_message += "<h3>" + layouts[selected_value]['description'] + "</h3>";
+            }
+            
+            if(!(layouts[selected_value]['page_parts'] == null || layouts[selected_value]['page_parts'] == "" )){
+                layout_message += "<%= t(:layout_help_title) %>";
+                layout_message += "<ul>";
+                var layout_pp = layouts[selected_value]['page_parts'];
+                for(i=0; i < layout_pp.length; i++) {
+                    layout_message += "<li><strong>" + layout_pp[i] +" "+ "</strong>" + " " + translation[selected_value][layout_pp[i]] + "</li>";
+                }
+                layout_message += "</ul>";
+            }
+
+            layout_help.innerHTML =  layout_message;
+            /*hack for IE */
+            if(navigator.appName == "Microsoft Internet Explorer")
+                layout_help.style.display='block';
+            else
+                layout_help.blindDown();
+        }
+
+    }
+    </script>
+    <% end %>
+<% end %>
+
 
 <script type="text/javascript">
 
@@ -35,18 +133,23 @@
 </script>
 <script type="text/javascript">
     {
-        function test(managers)
+        function testManagers()
         {
-            if (managers >= 2) return true;
-            else return false;
+            var managers = document.getElementsByClassName("ManagerHidden");
+            if ((managers.length) >= 2) return true;
+            else
+            {
+                alert('You cannot delete permission, there must be at least one manager.');
+                return false;
+            }
         }
         
     }
 </script>
+
 <div class="bonsai">
 <div class="holder_right_dark">
-<% num_of_managers = 0 %>
-<% form_for(:file_version, :url => save_edited_page_path(@page, num_of_managers), :html => {:multipart => true}) do |f| %>
+<% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true}) do |f| %>
 
     <div class="header">
       <div class="header_content">
@@ -58,9 +161,17 @@
 
 
     <div class="main_content">
+
       <% if @current_user.can_manage_page? @page %>
-          <p><%= label_tag 'layout', t(:layout) %> <%= select_tag 'layout', options_for_select([['Inherit', nil], ['PeWe Layout', 'pewe']], @page.layout) %></p>
+          <p><%= label_tag 'layout', t(:layout) %>
+
+          <%= select_tag :layout, options_for_select(user_layouts, @page.layout),
+               :onchange => 'javascript:showLayoutsHelper(this)' %>
+          </p>
+          <div id="layout_details" class="lighter_bg" style="display:none;">
+          </div>
       <% end %>
+
       <% for part in @page.page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
               <div id="page_part_id_<%= part.id %>" style="width:100%">
@@ -68,11 +179,11 @@
                   <span><%= part.name %></span>
                   <% if @page.page_parts.count > 1 %>
                   <div class="page_part_edit_remove_link">
-                    <%= link_to_remote icon_tag('cancel.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
+                    <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
                   </div>
                   <% end %>    
                   <div class="page_part_edit_remove_link" onclick="return toggleDivDiv(event)">
-                    <%= icon_tag ('edit_small.gif',:alt =>'') %>
+                    <%= image_tag ('icons/edit_big.gif',:alt =>'') %>
                   </div>
                 </div>
                 <div<%= ' style="display:none;"' unless part.name == 'body' %> style="width:100%" >
@@ -127,9 +238,6 @@
 
       <p><%= submit_tag t(:save) , :class=> "small_button" %>
       <%= submit_tag t(:preview), :name=>"Preview", :class=> "small_button", :target => 'preview' %></p>
-
-
-
     </div>
 
     <div class="main_content_right" style="width:244px;">
@@ -209,13 +317,9 @@
         </tr>
         </thead>
         <tbody>
- <% managers = 0%>
         <% @page.page_permissions.each_with_index do |permission, index| %>
             <tr id="group_<%= index %>">
-              <% opravnenie = 0
-                 ciarky = 0
-                 linka = false
-              %>
+              <% opravnenie = 0 %>
 
               <% if permission.group.users.include? @current_user %>
                   <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) ||(permission.can_view?) )
@@ -230,7 +334,6 @@
                       opravnenie = 3
                   end %>
               <% else %>
-                  <% linka = true %>
 
                   <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) || (permission.can_view?))
                       opravnenie = 1
@@ -247,7 +350,6 @@
 
 
               <% if opravnenie > 0 %>
-                  <%# if permission.group.users.include? @current_user %>
                   <td><%=h  permission.group.name %></td>
                   <td>
                     <select name="<%= permission.group.name%>_select" id="<%= permission.group.name%>_select">
@@ -258,16 +360,13 @@
                       <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
                     </select>
                   </td>
-                  <% if opravnenie == 3
-                      managers += 1 end%>
-                  <%# else %>
-
-                  <%# end %>
 
                   <td>
-                   
-                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "test(#{managers})", :loaded => "managers -= 1", :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
-                   
+                       <% if opravnenie == 3 %><div class="ManagerHidden" style="visibility:hidden"></div>
+                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers()", :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
+                    <% else %>
+                        <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :href => _remove_permission_path(@page, index),  :confirm => t(:'are_you_sure_to_remove_permission') %>
+                    <% end %>
                   </td>
               <% end %>
             </tr>
@@ -322,6 +421,7 @@
                       end %>
                         <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
                         <%= perm[opravnenie-1] %>
+                        <% if opravnenie == 3 %><div class="ManagerHidden" style="visibility:hidden"></div><% end %>
                       </td>
                       <td><%= ancestor.sid %></td>
                     </tr>
