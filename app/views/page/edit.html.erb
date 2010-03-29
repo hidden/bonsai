@@ -179,11 +179,11 @@
                   <span><%= part.name %></span>
                   <% if @page.page_parts.count > 1 %>
                   <div class="page_part_edit_remove_link">
-                    <%= link_to_remote icon_tag('cancel.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
+                    <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
                   </div>
                   <% end %>    
                   <div class="page_part_edit_remove_link" onclick="return toggleDivDiv(event)">
-                    <%= icon_tag ('edit_small.gif',:alt =>'') %>
+                    <%= image_tag ('icons/edit_big.gif',:alt =>'') %>
                   </div>
                 </div>
                 <div<%= ' style="display:none;"' unless part.name == 'body' %> style="width:100%" >
