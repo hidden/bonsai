@@ -16,7 +16,7 @@ class PreviewPage  < Page
 
   def resolve_layout
     unless self.layout.nil?
-      self.layout.nil?
+      self.layout
     else
       'application'
     end
