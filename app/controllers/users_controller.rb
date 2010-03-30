@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
-
-    ssl_allowed :login
+  ssl_allowed :login
 
   def login
     session[:return_to] = request.referer if params[:commit]
@@ -29,18 +28,28 @@ class UsersController < ApplicationController
   end
 
   private
+  def user_authenticated_by_password(username, password)
+    user = User.find_by_username(username)
+    (user and user.authenticated?(password))
+  end
+
 
   def ldap_authentification
     return unless params[:username]
-      #authenticator = Rails.env.production? ? SimpleLDAP : SimpleLDAP::Stub
-      authenticator =  APP_CONFIG['authentication_method'] == 'ldap-stub' ? SimpleLDAP::Stub : SimpleLDAP 
-     data = authenticator.authenticate(params[:username], params[:password], APP_CONFIG['ldap']['host'], APP_CONFIG['ldap']['port'], APP_CONFIG['ldap']['base_dn'])
-    if data.nil?
-        failed_login
+      authenticator =  APP_CONFIG['authentication_method'] == 'ldap-stub' ? SimpleLDAP::Stub : SimpleLDAP
+      data = authenticator.authenticate(params[:username], params[:password], APP_CONFIG['ldap']['host'], APP_CONFIG['ldap']['port'], APP_CONFIG['ldap']['base_dn'])
+    if data.nil? and !user_authenticated_by_password(params[:username], params[:password])
+      failed_login
     else
       if control_user(params[:username])
-        user = User.find_or_create_by_username(:username => params[:username], :name => data['cn'].first)
-        user.name=data['cn'].first
+        if data
+          name = data['cn'].first
+        else
+          name = params[:username]
+        end
+        user = User.find_or_create_by_username(:username => params[:username], :name => name)
+        user.password = params[:password]
+        user.name = name
         set_times(user)
         user.save
         successful_login(user)
@@ -147,6 +156,6 @@ class UsersController < ApplicationController
     flash[:error] = t(:login_error)
     redirect_to session[:return_to]
   end
-  
+
 end
 

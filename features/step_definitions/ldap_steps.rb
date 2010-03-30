@@ -2,6 +2,12 @@ Given /^LDAP is used$/ do
   APP_CONFIG['authentication_method'] = 'ldap-stub'
 end
 
+Given /^user "([^"]*)" has stored password "([^"]*)"$/ do |username, password|
+  user = User.find_or_create_by_username(:username => username, :name => username)
+  user.password = password
+  user.save!  
+end
+
 When /^I login$/ do
   Given 'LDAP is used'
   When 'I go to the main page'
