@@ -15,6 +15,10 @@ class PreviewPage  < Page
   end
 
   def resolve_layout
-    self.layout
+    unless self.layout.nil?
+      self.layout.nil?
+    else
+      'application'
+    end
   end
 end
