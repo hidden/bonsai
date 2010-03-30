@@ -1,9 +1,0 @@
-sk:
-  layouts:
-    test:
-      description: "Toto je testovací dizajn v bláznivých farbách"
-      parts:
-        body: "hlavný obsah"
-        footer: "spodná časť stránky zobrazujúca počet online uživateľov"
-
-        
