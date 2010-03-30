@@ -44,7 +44,7 @@ Feature: Wiki
     And I should not see "Changed body"
 
   Scenario: User wants to see a preview of page
-    When I create "/" page with title "Title" body "Hello universe." without saving
+    When I create "/" page with title "Title" body "Hello universe." and "PeWe Layout" layout without saving
     And I press "Preview"
     Then I should see "This is preview"
     And I should see "Hello universe."

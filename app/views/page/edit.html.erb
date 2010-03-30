@@ -44,7 +44,7 @@
         layouts['<%= params[0] %>'] = new Array(3);
         layouts['<%= params[0] %>']['name'] = '<%= params[1] %>';
         layouts['<%= params[0] %>']['description'] = '<%= t("layouts.#{params[0]}.description") %>';
-        layouts['<%= params[0] %>']['page_parts'] = <%= params[2].to_json %>;
+        layouts['<%= params[0] %>']['page_parts'] = '<%= params[2].to_json %>';
 
      <% unless params[2].nil? %>
         translation['<%= params[0] %>'] = new Array(<%= params[2].length %>);
