@@ -11,7 +11,7 @@
     <script type="text/javascript">
 
     function showLayoutsHelper(s){
-        var default_layout = 'default';
+        var default_layout = '<%= @parent_layout %>';
         var selected_value = (s.value == null || s.value == "") ? default_layout : s.value;
         //new array for layouts help
         var layouts = new Array(<%= (definition.length + 1) %>)
@@ -44,6 +44,14 @@
         if(layout_help != null){
 
             var layout_message = "";
+
+            var index = s.selectedIndex;
+            var selected_text = s[index].text;
+            var find = 'Inherit';
+
+            if(selected_text.search(find) != -1){
+                layout_message += "<p>"+'<%= t(:layout_is_inherited)%>'+"<strong>"+layouts[selected_value]['name']+"</strong></p>";
+            }
 
             if(!(layouts[selected_value]['description'] == null || layouts[selected_value]['description'] == "" )){
                layout_message += "<h3>" + layouts[selected_value]['description'] + "</h3>";
@@ -80,7 +88,7 @@
     <div class="header_right">
     </div>
   </div>
-  <div class="main_content">
+  <div class="main_content" style="width:80%">
     <% form_tag("/#{@path};create", :method => :post) do %>
         <div>
           <%= hidden_field_tag "parent_id", @parent_id %>
@@ -91,7 +99,7 @@
           </p>
           <p>
             <%= label_tag :body %><br />
-            <%= text_area_tag "body", @body, :rows => 30, :cols => 80 %>
+            <%= text_area_tag "body", @body, :rows => 30, :style => 'width:100%' %>
           </p>
           <%= render :partial => 'maruku_help' %>
           <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
