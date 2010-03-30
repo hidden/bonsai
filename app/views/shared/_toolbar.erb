@@ -1,7 +1,7 @@
 <div id="toolbar" class="bonsai">
   <% if @preview_toolbar %>
       <div class=preview>
-      <%= t(:preview_info) %> <%= link_to  t(:close), "JavaScript:window.close()" %>
+        <%= t(:preview_info) %> <%= link_to  t(:close), "JavaScript:window.close()" %>
       </div>
   <% else %>
       <div class="search_box">
@@ -55,6 +55,9 @@
                       <% end %></li>
                       <% if @current_user.logged? %>
                           <li><%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page) %></li>
+                      <% end %>
+                      <% if (session[:admin]) %>
+                          <li><%= link_to icon_tag('user_edit.png', :alt => t(:Administration)) + " " + t(:Administration), admin_page_path %></li>
                       <% end %>
                       <% if @current_user.can_edit_page? @page %>
                           <li><%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page) %></li>

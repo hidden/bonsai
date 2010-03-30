@@ -1,0 +1,88 @@
+<div class="bonsai">
+  <div class="holder_right">
+    <div class="header">
+      <div class="header_content">
+        <h1><%= t(:Administration)%></h1>
+      </div>
+      <div class="header_right">
+      </div>
+    </div>
+    <div class="main_content">
+      <div class="user_search">
+        <% @gridpage = params['page'].nil? ? 1: (params['page']).to_i%>
+        <% @order = params['order'].nil? ? "" : "&order=#{params['order']}" %>
+        <% form_tag "#{admin_path}/search?back=/", :method => :post do %>
+          <p>
+            <%= text_field('add_user', 'usernames') %>
+            <%= submit_tag(t(:btn_search_page), :class=> "small_button") %>
+          </p>
+          <div id="autocomplete" style="display: block;" class="autocomplete"></div>
+          <script type="text/javascript">
+              //<![CDATA[
+              var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '/groups/autocomplete_for_user', {paramName: 'infix', method: 'get', select: 'username', tokens: ','});
+              //]]>
+          </script>
+      <% end %>
+      </div>
+      <table class="history">
+        <thead>
+        <tr>
+          <th><a href="<%= admin_path %>?back=/&page=<%=@gridpage %>&order=username"><%= t(:user)%></a></th>
+          <th><a href="<%= admin_path %>?back=/&page=<%=@gridpage %>&order=active"><%= t(:status)%></a></th>
+          <th><a href="<%= admin_path %>?back=/&page=<%=@gridpage %>&order=active"><%= t(:action)%></a></th>
+          <th><a href="<%= admin_path %>?back=/&page=<%=@gridpage %>&order=regtime"><%= t(:regtime)%></a></th>
+          <th><a href="<%= admin_path %>?back=/&page=<%=@gridpage %>&order=logtime"><%= t(:logtime)%></a></th>
+        </tr>
+        </thead>
+        <tbody>
+          <% for user in @users %>
+            <tr>
+              <td><%=h user.name%>(<%=user.username%>)</td>
+
+              <% if user.id != @current_user.id %>
+                <% if(user.active) %>
+                    <td><%= t(:active)%></td>
+                    <td><%= link_to t(:deactive_user), deactivate_admin_instance_path(user), :id => "deact_#{user.id}", :method => :put %></td>
+                <% else %>
+                    <td><%= t(:inactive)%></td>
+                    <td><%= link_to t(:active_user), activate_admin_instance_path(user), :id => "act_#{user.id}", :method => :put %></td>
+                <% end %>
+              <% else %>
+                <td><%= (user.active) ? t(:active) : t(:active) %></td>
+                <td>&nbsp;</td>
+              <% end %>
+              <td><%= user.regtime.nil? ? "&nbsp;" : user.regtime.strftime("%H:%M:%S  %d/%m/%Y") %></td>
+              <td><%= user.logtime.nil? ? "&nbsp;" : user.logtime.strftime("%H:%M:%S  %d/%m/%Y") %></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td colspan="5">
+              <% @p_count = User.count.quo(User.per_page).ceil %>
+              <% if @gridpage > 5 %>
+                <a href=<%= admin_path %>?back=/&page=<%=(@gridpage - 5) %><%=@order %>> ... </a>
+              <% end %>
+              <% for i in [1,@gridpage - 5].max..[@p_count,@gridpage+5].min %>
+                <% if i!=@gridpage %>
+                  <a href=<%= admin_path %>?back=/&page=<%=i %><%=@order %>> <%=i %> </a>
+                <% else %>
+                  <%=i %>
+                <% end %>
+              <% end %>
+               <% if (@gridpage + 5) < @p_count %>
+                <a href=<%= admin_path %>?back=/&page=<%=(@gridpage + 6) %>&order=<%=@order %>> ... </a>
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+    &nbsp;
+  </div>
+  <div class="footer_right_light">
+    &nbsp;
+  </div>
+</div>

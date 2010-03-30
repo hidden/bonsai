@@ -1,4 +1,8 @@
 class User < ActiveRecord::Base
+  cattr_reader :per_page
+  @@per_page = (APP_CONFIG['administrators'].nil? or APP_CONFIG['administrators']['per_page'].nil?) ? 10 : APP_CONFIG['administrators']['per_page']
+
+
   has_many :group_permissions, :dependent => :destroy
   has_many :groups, :through => :group_permissions
   has_many :page_part_locks, :dependent => :destroy
@@ -11,6 +15,28 @@ class User < ActiveRecord::Base
   before_create { |user| user.generate_unique_token }
   after_create { |user| user.create_user_group }
   after_destroy { |user| user.private_group.destroy }
+
+#majzunova administracia
+  def change_active active
+    self.active=active
+    self.save
+  end
+
+  def verify_admin_right
+    # read id of admin group
+    group_id = APP_CONFIG['administrators'].nil? ? nil:APP_CONFIG['administrators']['admin_group']
+    # control user
+    if self.logged? and !group_id.nil?
+      group=GroupPermission.find_by_sql("SELECT * FROM group_permissions g
+                                            WHERE g.group_id = '#{group_id}'
+                                            AND g.user_id = '#{self.id}'
+                                            AND (g.can_view = 1 or g.can_edit = 1)")
+      return group.blank? ? false : true
+    else
+      return false
+    end
+  end
+
 
   def user_group
     Group.find_by_name_and_usergroup(self.username, true)  

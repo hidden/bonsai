@@ -86,4 +86,9 @@ module PathsHelper
   def file_history_page_path(page, name)
     "#{page.get_path}#{name};history"
   end
+
+  def admin_page_path
+     "#{admin_path}?back=/"
+  end
+
 end

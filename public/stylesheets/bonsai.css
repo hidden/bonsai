@@ -297,7 +297,7 @@ ul#menu li.sub span:hover{text-decoration:underline;}
 #menu li.click ul li.hover ul li.hover ul li.hover {}
 #menu li.click ul li.hover ul li.hover ul li.hover a {color:#fff;}
 ul#menu li.sub ul li{
-    width:120px;
+    width:145px;
     padding:3px 0;
 }
 ul#menu li ul li:hover{

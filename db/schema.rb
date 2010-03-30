@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100324124541) do
+ActiveRecord::Schema.define(:version => 20100330095455) do
 
   create_table "favorites", :force => true do |t|
     t.integer "user_id", :null => false
@@ -111,11 +111,14 @@ ActiveRecord::Schema.define(:version => 20100324124541) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "username",                           :null => false
-    t.string   "name",                               :null => false
-    t.string   "token",                :limit => 32, :null => false
+    t.string   "username",                                             :null => false
+    t.string   "name",                                                 :null => false
+    t.string   "token",                :limit => 32,                   :null => false
     t.string   "prefered_locale"
     t.datetime "last_dashboard_visit"
+    t.boolean  "active",                             :default => true
+    t.datetime "regtime"
+    t.datetime "logtime"
   end
 
   add_index "users", ["token"], :name => "index_users_on_token", :unique => true

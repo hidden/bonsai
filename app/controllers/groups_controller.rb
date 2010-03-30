@@ -115,13 +115,18 @@ class GroupsController < ApplicationController
   # DELETE /groups/1
   # DELETE /groups/1.xml
   def destroy
-    @group = Group.find(params[:id])
-    unless @group.name == @current_user.username
-      @group.destroy
-    end
+    if params[:id].to_i != APP_CONFIG['administrators']['admin_group'].to_i
+      @group = Group.find(params[:id])
+      unless @group.name == @current_user.username
+        @group.destroy
+      end
     respond_to do |format|
       format.html { redirect_to(groups_url) }
       format.xml  { head :ok }
+    end
+    else
+      flash[:error] = t(:err_destroy_group)
+      redirect_to groups_path
     end
   end
 

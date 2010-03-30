@@ -2,14 +2,22 @@ ActionController::Routing::Routes.draw do |map|
   ActionController::Routing::SEPARATORS <<  ";" unless ActionController::Routing::SEPARATORS.include?(";")
 
 
-  map.resources :groups, :member => {:switch_public => :put, :switch_editable => :put}, :collection => { :autocomplete_for_user => :get, :autocomplete_for_groups => :get }
+  map.resources :groups,
+                :member => {:switch_public => :put, :switch_editable => :put},
+                :collection => { :autocomplete_for_user => :get, :autocomplete_for_groups => :get }
+  map.resources :admin,
+                :singular => :admin_instance,
+                :member => {:activate => :put, :deactivate => :put},
+                :collection => { :autocomplete_for_user => :get}
   map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
   map.resources :pages do |page|
     page.resources :page_parts do |page_part|
       page_part.resources :page_part_revisions
     end
   end
-  
+
+  map.search 'admin/search', :controller => 'admin', :action => 'index'
+
   map.connect 'dashboard/:action/:id', :controller => "dashboard"
 
   map.connect 'page/new', :controller => "page", :action => "create"
