@@ -38,6 +38,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+   def control_admin_session
+    if session[:admin].nil?
+      session[:admin]=@current_user.verify_admin_right
+    end
+    return session[:admin]
+  end
+
   private
   def get_locale_from_header
     request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first unless request.env['HTTP_ACCEPT_LANGUAGE'].nil?

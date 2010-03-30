@@ -15,6 +15,10 @@ defaults: &defaults
   fulltext_search: true #Sphinx is needed
   fulltext_body_length: 100
   fulltext_page_results: 5
+
+  administrators:
+    admin_group: 16
+    per_page: 4
   
   extension_icons:
     default: page_white.png
