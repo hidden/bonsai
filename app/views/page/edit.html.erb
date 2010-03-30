@@ -24,7 +24,7 @@
     for file in definition
         params = get_layout_parameters(file)
         #if option_value has the same value as found inherited layout, we set a value to nil
-        option_value = (params[0] == @page.inherited_layout) ? @page.layout : params[0]
+        option_value = (params[0] == @page.inherited_layout) ? @page.layout.to_s : params[0]
         #if current page has parent, but page layout was set to nil and option_value has the same value as found inherited layout
         #that means, this is inherited layout => we set prefix Inherited
         option_text = (!@page.parent.nil? and @page.layout.nil? and params[0] == @page.inherited_layout) ? 'Inherited (' + params[1] + ')' : params[1]
@@ -62,11 +62,10 @@
 
             var index = s.selectedIndex;
             var selected_text = s[index].text;
-            var find = 'Inherit ';
+            var find = 'Inherit';
 
             if(selected_text.search(find) != -1){
                 layout_message += "<p>"+'<%= t(:layout_is_inherited)%>'+"<strong>"+layouts[selected_value]['name']+"</strong></p>";                     
-
             }
 
             if(!(layouts[selected_value]['description'] == null || layouts[selected_value]['description'] == "" )){
@@ -149,6 +148,7 @@
 
 <div class="bonsai">
 <div class="holder_right_dark">
+
 <% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true}) do |f| %>
 
     <div class="header">
@@ -165,7 +165,7 @@
       <% if @current_user.can_manage_page? @page %>
           <p><%= label_tag 'layout', t(:layout) %>
 
-          <%= select_tag :layout, options_for_select(user_layouts, @page.layout),
+          <%= select_tag :layout, options_for_select(user_layouts, @page.layout.to_s),
                :onchange => 'javascript:showLayoutsHelper(this)' %>
           </p>
           <div id="layout_details" class="lighter_bg" style="display:none;">
