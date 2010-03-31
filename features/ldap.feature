@@ -29,4 +29,11 @@ Feature: LDAP
     Then I should see "Logout successfull."
     And I should not see "Logged in as:"
 
- 
+  Scenario: User logs in successfully with stored password
+    Given user "johno" has stored password "heslo"
+    When I go to the main page
+    And I fill in "username" with "johno"
+    And I fill in "password" with "heslo"
+    And I press "Log in"
+    Then I should see "You have successfully logged in."
+    Then I should see "johno (johno) | Log out"

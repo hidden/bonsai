@@ -12,9 +12,12 @@ class User < ActiveRecord::Base
   has_many :favorites
   has_many :favorite_pages, :through => :favorites, :class_name => 'Page', :source => :page
 
+  attr_accessor :password  
+
   before_create { |user| user.generate_unique_token }
   after_create { |user| user.create_user_group }
   after_destroy { |user| user.private_group.destroy }
+  before_save :encrypt_password
 
 #majzunova administracia
   def change_active active
@@ -91,4 +94,36 @@ class User < ActiveRecord::Base
     tmp_group.rename unless tmp_group.nil?
     Group.create(:name => self.username, :usergroup => true).add_as_non_viewer(self)
   end
+
+  #password authetication - from restful_authentication 
+  def secure_digest(*args)
+    Digest::SHA1.hexdigest(args.flatten.join('--'))
+  end
+
+  def make_token
+    secure_digest(Time.now, (1..10).map{ rand.to_s })
+  end
+
+  def password_digest(password, salt)
+    digest = APP_CONFIG['auth_site_key']
+    APP_CONFIG['digest_streches'].times do
+      digest = secure_digest(digest, salt, password, APP_CONFIG['auth_site_key'])
+    end
+    digest
+  end
+
+  def encrypt(password)
+    self.password_digest(password, salt)
+  end
+
+  def encrypt_password
+    return if password.blank?
+    self.salt = self.make_token if salt.nil?
+    self.crypted_password = encrypt(password)
+  end
+
+  def authenticated?(password)
+    crypted_password == encrypt(password)
+  end
+
 end

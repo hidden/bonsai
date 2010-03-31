@@ -265,7 +265,7 @@ class PageController < ApplicationController
       parent_path.pop
       parent = Page.find_by_path(parent_path)
       render :action => 'no_parent' and return if parent.nil?
-      layout_id = parent.layout
+      layout_id = parent.layout.to_s
     end
 
     if layout_id.nil?

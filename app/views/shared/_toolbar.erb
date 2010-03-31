@@ -69,7 +69,7 @@
                   </li>
               <% else
                   if (@current_user.can_view_page? @page) %>
-                      <%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %>
+                      <li class="sub"><span><%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %></span></li>
                       <% end %>
               <% end %>
               <% if @current_user.can_view_page? @page %>

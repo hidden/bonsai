@@ -9,7 +9,8 @@ defaults: &defaults
     port: 389
     host: ldap.stuba.sk
     base_dn: ou=People,dc=stuba,dc=sk
-
+  auth_site_key: asa234d78
+  digest_streches: 10
   lock_timeout: 30
 
   fulltext_search: true #Sphinx is needed

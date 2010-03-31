@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100330095455) do
+ActiveRecord::Schema.define(:version => 20100330213557) do
 
   create_table "favorites", :force => true do |t|
     t.integer "user_id", :null => false
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(:version => 20100330095455) do
   add_index "pages", ["parent_id", "sid"], :name => "index_pages_on_parent_id_and_sid"
 
   create_table "uploaded_files", :force => true do |t|
+    t.integer "user_id"
     t.string  "attachment_filename"
     t.integer "page_id",                                :null => false
     t.integer "current_file_version_id", :default => 0, :null => false
@@ -119,6 +120,8 @@ ActiveRecord::Schema.define(:version => 20100330095455) do
     t.boolean  "active",                             :default => true
     t.datetime "regtime"
     t.datetime "logtime"
+    t.string   "crypted_password"
+    t.string   "salt"
   end
 
   add_index "users", ["token"], :name => "index_users_on_token", :unique => true
