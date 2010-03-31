@@ -138,7 +138,7 @@
             if ((managers.length) >= 2) return true;
             else
             {
-                alert('You cannot delete permission, there must be at least one manager.');
+                alert('<%= t(:manager_error) %>');
                 return false;
             }
         }
@@ -445,6 +445,7 @@
       <div class="info_warning">
         <%= t(:permissions_warning)%>
       </div>
+       <br/> <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>.
       <!-- END OF PAGE PERMISIONS -->
     </div>
 <%else%>
