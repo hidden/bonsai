@@ -723,9 +723,13 @@ class PageController < ApplicationController
       unprivileged
     else
       sid = params[:sid].blank? ? nil : params[:sid]
-
+      old_page = @page
       @page = PreviewPage.new(:title => params[:title], :sid => sid, :parent_id => params[:parent_id])
-      layout = params[:layout].empty? ? @page.resolve_parent_layout : params[:layout]
+      if !params[:layout].nil?
+        layout = params[:layout].empty? ? @page.resolve_parent_layout : params[:layout]
+      else
+        layout = old_page.layout
+      end
       @page.layout = layout
       params[:body].nil? ? params[:parts].each do |name, body|
         page_part = @page.page_parts.build(:name => name, :current_page_part_revision_id => 0)
