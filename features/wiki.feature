@@ -22,7 +22,6 @@ Feature: Wiki
     And I am logged in
     And I follow "history"
     When I follow "Revert to revision 1"
-    And show me the page
     And I press "Save"
     Then I should see "Page successfully updated."
     And I should see "This is first revision"
