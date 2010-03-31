@@ -1,6 +1,21 @@
 class UsersController < ApplicationController
   ssl_allowed :login
 
+  def new
+    @user = User.new
+  end
+
+  def create
+    @user = User.new(params[:user])
+    if @user.save
+      flash[:notice] = t("users.registration_complete")
+      redirect_to root_path
+    else
+      flash[:error]  = t("users.registration_incomplete")
+      render :action => 'new'
+    end
+  end
+
   def login
     session[:return_to] = request.referer if params[:commit]
     if APP_CONFIG['authentication_method'] == 'openid' then

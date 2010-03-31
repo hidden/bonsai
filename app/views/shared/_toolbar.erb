@@ -29,7 +29,8 @@
               <noscript>
                 <span style="display:none"/>
               </noscript>
-              <%= link_to  t(:btn_log_in), nil, :onclick=>"return toggleDivDivDiv(event)" %>
+              <%= link_to t(:btn_registration), :controller => "users", :action => "new" %>
+              <%= link_to t(:btn_log_in), nil, :onclick=>"return toggleDivDivDiv(event)" %>
               <noscript>
                 </span>
               </noscript>
