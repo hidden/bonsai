@@ -28,3 +28,8 @@ Feature: Registration
     And I press "Submit registration"
     Then I should see "Registration unsuccessful - please check form"
     And I should see "Password doesn't match confirmation"
+
+  Scenario: Logged user should not access registration page
+    When I login as "johno"
+    And I go to the registration page
+    Then I should not see "New account"
