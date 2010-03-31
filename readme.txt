@@ -9,6 +9,7 @@ layout_name.tar:
 
  layout_name
  layout_name\definition.yml
+ layout_name\layout_name.html.erb
  layout_name\locales
  layout_name\public
  layout_name\public\images
@@ -23,6 +24,24 @@ definition.yml - contains layout description and list of page parts
 example:
 name: PeWe Layout
 parts: [navigation, body, caption, footer]
+
+layout_name.html.erb - html structure of layout
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+possible parts are:
+<%= render :partial => 'shared/header' %>
+this part contains base html structure of head, javascript links and base css
+
+<%= render :partial => 'shared/notice' %>
+this part is responsible for users notification of actions done in wiki
+
+<%= render :partial => 'shared/breadcrumb' %>
+this is standard breadcumb navigation
+
+<%= yield %>
+this part generates all page parts defined for current page
+
+<%= render :partial => 'shared/footer' %>
+this is footer of html page, contains google analitics, closing tag for body and html elements
 
 
 locales - directory which contains localization files

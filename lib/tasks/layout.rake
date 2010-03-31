@@ -4,7 +4,7 @@ namespace :bonsai do
 
     if !ENV['layout'].nil?
       if File.exist? ENV['layout']
-        mv "#{ENV['layout']}", "#{RAILS_ROOT}/vendor/layouts"
+        cp "#{ENV['layout']}", "#{RAILS_ROOT}/vendor/layouts"
         #prepare file name
         file_name = File.basename("#{ENV['layout']}")
         #prepare dir name
@@ -12,9 +12,14 @@ namespace :bonsai do
         FileUtils.chdir("#{RAILS_ROOT}/vendor/layouts")
         `tar -xvf #{file_name}`
 
+
         error = false
         unless File.exist? ("#{dir_name}/definition.yml")
           puts "ERROR: #{dir_name}/definition.yml does not exist!"
+          error = true
+        end
+         unless File.exist? ("#{dir_name}/#{dir_name}.html.erb")
+          puts "ERROR: #{dir_name}/#{dir_name}.html.erb does not exist!"
           error = true
         end
         unless File.exist? ("#{dir_name}/locales")
@@ -30,9 +35,11 @@ namespace :bonsai do
           #move images
           mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/public/images", "#{RAILS_ROOT}/public/images/layouts/#{dir_name}"
           #move stylesheet definition
-          mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/public/test.css", "#{RAILS_ROOT}/public/stylesheets/"
+          mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/public/#{dir_name}.css", "#{RAILS_ROOT}/public/stylesheets/"
           #move language definitions
           mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/locales", "#{RAILS_ROOT}/config/locales/layouts/#{dir_name}"
+          #move html erb file
+          mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/#{dir_name}.html.erb", "#{RAILS_ROOT}/app/views/layouts/"          
           #remove public folder
           rm_rf "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/public"
           #remove archive
@@ -65,6 +72,11 @@ namespace :bonsai do
         end
 
         path = "#{RAILS_ROOT}/public/stylesheets/#{ENV['layout']}.css"
+        if  File.exist? path
+          rm_rf path
+        end
+
+        path = "#{RAILS_ROOT}/app/views/layouts/#{ENV['layout']}.html.erb"
         if  File.exist? path
           rm_rf path
         end
