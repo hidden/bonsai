@@ -10,6 +10,9 @@ def path_to(page_name)
     when /a page without parent/i
       "/some/nested/page/"
 
+    when /the registration page/i
+      "/users/new/"
+
     else
       page_name
   end

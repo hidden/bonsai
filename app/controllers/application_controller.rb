@@ -38,11 +38,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
-   def control_admin_session
+  def control_admin_session
     if session[:admin].nil?
       session[:admin]=@current_user.verify_admin_right
     end
     return session[:admin]
+  end
+
+  def not_logged_in
+    redirect_to root_path unless (@current_user.class == AnonymousUser)
   end
 
   private

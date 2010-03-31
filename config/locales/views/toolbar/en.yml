@@ -1,5 +1,6 @@
 en:
   login: "Login:"
+  btn_registration: "Registration"  
   btn_log_in: "Log in"
   password: "Password:"
   logged_as: "Logged in as:"

@@ -1,0 +1,50 @@
+<div class="bonsai">
+  <div class="holder_right">
+    <div class="header">
+      <div class="header_content">
+        <h1><%= t("users.new_account")%></h1>
+      </div>
+      <div class="header_right">
+      </div>
+    </div>
+    <div class="main_content">
+    <% form_for :user, @user, :url => {:controller => "users", :action => "create"} do |f| %>  
+    <%=error_messages_for 'user' %>
+    <table>
+    <tr>
+      <td><%= f.label :username, t("users.input_username")%></td>
+      <td><%= f.text_field :username %></td>
+    </tr>
+    <tr>
+      <td><%= f.label :name, t("users.name")%></td>
+      <td><%= f.text_field :name %></td>
+    </tr>
+    <tr>
+      <td><%= f.label :password, t("users.input_password")%></td>
+      <td><%= f.password_field :password %></td>
+    </tr>
+    <tr>
+      <td><%= f.label :password_confirmation, t("users.input_password_confirmation")%></td>
+      <td><%= f.password_field :password_confirmation %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= f.submit t("users.submit_registration")%></td>
+    </tr>
+    </table>
+    <% end %>
+
+
+
+
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+    &nbsp;
+  </div>
+  <div class="footer_right_light">
+    &nbsp;
+  </div>
+</div>        

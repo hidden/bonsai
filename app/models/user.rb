@@ -12,12 +12,17 @@ class User < ActiveRecord::Base
   has_many :favorites
   has_many :favorite_pages, :through => :favorites, :class_name => 'Page', :source => :page
 
-  attr_accessor :password  
+  attr_accessor :password, :password_confirmation
+  attr_accessible :username, :name, :password, :password_confirmation
 
   before_create { |user| user.generate_unique_token }
   after_create { |user| user.create_user_group }
   after_destroy { |user| user.private_group.destroy }
   before_save :encrypt_password
+
+  validates_uniqueness_of :username
+  validates_presence_of :name
+  validates_confirmation_of :password
 
 #majzunova administracia
   def change_active active

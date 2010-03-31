@@ -1,5 +1,6 @@
 sk:
   login: "Login:"
+  btn_registration: "Registacia" #TODO diakritika
   btn_log_in: "Prihlásiť"
   password: "Heslo:"
   logged_as: "Prihlásený ako: "

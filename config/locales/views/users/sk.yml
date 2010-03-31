@@ -1,0 +1,11 @@
+sk:
+  users:
+    new_account: "Novy ucet" #TODO diakritika
+    input_username: "Prihlasovacie meno"
+    name: "Meno"
+    input_password: "Heslo"
+    input_password_confirmation: "Potvrdenie hesla"
+    submit_registration: "Odoslat registraciu" #TODO diakritika
+    registration_incomplete: "Vyskytli sa chyby pri registracii - prekontrolujte si prosim vyplnene udaje" #TODO diakritika
+    registration_complete: "Registracia prebehla uspesne" #TODO diakritika
+    
