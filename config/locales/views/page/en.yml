@@ -119,4 +119,13 @@ en:
   layout_help_title: "Page parts predefined for this layout are:"
   inherited_layout: "This layout is inherited from wiki layout"
   layout_is_inherited: "Layout bude inherited from parent page, which layout is "
+  layout_help_title: "Page parts predefined for this layout are:"
+  inherited_layout: "This layout is inherited from wiki layout"
+  layout_is_inherited: "Layout bude inherited from parent page, which layout is "
+  permission_history: "You can see history of page permissions by following this"
+  link: "link"
+  perm_history_title: "Permission history for:"
+  set_action: "set"
+  remove_action: "removed"
+  manager_error: "You cannot delete permission, there must be at least one manager."
       

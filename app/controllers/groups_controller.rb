@@ -10,6 +10,23 @@ class GroupsController < ApplicationController
     redirect_to groups_path unless @current_user.can_edit_group? Group.find_by_id(params[:group_id])
   end
 
+  def permissions_history
+    @group = Group.find(params[:id])
+    #@permissions_history = GroupPermissionsHistory.find_all_by_group_id(@group.id) #:joins => 'JOIN users e ON e.id = editor_id', :order => 'created_at DESC')
+    #stmnt =  "SELECT p.id, p.user_id, p.editor_id, p.group_id, p.role, p.action, u.username, u2.username as editor FROM group_permissions_histories p JOIN users u ON u.id = user_id  JOIN users u2 ON u2.id = p.editor_id WHERE group_id = ???"
+    #stmnt["???"] = @group.id.to_s()
+    #@permissions_history = GroupPermissionsHistory.find_by_sql(stmnt)
+    @permissions_history = GroupPermissionsHistory.paginate( :all,:conditions => "group_id='#{@group.id}'", :include => [:user, :editor], :per_page => 20, :page => params[:page], :order => 'created_at DESC')
+    @no_toolbar = true
+    #return render('groups/permissions_history')
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml do
+        render 'groups/permissions_history'
+      end
+    end
+  end
+
   def autocomplete_for_user
     @infix = params[:infix]
     @users = User.all(:conditions => ["name LIKE :infix OR username LIKE :infix", {:infix => "%#{@infix}%"}], :limit => 10, :order => 'username')
@@ -76,6 +93,8 @@ class GroupsController < ApplicationController
     respond_to do |format|
       if @group.save
         @group.add_editor @current_user
+        gh = GroupPermissionsHistory.new(:user_id => @current_user.id, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 1)
+        gh.save
         flash[:notice] = t(:group_created)
         format.html { redirect_to edit_group_path(@group) }
         format.xml  { render :xml => @group, :status => :created, :location => @group }
@@ -132,23 +151,35 @@ class GroupsController < ApplicationController
 
   def switch_public
     @group = Group.find(params[:id])
+    if (@group.is_public?)
+      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => 2)
+    else
+      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => 1)
+    end
     was_public = @group.is_public?
     @group.group_permissions.each do |permission|
       permission.can_view = was_public
       permission.can_edit = was_public if was_public
       permission.save
     end
+    gh.save
     redirect_to edit_group_path(params[:id])
   end
 
   def switch_editable
     @group = Group.find(params[:id])
+    if (@group.is_editable?)
+      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 2)
+    else
+      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 1)
+    end
     was_editable = @group.is_editable?
     @group.group_permissions.each do |permission|
       permission.can_view = was_editable if !was_editable
       permission.can_edit = was_editable
       permission.save
     end
+    gh.save
     redirect_to edit_group_path(params[:id])
   end
 end

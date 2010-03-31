@@ -119,4 +119,10 @@ sk:
   layout_help_title: "Tento layout má preddefinované tieto časti:"
   inherited_layout: "Tento layout je zdedený z wiki layoutu"
   layout_is_inherited: "Layout bude zdedený od rodičovskej stránky, ktorej layout je "
+  permission_history: "Možeš si pozrieť históriu práv pre túto stránku kliknutím na tento"
+  link: "odkaz"
+  perm_history_title: "História práv pre:"
+  set_action: "nastavil"
+  remove_action: "zrušil"
+  manager_error: "Nemôžeš vymazať právo, musí ostať aspoň jeden manažér pre stránku."
   

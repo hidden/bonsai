@@ -1,0 +1,55 @@
+<div class="holder_right">
+  <div class="header">
+    <div class="header_content">
+      <span class="subtitle"><%= t(:perm_history_title) %></span>
+      <h1><%= @group.name %></h1>
+    </div>
+    <div class="header_right">
+    </div>
+  </div>
+  <div class="main_content">
+    <%# if @permissions_history.empty? then %>
+       <!-- No permissions history for this page-->
+    <%# else %>
+       <table class="history center">
+          <thead>
+          <tr>
+            <th></th>
+            <th><%= t(:editor) %></th>
+            <th><%= t(:action) %></th>
+            <th><%= t(:user) %></th>
+            <th><%= t(:permission) %></th>
+            <th><%= t(:date) %></th>
+          </tr>
+          </thead>
+          <tbody>
+          <% perm = Array.[](t(:viewer), t(:editor)) %>
+          <% action = Array.[](t(:set_action), t(:remove_action)) %>
+          <% for permission in @permissions_history %>
+          <tr>
+            <td></td>
+            <td><%= permission.editor.full_name %></td>
+            <td width="150"><%= action[permission.action-1] %></td>
+            <td><% if (permission.user_id != 0) %>
+                <%= permission.user.full_name %>
+              <% else %>
+              <%= t(:everyone) %>
+            <% end %></td>
+            <td width="200"><%= perm[permission.role-1] %></td>
+            <td><%= permission.created_at.localtime.strftime("%H:%M:%S %d %b %Y") %></td>
+              </tr>
+              <% end %>
+          </tbody>
+        </table>
+    <%= will_paginate @permissions_history, :prev_label => t("pagination.prev_label"),
+                          :next_label => t("pagination.next_label") %>
+        <%# end %>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer_left">
+  </div>
+  <div class="footer_right_light">
+  </div>
+</div>
