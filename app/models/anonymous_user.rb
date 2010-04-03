@@ -30,4 +30,8 @@ class AnonymousUser
   def prefered_locale=(locale)
     @session[:locale] = locale
   end
+
+  def verify_admin_right
+    return false
+  end
 end

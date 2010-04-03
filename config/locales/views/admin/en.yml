@@ -15,7 +15,6 @@ en:
   regtime: "Registration"
   logtime: "Last login"
   adming: "Admin group"
-  admin_group_created: "Admin group has been created. You can have to set parameter administrators.admin_group to id in config.yml"
   err_destroy_group: "You cannot destroy admin group"      
 
   
