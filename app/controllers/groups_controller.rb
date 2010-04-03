@@ -144,7 +144,7 @@ class GroupsController < ApplicationController
       format.xml  { head :ok }
     end
     else
-      flash[:error] = t(:err_destroy_group)
+      flash[:notice] = t(:err_destroy_group)
       redirect_to groups_path
     end
   end

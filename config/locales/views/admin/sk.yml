@@ -15,5 +15,4 @@ sk:
   regtime: "Registrácia"
   logtime: "Posledný prístup"
   adming: "Administratívna skupina"
-  admin_group_created: "Skupina Admin group bola vytvorená. Je treba nastaviť parameter administrators.admin_group v configu na id skupiny."
   err_destroy_group: "Administrátorská skupina sa nedá zmazať" 
