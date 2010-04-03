@@ -89,7 +89,7 @@
     </div>
   </div>
   <div class="main_content" style="width:80%">
-    <% form_tag("/#{@path};create", :method => :post) do %>
+    <% form_tag("/#{@path};create", :method => :post, :id => "edit_form") do %>
         <div>
           <%= hidden_field_tag "parent_id", @parent_id %>
           <%= hidden_field_tag "sid", @sid %>
@@ -109,8 +109,9 @@
                :onchange => 'javascript:showLayoutsHelper(this)' %>
           </p>
           <div id="layout_details" class="lighter_bg" style="display:none;"></div>
-          <p><%= submit_tag t(:save), :name=>"Save", :class=> "small_button" %>
-          <%= submit_tag t(:preview), :name=>"Preview", :class=> "small_button", :target => 'preview' %></p>
+
+          <p><%= submit_tag t(:save), :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+          <%= submit_tag t(:preview), :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
         </div>
     <% end %>
   </div>

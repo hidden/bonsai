@@ -345,7 +345,7 @@ class PageController < ApplicationController
   end
 
   def create
-    if params.include?('Preview')
+    if params['commit'].eql?('Preview')
       generate_preview
       return
     end
@@ -452,7 +452,7 @@ class PageController < ApplicationController
 
 
   def save_edit
-    if params.include?('Preview')
+    if params['commit'].eql?('Preview')
       generate_preview
       return
     end
@@ -774,7 +774,11 @@ class PageController < ApplicationController
       old_page = @page
       @page = PreviewPage.new(:title => params[:title], :sid => sid, :parent_id => params[:parent_id])
       if !params[:layout].nil?
-        layout = params[:layout].empty? ? @page.resolve_parent_layout : params[:layout]
+        if old_page.nil?
+          layout = params[:layout].empty? ? @page.resolve_parent_layout : params[:layout]
+        else
+          layout = params[:layout].empty? ? old_page.resolve_parent_layout : params[:layout]
+        end
       else
         layout = old_page.layout
       end

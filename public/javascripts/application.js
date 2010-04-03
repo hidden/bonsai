@@ -63,4 +63,17 @@ function visible_remove_favorite(element, show) {
     element.children[1].firstChild.style.visibility = show;
 }
 
+function subm(id,type)
+{
+    var form = document.getElementById(id);
+    if (type == 'preview')
+    {
+        form.target = "preview";
+    }
+    else
+    {
+        form.target = "_self";
+    }
+}
+
 Event.observe(window, 'load', initialize);
