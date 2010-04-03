@@ -23,3 +23,4 @@ en:
   toggle: "Toggle permission"
   err_change_permission: "You cannot change your own permission"
   btn_create_group: "Create"
+  group_history: "You can see permissions history for this group by following this"

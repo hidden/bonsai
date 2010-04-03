@@ -45,4 +45,8 @@ module PageHelper
   def link_to_page page
     link_to page.title, page.get_path
   end
+  
+  def perm_hist
+    url_for :controller => 'page', :action => 'permissions_history'
+  end
 end
