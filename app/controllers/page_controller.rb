@@ -11,6 +11,13 @@ class PageController < ApplicationController
     @search_results = Page.search params[:search_text], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
   end
 
+  def permissions_history
+    #@permissions_history = PagePermissionsHistory.find_all_by_page_id(@page.id, :joins => "JOIN users u ON u.id = user_id JOIN pages p ON p.id = page_id")
+    #@permissions_history = PagePermissionsHistory.find_all_by_page_id(@page.id)
+    @permissions_history = PagePermissionsHistory.paginate( :all, :conditions => "page_id='#{@page.id}'", :include => [:user, :group], :per_page => 20, :page => params[:page], :order => 'created_at DESC')
+    @no_toolbar = true
+  end
+
   def rss
     user_from_token = User.find_by_token params[:token]
     user_from_token = AnonymousUser.new(session) if user_from_token.nil?
@@ -110,6 +117,11 @@ class PageController < ApplicationController
 
   def switch_public
     was_public = @page.is_public?
+    if (@page.is_public?)
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => 2)
+    else
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => 1)
+    end
     if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_public
@@ -117,12 +129,18 @@ class PageController < ApplicationController
         #TODO: if the @page has some public descendants, we should spread the switch to them as well
         permission.save
       end
-    end
+    end      
+    ph.save
     #redirect_to manage_page_path(@page)
   end
 
   def switch_editable
     was_editable = @page.is_editable?
+    if (@page.is_editable?)
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => 2)
+    else
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => 1)
+    end
     if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_editable if !was_editable
@@ -131,68 +149,92 @@ class PageController < ApplicationController
         permission.save
       end
     end
+    ph.save
     #redirect_to manage_page_path(@page)
   end
 
   def change_permission
     page_permission = @page.page_permissions[params[:index].to_i]
     if (params[:permission] == "1")
-      if (page_permission.group.users.include? @current_user)
-        flash[:notice] = t(:can_view_error)
-      else
+      #if (page_permission.group.users.include? @current_user)
+      #  flash[:notice] = t(:can_view_error)
+      #else
         #page_permission.can_view ? @page.remove_viewer(page_permission.group):@page.add_viewer(page_permission.group)
-        @page.add_viewer(page_permission.group)
+      unless @managers < 2 && page_permission.can_manage?
+
 
         #znizenie prav, ak pouzivatel nejake mal
+        if (page_permission.can_manage?)
+          @page.remove_manager(page_permission.group)
+          ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
+          ph.save
+          @managers -= 1
+        end
         if (page_permission.can_edit?)
           @page.remove_editor(page_permission.group)
+          ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
+          ph.save
         end
-        if (page_permission.can_manage?)
-          @page.remove_manager(page_permission.group)
-          params[:managers] -= 1
+        if (!page_permission.can_view?)
+          @page.add_viewer(page_permission.group)
+          ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 1, :action => 1)
+          ph.save
         end
-
-      end
+              end
+      #end
     elsif (params[:permission] == "2")
-      if (page_permission.group.users.include? @current_user)
-        flash[:notice] = t(:can_edit_error)
-      else
+      #if (page_permission.group.users.include? @current_user)
+      #  flash[:notice] = t(:can_edit_error)
+      #else
         #page_permission.can_edit ? @page.remove_editor(page_permission.group):@page.add_editor(page_permission.group)
-        @page.add_editor(page_permission.group)
+
 
         #znizenie prav, ak pouzivatel nejake mal
+       unless @managers < 2 && page_permission.can_manage?
         if (page_permission.can_manage?)
           @page.remove_manager(page_permission.group)
-          params[:managers] -= 1
+          @page.add_editor(page_permission.group)
+          ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
+          ph.save
+          @managers -= 1
         end
-
-      end
+        if (!page_permission.can_edit?)
+          @page.add_editor(page_permission.group)
+          ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 1)
+          ph.save
+        end
+        end
+      #end
     elsif (params[:permission] == "3")
       #page_permission.can_manage ? @page.remove_manager(page_permission.group):@page.add_manager(page_permission.group)
-      @page.add_manager(page_permission.group)
+      if(!page_permission.can_manage?)
+        @page.add_manager(page_permission.group)
+        @managers += 1
+        ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 1)
+        ph.save
+      end
     end
     page_permission.save
     #redirect_to manage_page_path(@page)
   end
 
   def remove_permission
-    managers = 0;
-    @page.page_permissions.each_with_index do |permission, index|
-      if permission.can_manage?
-        managers += 1
-      end
+    page_permission = @page.page_permissions[params[:index].to_i]
+
+    if(page_permission.can_manage?)
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
+      ph.save
+    end
+    if(page_permission.can_edit?)
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
+      ph.save
+    end
+    if(page_permission.can_view?)
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 1, :action => 2)
+      ph.save
     end
 
-    page_permission = @page.page_permissions[params[:index].to_i]
-    if page_permission.can_manage? && managers >= 2
-      page_permission.destroy
-      return true
-    else
-      if (page_permission.can_edit? || page_permission.can_view?) && !page_permission.can_manage?
-        page_permission.destroy
-        return true
-      end
-    end
+    page_permission.destroy
     #redirect_to manage_page_path(@page)
   end
 
@@ -303,7 +345,7 @@ class PageController < ApplicationController
   end
 
   def create
-    if params.include?('Preview')
+    if params['commit'].eql?('Preview')
       generate_preview
       return
     end
@@ -328,6 +370,8 @@ class PageController < ApplicationController
       end
       page.save!
       page.add_manager @current_user.private_group
+      ph = PagePermissionsHistory.new(:page_id => page.id, :user_id => @current_user.id, :group_id => @current_user.private_group.id, :role => 3, :action => 1)
+      ph.save
       page.move_to_child_of parent unless parent.nil?
       page_part = page.page_parts.create(:name => "body", :current_page_part_revision_id => 0)
       first_revision = page_part.page_part_revisions.create(:user => @current_user, :body => params[:body], :summary => params[:summary])
@@ -387,7 +431,12 @@ class PageController < ApplicationController
         if (retVal || retValUsers)
           @page.add_viewer group if params[:group_role][:type] == "1"
           @page.add_editor group if params[:group_role][:type] == "2"
-          @page.add_manager group if params[:group_role][:type] == "3"
+          if params[:group_role][:type] == "3"
+            @page.add_manager group
+            @managers += 1
+          end
+          ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => group.id, :role => params[:group_role][:type], :action => 1)
+          ph.save
         end
       end
     end
@@ -403,7 +452,7 @@ class PageController < ApplicationController
 
 
   def save_edit
-    if params.include?('Preview')
+    if params['commit'].eql?('Preview')
       generate_preview
       return
     end
@@ -413,13 +462,12 @@ class PageController < ApplicationController
     end
     @error_flash_msg = ""
     @notice_flash_msg = ""
-    managers = 0;
+    @managers = 0;
     @page.page_permissions.each_with_index do |permission, index|
       if permission.can_manage?
-        managers += 1
+        @managers += 1
       end
     end
-    params[:managers] = managers
     @page.page_permissions.each_with_index do |permission, index|
       group_name_select = permission.group.name + "_select"
       value = params[group_name_select]
@@ -437,14 +485,14 @@ class PageController < ApplicationController
           # 1.pripad, zmena managera na editora ak je stranka editable
           # 2.pripad, zmena editora/managera na viewera ak je stranka public
         else
-          if @page.is_editable? && params[:permission] == "2" && permission.can_manage? && params[:managers] >= 2
+          if @page.is_editable? && params[:permission] == "2" && permission.can_manage? && @managers >= 2
             @page.remove_manager(permission.group)
-            params[:managers] -= 1
+            @managers -= 1
           else
             if @page.is_public? && params[:permission] == "1"
-              if @page.can_manage? && params[:managers] >= 2
+              if @page.can_manage? && @managers >= 2
                 @page.remove_manager(permission.group)
-                params[:managers] -= 1
+                @managers -= 1
               end
               if @page.can_edit?
                 @page.remove_editor(permission.group)
@@ -726,7 +774,11 @@ class PageController < ApplicationController
       old_page = @page
       @page = PreviewPage.new(:title => params[:title], :sid => sid, :parent_id => params[:parent_id])
       if !params[:layout].nil?
-        layout = params[:layout].empty? ? @page.resolve_parent_layout : params[:layout]
+        if old_page.nil?
+          layout = params[:layout].empty? ? @page.resolve_parent_layout : params[:layout]
+        else
+          layout = params[:layout].empty? ? old_page.resolve_parent_layout : params[:layout]
+        end
       else
         layout = old_page.layout
       end

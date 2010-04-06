@@ -8,10 +8,10 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
-      flash[:notice] = t("users.registration_complete")
+      flash[:notice] = t(:registration_complete)
       redirect_to root_path
     else
-      flash[:error]  = t("users.registration_incomplete")
+      flash[:error]  = t(:registration_incomplete)
       render :action => 'new'
     end
   end
@@ -65,7 +65,7 @@ class UsersController < ApplicationController
         user = User.find_or_create_by_username(:username => params[:username], :name => name)
         user.password = params[:password]
         user.name = name
-        set_times(user)
+        #set_times(user)
         user.save
         successful_login(user)
       else
@@ -95,7 +95,7 @@ class UsersController < ApplicationController
         if control_user(identity_url)
           name = "openid"
           user = User.find_or_create_by_username(:username => identity_url, :name => name)
-          set_times(user)
+          #set_times(user)
           user.save
           successful_login(user)
         else
@@ -109,7 +109,7 @@ class UsersController < ApplicationController
             name = profile['nickname'] || "openid"
             user = User.find_or_create_by_username(:username => make_url(identity_url), :name => name)
             user.name = name
-            set_times(user)
+            #set_times(user)
             user.save
             successful_login(user)
           else
@@ -122,21 +122,6 @@ class UsersController < ApplicationController
     end
   end
 
-   def admin_group user
-    if user.id == 1 and APP_CONFIG['administrators']['admin_group'].blank?
-      @group = Group.new
-      @group.name='admin_group';
-       if @group.save
-          @group.add_editor user
-          flash[:error] = t(:login_successful) + t(:admin_group_created) + ' id:' + @group.id.to_s
-          #APP_CONFIG['administrators']['admin_group']=@group.id
-          #File.open("#{RAILS_ROOT}/config/config.yml", 'w') { |f| YAML.dump(APP_CONFIG, f) }
-       end
-    else
-      flash[:notice] = t(:login_successful)
-    end
- end
-
   def control_user username
     user = User.find_by_username(username)
     if !user.nil? && !user.active?
@@ -145,13 +130,6 @@ class UsersController < ApplicationController
     return true;
   end
 
-  def set_times user
-    time = Time.now
-    if user.regtime.nil?
-      user.regtime = time
-    end
-    user.logtime = time
-  end
 
   def banned_login user
     flash[:error] = t(:for_user) + user + t(:login_banned)
@@ -160,10 +138,8 @@ class UsersController < ApplicationController
 
   def successful_login(user)
     session[:user_id] = user.id
-    session[:admin]=user.verify_admin_right
     cookies[:token] = {:value => user.token, :expires => 1.month.from_now}
-    admin_group user
-    #flash[:notice] = t(:login_successful)
+    flash[:notice] = t(:login_successful)
     redirect_to session[:return_to]
   end
 

@@ -12,6 +12,7 @@ class Page < ActiveRecord::Base
 
   has_many :uploaded_files, :dependent => :destroy
   has_many :file_versions, :through => :uploaded_files
+  has_many :page_permissions_histories, :dependent => :destroy
 
   named_scope :find_all_public, :joins => "LEFT JOIN page_permissions pp ON pages.id = pp.page_id AND pp.can_view = 1", :conditions => "pp.id IS NULL"
 

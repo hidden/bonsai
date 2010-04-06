@@ -138,7 +138,7 @@
             if ((managers.length) >= 2) return true;
             else
             {
-                alert('You cannot delete permission, there must be at least one manager.');
+                alert('<%= t(:manager_error) %>');
                 return false;
             }
         }
@@ -149,7 +149,7 @@
 <div class="bonsai">
 <div class="holder_right_dark">
 
-<% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true}) do |f| %>
+<% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true, :id => "edit_form"}) do |f| %>
 
     <div class="header">
       <div class="header_content">
@@ -235,9 +235,8 @@
       </div>
 
       <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
-
-      <p><%= submit_tag t(:save) , :class=> "small_button" %>
-      <%= submit_tag t(:preview), :name=>"Preview", :class=> "small_button", :target => 'preview' %></p>
+      <p><%= submit_tag t(:save) , :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+      <%= submit_tag t(:preview), :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
     </div>
 
     <div class="main_content_right" style="width:244px;">
@@ -445,6 +444,7 @@
       <div class="info_warning">
         <%= t(:permissions_warning)%>
       </div>
+       <br/> <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>.
       <!-- END OF PAGE PERMISIONS -->
     </div>
 <%else%>

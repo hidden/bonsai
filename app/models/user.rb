@@ -12,6 +12,9 @@ class User < ActiveRecord::Base
   has_many :favorites
   has_many :favorite_pages, :through => :favorites, :class_name => 'Page', :source => :page
 
+  has_many :group_permissions_histories, :dependent => :destroy
+  has_many :editor_group_histories, :class_name => 'GroupPermissionsHistory', :foreign_key => 'editor_id'
+  
   attr_accessor :password, :password_confirmation
   attr_accessible :username, :name, :password, :password_confirmation
 

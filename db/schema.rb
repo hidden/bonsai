@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100330213557) do
+ActiveRecord::Schema.define(:version => 20100331191606) do
 
   create_table "favorites", :force => true do |t|
     t.integer "user_id", :null => false
@@ -34,6 +34,15 @@ ActiveRecord::Schema.define(:version => 20100330213557) do
     t.integer "group_id",                    :null => false
     t.boolean "can_view", :default => false, :null => false
     t.boolean "can_edit", :default => false, :null => false
+  end
+
+  create_table "group_permissions_histories", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.integer  "editor_id",  :null => false
+    t.integer  "group_id",   :null => false
+    t.integer  "role"
+    t.integer  "action"
+    t.datetime "created_at", :null => false
   end
 
   create_table "groups", :force => true do |t|
@@ -92,6 +101,15 @@ ActiveRecord::Schema.define(:version => 20100330213557) do
 
   add_index "page_permissions", ["page_id"], :name => "index_page_permissions_on_page_id"
 
+  create_table "page_permissions_histories", :force => true do |t|
+    t.integer  "page_id",    :null => false
+    t.integer  "user_id",    :null => false
+    t.integer  "group_id",   :null => false
+    t.integer  "role"
+    t.integer  "action"
+    t.datetime "created_at", :null => false
+  end
+
   create_table "pages", :force => true do |t|
     t.string  "title",     :null => false
     t.string  "sid"
@@ -105,6 +123,7 @@ ActiveRecord::Schema.define(:version => 20100330213557) do
   add_index "pages", ["parent_id", "sid"], :name => "index_pages_on_parent_id_and_sid"
 
   create_table "uploaded_files", :force => true do |t|
+    t.integer "user_id"
     t.string  "attachment_filename"
     t.integer "page_id",                                :null => false
     t.integer "current_file_version_id", :default => 0, :null => false

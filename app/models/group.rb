@@ -5,6 +5,8 @@ class Group < ActiveRecord::Base
 
   has_many :viewer_users, :through => :group_permissions, :class_name => 'User', :source => :user, :conditions => ['group_permissions.can_view = ?', true]
   has_many :editor_users, :through => :group_permissions, :class_name => 'User', :source => :user, :conditions => ['group_permissions.can_edit = ?', true]
+  has_many :group_permissions_histories, :dependent => :destroy
+  has_many :page_permissions_histories, :dependent => :destroy
 
   validates_presence_of :name
   validates_uniqueness_of :name

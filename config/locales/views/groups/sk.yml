@@ -23,3 +23,4 @@ sk:
   toggle: "Prepnúť právo"
   err_change_permission: "Nemôžeš zmeniť svoje vlastné práva"
   btn_create_group: "Vytvoriť"
+  group_history: "Môžes si pozrieť históriu práv pre túto skupinu kliknutím na"

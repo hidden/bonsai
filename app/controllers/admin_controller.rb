@@ -14,7 +14,7 @@ class AdminController < ApplicationController
                               :conditions => "username='#{params['add_user']['usernames']}'")
     else
        @users = User.paginate(:page => params[:page],
-                              :order => "#{(!params['order'].blank? and User.column_names.include? params['order']) ? params['order'] + ' ASC' : 'logtime DESC'}")
+                              :order => "#{(!params['order'].blank? and User.column_names.include? params['order']) ? params['order'] + ' ASC' : 'updated_at DESC'}")
 
     end
     respond_to do |format|
@@ -43,21 +43,9 @@ class AdminController < ApplicationController
     end
   end
 
+
   def verify_admin_rights
-    if !session[:admin]
-    # read id of admin group
-    #group_id = APP_CONFIG['administrators'].nil? ? nil:APP_CONFIG['administrators']['admin_group']
-    # control user
-    #if @current_user.logged? and !group_id.nil?
-    #  group=GroupPermission.find_by_sql("SELECT * FROM group_permissions g
-    #                                        WHERE g.id = '#{group_id}'
-    #                                        AND g.user_id = '#{@current_user.id}'
-    #                                        AND (g.can_view = 1 or g.can_edit = 1)")
-    #  if group.nil?
-    #    flash[:error] = t(:ad_account)
-    #    redirect_to session[:link_back].blank? ? '/' : session[:link_back]
-    #  end
-    #else
+    if !@current_user.verify_admin_right
         flash[:error] = t(:ad_account)
         redirect_to session[:link_back].blank? ? '/' : session[:link_back]
     end
