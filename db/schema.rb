@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100331191606) do
+ActiveRecord::Schema.define(:version => 20100406101921) do
 
   create_table "favorites", :force => true do |t|
     t.integer "user_id", :null => false
@@ -19,15 +19,15 @@ ActiveRecord::Schema.define(:version => 20100331191606) do
   add_index "favorites", ["user_id"], :name => "index_favorites_on_user_id"
 
   create_table "file_versions", :force => true do |t|
-    t.integer  "size"
-    t.string   "content_type"
-    t.string   "filename"
-    t.integer  "version",          :default => 1, :null => false
-    t.integer  "user_id",                         :null => false
-    t.integer  "uploaded_file_id",                :null => false
+    t.integer  "file_id",                     :null => false
+    t.integer  "uploader_id"
+    t.string   "content_type",                :null => false
+    t.integer  "size",                        :null => false
+    t.integer  "version",      :default => 1, :null => false
     t.datetime "created_at"
-    t.string   "md5"
   end
+
+  add_index "file_versions", ["file_id", "version"], :name => "index_file_versions_on_file_id_and_version", :unique => true
 
   create_table "group_permissions", :force => true do |t|
     t.integer "user_id",                     :null => false
@@ -123,9 +123,9 @@ ActiveRecord::Schema.define(:version => 20100331191606) do
   add_index "pages", ["parent_id", "sid"], :name => "index_pages_on_parent_id_and_sid"
 
   create_table "uploaded_files", :force => true do |t|
-    t.string  "attachment_filename"
-    t.integer "page_id",                                :null => false
-    t.integer "current_file_version_id", :default => 0, :null => false
+    t.string  "filename"
+    t.integer "page_id"
+    t.integer "current_file_version_id", :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -135,8 +135,8 @@ ActiveRecord::Schema.define(:version => 20100331191606) do
     t.string   "prefered_locale"
     t.datetime "last_dashboard_visit"
     t.boolean  "active",                             :default => true
-    t.datetime "regtime"
-    t.datetime "logtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "crypted_password"
     t.string   "salt"
   end
