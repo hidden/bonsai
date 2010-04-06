@@ -8,7 +8,10 @@ class PageController < ApplicationController
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
 
   def search
-    @search_results = Page.search params[:search_text], :conditions => {:page_ids => @current_user.find_all_accessible_pages}, :page => params[:page], :excerpts => true, :per_page => APP_CONFIG['fulltext_page_results']
+    @query = params[:q] 
+    @search_results = Page.search(@query,
+      :with => {:page_ids => @current_user.find_all_accessible_pages.collect(&:id)},
+      :page => params[:page])
   end
 
   def permissions_history
@@ -840,7 +843,7 @@ class PageController < ApplicationController
       path.pop
       page = Page.find_by_path(path)
     end
-    file = UploadedFile.find_by_attachment_filename_and_page_id(@path.last, page.id) unless page.nil?
+    file = UploadedFile.find_by_filename_and_page_id(@path.last, page.id) unless page.nil?
     if !@path.empty? and (@path.last.match(/[\w-]+\.\w+/) or (File.file?(Path::UP_HISTORY + '/' + @path.join('/'))) or (File.file?(Path::ANONYM_UPLOAD_PATH + '/' + @path.join('/')) or (!file.nil? && (File.file?(Path::UP_HISTORY + file.page.get_path  + file.current_file_version.filename)))))
       @page = page
       process_file unless ret

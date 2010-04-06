@@ -14,12 +14,15 @@ class Page < ActiveRecord::Base
   has_many :file_versions, :through => :uploaded_files
   has_many :page_permissions_histories, :dependent => :destroy
 
+  # TODO toto je zle
   named_scope :find_all_public, :joins => "LEFT JOIN page_permissions pp ON pages.id = pp.page_id AND pp.can_view = 1", :conditions => "pp.id IS NULL"
 
   define_index do
-    indexes page_parts_revisions.body, :as => :page_part_body
-    indexes page_parts.name, :as => :page_part_name
-    indexes pages.title, :as => :page_title
+    indexes :title
+    indexes page_parts.name, :as => :part_names
+    indexes page_parts.current_page_part_revision.body, :as => :content
+    where "was_deleted = 0"
+    set_property :field_weights => {:title => 10, :part_names => 5, :content => 2}
   end
 
   def get_subtree_ids_with_permissions page, user
