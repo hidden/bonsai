@@ -74,7 +74,7 @@ class Page < ActiveRecord::Base
 
   def resolve_layout
     node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
-    return (node_with_layout.nil? or node_with_layout.layout == 'default') ? 'application' : node_with_layout.layout
+    return (node_with_layout.nil?) ? 'default' : node_with_layout.layout
   end
 
   def resolve_part part_name

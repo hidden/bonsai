@@ -450,16 +450,26 @@ class PageController < ApplicationController
     end
   end
 
+  def remove_pages_from_cache
+
+    pages = Page.find_by_sql(["select id from pages where lft >= ? and rgt <= ?", @page.lft, @page.rgt])
+    pages.each do |page|
+      expire_fragment(page.id)
+    end
+  end
 
   def save_edit
+
     if params['commit'].eql?('Preview')
       generate_preview
       return
     end
+
     if params[:parts].nil?
       unprivileged
       return
     end
+
     @error_flash_msg = ""
     @notice_flash_msg = ""
     @managers = 0;
@@ -538,19 +548,28 @@ class PageController < ApplicationController
 
     update
 
+    remove_pages_from_cache
+
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty?
     redirect_to @page.get_path
   end
 
   def update
+
     @num_of_changed_page_parts = 0
-    @page.title = params[:title]
-    if @current_user.can_manage_page? @page
+
+    if @page.title != params[:title]
+
+      @page.title = params[:title]
+    end
+    if((@current_user.can_manage_page? @page) and @page.layout != params[:layout])
       @page.layout = params[:layout].empty? ? nil : params[:layout]
     end
 
     @page.save
+
+
     params[:parts].each do |part_name, body|
 
       page_part = PagePart.find_by_name_and_page_id(part_name, @page.id)

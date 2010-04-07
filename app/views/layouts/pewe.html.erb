@@ -1,24 +1,28 @@
-<%= render :partial => 'shared/header' %>
+ <%= render :partial => 'shared/header' %>
 <%= render :partial => 'shared/notice' %>
 
-<div id="pewe-holder">
-  <div id="container">
-    <div id="caption"><%= markdown(@page.resolve_part('caption')) %></div>
-    <div id="nav"><%= markdown(@page.resolve_part('navigation')) %></div>
-    <div id="content">
-      <div id="c2">
-        <%= markdown(@page.resolve_part('body')) %>
-        <% for part in @page.page_parts %>        
-            <% unless part.current_page_part_revision.was_deleted or @page.layout_parts.include?(part.name) %>
-                <div id="part-<%= part.name.parameterize %>">
-                  <%= markdown(part.current_page_part_revision.body) %>
-                </div>
+ <% cache(@page.id) do %>
+    <div id="pewe-holder">
+      <div id="container">
+        <div id="caption"><%= markdown(@page.resolve_part('caption')) %></div>
+        <div id="nav"><%= markdown(@page.resolve_part('navigation')) %></div>
+        <div id="content">
+          <div id="c2">
+            <%= markdown(@page.resolve_part('body')) %>
+            <% for part in @page.page_parts %>
+                <% unless part.current_page_part_revision.was_deleted or @page.layout_parts.include?(part.name) %>
+                    <div id="part-<%= part.name.parameterize %>">
+                      <%= markdown(part.current_page_part_revision.body) %>
+                    </div>
+                <% end %>
             <% end %>
-        <% end %>
+          </div>
+        </div>
+        <div id="footer"><%= markdown(@page.resolve_part('footer')) %></div>
       </div>
     </div>
-    <div id="footer"><%= markdown(@page.resolve_part('footer')) %></div>
-  </div>
-</div>
+<% end %>
 
 <%= render :partial => 'shared/footer' %>
+
+
