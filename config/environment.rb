@@ -42,6 +42,7 @@ Rails::Initializer.run do |config|
   config.gem 'whenever'
   config.gem 'will_paginate', :version => '>=2.3.11'
   config.gem 'thinking-sphinx', :lib => 'thinking_sphinx', :version => '>=1.2'
+  config.gem 'hoptoad_notifier'
 
   # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.
