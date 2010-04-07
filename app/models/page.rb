@@ -10,8 +10,7 @@ class Page < ActiveRecord::Base
   has_many :editor_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_edit = ?', true]
   has_many :manager_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_manage = ?', true]
 
-  has_many :uploaded_files, :dependent => :destroy
-  has_many :file_versions, :through => :uploaded_files
+  has_many :uploaded_files, :dependent => :destroy  
   has_many :page_permissions_histories, :dependent => :destroy
 
   # TODO toto je zle
