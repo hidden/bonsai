@@ -62,7 +62,7 @@ body {
     font-size:14px;
     height:27px;
     background: url('../images/bonsai/flash_bg.png') repeat-x left top;
-    
+
 }
 
 #flash.notice {
@@ -442,7 +442,7 @@ ul#menu li ul li.small{
     padding:0px;
     margin:0px;
 }
-  
+
 /* telo inputy */
 
 .header_content input[type="text"]#title, .header_content input[type="text"]:focus#title{
@@ -480,6 +480,18 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
     border: 1px solid #dcdcdc;
     margin: 3px 0;
 }
+.page_part_listing input[type="text"], .page_part_listing input[type="text"]:focus{
+    border:none;
+    background: none;
+    padding:3px 3px;
+    float:left;
+    font-size:16px;
+    font-weight:bold;
+    color: #404040;
+    height:18px;
+    min-width:50%;
+}
+
 
 .page_part_edit_remove_link{
     float:right;
@@ -602,7 +614,7 @@ input[type="submit"].small_button{
     color:#bababa;
     padding: 10px  20px;
     margin-right:400px;
-	position:relative;
+    position:relative;
 }
 .breadcrumb a{
     color: #3886c9;
@@ -643,7 +655,7 @@ table.history  tr td{
     color:#727272;
     font-size:14px;
     border:none;
-    
+
 }
 
 table.history a img{
@@ -675,7 +687,7 @@ h2.dashboard, h3.favourites_title{
 }
 h3.favourites_title{
     color: #0c6ec2;
-    
+
 }
 .DashboardTree #user, #time {
     font-weight:bold;

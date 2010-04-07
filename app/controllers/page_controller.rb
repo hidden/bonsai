@@ -451,8 +451,8 @@ class PageController < ApplicationController
   end
 
   def remove_pages_from_cache
+    pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?", @page.lft, @page.rgt])
 
-    pages = Page.find_by_sql(["select id from pages where lft >= ? and rgt <= ?", @page.lft, @page.rgt])
     pages.each do |page|
       expire_fragment(page.id)
     end

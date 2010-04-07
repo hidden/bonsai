@@ -176,7 +176,8 @@
           <% if @undo or !part.current_page_part_revision.was_deleted %>
               <div id="page_part_id_<%= part.id %>" style="width:100%">
                 <div class="page_part_listing" style="width:50%">
-                  <span><%= part.name %></span>
+
+                  <%= text_field_tag("parts_name[#{part.name}]", part.name) %>
                   <% if @page.page_parts.count > 1 %>
                   <div class="page_part_edit_remove_link">
                     <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
@@ -206,9 +207,7 @@
 
                   <% end %>
                   <%= render :partial => 'maruku_help' %>
-                  <p>
-                    <%= label_tag "parts_name[#{part.name}]", t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
-                  </p>
+                 
                 </div>
               </div>
           <% end %>
