@@ -249,7 +249,7 @@ class PageController < ApplicationController
     @filename = parent_page_path.pop
     @page = Page.find_by_path(parent_page_path)
 
-    # TODO move check to filter
+    return render(:action => :file_not_found) if @page.nil?    
     return render(:action => :unprivileged) if !@current_user.can_view_page? @page
 
     @file = @page.uploaded_files.find_by_filename(@filename)
@@ -365,13 +365,13 @@ class PageController < ApplicationController
   end
 
   def rss_history
-    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "created_at DESC")
+    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "page_part_revisions.created_at DESC")
     @revision_count = @page.page_parts_revisions.count
     render :action => :rss_history, :layout => false
   end
 
   def rss_subtree_history
-    @recent_revisions = PagePartRevision.find(:all, :include => [:page_part, :user], :conditions => ["page_parts.page_id IN (?)", @page.get_subtree_ids_with_permissions(@page, @current_user)], :limit => 10, :order => "created_at DESC")
+    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id IN (?)", @page.get_subtree_ids_with_permissions(@page, @current_user)], :limit => 10, :order => "page_part_revisions.created_at DESC")
     @revision_count = @page.page_parts_revisions.count
     render :action => :rss_subtree_history, :layout => false
   end
@@ -492,10 +492,7 @@ class PageController < ApplicationController
       end
     end
 
-    if not params[:file_version].nil?
-      upload
-    end
-
+    upload unless params[:file_version][:uploaded_data].blank?
 
     if not (params[:new_page_part_name].empty? and params[:new_page_part_text].empty?)
       new_part
@@ -740,6 +737,7 @@ class PageController < ApplicationController
   end
 
   def is_file(path)
+    return false if path.empty?
     parent_path = path.clone
     filename = parent_path.pop
     return true if filename.include?('.')
