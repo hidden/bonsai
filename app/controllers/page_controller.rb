@@ -125,7 +125,7 @@ class PageController < ApplicationController
     if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_public
-        permission.can_edit = was_public if was_public
+        #permission.can_edit = was_public if was_public
         #TODO: if the @page has some public descendants, we should spread the switch to them as well
         permission.save
       end
@@ -490,11 +490,11 @@ class PageController < ApplicationController
             @managers -= 1
           else
             if @page.is_public? && params[:permission] == "1"
-              if @page.can_manage? && @managers >= 2
+              if permission.can_manage? && @managers >= 2
                 @page.remove_manager(permission.group)
                 @managers -= 1
               end
-              if @page.can_edit?
+              if permission.can_edit?
                 @page.remove_editor(permission.group)
               end
             end
@@ -518,10 +518,9 @@ class PageController < ApplicationController
         if params[:everyone_select] == "-"
           if @page.is_editable?
             switch_editable
-          else
-            if  @page.is_public?
-              switch_public
-            end
+          end
+          if  @page.is_public?
+            switch_public
           end
         end
       end
