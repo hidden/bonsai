@@ -10,33 +10,18 @@ class Page < ActiveRecord::Base
   has_many :editor_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_edit = ?', true]
   has_many :manager_groups, :through => :page_permissions, :class_name => 'Group', :source => :group, :conditions => ['page_permissions.can_manage = ?', true]
 
-  has_many :uploaded_files, :dependent => :destroy
-  has_many :file_versions, :through => :uploaded_files
+  has_many :uploaded_files, :dependent => :destroy  
   has_many :page_permissions_histories, :dependent => :destroy
 
+  # TODO toto je zle
   named_scope :find_all_public, :joins => "LEFT JOIN page_permissions pp ON pages.id = pp.page_id AND pp.can_view = 1", :conditions => "pp.id IS NULL"
 
   define_index do
-    indexes page_parts_revisions.body, :as => :page_part_body
-    indexes page_parts.name, :as => :page_part_name
-    indexes pages.title, :as => :page_title
-  end
-
-  def get_subtree_ids_with_permissions page, user
-    Page.find_by_sql("(SELECT  p.id FROM pages p
-		              left join (
-                      select page_id,
-                             count(can_view) sum_can_view,
-                             count(can_edit) sum_can_edit
-                      from page_permissions group by page_id) w on w.page_id=p.id
-                      left join page_permissions a on a.page_id=p.id and (sum_can_view!=0 or sum_can_edit!=0)
-                      left join groups q
-                      ON q.id = a.group_id and q.id='#{user.id}' and (a.can_view=1 or a.can_edit=1 or a.can_manage=1)
-                      where (p.lft BETWEEN #{page.lft} AND #{page.rgt})
-                      and ((sum_can_view=0 and sum_can_edit=0)or (q.id is not null))
-                      order by p.lft) union (select p.id from pages p
-                      left join page_permissions pp on p.id=pp.page_id and pp.can_view = 1
-                      where pp.id is null and (p.lft BETWEEN #{page.lft} AND #{page.rgt}))")
+    indexes :title
+    indexes page_parts.name, :as => :part_names
+    indexes page_parts.current_page_part_revision.body, :as => :content
+    where "was_deleted = 0"
+    set_property :field_weights => {:title => 10, :part_names => 5, :content => 2}
   end
 
   def self.find_by_path path

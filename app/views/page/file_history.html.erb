@@ -1,15 +1,14 @@
-<% file = UploadedFile.find_by_attachment_filename_and_page_id(params[:path].last, @page.id) %>
 <div class="holder_right">
   <div class="header">
     <div class="header_content">
-     <span class="subtitle"><%= t(:file_history) %></span> <h1><% unless file.nil? %> <%= (@page.file_versions(file))[0].uploaded_file.attachment_filename %><% end %></h1>
+     <span class="subtitle"><%= t(:file_history) %></span> <h1><%= @file.filename %></h1>
     </div>
     <div class="header_right">
     </div>
   </div>
   <div class="main_content">
 
-    <% if file.nil? %>
+    <% if @file.versions.size < 2 %>
         <%= t(:file_history_not_exist) %>
         <p>
           <%= link_to t(:back), list_files_path(@page) %>
@@ -19,7 +18,6 @@
           <thead>
           <tr>
             <th></th>
-            <th><%= t(:file) %></th>
             <th><%= t(:version) %></th>
             <th><%= t(:uploader) %></th>
             <th><%= t(:size) %></th>
@@ -27,17 +25,13 @@
           </tr>
           </thead>
           <tbody>
-          <% for version in @page.file_versions(file) %>
+          <% for version in @file.versions %>
               <tr>
-                <td><%= file_type_image_tag(version) %></td>
-                <td><%= link_to version.uploaded_file.attachment_filename, version.uploaded_file.attachment_filename + '?version=' + version.version.to_s() %></td> <%#version.filename%>
-                <td><%= version.version %></td>
-                <td>
-                  <% if version.user.nil? %><%= t(:unknown) %>
-                      <% else %><%= h version.user.full_name %>
-                  <% end %></td>
-                <td><%#= number_to_human_size(version.size, :precision => 2) %></td>
-                <td><%= version.created_at.localtime.strftime("%H:%M:%S %d %b %Y") %></td>
+                <td><%= file_type_image_tag(@file) %></td>
+                <td><%= link_to "Version #{version.version}", @file.filename + '?version=' + version.version.to_s %></td>
+                <td><% if version.uploader.nil? %><%= t(:unknown) %><% else %><%= h version.uploader.full_name %><% end %></td>
+                <td><%= number_to_human_size(version.size) %></td>
+                <td><%= version.created_at.strftime("%H:%M:%S %d %b %Y") %></td>
               </tr>
           <% end %>
           </tbody>
