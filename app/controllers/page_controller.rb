@@ -6,6 +6,7 @@ class PageController < ApplicationController
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
+  around_filter :rss_view_check, :only => [:rss, :rss_tree]
 
   def search
     @query = params[:q]
@@ -17,32 +18,10 @@ class PageController < ApplicationController
   end
 
   def permissions_history
-    #@permissions_history = PagePermissionsHistory.find_all_by_page_id(@page.id, :joins => "JOIN users u ON u.id = user_id JOIN pages p ON p.id = page_id")
-    #@permissions_history = PagePermissionsHistory.find_all_by_page_id(@page.id)
-    @permissions_history = PagePermissionsHistory.paginate( :all, :conditions => "page_id='#{@page.id}'", :include => [:user, :group], :per_page => 20, :page => params[:page], :order => 'created_at DESC')
+    @permissions_history = PagePermissionsHistory.paginate( :all, :conditions => {:page_id => @page.id}, :include => [:user, :group], :per_page => 20, :page => params[:page], :order => 'id DESC')
     @no_toolbar = true
   end
-
-  def rss
-    user_from_token = User.find_by_token params[:token]
-    user_from_token = AnonymousUser.new(session) if user_from_token.nil?
-    if user_from_token.can_view_page? @page
-      rss_history
-    else
-      render :nothing => true, :status => :forbidden
-    end
-  end
-
-  def rss_subtree
-    user_from_token = User.find_by_token params[:token]
-    user_from_token = AnonymousUser.new(session) if user_from_token.nil?
-    if user_from_token.can_view_page? @page
-      rss_subtree_history
-    else
-      render :nothing => true, :status => :forbidden
-    end
-  end
-
+  
   def view
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
@@ -56,6 +35,7 @@ class PageController < ApplicationController
 
   def history
     if is_file(@path)
+      @file = @page.uploaded_files.find_by_filename(@path.last)
       render :action => :file_history
     else
       render :action => :show_history
@@ -249,7 +229,7 @@ class PageController < ApplicationController
     @filename = parent_page_path.pop
     @page = Page.find_by_path(parent_page_path)
 
-    return render(:action => :file_not_found) if @page.nil?    
+    return render(:action => :file_not_found) if @page.nil?
     return render(:action => :unprivileged) if !@current_user.can_view_page? @page
 
     @file = @page.uploaded_files.find_by_filename(@filename)
@@ -260,8 +240,9 @@ class PageController < ApplicationController
     if params.include?(:upload) then
       upload and return
     end
-    
-    send_file(file_version.filename_with_path_and_version, :type => file_version.content_type, :disposition => 'inline')
+    opts = {:type => file_version.content_type, :disposition => 'inline'}
+    opts[:filename] = @file.filename if @file.current_file_version == file_version
+    send_file(file_version.filename_with_path_and_version, opts)
   end
 
   def parent_layout
@@ -361,19 +342,17 @@ class PageController < ApplicationController
     end
   end
 
-  def show_history
+  def rss
+    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "page_part_revisions.id DESC")
+    @revision_count = @page.page_parts_revisions.count
+    render :layout => false
   end
 
-  def rss_history
-    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "page_part_revisions.created_at DESC")
+  def rss_tree
+    ids =  @current_user.find_all_accessible_pages.collect(&:id)
+    @recent_revisions = PagePartRevision.all(:joins => [{:page_part => :page}, :user], :conditions => ["page_parts.page_id IN (?) AND pages.lft >= ? AND pages.rgt <= ?", ids, @page.lft, @page.rgt], :limit => 10, :order => "page_part_revisions.id DESC")
     @revision_count = @page.page_parts_revisions.count
-    render :action => :rss_history, :layout => false
-  end
-
-  def rss_subtree_history
-    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id IN (?)", @page.get_subtree_ids_with_permissions(@page, @current_user)], :limit => 10, :order => "page_part_revisions.created_at DESC")
-    @revision_count = @page.page_parts_revisions.count
-    render :action => :rss_subtree_history, :layout => false
+    render :layout => false
   end
 
   def edit
@@ -492,12 +471,17 @@ class PageController < ApplicationController
       end
     end
 
-    upload unless params[:file_version][:uploaded_data].blank?
+    # TODO refactor
+    unless params[:file_version][:uploaded_data].blank?
+      tmp_file = params[:file_version][:uploaded_data]
+      filename = File.basename(tmp_file.original_filename)
+      do_upload(tmp_file, filename)
+      @notice_flash_msg = t('file_uploaded')
+    end
 
     if not (params[:new_page_part_name].empty? and params[:new_page_part_text].empty?)
       new_part
     end
-
 
     update
 
@@ -588,7 +572,7 @@ class PageController < ApplicationController
         flash[:error] = error_message
         render :action => :edit
       else
-        @error_flash_msg = @error_flash_msg + error_message + "\r\n"
+        @error_flash_msg += error_message + "\r\n"
       end
       return true
     end
@@ -600,27 +584,43 @@ class PageController < ApplicationController
       flash[:notice] = t(:page_part_added)
       redirect_to edit_page_path(@page)
     else
-      @notice_flash_msg = @notice_flash_msg + t(:page_part_added) + "\r\n"
+      @notice_flash_msg += t(:page_part_added) + "\r\n"
     end
   end
 
   def upload
-    # @name = params[:uploaded_file_filename] # @name - ako sa subor musi volat pri file not found, inak nil
-
-    # TODO refactor
+    @notice_flash_msg = "" if @notice_flash_msg.blank?
     tmp_file = params[:file_version][:uploaded_data]
     filename = File.basename(tmp_file.original_filename)
+    target_filename = params[:uploaded_file_filename]
+    if !target_filename.blank? and (File.extname(filename) != File.extname(target_filename))
+      @notice_flash_msg += t('file_not_match') + "\r\n"
+    else
+      filename = target_filename unless target_filename.blank?
+      do_upload(tmp_file, filename)
+      @notice_flash_msg += t('file_uploaded') + "\r\n"
+    end
+    flash[:notice] = @notice_flash_msg
+    redirect_to list_files_path(@page)
+  end
+
+  def do_upload(tmp_file, filename)
+    unless @page.children.find_by_sid(filename).nil?
+      flash[:error] = t('same_as_page')
+      return
+    end
+    # TODO move somewhere else
     file = @page.uploaded_files.find_or_initialize_by_filename(filename)
     file.page = @page
     version = file.versions.build
     version.file = file
     version.content_type = tmp_file.content_type
     version.size = File.size(tmp_file.local_path)
-    version.uploader = @current_user 
+    version.uploader = @current_user
     version.version = file.versions.count + 1
     target = version.filename_with_path_and_version
     folder = File.dirname(target)
-    Dir.mkdir(folder) unless File.exists?(folder)
+    FileUtils.mkdir_p(folder) unless File.exists?(folder)
     FileUtils.copy(tmp_file.local_path, target)
     file.current_file_version_id = 0
     version.save!
@@ -721,8 +721,23 @@ class PageController < ApplicationController
   end
 
   def can_view_page_check
-    unprivileged unless (!@page.nil? || is_file(@path)) && @current_user.can_view_page?(@page)
+    if is_file(@path)
+      parent_path = @path.clone
+      parent_path.pop
+      @page = Page.find_by_path(parent_path)
+    end
+    unprivileged unless !@page.nil? && @current_user.can_view_page?(@page)
   end
+
+  def rss_view_check
+    user_from_token = User.find_by_token params[:token]
+    user_from_token = AnonymousUser.new(session) if user_from_token.nil?
+    if user_from_token.can_view_page? @page
+      yield
+    else
+      render :nothing => true, :status => :forbidden
+    end
+  end  
 
   def slash_check
     link = request.env['PATH_INFO']

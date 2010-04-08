@@ -217,8 +217,8 @@ Feature: Secure file uploads
     Then I should see "File was successfully uploaded."
     When I follow "files"
     And I follow "show file's history"
-    Then I should see "readme 1 user"
-    And I should see "readme 2 bio"
+    Then I should see "Version 1 user"
+    And I should see "Version 2 bio"
     When I go to /readme?version=1
     Then I should see "Some text in file."
     When I go to /readme?version=2
