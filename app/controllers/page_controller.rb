@@ -338,7 +338,7 @@ class PageController < ApplicationController
         page_part.current_page_part_revision = first_revision
         page_part.save!
       end
-      redirect_to page.get_path
+      redirect_to page_path(page)
     end
   end
 
@@ -471,7 +471,7 @@ class PageController < ApplicationController
     end
 
     # TODO refactor
-    unless params[:file_version][:uploaded_data].blank?
+    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?
       tmp_file = params[:file_version][:uploaded_data]
       filename = File.basename(tmp_file.original_filename)
       do_upload(tmp_file, filename)
@@ -486,7 +486,7 @@ class PageController < ApplicationController
 
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty?
-    redirect_to @page.get_path
+    redirect_to page_path(@page)
   end
 
   def update
@@ -555,7 +555,7 @@ class PageController < ApplicationController
     end
     if params[:non_redirect].nil?
       flash[:notice] = notice
-      redirect_to @page.get_path
+      redirect_to page_path(@page)
     else
       @notice_flash_msg = @notice_flash_msg + notice + "\r\n"
     end
@@ -641,7 +641,7 @@ class PageController < ApplicationController
           page.replace_html 'favorite', :partial => 'shared/favorite'
         end
       end
-      format.html { redirect_to @page.get_path }
+      format.html { redirect_to page_path(@page) }
     end
   end
 
