@@ -244,7 +244,7 @@
     <!-- FILES -->
     <h3><%= t(:files) %></h3>
     <div class="files lighter_bg">
-      <% if @page.files.empty? then %>
+      <% if @page.uploaded_files.empty? then %>
           <%= t(:no_files_uploaded) %>
       <% else %>
           <table class="files_history" style="width:250px;">
@@ -256,28 +256,21 @@
             </tr>
             </thead>
             <tbody>
-            <% for file in @page.files %>
+            <% for file in @page.uploaded_files %>
                 <tr>
                   <% if (not file.current_file_version.nil?) %>
-                      <td style="width:20px"><%= file_type_image_tag(file.current_file_version) %></td>
-                      <td style="width:220px"><%=
-                          if file.attachment_filename.length > 23
-                              link_to file.attachment_filename[0,23], file.attachment_filename
-                          else
-                              link_to file.attachment_filename, file.attachment_filename
-                          end
-                      %>
-                      </td>
+                      <td style="width:20px"><%= file_type_image_tag(file) %></td>
+                      <td style="width:220px"><%= link_to truncate(file.filename), file.filename, :title => file.filename %></td>
                       <td style="text-align:center">
-                        <% if (file.file_versions.length > 1) %>
-                            <%= link_to icon_tag('file_rev.png', :alt => 'show file\'s history'), file_history_page_path(@page, file.attachment_filename) %>
+                        <% if (file.versions.length > 1) %>
+                            <%= link_to icon_tag('file_rev.png', :alt => 'show file\'s history'), file_history_page_path(@page, file.filename) %>
                         <% else %>
                             <%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %>
                         <% end %>
                       </td>
                   <% else %>
                       <td style="width:20px"><%= file_type_image_tag(file) %></td>
-                      <td style="width:220px"><%= link_to file.attachment_filename, file.attachment_filename %></td>
+                      <td style="width:220px"><%= link_to file.filename, file.filename %></td>
                       <td style="text-align:center"><%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %></td>
                   <% end %>
                 </tr>

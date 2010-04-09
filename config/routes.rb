@@ -10,12 +10,7 @@ ActionController::Routing::Routes.draw do |map|
                 :member => {:activate => :put, :deactivate => :put},
                 :collection => { :autocomplete_for_user => :get}
   map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
-  map.resources :groups, :member => {:permissions_history => :get, :permissions_history => :get}
-  map.resources :pages do |page|
-    page.resources :page_parts do |page_part|
-      page_part.resources :page_part_revisions
-    end
-  end
+  map.resources :groups, :member => {:permissions_history => :get, :permissions_history => :get}  
 
   map.search 'admin/search', :controller => 'admin', :action => 'index'
 

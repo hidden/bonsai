@@ -34,4 +34,8 @@ class AnonymousUser
   def verify_admin_right
     return false
   end
+
+  def find_all_accessible_pages
+    Page.find_all_public
+  end
 end
