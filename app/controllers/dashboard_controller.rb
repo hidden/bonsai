@@ -12,20 +12,20 @@ class DashboardController < ApplicationController
     session[:toggle_text] = t(:show_older) if session[:toggle_text].nil?
     session[:toggle_text] == t(:show_older) ? all = false : all = true
     @news = get_news(all)
+    get_groups(all)
+    get_pages(all)
     @current_user.last_dashboard_visit = DateTime.now
     @current_user.save
+    @news = @news.paginate(:page => params[:page], :per_page => 10)
     render :action => :dashboard
   end
 
   def toggle_news
-    session[:toggle_text] == t(:show_older) ? begin
-      session[:toggle_text] = t(:show_latest)
-      all = true
-    end : begin
-      session[:toggle_text] = t(:show_older)
-      all = false
-    end
-    @news = get_news(all)
+    session[:toggle_text] == t(:show_older) ? session[:toggle_text] = t(:show_latest) : session[:toggle_text] = t(:show_older)
+#    @news = get_news(all)
+#    get_groups(all)
+#    get_pages(all)
+#    @news = @news.paginate(:page => params[:page], :per_page => 10)
     respond_to do |format|
       format.js do
         render :update do |page|
@@ -67,21 +67,51 @@ class DashboardController < ApplicationController
     for favorite in @current_user.favorite_pages
       index = 0
       favorite.page_parts_revisions.each do |revision|
-        if (!revision.is_newer?(session[:last_visit]) && !all) || (index > 10 && all) 
+        if (!revision.is_newer?(session[:last_visit]) && !all) || (index > 10 && all)
           break
         end
         change['when'] = revision.created_at
         change['who'] = revision.user.username
         change['what'] = revision.page_part.name
         change['revision'] = index.to_s()
-        change['page_id'] = favorite.id
+        change['page'] = Page.find_by_id(favorite.id)
+        change['type'] = 0
         push_sorted(news, change.clone)
         #news = news[0..9]
         index += 1
       end
     end
     news = reorder_news(news)
-    news.paginate(:page => params[:page], :per_page => 3)
+    #news.paginate(:page => params[:page], :per_page => 10)
+  end
+
+  def get_groups(all = false)
+    permissions_history = GroupPermissionsHistory.find_all_by_user_id(@current_user)
+    index = 0
+    for record in permissions_history
+      if (!record.is_newer?(session[:last_visit]) && !all) || (index > 10 && all)
+        break
+      end
+      record['when'] = record.created_at
+      record['type'] = 1
+      push_sorted(@news, record.clone)
+      index += 1
+    end
+  end
+
+  def get_pages(all = false)
+    permissions_history = PagePermissionsHistory.find_all_by_group_id(@current_user.groups)
+    index = 0
+    for record in permissions_history
+      if (!record.is_newer?(session[:last_visit]) && !all) || (index > 10 && all)
+        break
+      end
+      next if record.user_id == @current_user.id
+      record['when'] = record.created_at
+      record['type'] = 2
+      push_sorted(@news, record.clone)
+      index += 1
+    end
   end
 
   def push_sorted(news, rec)

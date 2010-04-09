@@ -132,7 +132,7 @@ body {
     margin: 0 0 20px 10px;
 }
 
-.DashboardTree #user, #time {
+.DashboardTree #user, #time, #editor, #role, #group {
     font-weight:bold;
 }
 

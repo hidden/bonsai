@@ -126,6 +126,11 @@ en:
   link: "link"
   perm_history_title: "Permission history for:"
   set_action: "set"
+  set_you: "set you"
+  as: "as"
+  for_group: "for group"
+  for_page: "for page"
   remove_action: "removed"
+  removed_you: "removed you"
   manager_error: "You cannot delete permission, there must be at least one manager."
       
