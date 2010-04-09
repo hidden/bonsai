@@ -79,30 +79,6 @@ class Page < ActiveRecord::Base
     return page_parts
   end
 
-  def files
-    path = Path::UP_HISTORY + get_path
-    entries = []  #entries - vsetky subory co su v adresari upload_history pre page
-    files_without_db_entries = []  #files_without_db_entries - vsetky subory co su v adresari upload pre page
-    entries = Dir.entries(path).select {|file| File.file?(path + file) } if File.directory?(path)
-    uploaded = uploaded_files.select {|file| entries.include?(file.current_file_version.filename)}
-
-    anonym_path = Path::ANONYM_UPLOAD_PATH + get_path
-    files_without_db_entries = Dir.entries(anonym_path).select {|file| File.file?(anonym_path + file) } if File.directory?(anonym_path)
-    anonym_files = files_without_db_entries.collect do |file|
-      UploadedFile.new(:attachment_filename => file, :page_id => self.id) unless uploaded_files.collect(&:attachment_filename).include?(file)
-    end
-
-    (anonym_files.compact + uploaded).uniq.sort_by(&:attachment_filename)
-  end
-
-  def file_versions(file)
-    if ((not file.nil?) and (file.page == self))
-      file.file_versions
-    else
-      file = nil
-    end
-  end
-
   def add_viewer group
     if self.viewer_groups.empty?
       self.page_permissions.each do |permission|
