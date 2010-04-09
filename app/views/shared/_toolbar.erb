@@ -11,7 +11,7 @@
           <% end %>
           <% unless @page.nil? || @no_toolbar %>
               <% unless @hide_view_in_toolbar %>
-                  <%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t(:view), view_page_path(@page) %>
+                  <%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t(:view), page_path(@page) %>
               <% end %>
               <% if @current_user.logged? %>
                   <%= render :partial => 'shared/favorite' %>

@@ -1,8 +1,7 @@
 <span id="news_content">
 <div class="main_content">
   <h2 class="dashboard"><%= @news.length > 0 ? t(:news) : t(:no_news) %> &nbsp;
-    <span style="font-size:12px;">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>
-      )</span></h2>
+    <span class="small_link">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>)</span></h2>
   <ul class="DashboardTree">
     <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
     <% action = Array.[](t(:set_you), t(:removed_you)) %>
@@ -22,7 +21,7 @@
             &nbsp; <%= link_to t(:show_from), record['page'].get_path + ";revision?revision=" + record['revision'] %>
             <br/>
             <% if not record['nested'].nil? %>
-                <ul style="display:none;">
+                <ul class="hidden" style="display:none;">
                   <% for nested_record in record['nested'] %>
                       <li>
                         <span id="user"><%= nested_record['who'] %></span> <%= t(:edited) %> <%= nested_record['what'] %>
@@ -66,7 +65,7 @@
         <% end %>
     <% end %>
   </ul>
-  <%= will_paginate @news, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label"), :style => 'position:relative; top:60%; left:100%; background:none;' %>
+  <%= will_paginate @news, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
 </div>
 </span>
 

@@ -134,11 +134,11 @@ class DashboardController < ApplicationController
     nested_counter = 0
     succ = 1
     for record in news
-      if previous >= 0 && !news[previous].nil? && (record['who'].eql?(news[previous]['who']) && record['page_id'].eql?(news[previous]['page_id']))
+      if previous >= 0 && !news[previous].nil? && (record['who'].eql?(news[previous]['who']) && record['page'].id.eql?(news[previous]['page'].id))
         nested[nested_counter] = record.clone
         nested_counter += 1
       else
-        if !news[succ].nil? && (record['who'].eql?(news[succ]['who']) && record['page_id'].eql?(news[succ]['page_id']))
+        if !news[succ].nil? && (record['who'].eql?(news[succ]['who']) && record['page'].id.eql?(news[succ]['page'].id))
           ret_news[index] = record.clone
           nested = Array.new
           nested_counter = 0

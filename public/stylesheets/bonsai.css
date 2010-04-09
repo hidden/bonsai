@@ -356,7 +356,7 @@ ul#menu li ul li.small{
 .holder_right_dark{
     background: url('../images/bonsai/right_shadow.png') repeat-y right;
     float:right;
-    padding:0px;
+    padding:0 0 20px;
     margin:0px;
     width:100%;
 }
@@ -667,7 +667,13 @@ input[type="submit"].large_button{
 /*dashboard */
 .favourite_content{
     position:absolute;
-    top:120px;
+    top:120px;  
+}
+.pagination{
+    position:relative;
+    top:160%;
+    left:100%;
+    background:none;
 }
 h2.dashboard, h3.favourites_title{
     background:none;
@@ -676,6 +682,13 @@ h2.dashboard, h3.favourites_title{
 h3.favourites_title{
     color: #0c6ec2;
     
+}
+.small_link{
+    font-size:12px;
+}
+UL.hidden{
+    position:relative;
+    right:30px
 }
 .DashboardTree #user, #time {
     font-weight:bold;

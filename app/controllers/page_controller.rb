@@ -21,7 +21,7 @@ class PageController < ApplicationController
     @permissions_history = PagePermissionsHistory.paginate( :all, :conditions => {:page_id => @page.id}, :include => [:user, :group], :per_page => 20, :page => params[:page], :order => 'id DESC')
     @no_toolbar = true
   end
-  
+
   def view
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
@@ -475,7 +475,6 @@ class PageController < ApplicationController
       tmp_file = params[:file_version][:uploaded_data]
       filename = File.basename(tmp_file.original_filename)
       do_upload(tmp_file, filename)
-      @notice_flash_msg = t('file_uploaded')
     end
 
     if not (params[:new_page_part_name].empty? and params[:new_page_part_text].empty?)
@@ -485,7 +484,7 @@ class PageController < ApplicationController
     update
 
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
-    flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty?
+    flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
     redirect_to page_path(@page)
   end
 
@@ -589,23 +588,24 @@ class PageController < ApplicationController
 
   def upload
     @notice_flash_msg = "" if @notice_flash_msg.blank?
+    @error_flash_msg = "" if @error_flash_msg.blank?
     tmp_file = params[:file_version][:uploaded_data]
     filename = File.basename(tmp_file.original_filename)
     target_filename = params[:uploaded_file_filename]
     if !target_filename.blank? and (File.extname(filename) != File.extname(target_filename))
-      @notice_flash_msg += t('file_not_match') + "\r\n"
+      @error_flash_msg += t('file_not_match') + "\r\n"
     else
       filename = target_filename unless target_filename.blank?
       do_upload(tmp_file, filename)
-      @notice_flash_msg += t('file_uploaded') + "\r\n"
     end
-    flash[:notice] = @notice_flash_msg
+    flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
+    flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
     redirect_to list_files_path(@page)
   end
 
   def do_upload(tmp_file, filename)
     unless @page.children.find_by_sid(filename).nil?
-      flash[:error] = t('same_as_page')
+      @error_flash_msg += t('same_as_page') + "\r\n"
       return
     end
     # TODO move somewhere else
@@ -625,6 +625,7 @@ class PageController < ApplicationController
     version.save!
     file.current_file_version = version
     file.save!
+    @notice_flash_msg += t('file_uploaded') + "\r\n"
   end
 
   def toggle_favorite
@@ -665,7 +666,6 @@ class PageController < ApplicationController
     parent = nil
     unless params[:parent_id].blank?
       parent = Page.find_by_id(params[:parent_id])
-      # TODO check if exists
     end
 
     if ((!parent.nil? && !(@current_user.can_edit_page? parent)) || params[:title].nil?)
@@ -685,24 +685,33 @@ class PageController < ApplicationController
       end
       @page.layout = layout
       params[:body].nil? ? params[:parts].each do |name, body|
-        page_part = @page.page_parts.build(:name => name, :current_page_part_revision_id => 0)
-        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => body, :was_deleted => false)
-        page_part.current_page_part_revision = first_revision
+        build_parts(name, body)
+#        page_part = @page.page_parts.build(:name => name, :current_page_part_revision_id => 0)
+#        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => body, :was_deleted => false)
+#        page_part.current_page_part_revision = first_revision
       end : begin
-        page_part = @page.page_parts.build(:name => "body", :current_page_part_revision_id => 0)
-        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:body], :was_deleted => false)
-        page_part.current_page_part_revision = first_revision
+        build_parts("body", params[:body])
+#        page_part = @page.page_parts.build(:name => "body", :current_page_part_revision_id => 0)
+#        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:body], :was_deleted => false)
+#        page_part.current_page_part_revision = first_revision
       end
 
       unless (params[:new_page_part_name].nil? || params[:new_page_part_name].empty?)
-        page_part = @page.page_parts.build(:name => params[:new_page_part_name], :current_page_part_revision_id => 0)
-        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:new_page_part_text], :was_deleted => false)
-        page_part.current_page_part_revision = first_revision
+        build_parts(params[:new_page_part_name], params[:new_page_part_text])
+#        page_part = @page.page_parts.build(:name => params[:new_page_part_name], :current_page_part_revision_id => 0)
+#        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:new_page_part_text], :was_deleted => false)
+#        page_part.current_page_part_revision = first_revision
       end
       @page.page_parts.sort! {|x, y| x.name <=> y.name }
       @preview_toolbar = true
       render :action => :preview, :layout => layout
     end
+  end
+
+  def build_parts(name, body)
+    page_part = @page.page_parts.build(:name => name, :current_page_part_revision_id => 0)
+    first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => body, :was_deleted => false)
+    page_part.current_page_part_revision = first_revision
   end
 
   def load_page
@@ -736,7 +745,7 @@ class PageController < ApplicationController
     else
       render :nothing => true, :status => :forbidden
     end
-  end  
+  end
 
   def slash_check
     link = request.env['PATH_INFO']
