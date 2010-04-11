@@ -265,7 +265,7 @@ class PageController < ApplicationController
   def new
     if @path.empty?
       @parent_id = nil
-      @parent_layout = nil
+      @parent_layout = 'default'
     else
       parent_path = Array.new @path
       parent_path.pop
@@ -394,6 +394,13 @@ class PageController < ApplicationController
     end
   end
 
+  def remove_pages_from_cache
+    pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?", @page.lft, @page.rgt])
+
+    pages.each do |page|
+      expire_fragment(page.id)
+    end
+  end
 
   def save_edit
     if params['commit'].eql?('Preview')
@@ -483,6 +490,8 @@ class PageController < ApplicationController
 
     update
 
+    remove_pages_from_cache
+    
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
     redirect_to page_path(@page)

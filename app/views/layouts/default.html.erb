@@ -1,0 +1,12 @@
+    <%= render :partial => 'shared/header' %>
+    <%= render :partial => 'shared/notice' %>
+    <%= render :partial => 'shared/breadcrumb' %>
+    <% cache(@page.id) do %>
+
+        <div class="wrapper">
+          <div class="holder">
+            <%= yield %>
+          </div>
+        </div>
+<% end %>    
+    <%= render :partial => 'shared/footer' %>
