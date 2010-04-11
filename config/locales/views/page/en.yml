@@ -118,7 +118,7 @@ en:
   anyway: " anyway."
   layout_help_title: "Page parts predefined for this layout are:"
   inherited_layout: "This layout is inherited from wiki layout"
-  layout_is_inherited: "Layout bude inherited from parent page, which layout is "
+  layout_is_inherited: "Layout will be inherited from parent page, which layout is "
   layout_help_title: "Page parts predefined for this layout are:"
   inherited_layout: "This layout is inherited from wiki layout"
   layout_is_inherited: "Layout bude inherited from parent page, which layout is "
