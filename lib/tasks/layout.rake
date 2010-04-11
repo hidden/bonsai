@@ -12,7 +12,6 @@ namespace :bonsai do
         FileUtils.chdir("#{RAILS_ROOT}/vendor/layouts")
         `tar -xvf #{file_name}`
 
-
         error = false
         unless File.exist? ("#{dir_name}/definition.yml")
           puts "ERROR: #{dir_name}/definition.yml does not exist!"
@@ -63,8 +62,7 @@ namespace :bonsai do
 
     if !ENV['layout'].nil?
       pages = Page.all(:select => "lft, rgt", :conditions => ["layout = ?", ENV['layout']], :order => 'id asc')
-      if pages.nil?
-
+      if pages.empty?
         path = "#{RAILS_ROOT}/public/images/layouts/#{ENV['layout']}"
         if  File.exist? path
           rm_rf path
@@ -92,12 +90,10 @@ namespace :bonsai do
 
         puts "Layout test was succesfully uninstalled."
       else
-        puts "ERROR: Layout can not be uninstalled. This layout is currently used as layout on some pages."
-
+        puts "ERROR: Layout can not be uninstalled. This layout is currently used here:"
         pages.each do |page|
           puts page.get_path
         end
-
       end
     else
       puts "ERROR: You must specify layout to uninstall."
