@@ -18,10 +18,12 @@ class UsersController < ApplicationController
 
   def login
     session[:return_to] = request.referer if params[:commit]
-    if APP_CONFIG['authentication_method'] == 'openid' then
-      open_id_authentication
-    else
-      ldap_authentification
+    case APP_CONFIG['authentication_method']
+      when "openid"     then open_id_authentication
+      when "ldap"       then ldap_authentification
+      when "ldap-stub"       then ldap_authentification
+      when "facebook"   then fb_post_authentification
+      else #TODO 
     end
   end
 
@@ -148,5 +150,17 @@ class UsersController < ApplicationController
     redirect_to session[:return_to]
   end
 
+  def fb_post_authentification
+    if @current_user.nil?
+      #register with fb
+      User.create_from_fb_connect(facebook_session.user)
+      user = User.find_by_fb_username(facebook_session.user)
+      redirect_to edit_user_path(user)
+    #else
+      #connect accounts
+      #@current_user.link_fb_connect(facebook_session.user.id) unless @current_user.fb_id == facebook_session.user.id
+      #redirect_to playgrounds_path
+    end
+    end
 end
 

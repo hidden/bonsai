@@ -10,7 +10,8 @@ ActionController::Routing::Routes.draw do |map|
                 :member => {:activate => :put, :deactivate => :put},
                 :collection => { :autocomplete_for_user => :get}
   map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
-  map.resources :groups, :member => {:permissions_history => :get, :permissions_history => :get}  
+  map.resources :groups, :member => {:permissions_history => :get, :permissions_history => :get}
+  map.resources :users, :member => {:fb_post_authentification => :get}
 
   map.search 'admin/search', :controller => 'admin', :action => 'index'
 
@@ -22,7 +23,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.search 'search', :controller => 'page', :action => 'search'
 
-  map.connect 'users/:action', :controller => "users"
+  map.connect 'users/:action', :controller => "users" 
 
 
   # The priority is based upon order of creation: first created -> highest priority.

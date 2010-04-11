@@ -36,10 +36,12 @@ module ApplicationHelper
   end
 
   def login_form
-    if APP_CONFIG['authentication_method'] == 'openid' then
-      render :partial => 'shared/openid_login'
-    else
-      render :partial => 'shared/ldap_login'
+    case APP_CONFIG['authentication_method']
+      when "openid"     then render :partial => 'shared/openid_login'
+      when "ldap"       then render :partial => 'shared/ldap_login'
+      when "ldap-stub"       then render :partial => 'shared/ldap_login'
+      when "facebook"   then render :partial => 'shared/fb_login'
+      else p "@@@@@@@@@@@@@@@@@@@@@pica blesky@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + APP_CONFIG['authentication_method']
     end
   end
 

@@ -8,6 +8,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'thinking_sphinx/tasks'
 require 'tasks/rails'
+require 'tasks/facebooker'
 
 Rake::Task[:default].clear
 task :default => :cucumber

@@ -22,6 +22,9 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_user
   before_filter :set_locale
+  #before_filter :set_facebook_session
+  #before_filter :fetch_logged_in_user
+  #helper_method :facebook_session
 
   def set_user
     if session[:user_id].nil? and not cookies[:token].nil?
@@ -40,6 +43,15 @@ class ApplicationController < ActionController::Base
 
   def not_logged_in
     redirect_to root_path unless (@current_user.class == AnonymousUser)
+  end
+
+  def fetch_logged_in_user
+  if facebook_session
+    @current_user = User.find_by_username(facebook_session.user)
+  else
+    return unless session[:user_id]
+    @current_user = User.find_by_id(session[:user_id])
+  end
   end
 
   private
