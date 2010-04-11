@@ -159,7 +159,6 @@ class GroupsController < ApplicationController
     was_public = @group.is_public?
     @group.group_permissions.each do |permission|
       permission.can_view = was_public
-      permission.can_edit = was_public if was_public
       permission.save
     end
     gh.save
