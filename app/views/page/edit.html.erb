@@ -174,9 +174,9 @@
 
       <% for part in @page.page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
-              <div id="page_part_id_<%= part.id %>" style="width:100%">
-                <div class="page_part_listing" style="width:50%">
-                  <span><%= part.name %></span>
+              <div id="page_part_id_<%= part.id %>" class="width100">
+                <div class="page_part_listing">
+                  <%= text_field_tag("parts_name[#{part.name}]", part.name) %>
                   <% if @page.page_parts.count > 1 %>
                   <div class="page_part_edit_remove_link">
                     <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
@@ -186,7 +186,7 @@
                     <%= image_tag ('icons/edit_big.gif',:alt =>'') %>
                   </div>
                 </div>
-                <div<%= ' style="display:none;"' unless part.name == 'body' %> style="width:100%" >
+                <div<%= ' style="display:none;"' unless part.name == 'body' %> class="width100" >
                   <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
 
                   <% if part == @page_part %>
@@ -206,9 +206,6 @@
 
                   <% end %>
                   <%= render :partial => 'maruku_help' %>
-                  <p>
-                    <%= label_tag "parts_name[#{part.name}]", t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
-                  </p>
                 </div>
               </div>
           <% end %>
@@ -247,7 +244,7 @@
       <% if @page.uploaded_files.empty? then %>
           <%= t(:no_files_uploaded) %>
       <% else %>
-          <table class="files_history" style="width:250px;">
+          <table class="files_history">
             <thead>
             <tr>
               <th></th>
