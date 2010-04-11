@@ -680,8 +680,7 @@ input[type="submit"].large_button{
 
 /*dashboard */
 .favourite_content{
-    position:absolute;
-    top:120px;  
+
 }
 .pagination{
     position:relative;
