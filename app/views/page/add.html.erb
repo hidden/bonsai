@@ -1,0 +1,28 @@
+<div class="bonsai">
+  <div class="holder_right">
+    <div class="header">
+      <div class="header_content">
+        <h1><%= t(:add_page)%></h1>
+      </div>
+      <div class="header_right">
+      </div>
+    </div>
+    <div class="main_content">
+      <% form_tag "#{add_page_path(@page)}", :method => :post do %>
+         <p>
+           <%= t(:name) %> :
+           <%= text_field('add_page','new_page') %>
+           <%= submit_tag(t(:btn_create_page), :class=> "small_button") %>
+         </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer_left">
+    &nbsp;
+  </div>
+  <div class="footer_right_light">
+    &nbsp;
+  </div>
+</div>

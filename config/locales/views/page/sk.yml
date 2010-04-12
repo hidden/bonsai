@@ -133,4 +133,7 @@ sk:
   more_options: "Ďalšie nastavenia"
   page_parts_ordering: "Zoraďovanie častí stránky:"
   order_by_date: "Podľa dátumu"
-  order_by_name: "Podľa mena (abecedne)"  
+  order_by_name: "Podľa mena (abecedne)"
+  add_page: "Nová stránka"
+  btn_create_page: "Vytvor"
+  page_exist: "Táto stránka už existuje"

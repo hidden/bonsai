@@ -51,6 +51,9 @@
               <% if (( @current_user.can_edit_page? @page) || (@current_user.can_manage_page? @page) || (@current_user.logged?) || (@current_user.can_edit_page? @page)) %>
                   <li class="sub"><span><%= icon_tag('actions.png', :alt => t(:actions)) + " " + t(:actions) %></span>
                     <ul>
+                      <% if (@current_user.can_manage_page? @page) %>
+                          <li><%= link_to icon_tag('page_white_add.png', :alt => t(:edit)) + " " + t(:add_page), add_page_path(@page) %></li>
+                      <% end %>
                       <% if @current_user.can_edit_page? @page %>
                           <li><%= link_to icon_tag('page_white_edit.png', :alt => t(:edit)) + " " + t(:edit), edit_page_path(@page) %>
                       <% end %></li>

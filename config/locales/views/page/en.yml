@@ -137,4 +137,7 @@ en:
   page_parts_ordering: "Ordering of page parts:"
   order_by_date: "Order by date"
   order_by_name: "Order by name"
+  add_page: "New page"
+  btn_create_page: "Create"
+  page_exist: "This page exists"
       
