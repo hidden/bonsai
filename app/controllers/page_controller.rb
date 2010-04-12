@@ -388,12 +388,22 @@ class PageController < ApplicationController
   end
 
   def remove_page_part
-    part_id = params[:part_id]
-    if not part_id.nil?
-      PagePart.delete(part_id)
+    begin
+      page_part = PagePart.find(params[:part_id])
+      current_revision = page_part.current_page_part_revision
+      revision = page_part.page_part_revisions.create(:user => @current_user, :body => current_revision.body, :summary => current_revision.summary, :was_deleted => true)
+      page_part.current_page_part_revision = revision
+      page_part.save
+    rescue
+      logger.error "Deletion of page part #{part_id} failed"
+    end
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
     end
   end
 
+  #TODO toto tu nema co hladat
   def remove_pages_from_cache
     pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?", @page.lft, @page.rgt])
 

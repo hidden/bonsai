@@ -27,10 +27,8 @@ Feature: Wiki layouting and many page parts
     Then I should see "This is a header"
     When I follow "Edit"
     And I delete "testpage" page part
-    And show me the page    
     Then I should not see "testpage"
-    And I follow "History"
-    And show me the page
+    And I follow "page_history"
     And I should see "r3"
     
 
