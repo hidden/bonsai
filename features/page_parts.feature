@@ -20,7 +20,6 @@ Feature: Wiki layouting and many page parts
     And I add "navigation" page part with text "This is a header"
     Then I should see "This is a header" within "#nav"
 
-  @wip
   Scenario: User create a page part and then delete, it should not be seen from now on
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
@@ -28,7 +27,12 @@ Feature: Wiki layouting and many page parts
     Then I should see "This is a header"
     When I follow "Edit"
     And I delete "testpage" page part
+    And show me the page    
     Then I should not see "testpage"
+    And I follow "History"
+    And show me the page
+    And I should see "r3"
+    
 
   Scenario: User create a page part and rename it
     When I create "/" page
