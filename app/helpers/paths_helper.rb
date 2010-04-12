@@ -77,7 +77,7 @@ module PathsHelper
   end
 
   def admin_page_path(page)    
-     admin_path(:back => page_path(page))
+    admin_path(:back => page_path(page))
   end
 
   def rss_path(page, user)
@@ -85,6 +85,10 @@ module PathsHelper
   end
 
    def rss_tree_path(page, user)
-    page_path(page, 'rss_tree', :token => user.token)
+     page_path(page, 'rss_tree', :token => user.token)
+   end
+
+    def add_page_path(page)
+     page_path(page,'add')
   end
 end

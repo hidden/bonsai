@@ -12,7 +12,6 @@ namespace :bonsai do
         FileUtils.chdir("#{RAILS_ROOT}/vendor/layouts")
         `tar -xvf #{file_name}`
 
-
         error = false
         unless File.exist? ("#{dir_name}/definition.yml")
           puts "ERROR: #{dir_name}/definition.yml does not exist!"
@@ -39,7 +38,7 @@ namespace :bonsai do
           #move language definitions
           mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/locales", "#{RAILS_ROOT}/config/locales/layouts/#{dir_name}"
           #move html erb file
-          mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/#{dir_name}.html.erb", "#{RAILS_ROOT}/app/views/layouts/"          
+          mv "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/#{dir_name}.html.erb", "#{RAILS_ROOT}/app/views/layouts/"
           #remove public folder
           rm_rf "#{RAILS_ROOT}/vendor/layouts/#{dir_name}/public"
           #remove archive
@@ -60,12 +59,10 @@ namespace :bonsai do
   desc "Uninstall layout"
   task :uninstall => :environment do
 
+
     if !ENV['layout'].nil?
-
-      pages_with_layout = Page.find_by_layout("#{ENV['layout']}")
-
-      if pages_with_layout.nil?
-
+      pages = Page.all(:select => "lft, rgt", :conditions => ["layout = ?", ENV['layout']], :order => 'id asc')
+      if pages.empty?
         path = "#{RAILS_ROOT}/public/images/layouts/#{ENV['layout']}"
         if  File.exist? path
           rm_rf path
@@ -92,9 +89,11 @@ namespace :bonsai do
         end
 
         puts "Layout test was succesfully uninstalled."
-
       else
-        puts "ERROR: Layout can not be uninstalled. This layout is currently used as layout on some pages."
+        puts "ERROR: Layout can not be uninstalled. This layout is currently used here:"
+        pages.each do |page|
+          puts page.get_path
+        end
       end
     else
       puts "ERROR: You must specify layout to uninstall."
