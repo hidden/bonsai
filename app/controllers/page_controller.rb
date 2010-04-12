@@ -306,7 +306,7 @@ class PageController < ApplicationController
     else
       sid = params[:sid].blank? ? nil : params[:sid]
       layout = params[:layout].empty? ? nil : params[:layout]
-      page = Page.new(:title => params[:title], :sid => sid, :layout => layout)
+      page = Page.new(:title => params[:title], :sid => sid, :layout => layout, :ordering => params[:ordering])
       unless (page.valid?)
         error_message = ""
         page.errors.each_full { |msg| error_message << msg }
@@ -512,6 +512,7 @@ class PageController < ApplicationController
     @page.title = params[:title]
     if @current_user.can_manage_page? @page
       @page.layout = params[:layout].empty? ? nil : params[:layout]
+      @page.ordering = params[:ordering]
     end
 
     @page.save
@@ -721,7 +722,7 @@ class PageController < ApplicationController
 #        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:new_page_part_text], :was_deleted => false)
 #        page_part.current_page_part_revision = first_revision
       end
-      @page.page_parts.sort! {|x, y| x.name <=> y.name }
+      @page.page_parts.sort! {|x, y| x.name <=> y.name } if params[:ordering]==1
       @preview_toolbar = true
       render :action => :preview, :layout => layout
     end

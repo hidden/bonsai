@@ -172,7 +172,7 @@
           </div>
       <% end %>
 
-      <% for part in @page.page_parts %>
+      <% for part in @page.ordered_page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
               <div id="page_part_id_<%= part.id %>" class="width100">
                 <div class="page_part_listing">
@@ -220,7 +220,7 @@
       </p>
 
       <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:add_new_page_part) %></a>.</p>
-      <div style="display: none;">
+      <div style="display: none;" id="new_page_part">
         <p>
           <%= label_tag t(:new_part_name) %><br />
           <%= text_field_tag('new_page_part_name') %>
@@ -230,6 +230,13 @@
         </p>
         <%= render :partial => 'maruku_help' %>
       </div>
+      <% if @current_user.can_manage_page? @page %>
+      <p><a href="#" onclick="return toggleDiv(event);"><%= t("more_options") %></a></p>
+      <div style="display: none;" id="more_options">
+        <%= t :page_parts_ordering%>
+        <%= select_tag "ordering", "<option value='0' #{'selected=\"selected\"' if @page.ordering==0}>#{t("order_by_date")}</option><option value='1' #{'selected=\"selected\"' if @page.ordering==1}>#{t("order_by_name")}</option>" %>
+      </div>
+      <% end %>
 
       <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
       <p><%= submit_tag t(:save) , :class=> "small_button", :onclick => "subm('edit_form','save');" %>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100406101921) do
+ActiveRecord::Schema.define(:version => 20100412145053) do
 
   create_table "favorites", :force => true do |t|
     t.integer "user_id", :null => false
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(:version => 20100406101921) do
     t.integer "lft",       :null => false
     t.integer "rgt",       :null => false
     t.string  "layout"
+    t.integer "ordering"
   end
 
   add_index "pages", ["lft", "rgt"], :name => "index_pages_on_lft_and_rgt"

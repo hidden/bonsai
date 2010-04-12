@@ -27,3 +27,14 @@ end
 When /^I delete "([^"]*)" page part$/ do |part_name|
   click_link("part_id_#{part_name}")
 end
+
+When /^I change ordering of page parts to "([^"]*)"$/ do |ordering|
+  click_link('edit')
+  case ordering
+    when "name"
+      select('Order by name', :from => 'ordering')
+    when "date"
+      select("Order by date", :from => 'ordering')
+  end
+  click_button('Save')
+end

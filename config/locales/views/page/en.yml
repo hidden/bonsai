@@ -133,4 +133,8 @@ en:
   remove_action: "removed"
   removed_you: "removed you"
   manager_error: "You cannot delete permission, there must be at least one manager."
+  more_options: "More options"
+  page_parts_ordering: "Ordering of page parts:"
+  order_by_date: "Order by date"
+  order_by_name: "Order by name"
       
