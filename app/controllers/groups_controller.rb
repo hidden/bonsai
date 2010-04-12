@@ -109,7 +109,7 @@ class GroupsController < ApplicationController
   # PUT /groups/1.xml
   def update
     @group = Group.find(params[:id])
-
+    save_permissions
     respond_to do |format|
       if @group.update_attributes(params[:group])
         flash[:notice] = t(:group_updated)
@@ -150,7 +150,6 @@ class GroupsController < ApplicationController
   end
 
   def switch_public
-    @group = Group.find(params[:id])
     if (@group.is_public?)
       gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => 2)
     else
@@ -162,11 +161,9 @@ class GroupsController < ApplicationController
       permission.save
     end
     gh.save
-    redirect_to edit_group_path(params[:id])
   end
 
   def switch_editable
-    @group = Group.find(params[:id])
     if (@group.is_editable?)
       gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 2)
     else
@@ -179,6 +176,79 @@ class GroupsController < ApplicationController
       permission.save
     end
     gh.save
-    redirect_to edit_group_path(params[:id])
+  end
+
+  private
+  def save_permissions
+    @managers = 0
+    @group.group_permissions.each do |permission|
+      if permission.can_edit
+        @managers = @managers + 1
+      end
+    end
+    @group.group_permissions.each do |permission, index|
+      selectbox_value = params[permission.user.name + "_select"]
+      if not selectbox_value.nil?
+        opravnenie = 0;
+        (permission.can_view) ? opravnenie = 1 : opravnenie = opravnenie
+        (permission.can_edit) ? opravnenie = 2 : opravnenie = opravnenie
+
+        if (selectbox_value == '1' && opravnenie == 2)
+           switch_e permission
+        else if (selectbox_value == '2' && opravnenie == 1)
+           switch_e permission
+          end
+        end
+        
+      end
+    end
+
+    params[:group_id] = @group.id
+    users = User.find_all_by_username(params[:add_user][:usernames].split(/[ ]*, */))
+    if users.empty?
+      flash[:notice] = t(:user_not_found)
+    else
+      for user in users do
+        Group.find(params[:group_id]).add_viewer user if params[:add_user][:type] == '1'
+        Group.find(params[:group_id]).add_editor user if params[:add_user][:type] == '2'
+        gh = GroupPermissionsHistory.new(:user_id => user.id, :group_id => params[:group_id], :editor_id => @current_user.id, :role => params[:add_user][:type], :action => 1)
+        gh.save
+      end
+    end
+
+    if params[:all_users_select] == "1" && !@group.is_public?
+      switch_public
+    else
+      if params[:all_users_select] == "2" && !@group.is_editable?
+        switch_editable
+      else
+        if params[:all_users_select] == "0"
+          if @group.is_editable?
+            switch_editable
+          end
+          if  @group.is_public?
+            switch_public
+          end
+        end
+      end
+    end
+    
+  end
+
+  def switch_e permission
+    if permission.can_edit?
+      if @managers >= 2
+        gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 2)
+        permission.switch_edit
+        permission.save
+        gh.save
+        @managers = @managers - 1
+      end
+    else
+      gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 1)
+      permission.switch_edit
+      permission.save
+      gh.save
+    end
   end
 end
