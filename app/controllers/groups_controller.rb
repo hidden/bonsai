@@ -180,10 +180,10 @@ class GroupsController < ApplicationController
 
   private
   def save_permissions
-    @managers = 0
+    @editors = 0
     @group.group_permissions.each do |permission|
       if permission.can_edit
-        @managers = @managers + 1
+        @editors = @editors + 1
       end
     end
     @group.group_permissions.each do |permission, index|
@@ -203,19 +203,28 @@ class GroupsController < ApplicationController
       end
     end
 
-    params[:group_id] = @group.id
-    users = User.find_all_by_username(params[:add_user][:usernames].split(/[ ]*, */))
-    if users.empty?
-      flash[:notice] = t(:user_not_found)
-    else
-      for user in users do
-        Group.find(params[:group_id]).add_viewer user if params[:add_user][:type] == '1'
-        Group.find(params[:group_id]).add_editor user if params[:add_user][:type] == '2'
-        gh = GroupPermissionsHistory.new(:user_id => user.id, :group_id => params[:group_id], :editor_id => @current_user.id, :role => params[:add_user][:type], :action => 1)
-        gh.save
-      end
-    end
+    create_permission @group.id
+    set_global_permission    
+  end
 
+  def switch_e permission
+    if permission.can_edit?
+      if @editors >= 2
+        gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 2)
+        permission.switch_edit
+        permission.save
+        gh.save
+        @editors = @editors - 1
+      end
+    else
+      gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 1)
+      permission.switch_edit
+      permission.save
+      gh.save
+    end
+  end
+
+  def set_global_permission
     if params[:all_users_select] == "1" && !@group.is_public?
       switch_public
     else
@@ -232,23 +241,19 @@ class GroupsController < ApplicationController
         end
       end
     end
-    
   end
 
-  def switch_e permission
-    if permission.can_edit?
-      if @managers >= 2
-        gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 2)
-        permission.switch_edit
-        permission.save
-        gh.save
-        @managers = @managers - 1
-      end
+  def create_permission group_id
+    users = User.find_all_by_username(params[:add_user][:usernames].split(/[ ]*, */))
+    if users.empty?
+      flash[:notice] = t(:user_not_found)
     else
-      gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 1)
-      permission.switch_edit
-      permission.save
-      gh.save
+      for user in users do
+        Group.find(group_id).add_viewer user if params[:add_user][:type] == '1'
+        Group.find(group_id).add_editor user if params[:add_user][:type] == '2'
+        gh = GroupPermissionsHistory.new(:user_id => user.id, :group_id => group_id, :editor_id => @current_user.id, :role => params[:add_user][:type], :action => 1)
+        gh.save
+      end
     end
   end
 end

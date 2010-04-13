@@ -53,15 +53,15 @@ class GroupPermissionsController < ApplicationController
   def destroy
     permission = GroupPermission.find_by_id(params[:id])
     group = Group.find_by_id(params[:group_id])
-      managers = 0
+      editors = 0
       continue = true
       group.group_permissions.each do |perm|
       if perm.can_edit
-        managers = managers + 1
+        editors = editors + 1
       end
     end
       if permission.can_edit?
-        if managers >= 2
+        if editors >= 2
           gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 2)
           gh.save
           permission.destroy
