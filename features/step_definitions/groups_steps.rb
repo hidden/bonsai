@@ -83,3 +83,8 @@ When /^I change "(.*)" to viewer in "(.*)" group$/ do |user, group|
   click_button('Update')
 end
 
+When /^I visit group "(.*)" management$/ do |group|
+  visit path_to('/')
+  click_link('Groups')
+  click_link("Edit_#{Group.find_by_name(group).id}")
+end
