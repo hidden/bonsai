@@ -1,0 +1,10 @@
+<%= fb_connect_javascript_tag %>
+<%= init_fb_connect "XFBML"%>
+
+ <div class="login_area">
+      <div style="float:right">
+      <label for="login"><%= t(:fb_login) %></label>
+      <%= fb_login_and_redirect(fb_post_authentification_users_url) %>
+
+      </div>
+</div>

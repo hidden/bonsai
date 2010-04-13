@@ -41,7 +41,7 @@ module ApplicationHelper
       when "ldap"       then render :partial => 'shared/ldap_login'
       when "ldap-stub"       then render :partial => 'shared/ldap_login'
       when "facebook"   then render :partial => 'shared/fb_login'
-      else p "@@@@@@@@@@@@@@@@@@@@@pica blesky@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + APP_CONFIG['authentication_method']
+      else p "@@@@@@@@@@@@@@@@@@@@@volaka chyba@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + APP_CONFIG['authentication_method']
     end
   end
 
