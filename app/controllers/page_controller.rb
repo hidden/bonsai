@@ -25,6 +25,7 @@ class PageController < ApplicationController
   def view
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
+    @stylesheet = @page.resolve_layout
     render :action => :view, :layout => layout
   end
 
