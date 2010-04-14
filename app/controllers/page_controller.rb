@@ -291,7 +291,7 @@ class PageController < ApplicationController
   end
 
   def create
-    if params['commit'].eql?('Preview')
+    if params.include?('Preview')
       generate_preview
       return
     end
@@ -396,7 +396,7 @@ class PageController < ApplicationController
 
 
   def save_edit
-    if params['commit'].eql?('Preview')
+    if params.include?('Preview')
       generate_preview
       return
     end

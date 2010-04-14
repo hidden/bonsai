@@ -65,52 +65,50 @@ class DashboardController < ApplicationController
     news = Array.new
     change = Hash.new
     for favorite in @current_user.favorite_pages
-      index = 0
-      favorite.page_parts_revisions.each do |revision|
-        if (!revision.is_newer?(session[:last_visit]) && !all) || (index > 10 && all)
-          break
+        if all
+          condition = {:limit => 20}
+        else
+          condition = {:conditions => ['created_at >= ?', session[:last_visit]]}
         end
+        favorite.page_parts_revisions.all(condition).each_with_index do |revision, index|
         change['when'] = revision.created_at
         change['who'] = revision.user.username
         change['what'] = revision.page_part.name
         change['revision'] = index.to_s()
-        change['page'] = Page.find_by_id(favorite.id)
-        change['type'] = 0
+        change['page'] = revision.page_part.page
+        change['type'] = 'page_change'
         push_sorted(news, change.clone)
-        #news = news[0..9]
-        index += 1
       end
     end
     news = reorder_news(news)
-    #news.paginate(:page => params[:page], :per_page => 10)
   end
 
   def get_groups(all = false)
-    permissions_history = GroupPermissionsHistory.find_all_by_user_id(@current_user)
-    index = 0
-    for record in permissions_history
-      if (!record.is_newer?(session[:last_visit]) && !all) || (index > 10 && all)
-        break
-      end
+    if all
+      condition = {:limit => 10}
+    else
+      condition = {:conditions => ['created_at >= ?', session[:last_visit]]}
+    end
+    @current_user.group_permissions_histories.all(condition).each do |record|
       record['when'] = record.created_at
-      record['type'] = 1
+      record['type'] = 'group_permission_change'
       push_sorted(@news, record.clone)
-      index += 1
     end
   end
 
   def get_pages(all = false)
-    permissions_history = PagePermissionsHistory.find_all_by_group_id(@current_user.groups)
-    index = 0
-    for record in permissions_history
-      if (!record.is_newer?(session[:last_visit]) && !all) || (index > 10 && all)
-        break
+    if all
+      condition = {:limit => 10}
+    else
+      condition = {:conditions => ['created_at >= ?', session[:last_visit]]}
+    end
+    @current_user.groups.each do |group|
+      group.page_permissions_histories.all(condition).each do |record|
+        next if record.user_id == @current_user.id
+        record['when'] = record.created_at
+        record['type'] = 'page_permission_change'
+        push_sorted(@news, record.clone)
       end
-      next if record.user_id == @current_user.id
-      record['when'] = record.created_at
-      record['type'] = 2
-      push_sorted(@news, record.clone)
-      index += 1
     end
   end
 

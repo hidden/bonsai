@@ -235,8 +235,8 @@
       </div>
 
       <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
-      <p><%= submit_tag t(:save) , :class=> "small_button", :onclick => "subm('edit_form','save');" %>
-      <%= submit_tag t(:preview), :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
+      <p><%= submit_tag t(:save), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+      <%= submit_tag t(:preview), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
     </div>
 
     <div class="main_content_right" style="width:244px;">

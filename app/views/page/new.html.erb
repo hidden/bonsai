@@ -110,8 +110,8 @@
           </p>
           <div id="layout_details" class="lighter_bg" style="display:none;"></div>
 
-          <p><%= submit_tag t(:save), :class=> "small_button", :onclick => "subm('edit_form','save');" %>
-          <%= submit_tag t(:preview), :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
+          <p><%= submit_tag t(:save), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+          <%= submit_tag t(:preview), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
         </div>
     <% end %>
   </div>
