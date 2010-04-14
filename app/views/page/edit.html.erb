@@ -182,11 +182,11 @@
                     <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)}%>
                   </div>
                   <% end %>    
-                  <div class="page_part_edit_remove_link" onclick="return toggleDivDiv(event)">
-                    <%= image_tag ('icons/edit_big.gif',:alt =>'') %>
+                  <div class="page_part_edit_remove_link" onclick="return toggleDiv('textarea_id_<%= part.id %>')">
+                    <%= image_tag ('icons/edit_big.gif',:alt =>'Edit') %>
                   </div>
                 </div>
-                <div<%= ' style="display:none;"' unless part.name == 'body' %> class="width100" >
+                <div<%= ' style="display:none;"' unless part.name == 'body' %> class="width100" id="textarea_id_<%= part.id %>" >
                   <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
 
                   <% if part == @page_part %>
@@ -219,8 +219,8 @@
         <% end %>
       </p>
 
-      <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:add_new_page_part) %></a>.</p>
-      <div style="display: none;" id="new_page_part">
+      <p><%= t(:or) %> <a href="#" onclick="return toggleDiv('add_new_page_part');"><%= t(:add_new_page_part) %></a>.</p>
+      <div style="display: none;" id="add_new_page_part">
         <p>
           <%= label_tag t(:new_part_name) %><br />
           <%= text_field_tag('new_page_part_name') %>

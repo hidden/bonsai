@@ -30,7 +30,7 @@
                 <span style="display:none"/>
               </noscript>
               <%= link_to t(:btn_registration), :controller => "users", :action => "new" %>
-              <%= link_to t(:btn_log_in), nil, :onclick=>"return toggleDivDivDiv(event)" %>
+              <%= link_to t(:btn_log_in), nil, :onclick=>"return toggleDiv('login_box')" %>
               <noscript>
                 </span>
               </noscript>
@@ -102,7 +102,7 @@
   <% end %>
 </div>
 <% unless @current_user.logged? %>
-    <div class="login_box" style="display:none">
+    <div class="login_box" style="display:none" id="login_box">
       <%= login_form %>
     </div>
     <noscript>

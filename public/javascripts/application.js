@@ -6,33 +6,14 @@ function initialize() {
     }
 }
 
-function toggleDiv(event) {
-    var div = $(Event.element(event).parentNode).next();
-    if (div.visible()) {
-        div.blindUp();
-    } else {
-        div.blindDown();
-    }
-    return false;
-}
-
-
-function toggleDivDiv(event) {
-    var div = $(Event.element(event).parentNode.parentNode).next();
-    if (div.visible()) {
-        div.blindUp();
-    } else {
-        div.blindDown();
-    }
-    return false;
-}
-
-function toggleDivDivDiv(event) {
-    var div = $(Event.element(event).parentNode.parentNode.parentNode).next();
-    if (div.visible()) {
-        div.blindUp();
-    } else {
-        div.blindDown();
+function toggleDiv(elementId) {
+    var div  = document.getElementById(elementId);
+    if(div != null){
+        if (div.visible()) {
+            div.blindUp();
+        } else {
+            div.blindDown();
+        }
     }
     return false;
 }
