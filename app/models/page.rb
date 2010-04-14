@@ -2,7 +2,7 @@ class Page < ActiveRecord::Base
   acts_as_nested_set
   validates_uniqueness_of :sid, :scope => :parent_id
 
-  has_many :page_parts, :dependent => :destroy, :order => 'name'
+  has_many :page_parts, :dependent => :destroy
   has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'id DESC'
 
   has_many :page_permissions, :dependent => :destroy
@@ -22,6 +22,20 @@ class Page < ActiveRecord::Base
     indexes page_parts.current_page_part_revision.body, :as => :content
     where "was_deleted = 0"
     set_property :field_weights => {:title => 10, :part_names => 5, :content => 2}
+  end
+
+  def choose_ordering
+    case self.ordering
+      when  0
+        "id"
+      when 1
+        "name"
+      else "id"
+    end
+  end
+
+  def ordered_page_parts
+    self.page_parts.find(:all, :order => self.choose_ordering)
   end
 
   def self.find_by_path path
@@ -59,7 +73,7 @@ class Page < ActiveRecord::Base
 
   def resolve_layout
     node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
-    return (node_with_layout.nil? or node_with_layout.layout == 'default') ? 'application' : node_with_layout.layout
+    return (node_with_layout.nil?) ? 'default' : node_with_layout.layout
   end
 
   def resolve_part part_name

@@ -55,7 +55,7 @@ When /^I add "(.*)" editor to "(.*)" group$/ do |user, group|
   click_link("Edit_#{Group.find_by_name(group).id}")
   fill_in('add_user_usernames', :with => user)
   select('Editor', :from => 'add_user_type')
-  click_button('Add')
+  click_button('Update')
 end
 
 
@@ -65,7 +65,7 @@ When /^I add "(.*)" viewer to "(.*)" group$/ do |user, group|
   click_link("Edit_#{Group.find_by_name(group).id}")
   fill_in('add_user_usernames', :with => user)
   select('Viewer', :from => 'add_user_type')
-  click_button('Add')
+  click_button('Update')
 end
 
 When /^I remove "(.*)" member from "(.*)" group$/ do |user, group|
@@ -75,4 +75,16 @@ When /^I remove "(.*)" member from "(.*)" group$/ do |user, group|
   click_link("Remove_member_#{User.find_by_name(user).id}")
 end
 
+When /^I change "(.*)" to viewer in "(.*)" group$/ do |user, group|
+  visit path_to('/')
+  click_link('Groups')
+  click_link("Edit_#{Group.find_by_name(group).id}")
+  select('Viewer', :from => user + '_select')
+  click_button('Update')
+end
 
+When /^I visit group "(.*)" management$/ do |group|
+  visit path_to('/')
+  click_link('Groups')
+  click_link("Edit_#{Group.find_by_name(group).id}")
+end

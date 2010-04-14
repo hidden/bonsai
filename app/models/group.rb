@@ -92,7 +92,7 @@ class Group < ActiveRecord::Base
   end
 
   def is_editable?
-    false
+    self.editor_users.empty? ? true: false
   end
 
   def self.groups_visible_for_all

@@ -130,4 +130,10 @@ sk:
   remove_action: "zrušil"
   removed_you: "ťa zrušil"
   manager_error: "Nemôžeš vymazať právo, musí ostať aspoň jeden manažér pre stránku."
-  
+  more_options: "Ďalšie nastavenia"
+  page_parts_ordering: "Zoraďovanie častí stránky:"
+  order_by_date: "Podľa dátumu"
+  order_by_name: "Podľa mena (abecedne)"
+  add_page: "Nová stránka"
+  btn_create_page: "Vytvor"
+  page_exist: "Táto stránka už existuje"

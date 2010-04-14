@@ -20,7 +20,6 @@ Feature: Wiki layouting and many page parts
     And I add "navigation" page part with text "This is a header"
     Then I should see "This is a header" within "#nav"
 
-  @wip
   Scenario: User create a page part and then delete, it should not be seen from now on
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
@@ -29,6 +28,9 @@ Feature: Wiki layouting and many page parts
     When I follow "Edit"
     And I delete "testpage" page part
     Then I should not see "testpage"
+    And I follow "page_history"
+    And I should see "r3"
+    
 
   Scenario: User create a page part and rename it
     When I create "/" page
@@ -50,4 +52,15 @@ Feature: Wiki layouting and many page parts
     When I go to /nested
     Then I should see "Nested body!"
     And I should not see "This is a second part"
+
+  Scenario: User change ordering of page parts
+    When I create "/" page
+    And I add "Erika" page part with text "Erika"
+    And I add "Anna" page part with text "Arabela"
+    And I should see "Some content. Erika Arabela"
+    And I change ordering of page parts to "name"
+    Then I should see "Arabela Some content. Erika" 
+
+
+
 

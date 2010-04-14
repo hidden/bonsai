@@ -148,3 +148,16 @@ Feature: Wiki
     Then I should not see "fero  "
     And I should see "fero_group"
     And I should see "fero_group2"
+
+  Scenario: User creates group with 2 editors, tries to delete both of them (there should stay at least one editor)
+    Given user "crutch" exists
+    When I create "/" page
+    And I create "TestGroup" group
+    And I add "crutch" editor to "TestGroup" group
+    And I change "crutch" to viewer in "TestGroup" group
+    And I change "testuser" to viewer in "TestGroup" group
+    And I should see "Edit"
+    And I logout
+    And I login as "crutch"
+    And I follow "Groups"
+    And I should not see "Edit"

@@ -265,7 +265,7 @@ class PageController < ApplicationController
   def new
     if @path.empty?
       @parent_id = nil
-      @parent_layout = nil
+      @parent_layout = 'default'
     else
       parent_path = Array.new @path
       parent_path.pop
@@ -306,7 +306,7 @@ class PageController < ApplicationController
     else
       sid = params[:sid].blank? ? nil : params[:sid]
       layout = params[:layout].empty? ? nil : params[:layout]
-      page = Page.new(:title => params[:title], :sid => sid, :layout => layout)
+      page = Page.new(:title => params[:title], :sid => sid, :layout => layout, :ordering => params[:ordering])
       unless (page.valid?)
         error_message = ""
         page.errors.each_full { |msg| error_message << msg }
@@ -388,12 +388,29 @@ class PageController < ApplicationController
   end
 
   def remove_page_part
-    part_id = params[:part_id]
-    if not part_id.nil?
-      PagePart.delete(part_id)
+    begin
+      page_part = PagePart.find(params[:part_id])
+      current_revision = page_part.current_page_part_revision
+      revision = page_part.page_part_revisions.create(:user => @current_user, :body => current_revision.body, :summary => current_revision.summary, :was_deleted => true)
+      page_part.current_page_part_revision = revision
+      page_part.save
+    rescue
+      logger.error "Deletion of page part #{part_id} failed"
+    end
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
     end
   end
 
+  #TODO toto tu nema co hladat
+  def remove_pages_from_cache
+    pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?", @page.lft, @page.rgt])
+
+    pages.each do |page|
+      expire_fragment(page.id)
+    end
+  end
 
   def save_edit
     if params.include?('Preview')
@@ -483,6 +500,8 @@ class PageController < ApplicationController
 
     update
 
+    remove_pages_from_cache
+    
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
     redirect_to page_path(@page)
@@ -493,6 +512,7 @@ class PageController < ApplicationController
     @page.title = params[:title]
     if @current_user.can_manage_page? @page
       @page.layout = params[:layout].empty? ? nil : params[:layout]
+      @page.ordering = params[:ordering]
     end
 
     @page.save
@@ -702,7 +722,7 @@ class PageController < ApplicationController
 #        first_revision = page_part.page_part_revisions.build(:user => @current_user, :body => params[:new_page_part_text], :was_deleted => false)
 #        page_part.current_page_part_revision = first_revision
       end
-      @page.page_parts.sort! {|x, y| x.name <=> y.name }
+      @page.page_parts.sort! {|x, y| x.name <=> y.name } if params[:ordering]==1
       @preview_toolbar = true
       render :action => :preview, :layout => layout
     end

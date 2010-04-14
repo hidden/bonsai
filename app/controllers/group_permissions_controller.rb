@@ -19,11 +19,11 @@ class GroupPermissionsController < ApplicationController
         gh.save
       end
     end
-    redirect_to edit_group_path(params[:group_id])
+    #redirect_to edit_group_path(params[:group_id])
   end
 
   def switch_view
-    permission = GroupPermission.find_by_id(params[:id])
+   permission = GroupPermission.find_by_id(params[:id])
    unless permission.user == @current_user
       if permission.can_view?
         gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 1, :action => 2)
@@ -34,7 +34,6 @@ class GroupPermissionsController < ApplicationController
       gh.save
     end
     permission.save
-    redirect_to edit_group_path(params[:group_id])
   end
 
   def switch_edit
@@ -49,22 +48,33 @@ class GroupPermissionsController < ApplicationController
       gh.save
     end
     permission.save
-    redirect_to edit_group_path(params[:group_id])
   end
 
   def destroy
     permission = GroupPermission.find_by_id(params[:id])
-    unless permission.user == @current_user
-      if permission.can_edit?
-        gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 2)
-        gh.save
+    group = Group.find_by_id(params[:group_id])
+      editors = 0
+      continue = true
+      group.group_permissions.each do |perm|
+      if perm.can_edit
+        editors = editors + 1
       end
-      if permission.can_view?
+    end
+      if permission.can_edit?
+        if editors >= 2
+          gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 2)
+          gh.save
+          permission.destroy
+        else
+          flash[:error] = t(:editors_error)
+          continue = false
+        end
+      end
+      if permission.can_view? && continue
         gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 1, :action => 2)
         gh.save
+        permission.destroy
       end
-      permission.destroy
-    end
     redirect_to edit_group_path(params[:group_id])
   end
 end

@@ -1,6 +1,7 @@
 <%= render :partial => 'shared/header' %>
 <%= render :partial => 'shared/notice' %>
 
+<% cache(@page.id) do %>
 <div id="pewe-holder">
   <div id="container">
     <div id="caption"><%= markdown(@page.resolve_part('caption')) %></div>
@@ -20,5 +21,5 @@
     <div id="footer"><%= markdown(@page.resolve_part('footer')) %></div>
   </div>
 </div>
-
+<% end %>
 <%= render :partial => 'shared/footer' %>

@@ -479,6 +479,19 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
     height:25px;
     border: 1px solid #dcdcdc;
     margin: 3px 0;
+    width:50%;
+}
+
+.page_part_listing input[type="text"], .page_part_listing input[type="text"]:focus{
+    border:none;
+    background: none;
+    padding:3px 3px;
+    float:left;
+    font-size:16px;
+    font-weight:bold;
+    color: #404040;
+    height:18px;
+    min-width:50%;
 }
 
 .page_part_edit_remove_link{
@@ -565,6 +578,7 @@ a.info div ul li ul li{
 }
 table.files_history{
     border-spacing: 0 0;
+    width: 250px;
 }
 table.files_history thead th{
     color: #555759;
@@ -666,8 +680,7 @@ input[type="submit"].large_button{
 
 /*dashboard */
 .favourite_content{
-    position:absolute;
-    top:120px;  
+
 }
 .pagination{
     position:relative;
@@ -722,4 +735,8 @@ LI.Collapsed {
     margin-bottom: 0.2em;
     margin-top: 0.5em;
     cursor: default;
+}
+
+.width100{
+    width:100%;
 }
