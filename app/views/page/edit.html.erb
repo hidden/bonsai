@@ -231,7 +231,7 @@
         <%= render :partial => 'maruku_help' %>
       </div>
       <% if @current_user.can_manage_page? @page %>
-      <p><a href="#" onclick="return toggleDiv(event);"><%= t("more_options") %></a></p>
+      <p><a href="#" onclick="return toggleDiv('more_options');"><%= t("more_options") %></a></p>
       <div style="display: none;" id="more_options">
         <%= t :page_parts_ordering%>
         <%= select_tag "ordering", "<option value='0' #{'selected=\"selected\"' if @page.ordering==0}>#{t("order_by_date")}</option><option value='1' #{'selected=\"selected\"' if @page.ordering==1}>#{t("order_by_name")}</option>" %>
@@ -285,9 +285,9 @@
 
       <br />
       <div>
-        <%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:attach_file) %></a>.
+        <%= t(:or) %> <a href="#" onclick="return toggleDiv('attach_file');"><%= t(:attach_file) %></a>.
       </div>
-      <div style="display: none;">
+      <div style="display: none;" id='attach_file'>
         <div>
           <label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data, :size =>'20' %></label>
         </div>
