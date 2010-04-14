@@ -66,7 +66,7 @@ class GroupPermissionsController < ApplicationController
           gh.save
           permission.destroy
         else
-          flash[:error] = "There should be at least on editor" #TODO localize
+          flash[:error] = t(:editors_error)
           continue = false
         end
       end
