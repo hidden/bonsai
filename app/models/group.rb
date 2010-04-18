@@ -88,11 +88,11 @@ class Group < ActiveRecord::Base
   end
 
   def is_public?
-    self.viewer_users.empty? ? true:false
+    self.viewer_users.empty?
   end
 
   def is_editable?
-    self.editor_users.empty? ? true: false
+    self.editor_users.empty?
   end
 
   def self.groups_visible_for_all
