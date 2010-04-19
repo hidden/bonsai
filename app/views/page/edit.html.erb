@@ -120,8 +120,9 @@
     <div class="main_content_right" style="width:244px;">
 
     <!-- FILES -->
-    <h3><%= t(:files) %></h3>
-    <div class="files lighter_bg">
+      <div class="files lighter_bg">
+      <h3><%= t(:files) %></h3>
+
       <% if @page.uploaded_files.empty? then %>
           <%= t(:no_files_uploaded) %>
       <% else %>
@@ -159,9 +160,10 @@
 
       <br />
       <div>
-        <%= t(:or) %> <a href="#" onclick="return toggleDiv('attach_file');"><%= t(:attach_file) %></a>.
+        <a href="#" onclick="return toggleDiv('attach_file');"><%= t(:attach_file) %>?</a>.
       </div>
       <div style="display: none;" id='attach_file'>
+        <br/>
         <div>
           <label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data, :size =>'20' %></label>
         </div>
@@ -174,8 +176,9 @@
 
      <% if @current_user.can_manage_page? @page %>
     <!--PAGE PERMISIONS -->
-    <h3><%= t(:permissions_for) %></h3>
     <div class="lighter_bg" id="permissions">
+    <h3><%= t(:permissions_for) %></h3>
+
 
       <%#= render :partial => 'page/remove_permission' %>
       <table class="page_permisions">
@@ -256,12 +259,12 @@
 
       <% unless @page.ancestors.empty? %>
           <h3><%= t(:inherited_permissions) %></h3>
-          <table>
+          <table class="page_permisions">
             <thead>
             <tr>
-              <td><%= t(:group)%></td>
-              <td><%= t(:permission)%></td>
-              <td><%= t(:via)%></td>
+              <th><%= t(:group)%></th>
+              <th><%= t(:permission)%></th>
+              <th><%= t(:via)%></th>
             </tr>
             </thead>
             <tbody>
@@ -302,7 +305,7 @@
       <% end %>
 
 
-      <h4><%= t(:add_group_permission) %></h4>
+      <h3><%= t(:add_group_permission) %></h3>
       <% form_tag :controller => 'page', :action => 'set_permissions' do %>
           <%= text_field_tag('add_group') %> <%= select('group_role', 'type',{t(:viewer) => "1", t(:editor) => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %><br/>
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
@@ -315,7 +318,10 @@
       <div class="info_warning">
         <%= t(:permissions_warning)%>
       </div>
-       <br/> <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>.
+      <br/> 
+      <div class="files">
+        <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>.
+       </div>
       <!-- END OF PAGE PERMISIONS -->
     </div>
 <%else%>
