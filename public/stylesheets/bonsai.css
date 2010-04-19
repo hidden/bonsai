@@ -86,7 +86,7 @@ body {
 }
 
 .autocomplete {
-    width: 350px !important;
+    width: 244px !important;
 }
 
 .autocomplete ul {
@@ -383,6 +383,10 @@ ul#menu li ul li.small{
     background:transparent;
     padding:0 33px;
 }
+.main_content_right h3{
+    font-size:14px;
+
+}
 
 .header{
     width:100%;
@@ -469,6 +473,7 @@ textarea:focus, input[type="text"]:focus, .header_content input[type="text"]:foc
     color:red;
     font-size:11px;
     float:right;
+    padding-bottom:5px;
 }
 
 
@@ -566,7 +571,6 @@ a.info div ul li ul li{
     font-weight:normal;
     text-decoration:none;
 }
-
 
 
 /*files */
