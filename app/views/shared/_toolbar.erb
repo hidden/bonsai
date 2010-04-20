@@ -36,7 +36,11 @@
               </noscript>
           <% else %>
               <%#= t(:logged_as) %><%= @current_user.full_name %>
-              | <%= link_to t(:log_out), logout_path, :class => "red", :title=> t(:log_out) %>
+              <% if @current_user.facebook_user? %>
+                  |<%= fb_logout_link(t(:log_out),logout_path) %>
+              <% else %>
+                  |<%= link_to t(:log_out), logout_path, :class => "red", :title=> t(:log_out) %>
+              <% end %>
           <% end %>
         </div>
 
@@ -70,8 +74,10 @@
                   </li>
               <% else
                   if (@current_user.can_view_page? @page) %>
-                      <li class="sub"><span><%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %></span></li>
-                      <% end %>
+                      <li class="sub">
+                        <span><%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %></span>
+                      </li>
+                  <% end %>
               <% end %>
               <% if @current_user.can_view_page? @page %>
                   <li class="sub"><span><%= icon_tag('rss.png', :alt => 'RSS') %></span>

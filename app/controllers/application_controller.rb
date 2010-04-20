@@ -22,9 +22,9 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_user
   before_filter :set_locale
-  #before_filter :set_facebook_session
-  #before_filter :fetch_logged_in_user
-  #helper_method :facebook_session
+  before_filter :set_facebook_session
+  before_filter :fetch_logged_in_user
+  helper_method :facebook_session
 
   def set_user
     if session[:user_id].nil? and not cookies[:token].nil?
@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
 
   def fetch_logged_in_user
   if facebook_session
-    @current_user = User.find_by_username(facebook_session.user)
+    @current_user = User.find_by_fb_id(facebook_session.user.uid.to_i)
   else
     return unless session[:user_id]
     @current_user = User.find_by_id(session[:user_id])
