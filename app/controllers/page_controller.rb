@@ -307,6 +307,10 @@ class PageController < ApplicationController
      end
    end
 
+   def control_page  path
+    p = Page.find_by_path(path.to_a)
+    return p
+  end
 
   def edit
     render :action => :edit
