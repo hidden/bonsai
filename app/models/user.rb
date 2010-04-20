@@ -17,8 +17,7 @@ class User < ActiveRecord::Base
   
   attr_accessor :password, :password_confirmation
   attr_accessible :username, :name, :password, :password_confirmation
-
-  before_create { |user| user.generate_unique_token }
+                                                                                                                         before_create { |user| user.generate_unique_token }
   after_create { |user| user.create_user_group }
   after_destroy { |user| user.private_group.destroy }
   before_save :encrypt_password
@@ -96,6 +95,10 @@ class User < ActiveRecord::Base
   def logged?
     true
   end
+
+  def facebook_user?
+  return !fb_id.nil? && fb_id > 0
+end
 
   def create_user_group
     tmp_group = Group.find_by_name(self.username)

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100412145053) do
+ActiveRecord::Schema.define(:version => 20100414120440) do
 
   create_table "favorites", :force => true do |t|
     t.integer "user_id", :null => false
@@ -140,6 +140,8 @@ ActiveRecord::Schema.define(:version => 20100412145053) do
     t.datetime "updated_at"
     t.string   "crypted_password"
     t.string   "salt"
+    t.integer  "fb_id"
+    t.string   "email_hash"
   end
 
   add_index "users", ["token"], :name => "index_users_on_token", :unique => true

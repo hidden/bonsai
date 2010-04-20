@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   ssl_allowed :login
   before_filter :not_logged_in, :only => [:new, :create]
+
   def new
     @user = User.new
   end
@@ -18,15 +19,25 @@ class UsersController < ApplicationController
 
   def login
     session[:return_to] = request.referer if params[:commit]
-    if APP_CONFIG['authentication_method'] == 'openid' then
-      open_id_authentication
-    else
-      ldap_authentification
+    case APP_CONFIG['authentication_method']
+      when "openid"     then
+        open_id_authentication
+      when "ldap"       then
+        ldap_authentification
+      when "ldap-stub"       then
+        ldap_authentification
+      when "facebook"   then
+        fb_post_authentification
+      else #TODO 
     end
   end
 
   def logout
     flash[:notice] = t(:logout)
+    if @current_user.facebook_user?
+      clear_fb_cookies!
+      clear_facebook_session_information
+    end
     cookies.delete :token
     session[:user_id] = nil
     session[:last_visit] = nil
@@ -43,6 +54,20 @@ class UsersController < ApplicationController
     redirect_to :back
   end
 
+  def facebook
+    if @current_user.nil?
+      #register with fb
+      create_from_fb_connect(facebook_session.user)
+      #user = User.find_by_fb_user(facebook_session.user)
+      #redirect_to edit_user_path(user)
+      redirect_to :back
+    else
+      #connect accounts
+      @current_user.link_fb_connect(facebook_session.user.id) unless @current_user.fb_id == facebook_session.user.id
+      redirect_to :back
+    end
+  end
+
   private
   def user_authenticated_by_password(username, password)
     user = User.find_by_username(username)
@@ -52,8 +77,8 @@ class UsersController < ApplicationController
 
   def ldap_authentification
     return unless params[:username]
-      authenticator =  APP_CONFIG['authentication_method'] == 'ldap-stub' ? SimpleLDAP::Stub : SimpleLDAP
-      data = authenticator.authenticate(params[:username], params[:password], APP_CONFIG['ldap']['host'], APP_CONFIG['ldap']['port'], APP_CONFIG['ldap']['base_dn'])
+    authenticator =  APP_CONFIG['authentication_method'] == 'ldap-stub' ? SimpleLDAP::Stub : SimpleLDAP
+    data = authenticator.authenticate(params[:username], params[:password], APP_CONFIG['ldap']['host'], APP_CONFIG['ldap']['port'], APP_CONFIG['ldap']['base_dn'])
     if data.nil? and !user_authenticated_by_password(params[:username], params[:password])
       failed_login
     else
@@ -90,9 +115,9 @@ class UsersController < ApplicationController
     identity_url = params[:openid_identifier]
 
     if Rails.env.test?
-        if !validate_url(identity_url)
-          failed_login
-        else
+      if !validate_url(identity_url)
+        failed_login
+      else
         if control_user(identity_url)
           name = "openid"
           user = User.find_or_create_by_username(:username => identity_url, :name => name)
@@ -100,11 +125,11 @@ class UsersController < ApplicationController
           user.save
           successful_login(user)
         else
-            banned_login(identity_url)
+          banned_login(identity_url)
         end
-        end
+      end
     else
-        authenticate_with_open_id(identity_url, :optinal => [ :nickname ] ) do |result, identity_url, profile|
+      authenticate_with_open_id(identity_url, :optinal => [ :nickname ] ) do |result, identity_url, profile|
         if result.successful?
           if control_user(make_url(identity_url))
             name = profile['nickname'] || "openid"
@@ -149,5 +174,31 @@ class UsersController < ApplicationController
     redirect_to session[:return_to]
   end
 
+  def create_from_fb_connect(fb_user)
+    new_facebooker = User.new(:username => "#{facebook_session.user.last_name}_#{facebook_session.user.uid}", :password => "", :email => "")
+    new_facebooker.fb_id = facebook_session.user.uid.to_i
+    new_facebooker.name = facebook_session.user.name
+
+    #We need to save without validations
+    new_facebooker.save(false)
+    #new_facebooker.register_user_to_fb
+  end
+
+  def link_fb_connect(fb_id)
+    unless fb_id.nil?
+      #check for existing account
+      @current_user = User.find_by_fb_id(fb_id)
+
+      #unlink the existing account
+      unless existing_fb_user.nil?
+        @current_user.fb_id = nil
+        @current_user.save(false)
+      end
+
+      #link the new one
+      @current_user.fb_id = fb_id
+      @current_user.save(false)
+    end
+  end
 end
 
