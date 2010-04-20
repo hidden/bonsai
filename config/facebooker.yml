@@ -35,6 +35,19 @@ test:
     local_port: 3000
     server_alive_interval: 0
 
+cucumber:
+  api_key: ec270aa1e2f167260db1f13afaad7f69
+  secret_key: 230f374a7967944b4d31d61533ada81c
+  canvas_page_name:
+  callback_url: http://localhost:3000/
+  set_asset_host_to_callback_url: false
+  tunnel:
+    public_host_username:
+    public_host:
+    public_port: 4007
+    local_port: 3000
+    server_alive_interval: 0
+
 production:
   api_key: ec270aa1e2f167260db1f13afaad7f69 
   secret_key: 230f374a7967944b4d31d61533ada81c 
