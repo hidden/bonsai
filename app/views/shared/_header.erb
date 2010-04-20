@@ -24,6 +24,8 @@
   <%= render :partial => 'shared/rss_link' %>
   <%= javascript_include_tag 'menu.js' %>
   <%= javascript_include_tag 'addons.js' %>
+  <%= fb_connect_javascript_tag %>
+  <%= init_fb_connect "XFBML"%>
 </head>
 
 <body onload="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">

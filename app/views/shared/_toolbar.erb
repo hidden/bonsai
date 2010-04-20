@@ -36,11 +36,7 @@
               </noscript>
           <% else %>
               <%#= t(:logged_as) %><%= @current_user.full_name %>
-              <% if @current_user.facebook_user? %>
-                  |<%= fb_logout_link(t(:log_out),logout_path) %>
-              <% else %>
-                  |<%= link_to t(:log_out), logout_path, :class => "red", :title=> t(:log_out) %>
-              <% end %>
+             | <%= logout_nieco %>
           <% end %>
         </div>
 

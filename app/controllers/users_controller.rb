@@ -35,12 +35,11 @@ class UsersController < ApplicationController
   def logout
     flash[:notice] = t(:logout)
     if @current_user.facebook_user?
-    clear_fb_cookies!
-    clear_facebook_session_information
+      clear_fb_cookies!
+      clear_facebook_session_information
     end
     cookies.delete :token
     session[:user_id] = nil
-    @current_user = false
     redirect_to Page.root.get_path unless Page.root.nil?
     redirect_to "/" if Page.root.nil?
   end
@@ -175,7 +174,7 @@ class UsersController < ApplicationController
   end
 
   def create_from_fb_connect(fb_user)
-    new_facebooker = User.new(:username => "fb_#{facebook_session.user.uid}", :password => "", :email => "")
+    new_facebooker = User.new(:username => "#{facebook_session.user.last_name}_#{facebook_session.user.uid}", :password => "", :email => "")
     new_facebooker.fb_id = facebook_session.user.uid.to_i
     new_facebooker.name = facebook_session.user.name
 
@@ -185,20 +184,20 @@ class UsersController < ApplicationController
   end
 
   def link_fb_connect(fb_id)
-  unless fb_id.nil?
-    #check for existing account
-    @current_user = User.find_by_fb_id(fb_id)
+    unless fb_id.nil?
+      #check for existing account
+      @current_user = User.find_by_fb_id(fb_id)
 
-    #unlink the existing account
-    unless existing_fb_user.nil?
-      @current_user.fb_id = nil
+      #unlink the existing account
+      unless existing_fb_user.nil?
+        @current_user.fb_id = nil
+        @current_user.save(false)
+      end
+
+      #link the new one
+      @current_user.fb_id = fb_id
       @current_user.save(false)
     end
-
-    #link the new one
-    @current_user.fb_id = fb_id
-    @current_user.save(false)
   end
-end
 end
 

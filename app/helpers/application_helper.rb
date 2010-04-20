@@ -37,11 +37,24 @@ module ApplicationHelper
 
   def login_form
     case APP_CONFIG['authentication_method']
-      when "openid"     then render :partial => 'shared/openid_login'
-      when "ldap"       then render :partial => 'shared/ldap_login'
-      when "ldap-stub"       then render :partial => 'shared/ldap_login'
-      when "facebook"   then render :partial => 'shared/fb_login'
-      else p "@@@@@@@@@@@@@@@@@@@@@volaka chyba@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + APP_CONFIG['authentication_method']
+      when "openid"     then
+        render :partial => 'shared/openid_login'
+      when "ldap"       then
+        render :partial => 'shared/ldap_login'
+      when "ldap-stub"       then
+        render :partial => 'shared/ldap_login'
+      when "facebook"   then
+        render :partial => 'shared/fb_login'
+      else
+        p "@@@@@@@@@@@@@@@@@@@@@volaka chyba@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + APP_CONFIG['authentication_method']
+    end
+  end
+
+  def logout_nieco
+    if @current_user.facebook_user?
+      fb_logout_link(t(:log_out), logout_path, :class => "red")
+    else
+      link_to t(:log_out), logout_path, :class => "red", :title=> t(:log_out)
     end
   end
 
