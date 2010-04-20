@@ -2,7 +2,7 @@ class Page < ActiveRecord::Base
   acts_as_nested_set
   validates_uniqueness_of :sid, :scope => :parent_id
 
-  has_many :page_parts, :dependent => :destroy, :order => 'name'
+  has_many :page_parts, :dependent => :destroy
   has_many :page_parts_revisions, :through => :page_parts, :source => :page_part_revisions, :order => 'id DESC'
 
   has_many :page_permissions, :dependent => :destroy
@@ -22,6 +22,20 @@ class Page < ActiveRecord::Base
     indexes page_parts.current_page_part_revision.body, :as => :content
     where "was_deleted = 0"
     set_property :field_weights => {:title => 10, :part_names => 5, :content => 2}
+  end
+
+  def choose_ordering
+    case self.ordering
+      when  0
+        "id"
+      when 1
+        "name"
+      else "id"
+    end
+  end
+
+  def ordered_page_parts
+    self.page_parts.find(:all, :order => self.choose_ordering)
   end
 
   def self.find_by_path path
@@ -59,7 +73,7 @@ class Page < ActiveRecord::Base
 
   def resolve_layout
     node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", self.lft], :order => "lft DESC")
-    return (node_with_layout.nil? or node_with_layout.layout == 'default') ? 'application' : node_with_layout.layout
+    return (node_with_layout.nil?) ? 'default' : node_with_layout.layout
   end
 
   def resolve_part part_name
@@ -77,30 +91,6 @@ class Page < ActiveRecord::Base
       page_parts << current_part if current_part
     end
     return page_parts
-  end
-
-  def files
-    path = Path::UP_HISTORY + get_path
-    entries = []  #entries - vsetky subory co su v adresari upload_history pre page
-    files_without_db_entries = []  #files_without_db_entries - vsetky subory co su v adresari upload pre page
-    entries = Dir.entries(path).select {|file| File.file?(path + file) } if File.directory?(path)
-    uploaded = uploaded_files.select {|file| entries.include?(file.current_file_version.filename)}
-
-    anonym_path = Path::ANONYM_UPLOAD_PATH + get_path
-    files_without_db_entries = Dir.entries(anonym_path).select {|file| File.file?(anonym_path + file) } if File.directory?(anonym_path)
-    anonym_files = files_without_db_entries.collect do |file|
-      UploadedFile.new(:attachment_filename => file, :page_id => self.id) unless uploaded_files.collect(&:attachment_filename).include?(file)
-    end
-
-    (anonym_files.compact + uploaded).uniq.sort_by(&:attachment_filename)
-  end
-
-  def file_versions(file)
-    if ((not file.nil?) and (file.page == self))
-      file.file_versions
-    else
-      file = nil
-    end
   end
 
   def add_viewer group

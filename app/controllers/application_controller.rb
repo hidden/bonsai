@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   include PathsHelper # include paths as controller methods
-  include SslRequirement #include for https authentification
+  include SslRequirement # include for https authentification
   filter_parameter_logging :password
 
   # See ActionController::RequestForgeryProtection for details
@@ -31,14 +31,14 @@ class ApplicationController < ActionController::Base
       user_from_token = User.find_by_token(cookies[:token])
       session[:user_id] = user_from_token.id unless user_from_token.nil?
     end
-    @current_user = session[:user_id].nil? ? AnonymousUser.new(session) : User.find(session[:user_id])
+    @current_user = User.find_by_id(session[:user_id]) unless session[:user_id].nil?
+    @current_user = AnonymousUser.new(session) if @current_user.nil?
   end
 
   def set_locale
-    locale = I18n.locale = @current_user.prefered_locale.nil? ? get_locale_from_header : @current_user.prefered_locale
-    if (locale != "sk" && locale != "en")
-        I18n.locale = :en
-    end
+    locale = @current_user.prefered_locale.nil? ? get_locale_from_header : @current_user.prefered_locale
+    locale = :en if locale.nil?
+    I18n.locale = I18n.available_locales.include?(locale.to_sym) ? locale : :en
   end
 
   def not_logged_in

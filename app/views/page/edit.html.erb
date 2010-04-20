@@ -1,149 +1,23 @@
 <% if @current_user.can_manage_page? @page %>
 
-    <% definition = get_layout_definitions %>
+    <% @definition = get_layout_definitions %>
     
-    <% if (definition.length == 0)
-        user_layouts = [['Inherit', nil]] 
+    <% if (@definition.length == 0)
+        @user_layouts = [['Inherit', nil]]
        else
-        user_layouts = []
+        @user_layouts = []
       end %>
 
-    <% unless definition.nil? %>
-
+    <% unless @definition.nil? %>
     <script type="text/javascript">
-
-    function showLayoutsHelper(s){
-        /*if option value is nil, it was inherited layout */
-        var selected_value = (s.value == null || s.value == "") ? '<%= @page.parent_layout %>' : s.value;
-        //new array for layouts help
-        var layouts = new Array(<%= (definition.length + 1) %>)
-        var translation = new Array();
-
-
-    <%
-    for file in definition
-        params = get_layout_parameters(file)
-        #if option_value has the same value as found inherited layout, we set a value to nil
-        option_value = (params[0] == @page.inherited_layout) ? @page.layout.to_s : params[0]
-        #if current page has parent, but page layout was set to nil and option_value has the same value as found inherited layout
-        #that means, this is inherited layout => we set prefix Inherited
-        option_text = (!@page.parent.nil? and @page.layout.nil? and params[0] == @page.inherited_layout) ? 'Inherited (' + params[1] + ')' : params[1]
-
-        #display also option to inherit layout from parent page
-        if (!@page.parent.nil? and !@page.layout.nil? and params[0] == @page.parent_layout and @page.layout != @page.parent_layout)
-            option_text = 'Inherit (' + params[1] + ')'
-            option_value = ""
-        end
-
-        if @page.parent.nil? and @page.parent_layout == params[0]
-            option_value = ""
-        end
-        
-        user_layouts.push([option_text, option_value]) %>
-        
-        layouts['<%= params[0] %>'] = new Array(3);
-        layouts['<%= params[0] %>']['name'] = '<%= params[1] %>';
-        layouts['<%= params[0] %>']['description'] = '<%= t("layouts.#{params[0]}.description") %>';
-        layouts['<%= params[0] %>']['page_parts'] = <%= params[2].to_json %>;
-
-     <% unless params[2].nil? %>
-        translation['<%= params[0] %>'] = new Array(<%= params[2].length %>);
-       <% for p in params[2] do %>
-        translation['<%= "#{params[0]}" %>']['<%= "#{p}" %>'] = '<%= t("layouts.#{params[0]}.parts.#{p}") %>';
-       <% end %>
-     <% end %>
-
-    <% end %>
-
-        var layout_help = document.getElementById('layout_details');
-        if(layout_help != null){
-
-            var layout_message = "";
-
-            var index = s.selectedIndex;
-            var selected_text = s[index].text;
-            var find = 'Inherit';
-
-            if(selected_text.search(find) != -1){
-                layout_message += "<p>"+'<%= t(:layout_is_inherited)%>'+"<strong>"+layouts[selected_value]['name']+"</strong></p>";                     
-            }
-
-            if(!(layouts[selected_value]['description'] == null || layouts[selected_value]['description'] == "" )){
-               layout_message += "<h3>" + layouts[selected_value]['description'] + "</h3>";
-            }
-            
-            if(!(layouts[selected_value]['page_parts'] == null || layouts[selected_value]['page_parts'] == "" )){
-                layout_message += "<%= t(:layout_help_title) %>";
-                layout_message += "<ul>";
-                var layout_pp = layouts[selected_value]['page_parts'];
-                for(i=0; i < layout_pp.length; i++) {
-                    layout_message += "<li><strong>" + layout_pp[i] +" "+ "</strong>" + " " + translation[selected_value][layout_pp[i]] + "</li>";
-                }
-                layout_message += "</ul>";
-            }
-
-            layout_help.innerHTML =  layout_message;
-            /*hack for IE */
-            if(navigator.appName == "Microsoft Internet Explorer")
-                layout_help.style.display='block';
-            else
-                layout_help.blindDown();
-        }
-
-    }
+      <%= render :partial => 'new' %>
     </script>
     <% end %>
 <% end %>
 
 
 <script type="text/javascript">
-
-    var current_parts = new Array(<%= @page.page_parts.count %>);
-    function lost_focus(){
-        document.forms[0].elements["title"].focus();
-    }
-
-    function set_focus(part_name){
-        document.forms[0].elements["parts["+part_name+"]"].focus();
-    }
-
-    function show_confirm(is_edited_by_another, part_id, part_name){
-        if(is_edited_by_another && (!check_lock(part_id))){
-            lost_focus();
-            if(confirm('<%= t(:page_is_editing) %>')){
-                add_lock(part_id);
-                set_focus(part_name);
-            } else{
-                lost_focus();
-                return false;
-            }
-        } else{
-            add_lock(part_id);
-        }
-    }
-
-    function add_lock(part_id){
-        current_parts.push(part_id);
-    }
-
-    function check_lock(part_id){
-        return (current_parts.indexOf(part_id) != -1);
-    }
-</script>
-<script type="text/javascript">
-    {
-        function testManagers()
-        {
-            var managers = document.getElementsByClassName("ManagerHidden");
-            if ((managers.length) >= 2) return true;
-            else
-            {
-                alert('<%= t(:manager_error) %>');
-                return false;
-            }
-        }
-        
-    }
+    <%= render :partial => 'edit' %>
 </script>
 
 <div class="bonsai">
@@ -165,28 +39,28 @@
       <% if @current_user.can_manage_page? @page %>
           <p><%= label_tag 'layout', t(:layout) %>
 
-          <%= select_tag :layout, options_for_select(user_layouts, @page.layout.to_s),
+          <%= select_tag :layout, options_for_select(@user_layouts, @page.layout.to_s),
                :onchange => 'javascript:showLayoutsHelper(this)' %>
           </p>
           <div id="layout_details" class="lighter_bg" style="display:none;">
           </div>
       <% end %>
 
-      <% for part in @page.page_parts %>
+      <% for part in @page.ordered_page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
-              <div id="page_part_id_<%= part.id %>" style="width:100%">
-                <div class="page_part_listing" style="width:50%">
-                  <span><%= part.name %></span>
+              <div id="page_part_id_<%= part.id %>" class="width100">
+                <div class="page_part_listing">
+                  <%= text_field_tag("parts_name[#{part.name}]", part.name) %>
                   <% if @page.page_parts.count > 1 %>
                   <div class="page_part_edit_remove_link">
-                    <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}"} %>
+                    <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id),  :confirm => t(:'are_you_sure_to_delete_part'),  :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)}%>
                   </div>
                   <% end %>    
-                  <div class="page_part_edit_remove_link" onclick="return toggleDivDiv(event)">
-                    <%= image_tag ('icons/edit_big.gif',:alt =>'') %>
+                  <div class="page_part_edit_remove_link" onclick="return toggleDiv('textarea_id_<%= part.id %>')">
+                    <%= image_tag ('icons/edit_big.gif',:alt =>'Edit') %>
                   </div>
                 </div>
-                <div<%= ' style="display:none;"' unless part.name == 'body' %> style="width:100%" >
+                <div<%= ' style="display:none;"' unless part.name == 'body' %> class="width100" id="textarea_id_<%= part.id %>" >
                   <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
 
                   <% if part == @page_part %>
@@ -206,9 +80,6 @@
 
                   <% end %>
                   <%= render :partial => 'maruku_help' %>
-                  <p>
-                    <%= label_tag "parts_name[#{part.name}]", t(:name_of_page_part) %> <%= text_field_tag("parts_name[#{part.name}]", part.name) %><br/><br/>
-                  </p>
                 </div>
               </div>
           <% end %>
@@ -222,8 +93,8 @@
         <% end %>
       </p>
 
-      <p><%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:add_new_page_part) %></a>.</p>
-      <div style="display: none;">
+      <p><%= t(:or) %> <a href="#" onclick="return toggleDiv('add_new_page_part');"><%= t(:add_new_page_part) %></a>.</p>
+      <div style="display: none;" id="add_new_page_part">
         <p>
           <%= label_tag t(:new_part_name) %><br />
           <%= text_field_tag('new_page_part_name') %>
@@ -233,21 +104,29 @@
         </p>
         <%= render :partial => 'maruku_help' %>
       </div>
+      <% if @current_user.can_manage_page? @page %>
+      <p><a href="#" onclick="return toggleDiv('more_options');"><%= t("more_options") %></a></p>
+      <div style="display: none;" id="more_options">
+        <%= t :page_parts_ordering%>
+        <%= select_tag "ordering", "<option value='0' #{'selected=\"selected\"' if @page.ordering==0}>#{t("order_by_date")}</option><option value='1' #{'selected=\"selected\"' if @page.ordering==1}>#{t("order_by_name")}</option>" %>
+      </div>
+      <% end %>
 
       <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
-      <p><%= submit_tag t(:save) , :class=> "small_button", :onclick => "subm('edit_form','save');" %>
-      <%= submit_tag t(:preview), :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
+      <p><%= submit_tag t(:save), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+      <%= submit_tag t(:preview), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
     </div>
 
     <div class="main_content_right" style="width:244px;">
 
     <!-- FILES -->
-    <h3><%= t(:files) %></h3>
-    <div class="files lighter_bg">
+      <div class="files lighter_bg">
+      <h3><%= t(:files) %></h3>
+
       <% if @page.uploaded_files.empty? then %>
           <%= t(:no_files_uploaded) %>
       <% else %>
-          <table class="files_history" style="width:250px;">
+          <table class="files_history">
             <thead>
             <tr>
               <th></th>
@@ -281,9 +160,10 @@
 
       <br />
       <div>
-        <%= t(:or) %> <a href="#" onclick="return toggleDiv(event);"><%= t(:attach_file) %></a>.
+        <a href="#" onclick="return toggleDiv('attach_file');"><%= t(:attach_file) %>?</a>.
       </div>
-      <div style="display: none;">
+      <div style="display: none;" id='attach_file'>
+        <br/>
         <div>
           <label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data, :size =>'20' %></label>
         </div>
@@ -296,8 +176,9 @@
 
      <% if @current_user.can_manage_page? @page %>
     <!--PAGE PERMISIONS -->
-    <h3><%= t(:permissions_for) %></h3>
     <div class="lighter_bg" id="permissions">
+    <h3><%= t(:permissions_for) %></h3>
+
 
       <%#= render :partial => 'page/remove_permission' %>
       <table class="page_permisions">
@@ -378,12 +259,12 @@
 
       <% unless @page.ancestors.empty? %>
           <h3><%= t(:inherited_permissions) %></h3>
-          <table>
+          <table class="page_permisions">
             <thead>
             <tr>
-              <td><%= t(:group)%></td>
-              <td><%= t(:permission)%></td>
-              <td><%= t(:via)%></td>
+              <th><%= t(:group)%></th>
+              <th><%= t(:permission)%></th>
+              <th><%= t(:via)%></th>
             </tr>
             </thead>
             <tbody>
@@ -424,7 +305,7 @@
       <% end %>
 
 
-      <h4><%= t(:add_group_permission) %></h4>
+      <h3><%= t(:add_group_permission) %></h3>
       <% form_tag :controller => 'page', :action => 'set_permissions' do %>
           <%= text_field_tag('add_group') %> <%= select('group_role', 'type',{t(:viewer) => "1", t(:editor) => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %><br/>
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
@@ -437,7 +318,10 @@
       <div class="info_warning">
         <%= t(:permissions_warning)%>
       </div>
-       <br/> <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>.
+      <br/> 
+      <div class="files">
+        <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>.
+       </div>
       <!-- END OF PAGE PERMISIONS -->
     </div>
 <%else%>

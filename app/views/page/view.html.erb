@@ -7,7 +7,7 @@
     </div>
   </div>
   <div class="main_content">
-    <% for part in @page.page_parts %>
+    <% for part in @page.ordered_page_parts %>
         <% unless part.current_page_part_revision.was_deleted %>
             <%= markdown(part.current_page_part_revision.body) %>
         <% end %>

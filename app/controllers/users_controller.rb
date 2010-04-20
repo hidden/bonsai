@@ -31,6 +31,7 @@ class UsersController < ApplicationController
     flash[:notice] = t(:logout)
     cookies.delete :token
     session[:user_id] = nil
+    session[:last_visit] = nil
     redirect_to Page.root.get_path unless Page.root.nil?
     redirect_to "/" if Page.root.nil?
   end

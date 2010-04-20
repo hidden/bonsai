@@ -1,0 +1,13 @@
+<% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
+<% action = Array.[](t(:set_you), t(:removed_you)) %>
+<% record = object %>
+<li>
+  <span id="editor"><%= record.editor.name %></span>
+  <%= action[record.action-1] %>
+  <%= t(:as) %>
+  <span id="role"><%= perm[record.role-1] %></span>
+  <%= t(:for_group) %>
+  <span id="group"><%= record.group.name %></span>
+  <br/>
+  <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
+</li>

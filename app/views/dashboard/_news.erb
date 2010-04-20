@@ -1,39 +1,13 @@
 <span id="news_content">
 <div class="main_content">
   <h2 class="dashboard"><%= @news.length > 0 ? t(:news) : t(:no_news) %> &nbsp;
-    <span style="font-size:12px;">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>
-      )</span></h2>
+    <span class="small_link">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>)</span></h2>
   <ul class="DashboardTree">
     <% for record in @news %>
-        <% if not record['nested'].nil? %>
-            <li class="Collapsed" onclick="toggleTreeElement(this,event,6);">
-        <% else %>
-            <li>
-        <% end %>
-        <span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
-        <%= t(:at) %> <%= link_to Page.find_by_id(record['page_id']).title, Page.find_by_id(record['page_id']).get_path %>
-        <br/>
-        <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
-        &nbsp; <%= link_to t(:show_from), Page.find_by_id(record['page_id']).get_path + ";revision?revision=" + record['revision'] %>
-        <br/>
-        <% if not record['nested'].nil? %>
-            <ul style="display:none;">
-              <% for nested_record in record['nested'] %>
-                  <li>
-                    <span id="user"><%= nested_record['who'] %></span> <%= t(:edited) %> <%= nested_record['what'] %>
-                    <%= t(:at) %> <%= link_to Page.find_by_id(nested_record['page_id']).title, Page.find_by_id(nested_record['page_id']).get_path %>
-                    <br/>
-                    <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(nested_record['when'].to_time.localtime, true) + t(:after_date) %></span>
-                    &nbsp; <%= link_to t(:show_from), Page.find_by_id(nested_record['page_id']).get_path + ";revision?revision=" + nested_record['revision'] %>
-                    <br/>
-                  </li>
-              <% end %>
-            </ul>
-        <% end %>
-        </li>
+        <%= render :partial => record['type'], :object => record %>
     <% end %>
   </ul>
-  <%= will_paginate @news, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label"), :style => 'position:relative; top:60%; left:100%; background:none;' %>
+  <%= will_paginate @news, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
 </div>
 </span>
 

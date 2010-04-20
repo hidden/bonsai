@@ -6,20 +6,15 @@
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title><%=h @page.full_title unless @page.nil? %></title>
 
-  <!-- page layout style  -->
+
   <%= stylesheet_link_tag 'bonsai' %>
   <% unless @page.nil? %>
-      <!-- special layout style -->
-      <%= stylesheet_link_tag @page.resolve_layout  %>
+        <% if @stylesheet %><%= stylesheet_link_tag @stylesheet %><% end %>
   <% end %>
-  <!-- end of page layout style  -->
 
-
-  <!-- Start Syntax Highlight -->
-  
   <%= javascript_include_tag 'wmd_creator.js' %>
   <%= javascript_include_tag 'wmd.js' %>
-  <!-- End WMD Editor -->
+
   <%= javascript_include_tag :defaults, :cache => true %>
   <%= render :partial => 'shared/rss_link' %>
   <%= javascript_include_tag 'menu.js' %>
@@ -29,4 +24,3 @@
 <body onload="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
 
 <%= render :partial => 'shared/toolbar' %>
-  
