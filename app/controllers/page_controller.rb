@@ -643,6 +643,7 @@ class PageController < ApplicationController
       end
       @page.page_parts.sort! {|x, y| x.name <=> y.name } if params[:ordering]==1
       @preview_toolbar = true
+      @stylesheet = @page.resolve_layout
       render :action => :preview, :layout => layout
     end
   end

@@ -72,7 +72,7 @@ class DashboardController < ApplicationController
         end
         favorite.page_parts_revisions.all(condition).each_with_index do |revision, index|
         change['when'] = revision.created_at
-        change['who'] = revision.user.username
+        change['who'] = revision.user.name
         change['what'] = revision.page_part.name
         change['revision'] = index.to_s()
         change['page'] = revision.page_part.page

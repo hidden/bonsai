@@ -28,7 +28,7 @@ namespace :filesystem do
     backup_path = File.join('shared', 'backup', 'fs')
     backup_file = File.join(backup_path, "#{RAILS_ENV}_backup_#{datestamp}.tar")
     File.makedirs(backup_path)
-    `tar -c -f #{backup_file} -C shared upload upload_history `
+    `tar -c -f #{backup_file} -C shared upload`
 
     files = Dir.entries(backup_path).sort.reject {|folder| folder == "." or folder == ".."}
     if (files.length > period)
