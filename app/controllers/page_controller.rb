@@ -1,7 +1,7 @@
 class PageController < ApplicationController
   before_filter :load_page, :except => [:add_lock, :update_lock, :search]
   before_filter :can_manage_page_check, :only => [:manage, :set_permissions, :remove_permission, :switch_public, :switch_editable]
-  before_filter :can_edit_page_check, :only => [:edit, :update, :upload, :undo, :new_part, :files]
+  before_filter :can_edit_page_check, :only => [:add,:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :check_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
@@ -290,6 +290,23 @@ class PageController < ApplicationController
     @revision_count = @page.page_parts_revisions.count
     render :layout => false
   end
+
+  def add
+     if (params.include? 'add_page')
+       path =  (params[:path].blank? ? '' : (params[:path].to_s + '/')) + params['add_page']['new_page']
+       p = control_page (path)
+       #flash[:notice] = path
+         if (!p.blank?)
+          flash[:notice] = t(:page_exist)
+          render :action => :add
+         else
+           redirect_to ('/' + path)
+         end
+     else
+         render :action => :add
+     end
+   end
+
 
   def edit
     render :action => :edit
