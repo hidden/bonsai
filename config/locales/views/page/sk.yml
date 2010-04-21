@@ -100,7 +100,7 @@ sk:
   permissions_warning: "Všetky práva a dáta budú uložené, keď stlačíš tlačidlo Uložiť."
   permissions_error: "Nemáš manažovacie práva pre túto stránku."
   version: "Verzia"
-  date: "Dátum"
+  date_label: "Dátum"
   author: "Autor"
   part: "časť"
   file_history: "História súboru: "

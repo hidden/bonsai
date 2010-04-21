@@ -733,8 +733,6 @@ LI.Collapsed {
 
 .DashboardTree LI {
     padding: 0 0 0 18px;
-    float: left;
-    width: 100%;
     list-style: none;
     margin-bottom: 0.2em;
     margin-top: 0.5em;

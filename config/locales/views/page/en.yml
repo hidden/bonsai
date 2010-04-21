@@ -100,7 +100,7 @@ en:
   permissions_warning: "All permissions and data will be saved when you hit the Save button."
   permissions_error: "You don't have manage permissions for this page."
   version: "Version"
-  date: "Date"
+  date_label: "Date"
   author: "Author"
   part: "Part"
   file_history: "History of file: "

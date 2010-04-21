@@ -1,4 +1,3 @@
-<span id="news_content">
 <div class="main_content">
   <h2 class="dashboard"><%= @news.length > 0 ? t(:news) : t(:no_news) %> &nbsp;
     <span class="small_link">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>)</span></h2>
@@ -9,5 +8,4 @@
   </ul>
   <%= will_paginate @news, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
 </div>
-</span>
 
