@@ -40,8 +40,8 @@ function link_visible(element, show) {
     element.children[0].style.display = show;
 }
 
-function visible_remove_favorite(element, show) {
-    element.children[1].firstChild.style.visibility = show;
+function visible_remove_icon(element, show, child) {
+    element.children[child].firstChild.style.visibility = show;
 }
 
 function subm(id,type)

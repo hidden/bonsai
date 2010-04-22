@@ -47,7 +47,7 @@ en:
   add_new_page_part: "add a new page part"
   btn_new_page_part: "Add new page part"
   new_part_name: "New page part name"
-  attach_file: "attach a file to this page"
+  attach_file: "attach a new file to this page"
   save: "Save"
   preview: "Preview"
   diff_for: "Diff for"

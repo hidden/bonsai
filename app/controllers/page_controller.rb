@@ -178,7 +178,11 @@ class PageController < ApplicationController
     end
     opts = {:type => file_version.content_type, :disposition => 'inline'}
     opts[:filename] = @file.filename if @file.current_file_version == file_version
-    send_file(file_version.filename_with_path_and_version, opts)
+    if File.exist?(file_version.filename_with_path_and_version)
+      send_file(file_version.filename_with_path_and_version, opts)
+    else
+      render :action => :file_deleted
+    end
   end
 
   def parent_layout
@@ -313,6 +317,7 @@ class PageController < ApplicationController
   end
 
   def edit
+    @uploaded_files = @page.uploaded_files #.paginate(:page => params[:page], :per_page => 2)
     render :action => :edit
   end
 

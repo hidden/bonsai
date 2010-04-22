@@ -47,7 +47,7 @@ sk:
   add_new_page_part: "pridať novú časť stránky"
   btn_new_page_part: "Pridať novú časť stránky"
   new_part_name: "Meno novej časti stránky"
-  attach_file: "priložiť súbor k tejto stránke"
+  attach_file: "priložiť nový súbor k tejto stránke"
   save: "Uložiť"
   preview: "Náhľad"
   diff_for: "Porovnanie pre"
