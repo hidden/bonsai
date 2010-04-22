@@ -97,7 +97,7 @@ class PageController < ApplicationController
     @page_revision = @page.page_parts_revisions[params[:revision].to_i]
     @page_part = @page_revision.page_part
     @undo = true
-    render :action => 'edit'
+    edit
   end
 
   def switch_public
@@ -499,7 +499,7 @@ class PageController < ApplicationController
           @page_revision = revision
           if params[:non_redirect].nil?
             flash[:error] = error_message
-            render :action => :edit
+            edit
           else
             @error_flash_msg = @error_flash_msg + error_message + "\r\n"
           end
@@ -533,7 +533,7 @@ class PageController < ApplicationController
       page_part.errors.each_full { |msg| error_message << msg }
       if params[:non_redirect].nil?
         flash[:error] = error_message
-        render :action => :edit
+        edit
       else
         @error_flash_msg += error_message + "\r\n"
       end
