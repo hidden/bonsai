@@ -1,0 +1,48 @@
+#set layout help
+#unless @layout.nil?
+    #html data
+    layout = params["layout"];
+    @parent_layout = params["parent_layout"];
+
+    layout_message=""
+    inherited = false
+
+
+    #inherited
+    if layout.blank?
+      layout_message += '<p>'+t(:layout_is_inherited)+'<strong>"'
+      layout = @parent_layout
+      inherited=true
+    end
+
+    @layout = layout
+
+    if layout != 'default'
+      @stylesheet = layout + '.css'
+    end
+
+    #help params
+    params = get_layout_parameters("vendor/layouts/"+layout)
+
+
+    if inherited
+     layout_message += params[1] +'"</strong></p>'
+    end
+
+    #description
+    if !t("layouts.#{params[0]}.description").nil?
+     layout_message += "<h3>" + t("layouts.#{params[0]}.description") + "</h3>";
+    end
+
+    #page_parts
+    if !params[2].nil?
+      layout_message +=  t(:layout_help_title) + '<ul>';
+      for p_part in params[2]
+        layout_message += "<li><strong>" + p_part +" "+ "</strong>" + " " + t("layouts.#{params[0]}.parts.#{p_part}") + "</li>";
+      end
+      layout_message += "</ul>"
+    end
+
+page['layout_details'].show
+page.replace_html 'layout_details',layout_message
+

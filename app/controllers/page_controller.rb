@@ -1,5 +1,5 @@
 class PageController < ApplicationController
-  before_filter :load_page, :except => [:add_lock, :update_lock, :search]
+  before_filter :load_page, :except => [:LayoutSelect,:add_lock, :update_lock, :search]
   before_filter :can_manage_page_check, :only => [:manage, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:add,:edit, :update, :upload, :undo, :new_part, :files]
   before_filter :check_file, :only => [:view]
@@ -7,6 +7,30 @@ class PageController < ApplicationController
   before_filter :is_blank_page, :only => [:view]
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
   around_filter :rss_view_check, :only => [:rss, :rss_tree]
+
+  include PageHelper
+
+ def LayoutSelect
+  #read layout names data
+  @definition = get_layout_definitions
+
+  #basic layout settings
+  if (@definition.length == 0)
+     @user_layouts = [['Inherit', nil]]
+  else
+     @user_layouts = []
+  end
+
+  for file in @definition
+    params = get_layout_parameters(file)
+    option_text = (!@parent_id.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+    option_value = (params[0] == @parent_layout) ? '' : params[0]
+    @user_layouts.push([option_text, option_value])
+  end
+
+   return @user_layouts;
+ end
+
 
   def search
     @query = params[:q]
@@ -211,12 +235,15 @@ class PageController < ApplicationController
       @parent_layout = parent.layout
     end
 
+
     unless @parent_id.nil?
       if @parent_layout.nil?
         node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
         @parent_layout =  (node_with_layout.nil? ? 'default' : node_with_layout.layout)
       end
     end
+
+    LayoutSelect()
 
     if (!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
       unprivileged
@@ -313,6 +340,7 @@ class PageController < ApplicationController
   end
 
   def edit
+    LayoutSelect()
     render :action => :edit
   end
 

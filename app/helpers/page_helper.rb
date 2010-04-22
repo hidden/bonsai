@@ -1,16 +1,5 @@
 module PageHelper
 
-  def get_layout_definitions
-    directories =  Array.new
-    Dir.glob("vendor/layouts/*") do |directory|
-      if File::directory? directory
-        if File.exist? ("#{directory}/definition.yml")
-          directories.push directory
-        end
-      end
-    end
-    return directories
-  end
 
   def get_layout_parameters(file)
     layout = YAML.load_file("#{file}/definition.yml")
@@ -21,6 +10,17 @@ module PageHelper
     return parameters
   end
 
+   def get_layout_definitions
+    directories =  Array.new
+    Dir.glob("vendor/layouts/*") do |directory|
+      if File::directory? directory
+        if File.exist? ("#{directory}/definition.yml")
+          directories.push directory
+        end
+      end
+    end
+    return directories
+  end
 
   def image_boolean(value, title = nil)
     return value ? image_tag("icons/accept.png", :alt => 'Yes', :title => title) : image_tag("icons/delete.png", :alt => 'No', :title => title);
