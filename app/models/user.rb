@@ -39,8 +39,7 @@ class User < ActiveRecord::Base
     if self.logged? and !group_id.nil?
       group=GroupPermission.find_by_sql("SELECT * FROM group_permissions g
                                             WHERE g.group_id = '#{group_id}'
-                                            AND g.user_id = '#{self.id}'
-                                            AND (g.can_view = 1 or g.can_edit = 1)")
+                                            AND g.user_id = '#{self.id}'")
       return group.blank? ? false : true
     else
       return false
