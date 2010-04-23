@@ -26,7 +26,7 @@ class Page < ActiveRecord::Base
 
   def choose_ordering
     case self.ordering
-      when  0
+      when 0
         "id"
       when 1
         "name"

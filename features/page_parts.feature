@@ -53,6 +53,7 @@ Feature: Wiki layouting and many page parts
     Then I should see "Nested body!"
     And I should not see "This is a second part"
 
+  @wip  
   Scenario: User change ordering of page parts
     When I create "/" page
     And I add "Erika" page part with text "Erika"

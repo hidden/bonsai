@@ -42,7 +42,7 @@ Rails::Initializer.run do |config|
   config.gem 'chronic', :version => ">= 0.2.3"
   config.gem 'whenever'
   config.gem 'will_paginate', :version => '>=2.3.11'
-  config.gem 'thinking-sphinx', :lib => 'thinking_sphinx', :version => '>=1.2'
+  config.gem 'thinking-sphinx', :lib => 'thinking_sphinx', :version => '>=1.3.2'
   config.gem 'hoptoad_notifier'
 
   # config.gem "newrelic_rpm" # TODO hmm, some bug breaks routing for favorites
@@ -92,4 +92,3 @@ Rails::Initializer.run do |config|
   # Please note that observers generated using script/generate observer need to have an _observer suffix
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 end
-

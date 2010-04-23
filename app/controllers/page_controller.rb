@@ -9,11 +9,13 @@ class PageController < ApplicationController
   around_filter :rss_view_check, :only => [:rss, :rss_tree]
 
   def search
-    @query = params[:q]
+    @query = params[:search_query]
     @search_results = Page.search(
-            @query,
-            :with => {:page_ids => @current_user.find_all_accessible_pages.collect(&:id)},
-            :page => params[:page]
+      @query,
+      :conditions => {:page_ids => @current_user.find_all_accessible_pages.collect(&:id)},
+      :page => params[:page],
+      :excerpts => true,
+      :per_page => APP_CONFIG['fulltext_page_results']
     )
   end
 

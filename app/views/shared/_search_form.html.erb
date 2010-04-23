@@ -1,10 +1,11 @@
 <% form_tag search_path, :method => :get do |f| %>
 <div>
   <div class="search_input">
-<%= text_field_tag :q, @query, :class=> 'small_input' %>
+<%= text_field_tag :search_query, @query, :class=> 'small_input' %>
   </div>
   <div>
 <%= submit_tag t(:btn_search_page), :class => 'small_button', :name => nil %>
     </div>
 </div>
 <% end %>
+
