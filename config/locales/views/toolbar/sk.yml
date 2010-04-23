@@ -1,6 +1,6 @@
 sk:
   login: "Login:"
-  btn_registration: "Registacia" #TODO diakritika
+  btn_registration: "Registrácia"
   btn_log_in: "Prihlásiť"
   password: "Heslo:"
   logged_as: "Prihlásený ako: "
@@ -11,7 +11,7 @@ sk:
   manage: "Manažment"
   files: "Súbory"
   groups: "Skupiny"
-  dashboard: "Dashboard"  #TODO: kratky a vystizny nazov v sk
+  dashboard: "Nástenka"
   summary: "Sumár"
   return: "Návrat na stránku"
   rss_feed: "RSS kanál"
