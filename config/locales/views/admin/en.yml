@@ -11,7 +11,7 @@ en:
   activated: "activated"
   ad_account: "You must have Administrator account."
   for_user: "User "
-  login_banned: " has access banned. Contact administrator."
+  login_banned: "Your account is not activated. Contact administrator."
   regtime: "Registration"
   logtime: "Last login"
   adming: "Admin group"

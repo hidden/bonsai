@@ -16,7 +16,7 @@ Feature: Registration
     And I fill in "username" with "michal"
     And I fill in "password" with "heslo2"
     And I press "Log in"
-    Then I should see "You have successfully logged in."
+    Then I should see "Your account is not activated. Contact administrator."
 
   Scenario: Anonymoou user fail registration
     When I go to the main page

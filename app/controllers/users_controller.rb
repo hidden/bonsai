@@ -8,6 +8,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    @user.active = false
     if @user.save
       flash[:notice] = t(:registration_complete)
       redirect_to root_path
@@ -95,7 +96,7 @@ class UsersController < ApplicationController
         user.save
         successful_login(user)
       else
-        banned_login(params[:username])
+        banned_login
       end
     end
   end
@@ -125,7 +126,7 @@ class UsersController < ApplicationController
           user.save
           successful_login(user)
         else
-          banned_login(identity_url)
+          banned_login
         end
       end
     else
@@ -139,7 +140,7 @@ class UsersController < ApplicationController
             user.save
             successful_login(user)
           else
-            banned_login(make_url(identity_url))
+            banned_login
           end
         else
           failed_login
@@ -157,8 +158,8 @@ class UsersController < ApplicationController
   end
 
 
-  def banned_login user
-    flash[:error] = t(:for_user) + user + t(:login_banned)
+  def banned_login
+    flash[:error] = t(:login_banned)
     redirect_to session[:return_to]
   end
 

@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
-  cattr_reader :per_page
-  @@per_page = (APP_CONFIG['administrators'].nil? or APP_CONFIG['administrators']['per_page'].nil?) ? 10 : APP_CONFIG['administrators']['per_page']
+  cattr_reader :per_page #TODO wtf?
+  @@per_page = (APP_CONFIG['administrators'].nil? or APP_CONFIG['administrators']['per_page'].nil?) ? 10 : APP_CONFIG['administrators']['per_page'] #TODO wtf?
 
 
   has_many :group_permissions, :dependent => :destroy
