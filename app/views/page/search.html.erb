@@ -13,7 +13,7 @@
     <% else %>
 
         <% @search_results.each do |page| %>
-            <h2><%= link_to  page.excerpts.title, page_view_path(page) %></h2>
+            <h2><%= link_to  page.excerpts.title, page_path(page) %></h2>
             <% for part in page.page_parts %>
                 <% unless part.current_page_part_revision.was_deleted %>
                     <%

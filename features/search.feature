@@ -18,5 +18,5 @@ Feature: Wiki fulltext search
     When indexes are updated
     And I search for "korenova"
     Then I should see "korenova stranka"
-
-
+    And I follow "korenova stranka"
+    And I should see "korenova stranka"
