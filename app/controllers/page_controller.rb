@@ -104,11 +104,7 @@ class PageController < ApplicationController
 
   def switch_public
     was_public = @page.is_public?
-    if (@page.is_public?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => 2)
-    else
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => 1)
-    end
+    (@page.is_public?) ? action = "2" : action = "1"
     if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_public
@@ -116,18 +112,14 @@ class PageController < ApplicationController
         #TODO: if the @page has some public descendants, we should spread the switch to them as well
         permission.save
       end
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => action)
+      ph.save
     end
-    ph.save
-    #redirect_to manage_page_path(@page)
   end
 
   def switch_editable
     was_editable = @page.is_editable?
-    if (@page.is_editable?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => 2)
-    else
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => 1)
-    end
+    (@page.is_editable?) ? action = "2" : action = "1"
     if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_editable if !was_editable
@@ -135,9 +127,9 @@ class PageController < ApplicationController
         #TODO: if the @page has some public descendants, we should spread the switch to them as well
         permission.save
       end
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => action)
+      ph.save
     end
-    ph.save
-    #redirect_to manage_page_path(@page)
   end
 
   def remove_permission
@@ -155,9 +147,8 @@ class PageController < ApplicationController
       ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 1, :action => 2)
       ph.save
     end
-
     page_permission.destroy
-    #redirect_to manage_page_path(@page)
+
   end
 
   def process_file
@@ -334,15 +325,10 @@ class PageController < ApplicationController
       end
       for group in groups
         users = group.users
-        retVal = group.is_public?
-        retValUsers = users.include?(@current_user)
-        if (retVal || retValUsers)
+        if (group.is_public? || users.include?(@current_user))
           @page.add_viewer group if params[:group_role][:type] == "1"
           @page.add_editor group if params[:group_role][:type] == "2"
-          if params[:group_role][:type] == "3"
-            @page.add_manager group
-            @managers += 1
-          end
+          @page.add_manager group if params[:group_role][:type] == "3"
           ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => group.id, :role => params[:group_role][:type], :action => 1)
           ph.save
         end
@@ -396,11 +382,6 @@ class PageController < ApplicationController
 
     set_global_permissions
 
-    #add group permission from autocomplete
-    if not params[:add_group].nil?
-      set_permissions
-    end
-    
     @page.page_permissions.each_with_index do |permission,index|
       selectbox_value = params[permission.group.name + "_select"]
       if not selectbox_value.nil?
@@ -432,6 +413,11 @@ class PageController < ApplicationController
         end
         end
       end
+    end    
+
+    #add group permission from autocomplete
+    if not params[:add_group].nil?
+      set_permissions
     end
 
     # TODO refactor
@@ -750,8 +736,13 @@ class PageController < ApplicationController
 
   def set_global_permissions    
     #set page public or editable
-    if params[:everyone_select] == "1" && !@page.is_public?
+    if params[:everyone_select] == "1"
+    if !@page.is_public?
       switch_public
+      else if @page.is_editable?
+        switch_editable
+      end
+    end      
     else
       if params[:everyone_select] == "2" && !@page.is_editable?
         switch_editable
@@ -771,14 +762,14 @@ class PageController < ApplicationController
   def switch_editor page_permission
     if page_permission.can_edit?
       @page.remove_editor(page_permission.group)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
-      ph.save
+      action = "2"
     else
       @page.add_editor(page_permission.group)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 1)
-      ph.save
+      action = "1"
     end
     page_permission.save
+    ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => action)
+    ph.save
   end
 
   def switch_manager page_permission
