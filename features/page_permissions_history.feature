@@ -28,3 +28,15 @@ Scenario: User creates page, adds some permissions, then deletes group and this 
   And I follow "Edit"
   And I follow "PermissionsHistory"
   Then I should not see "NewGroup"
+
+Scenario: User creates page, adds some permissions and should see this in dashboard
+  Given user "matell" exists
+  When I go to the main page
+  And I login as "johno"
+  And I create "/" page
+  And I add "matell" reader permission
+  Then I logout
+  When I login as "matell"
+  And I follow "dashboard"
+  #And I follow "Show older changes"
+  Then I should see "johno sets you as Viewer for page"

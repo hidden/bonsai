@@ -17,8 +17,10 @@ class User < ActiveRecord::Base
   
   attr_accessor :password, :password_confirmation
   attr_accessible :username, :name, :password, :password_confirmation
-                                                                                                                         before_create { |user| user.generate_unique_token }
+
+  before_create { |user| user.generate_unique_token }
   after_create { |user| user.create_user_group }
+  after_create :add_last_dashboard_visit_time
   after_destroy { |user| user.private_group.destroy }
   before_save :encrypt_password
 
@@ -134,6 +136,11 @@ end
 
   def authenticated?(password)
     crypted_password == encrypt(password)
+  end
+
+  def add_last_dashboard_visit_time
+    self.last_dashboard_visit = DateTime.now
+    self.save
   end
 
 end
