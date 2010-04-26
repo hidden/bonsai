@@ -18,6 +18,21 @@ function toggleDiv(elementId) {
     return false;
 }
 
+function toggleTextAreaDiv(elementId) {
+    var element  = document.getElementById(elementId);
+    toggleDiv(elementId);
+    var areas = element.getElementsByTagName("textarea");
+    for(var i=0; i < areas.length; i++)
+    {
+        if (areas[i].visible()) {
+            areas[i].style.display = 'none';
+        } else {
+            areas[i].style.display = 'block';     
+        }
+    }
+    return false;    
+}
+
 function toggleTreeElement(Li, evt, child) {
 
     child = (typeof child == 'undefined') ? 1 : child;

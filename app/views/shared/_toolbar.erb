@@ -29,7 +29,7 @@
               <noscript>
                 <span style="display:none"/>
               </noscript>
-              <%= link_to t(:btn_registration), :controller => "users", :action => "new" %>
+              <%= link_to(t(:btn_registration), :controller => "users", :action => "new") if APP_CONFIG['allow_user_registration'] %>
               <%= link_to t(:btn_log_in), nil, :onclick=>"return toggleDiv('login_box')" %>
               <noscript>
                 </span>
