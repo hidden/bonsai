@@ -150,31 +150,25 @@ class GroupsController < ApplicationController
   end
 
   def switch_public
-    if (@group.is_public?)
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => 2)
-    else
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => 1)
-    end
+    (@group.is_public?) ? action = "2" : action = "1"
     was_public = @group.is_public?
     @group.group_permissions.each do |permission|
       permission.can_view = was_public
       permission.save
     end
+    gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => action)
     gh.save
   end
 
   def switch_editable
-    if (@group.is_editable?)
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 2)
-    else
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 1)
-    end
+   (@group.is_editable?) ? action = "2" : action = "1"
     was_editable = @group.is_editable?
     @group.group_permissions.each do |permission|
       permission.can_view = was_editable if !was_editable
       permission.can_edit = was_editable
       permission.save
     end
+    gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => action)
     gh.save
   end
 
@@ -215,6 +209,8 @@ class GroupsController < ApplicationController
         permission.save
         gh.save
         @editors = @editors - 1
+      else
+        flash[:error] = t(:editors_error)
       end
     else
       gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 1)
@@ -225,8 +221,13 @@ class GroupsController < ApplicationController
   end
 
   def set_global_permission
-    if params[:all_users_select] == "1" && !@group.is_public?
-      switch_public
+    if params[:all_users_select] == "1"
+      if !@group.is_public?
+        switch_public
+      else if @group.is_editable?
+        switch_editable
+      end
+      end
     else
       if params[:all_users_select] == "2" && !@group.is_editable?
         switch_editable
