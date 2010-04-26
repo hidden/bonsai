@@ -18,4 +18,5 @@ en:
     page_updated_with_new_revisions: "Page successfully updated, but other user made another revision during your editing."
     page_is_editing: "This page part is currently edited by another user. Do you want to continue?"
     set_language: "You set language to english."
-    editors_error: "It is not possible to delete this permission, there must be at least one editor."
+    editors_error: "It is not possible to remove this permission, there must be at least one editor."
+    manager_error: "It is not possible to remove this permission, there must be at least one manager."
