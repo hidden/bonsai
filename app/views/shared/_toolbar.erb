@@ -26,14 +26,12 @@
       <div class="menu_box">
         <div class="login">
           <% unless @current_user.logged? %>
-              <noscript>
-                <span style="display:none"/>
-              </noscript>
               <%= link_to t(:btn_registration), :controller => "users", :action => "new" %>
-              <%= link_to t(:btn_log_in), nil, :onclick=>"return toggleDiv('login_box')" %>
-              <noscript>
-                </span>
-              </noscript>
+              <script type="text/javascript">
+              <!--
+              document.write('<a href="" title="<%= t(:btn_log_in) %>" onclick="return toggleDiv(\'login_box\')"><%= t(:btn_log_in) %></a>');
+              //-->                       
+              </script>
           <% else %>
               <%#= t(:logged_as) %><%= @current_user.full_name %>
              | <%= logout_nieco %>
@@ -44,7 +42,7 @@
 
             <div class="actions">
               <% if @current_user.logged? %>
-                  <%= link_to image_tag('icons/user.png', :alt => t(:dashboard)) + " " + t(:dashboard), dashboard_page_path(@page), :title=>t(:dashboard) %>
+                  <%= link_to icon_tag('user.png', :alt => t(:dashboard)) + " " + t(:dashboard), dashboard_page_path(@page), :title=>t(:dashboard) %>
               <% end %>
             </div>
             <ul id="menu">

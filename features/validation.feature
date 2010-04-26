@@ -16,21 +16,26 @@ Feature: Wiki
    When I follow "Groups"
    Then this page is XHTML valid
    
-  Scenario: Check if new page is XHTML valid
-   And I create "/" page
-   Then this page is XHTML valid 
    
   Scenario: Check if edit page is XHTML valid
-   And I follow "Edit"
+   When I follow "Edit"
    Then this page is XHTML valid
-  
+
   Scenario: Check if history page is XHTML valid
-   And I follow "history" 
+   When I follow "History"
+   Then this page is XHTML valid
+
+ Scenario: Check if files page is XHTML valid
+   When I follow "Files" 
    Then this page is XHTML valid
   
   Scenario: Check if revision page is XHTML valid
-   When I follow "history"
+   When I follow "History"
    And I follow "Show page from revision 1"
+   Then this page is XHTML valid
+
+  Scenario: Check if dashboard page is XHTML valid
+   When I follow "dashboard"
    Then this page is XHTML valid
   
   Scenario: Check if registration page is XHTML valid
@@ -39,19 +44,7 @@ Feature: Wiki
    When I follow "Registration"
    Then this page is XHTML valid
    
-  Scenario: Check if after invalid fulltext search page is XHMTL valid
-   When I create "/" page with title "korenova stranka"
-   And I go to the main page
-   And indexes are updated
-   And I search for "korstranka"
-   Then this page is XHTML valid
-    
-  Scenario: Check if after fulltext search page is XHMTL valid
-   When I create "/" page with title "korenova stranka"
-   And I go to the main page
-   And indexes are updated
-   And I search for "korenova"
-   Then this page is XHTML valid
+  
    
     
    

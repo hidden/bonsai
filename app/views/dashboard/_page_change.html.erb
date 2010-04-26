@@ -4,20 +4,20 @@
 <% else %>
     <li>
 <% end %>
-<span id="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
+<span class="user"><%= record['who'] %></span> <%= t(:edited) %> <%= record['what'] %>
 <%= t(:at) %> <%= link_to record['page'].title, page_path(record['page']) %>
 <br/>
-<span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
+<span class="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
 &nbsp; <%= link_to t(:show_from), page_path(record['page'], :revision, :revision => record['revision'].to_s) %>
 <br/>
 <% if not record['nested'].nil? %>
     <ul class="hidden" style="display:none;">
       <% for nested_record in record['nested'] %>
           <li>
-            <span id="user"><%= nested_record['who'] %></span> <%= t(:edited) %> <%= nested_record['what'] %>
+            <span class="user"><%= nested_record['who'] %></span> <%= t(:edited) %> <%= nested_record['what'] %>
             <%= t(:at) %> <%= link_to record['page'].title, record['page'].get_path %>
             <br/>
-            <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(nested_record['when'].to_time.localtime, true) + t(:after_date) %></span>
+            <span class="time"><%= t(:before_date) + distance_of_time_in_words_to_now(nested_record['when'].to_time.localtime, true) + t(:after_date) %></span>
             &nbsp; <%= link_to t(:show_from), page_path(record['page'], :revision, :revision => nested_record['revision'].to_s) %>
             <br/>
           </li>
