@@ -91,7 +91,7 @@ class PageController < ApplicationController
       @page_parts << current_part if current_part
     end
     layout = @page.nil? ? 'application' : @page.resolve_layout
-
+    @stylesheet = @page.resolve_layout
     render :action => 'show_revision', :layout => layout
   end
 
