@@ -6,23 +6,28 @@ function initialize() {
     }
 }
 
+function switchVisibility(div){
+
+    if(navigator.appName == "Microsoft Internet Explorer"){
+        if(div.style.display=='none')
+            div.style.display='block';
+        else
+            div.style.display='none';
+    }
+    else{
+        if (div.visible()) {
+            div.blindUp();
+        } else {
+            div.blindDown();
+        }
+    }
+
+}
+
 function toggleDiv(elementId) {
     var div  = document.getElementById(elementId);
     if(div != null){
-
-       if(navigator.appName == "Microsoft Internet Explorer"){
-                if(div.style.display=='none')
-                    div.style.display='block';
-                else
-                    div.style.display='none';
-       }
-       else{
-            if (div.visible()) {
-                div.blindUp();
-            } else {
-                div.blindDown();
-            }
-        }
+      switchVisibility(div);
     }
     return false;
 }
@@ -31,13 +36,8 @@ function toggleTextAreaDiv(elementId) {
     var element  = document.getElementById(elementId);
     toggleDiv(elementId);
     var areas = element.getElementsByTagName("textarea");
-    for(var i=0; i < areas.length; i++)
-    {
-        if (areas[i].visible()) {
-            areas[i].style.display = 'none';
-        } else {
-            areas[i].style.display = 'block';     
-        }
+    for(var i=0; i < areas.length; i++){
+        switchVisibility(areas[i]);
     }
     return false;    
 }
