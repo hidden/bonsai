@@ -9,10 +9,19 @@ function initialize() {
 function toggleDiv(elementId) {
     var div  = document.getElementById(elementId);
     if(div != null){
-        if (div.visible()) {
-            div.blindUp();
-        } else {
-            div.blindDown();
+
+       if(navigator.appName == "Microsoft Internet Explorer"){
+                if(div.style.display=='none')
+                    div.style.display='block';
+                else
+                    div.style.display='none';
+       }
+       else{
+            if (div.visible()) {
+                div.blindUp();
+            } else {
+                div.blindDown();
+            }
         }
     }
     return false;
