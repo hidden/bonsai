@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   ssl_allowed :login
   before_filter :not_logged_in, :only => [:new, :create]
+  before_filter :registration_allowed, :only => [:new, :create]
 
   def new
     @user = User.new
@@ -199,6 +200,13 @@ class UsersController < ApplicationController
       #link the new one
       @current_user.fb_id = fb_id
       @current_user.save(false)
+    end
+  end
+
+  def registration_allowed
+    unless APP_CONFIG['allow_user_registration']
+      flash[:error] = I18n.t("registration_disabled")
+      redirect_to root_path
     end
   end
 end

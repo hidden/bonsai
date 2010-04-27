@@ -57,7 +57,7 @@
                         <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id), :confirm => t(:'are_you_sure_to_delete_part'), :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)} %>
                       </div>
                   <% end %>
-                  <div class="page_part_edit_remove_link" onclick="return toggleDiv('textarea_id_<%= part.id %>')">
+                  <div class="page_part_edit_remove_link" onclick="return toggleTextAreaDiv('textarea_id_<%= part.id %>')">
                     <%= image_tag ('icons/edit_big.gif', :alt =>'Edit') %>
                   </div>
                 </div>
@@ -68,7 +68,7 @@
                       <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :style=>"width:100%" %>
                   <% else %>
                       <%=
-                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :style=>"width:100%",
+                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :style=>"width:100%;#{"display:none;" unless part.name == 'body' }",
                                         :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock", :part_id => part.id}
                                         )
                       %>
@@ -94,7 +94,7 @@
         <% end %>
       </p>
 
-      <p><%= t(:or) %> <a href="#" onclick="return toggleDiv('add_new_page_part');"><%= t(:add_new_page_part) %></a>.
+      <p><%= t(:or) %> <a href="#" onclick="return toggleTextAreaDiv('add_new_page_part');"><%= t(:add_new_page_part) %></a>.
       </p>
 
       <div style="display: none;" id="add_new_page_part">
@@ -104,7 +104,7 @@
         </p>
 
         <p>
-          <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80} %>
+          <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80, :style => "display:none;"} %>
         </p>
         <%= render :partial => 'maruku_help' %>
       </div>

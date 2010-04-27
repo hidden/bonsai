@@ -315,7 +315,7 @@ class PageController < ApplicationController
   end
 
   def set_permissions
-    addedgroups = params[:add_group].split(",")
+    addedgroups = params[:add_group].split(/[ ]*, */)
     for addedgroup in addedgroups
       groups = Group.find_all_by_name(addedgroup)
       unless groups.any? then
@@ -334,7 +334,6 @@ class PageController < ApplicationController
         end
       end
     end
-    #redirect_to manage_page_path(@page)
   end
 
   def remove_page_part
@@ -737,12 +736,12 @@ class PageController < ApplicationController
   def set_global_permissions    
     #set page public or editable
     if params[:everyone_select] == "1"
-    if !@page.is_public?
-      switch_public
+      if !@page.is_public?
+        switch_public
       else if @page.is_editable?
         switch_editable
       end
-    end      
+      end
     else
       if params[:everyone_select] == "2" && !@page.is_editable?
         switch_editable
@@ -779,6 +778,8 @@ class PageController < ApplicationController
         @managers = @managers - 1
         ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
         ph.save
+      else
+        flash[:error] = t(:manager_error)
       end
     else
       @page.add_manager(page_permission.group)
