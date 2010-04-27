@@ -1,7 +1,7 @@
 <div id="toolbar" class="bonsai">
-  <% if @preview_toolbar %>
+  <% if @preview_toolbar || @history_toolbar %>
       <div class=preview>
-        <%= t(:preview_info) %> <%= link_to  t(:close), "JavaScript:window.close()" %>
+         <%= @preview_toolbar ? t(:preview_info) : "" %> <%= link_to  t(:close), "JavaScript:window.close()" %>
       </div>
   <% else %>
       <div class="search_box">

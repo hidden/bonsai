@@ -12,15 +12,10 @@ class GroupsController < ApplicationController
 
   def permissions_history
     @group = Group.find(params[:id])
-    #@permissions_history = GroupPermissionsHistory.find_all_by_group_id(@group.id) #:joins => 'JOIN users e ON e.id = editor_id', :order => 'created_at DESC')
-    #stmnt =  "SELECT p.id, p.user_id, p.editor_id, p.group_id, p.role, p.action, u.username, u2.username as editor FROM group_permissions_histories p JOIN users u ON u.id = user_id  JOIN users u2 ON u2.id = p.editor_id WHERE group_id = ???"
-    #stmnt["???"] = @group.id.to_s()
-    #@permissions_history = GroupPermissionsHistory.find_by_sql(stmnt)
     @permissions_history = GroupPermissionsHistory.paginate( :all,:conditions => "group_id='#{@group.id}'", :include => [:user, :editor], :per_page => 20, :page => params[:page], :order => 'created_at DESC')
-    @no_toolbar = true
-    #return render('groups/permissions_history')
+    @history_toolbar = true
     respond_to do |format|
-      format.html # index.html.erb
+      format.html 
       format.xml do
         render 'groups/permissions_history'
       end

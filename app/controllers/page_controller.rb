@@ -25,7 +25,7 @@ class PageController < ApplicationController
 
   def permissions_history
     @permissions_history = PagePermissionsHistory.paginate( :all, :conditions => {:page_id => @page.id}, :include => [:user, :group], :per_page => 20, :page => params[:page], :order => 'id DESC')
-    @no_toolbar = true
+    @history_toolbar = true
   end
 
   def view
