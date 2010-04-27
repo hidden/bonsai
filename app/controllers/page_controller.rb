@@ -381,38 +381,7 @@ class PageController < ApplicationController
 
     set_global_permissions
 
-    @page.page_permissions.each_with_index do |permission,index|
-      selectbox_value = params[permission.group.name + "_select"]
-      if not selectbox_value.nil?
-        opravnenie = 0;
-        (permission.can_view || @page.is_public?) ? opravnenie = 1 : opravnenie = opravnenie
-        (permission.can_edit || @page.is_editable?) ? opravnenie = 2 : opravnenie = opravnenie
-        (permission.can_manage) ? opravnenie = 3 : opravnenie = opravnenie
-
-        if (selectbox_value == '1')
-          if opravnenie == 2
-            switch_editor permission
-          end
-          if opravnenie == 3 && @managers >= 2
-            switch_manager permission
-            switch_editor permission
-          end
-        else if (selectbox_value == '2')
-          if opravnenie == 1
-            switch_editor permission
-          end
-          if opravnenie == 3
-            switch_manager permission
-          end
-        else if (selectbox_value == '3')
-          if opravnenie == 1 || opravnenie == 2
-            switch_manager permission
-          end
-        end
-        end
-        end
-      end
-    end    
+    set_dropdown_permissions
 
     #add group permission from autocomplete
     if not params[:add_group].nil?
@@ -758,6 +727,38 @@ class PageController < ApplicationController
     end
   end
 
+  def set_dropdown_permissions
+    @page.page_permissions.each do |permission|
+      selectbox_value = params[permission.group.name + "_select"]
+      if not selectbox_value.nil?
+        opravnenie = get_permission permission
+
+        if (selectbox_value == '1')
+          if opravnenie == 2
+            switch_editor permission
+          end
+          if opravnenie == 3 && @managers >= 2
+            switch_manager permission
+            switch_editor permission
+          end
+        else if (selectbox_value == '2')
+          if opravnenie == 1
+            switch_editor permission
+          end
+          if opravnenie == 3
+            switch_manager permission
+          end
+        else if (selectbox_value == '3')
+          if opravnenie == 1 || opravnenie == 2
+            switch_manager permission
+          end
+        end
+        end
+        end
+      end
+    end
+  end
+
   def switch_editor page_permission
     if page_permission.can_edit?
       @page.remove_editor(page_permission.group)
@@ -787,5 +788,13 @@ class PageController < ApplicationController
       ph.save
     end
     page_permission.save
+  end
+
+  def get_permission permission
+    opravnenie = 0;
+    (permission.can_view || @page.is_public?) ? opravnenie = 1 : opravnenie = opravnenie
+    (permission.can_edit || @page.is_editable?) ? opravnenie = 2 : opravnenie = opravnenie
+    (permission.can_manage) ? opravnenie = 3 : opravnenie = opravnenie
+    return opravnenie
   end
 end
