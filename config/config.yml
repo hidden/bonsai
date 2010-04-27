@@ -6,7 +6,7 @@ defaults: &defaults
   #ldap-stub is ussualy used in develeopment enviroment (username==pasword)
   #openid means that wiki will be accessible only for users having openid account
   #facebook means that wiki will be accessible only for users having facebook account
-  allow_user_registration: true  
+  allow_user_registration: false  
   ldap:
     port: 389
     host: ldap.stuba.sk

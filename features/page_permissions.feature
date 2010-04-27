@@ -198,7 +198,7 @@ Feature: Secure wiki
     And I create "TestGroup" group
     And I add "jozo" viewer to "TestGroup" group
     And I add "fero" viewer to "TestGroup" group
-    And I go to /groups/autocomplete_for_groups?infix=Test
+    And I go to /w/groups/autocomplete_for_groups?infix=Test
     And I should see "TestGroup"
     And I should see "jano"
     And I should see "jozo"
@@ -213,7 +213,7 @@ Feature: Secure wiki
     And I create "TestGroup" group
     And I add "jozo" viewer to "TestGroup" group
     And I add "fero" viewer to "TestGroup" group
-    And I go to /groups/autocomplete_for_groups?infix=jan
+    And I go to /w/groups/autocomplete_for_groups?infix=jan
     And I should see "TestGroup"
 
   @wip  

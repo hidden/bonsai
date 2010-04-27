@@ -11,7 +11,7 @@ def path_to(page_name)
       "/some/nested/page/"
 
     when /the registration page/i
-      "/users/new/"
+      "/w/users/new/"
 
     else
       page_name
