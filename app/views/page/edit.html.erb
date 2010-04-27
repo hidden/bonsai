@@ -309,7 +309,7 @@
               <div id="autocomplete" style="display: none;" class="autocomplete"></div>
               <script type="text/javascript">
                   //<![CDATA[
-                  var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '/groups/autocomplete_for_groups', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
+                  var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '<%= autocomplete_for_groups_groups_path %>', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
                   //]]>
               </script>
           <% end %>
