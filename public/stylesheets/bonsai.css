@@ -86,7 +86,7 @@ body {
 }
 
 .autocomplete {
-    width: 244px !important;
+    width: 235px !important;
 }
 
 .autocomplete ul {
@@ -233,6 +233,9 @@ input[type="text"].small_input:focus, input[type="password"].small_input:focus, 
     border:none;
 }
 
+.main_content_right input[type="text"]#add_group{
+    width: 145px;    
+}
 
 /* menu_box */
 .login{
@@ -382,11 +385,20 @@ ul#menu li ul li.small{
     float:right;
     width:244px;
     background:transparent;
-    padding:0 33px;
+    padding:0 28px;
 }
 .main_content_right h3{
     font-size:14px;
 
+}
+
+.main_content_right .files h3{
+    margin-top:0px;
+}
+
+.main_content_right .lighter_bg{
+    margin-top:33px;
+    padding:3px;
 }
 
 .header{
