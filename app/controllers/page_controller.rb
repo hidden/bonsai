@@ -1,4 +1,8 @@
 class PageController < ApplicationController
+  caches_page :index
+  caches_action :view
+  cache_sweeper :page_sweeper, :only => [:update]
+
   before_filter :load_page, :except => [:add_lock, :update_lock, :search]
   before_filter :can_manage_page_check, :only => [:manage, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:add,:edit, :update, :upload, :undo, :new_part, :files]
@@ -149,6 +153,10 @@ class PageController < ApplicationController
     end
     page_permission.destroy
 
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
+    end
   end
 
   def process_file
@@ -352,14 +360,7 @@ class PageController < ApplicationController
     end
   end
 
-  #TODO toto tu nema co hladat
-  def remove_pages_from_cache
-    pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?", @page.lft, @page.rgt])
 
-    pages.each do |page|
-      expire_fragment(page.id)
-    end
-  end
 
   def save_edit
     if params.include?('Preview')
@@ -431,8 +432,7 @@ class PageController < ApplicationController
     end
 
     update
-
-    remove_pages_from_cache
+    #@page.remove_pages_from_cache
     
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
