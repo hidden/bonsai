@@ -138,21 +138,24 @@ class PageController < ApplicationController
 
   def remove_permission
     page_permission = @page.page_permissions[params[:index].to_i]
-
-    if (page_permission.can_manage?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
-      ph.save
+    managers = get_num_of_managers
+    if ((page_permission.can_manage? && managers >= 2) || !page_permission.can_manage?)
+      if (page_permission.can_manage?)
+        ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
+        ph.save
+      end
+      if (page_permission.can_edit? || @page.is_editable?)
+        ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
+        ph.save
+      end
+      if (page_permission.can_view? || @page.is_public?)
+        ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 1, :action => 2)
+        ph.save
+      end
+      page_permission.destroy
+    else
+      flash[:error] = t(:manager_error)
     end
-    if (page_permission.can_edit? || @page.is_editable?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
-      ph.save
-    end
-    if (page_permission.can_view? || @page.is_public?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 1, :action => 2)
-      ph.save
-    end
-    page_permission.destroy
-
     respond_to do |format|
       format.html { redirect_to :back }
       format.js
@@ -373,12 +376,6 @@ class PageController < ApplicationController
     end
     @error_flash_msg = ""
     @notice_flash_msg = ""
-    @managers = 0;
-    @page.page_permissions.each_with_index do |permission, index|
-      if permission.can_manage?
-        @managers += 1
-      end
-    end
 
     set_global_permissions
 
@@ -728,6 +725,7 @@ class PageController < ApplicationController
   end
 
   def set_dropdown_permissions
+    @managers = get_num_of_managers
     @page.page_permissions.each do |permission|
       selectbox_value = params[permission.group.name + "_select"]
       if not selectbox_value.nil?
@@ -796,5 +794,10 @@ class PageController < ApplicationController
     (permission.can_edit || @page.is_editable?) ? opravnenie = 2 : opravnenie = opravnenie
     (permission.can_manage) ? opravnenie = 3 : opravnenie = opravnenie
     return opravnenie
+  end
+
+  def get_num_of_managers
+    managers = PagePermission.find_all_by_page_id(@page.id, :conditions => "can_manage = 1")
+    return managers.length
   end
 end
