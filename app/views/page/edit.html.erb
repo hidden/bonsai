@@ -124,209 +124,190 @@
 
     <div class="main_content_right" style="width:244px;">
 
-    <!-- FILES -->
-    <div class="files lighter_bg">
-      <h3><%= t(:files) %></h3>
-
-      <% if @uploaded_files.empty? then %>
-          <%= t(:no_files_uploaded) %>
-      <% else %>
-          <% for file in @uploaded_files %>
-              <p onmouseover="visible_remove_icon(this, 'visible', 2)" onmouseout="visible_remove_icon(this, 'hidden', 2)">
-                <% if (not file.current_file_version.nil?) %>
-                    <%= file_type_image_tag(file) %> &nbsp;
-                    <%= link_to truncate(file.filename), file.filename, :title => file.filename %> &nbsp;
-                    <% if (file.versions.length > 1) %>
-                        <%= link_to icon_tag('file_rev.png', :alt => t(:history), :title => t(:history)), file_history_page_path(@page, file.filename), :style => 'visibility:hidden' %>
-                    <% end %>
-                <% else %>
-                    <%= file_type_image_tag(file) %>
-                    <%= link_to file.filename, file.filename %>
-                    <%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %>
-                <% end %>
-              </p>
-          <% end %>
-      <% end %>
-      <%#= will_paginate @uploaded_files, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
-      <br/>
-
-      <div>
-        <a href="#" onclick="return toggleDiv('attach_file');"><%= t(:attach_file) %></a>
-      </div>
-      <div style="display: none;" id='attach_file'>
-        <br/>
-
+      <!-- FILES -->
+      <div class="files lighter_bg" onmouseover="enable_js('nojs', 'js')">
+        <h3><%= t(:files) %></h3>
+        <div id="files">
+            <%= render :partial => 'files' %>
+        </div>     
         <div>
-          <label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data, :size =>'20' %></label>
+          <a href="#" onclick="return toggleDiv('attach_file');"><%= t(:attach_file) %></a>
         </div>
-        <div class="info_warning">
-          <%= t(:files_warning) %>
-        </div>
-      </div>
-    </div>
-    <!-- END OF FILES -->
-
-    <% if @current_user.can_manage_page? @page %>
-        <!--PAGE PERMISIONS -->
-        <div class="lighter_bg" id="permissions">
-          <h3><%= t(:permissions_for) %></h3>
-
-
-          <%#= render :partial => 'page/remove_permission' %>
-          <table class="page_permisions">
-            <thead>
-            <tr>
-              <th><%= t(:group) %></th>
-              <th><%= t(:permission) %></th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <% @page.page_permissions.each_with_index do |permission, index| %>
-                <tr id="group_<%= index %>">
-                  <% opravnenie = 0 %>
-
-                  <% if permission.group.users.include? @current_user %>
-                      <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) ||(permission.can_view?) )
-                          opravnenie = 1
-                      end %>
-
-                      <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
-                          opravnenie = 2
-                      end %>
-
-                      <% if permission.can_manage?
-                          opravnenie = 3
-                      end %>
-                  <% else %>
-
-                      <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) || (permission.can_view?))
-                          opravnenie = 1
-                      end %>
-
-                      <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
-                          opravnenie = 2
-                      end %>
-
-                      <% if permission.can_manage?
-                          opravnenie = 3
-                      end %>
-                  <% end %>
-
-
-                  <% if opravnenie > 0 %>
-                      <td><%= h  permission.group.name %></td>
-                      <td>
-                        <select name="<%= permission.group.name %>_select" id="<%= permission.group.name %>_select">
-                          <% if !(@page.is_editable?) %>
-                              <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t(:viewer) %></option>
-                          <% end %>
-                          <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t(:editor) %></option>
-                          <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
-                        </select>
-                      </td>
-
-                      <td>
-                        <% if opravnenie == 3 %>
-                            <div class="ManagerHidden" style="visibility:hidden"></div>
-                            <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers()", :href => _remove_permission_path(@page, index), :confirm => t(:'are_you_sure_to_remove_permission') %>
-                        <% else %>
-                            <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :href => _remove_permission_path(@page, index), :confirm => t(:'are_you_sure_to_remove_permission') %>
-                        <% end %>
-                      </td>
-                  <% end %>
-                </tr>
-            <% end %>
-            <tr>
-              <td><%= t(:everyone) %></td>
-              <!-- <td><%#= link_to image_boolean(@page.is_public?, t(:toggle)), switch_public_path(@page), {:method => :post} %></td> -->
-              <td colspan="2"><select name="everyone_select" id="everyone_select">
-                <option selected="selected">-</option>
-                <option value="1" <%= @page.is_public? ? selected = "selected": "" %> ><%= t(:can_view) %></option>
-                <option value="2" <%= @page.is_editable? ? selected = "selected" : "" %> ><%= t(:can_edit) %></option>
-              </select>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-
-          <% unless @page.ancestors.empty? %>
-              <h3><%= t(:inherited_permissions) %></h3>
-              <table class="page_permisions">
-                <thead>
-                <tr>
-                  <th><%= t(:group) %></th>
-                  <th><%= t(:permission) %></th>
-                  <th><%= t(:via) %></th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @page.ancestors.each do |ancestor| %>
-
-                    <% ancestor.page_permissions.each do |permission| %>
-                        <tr>
-                          <td><%= h  permission.group.name %></td>
-
-                          <% opravnenie = 0 %>
-                          <% if ancestor.is_public? %>
-                              <% opravnenie = 1 %>
-                          <% else %>
-                              <% if permission.can_view?
-                                  opravnenie = 1
-                              end %>
-                          <% end %>
-                          <% if ancestor.is_editable? %>
-                              <% opravnenie = 2 %>
-                          <% else %>
-                              <% if permission.can_edit?
-                                  opravnenie = 2
-                              end %>
-                          <% end %>
-                          <td>
-                            <% if permission.can_manage?
-                                opravnenie = 3
-                            end %>
-                            <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
-                            <%= perm[opravnenie-1] %>
-                            <% if opravnenie == 3 %>
-                                <div class="ManagerHidden" style="visibility:hidden"></div>
-                            <% end %>
-                          </td>
-                          <td><%= ancestor.sid %></td>
-                        </tr>
-                    <% end %>
-                <% end %>
-                </tbody>
-              </table>
-          <% end %>
-
-
-          <h3><%= t(:add_group_permission) %></h3>
-          <% form_tag :controller => 'page', :action => 'set_permissions' do %>
-              <%= text_field_tag('add_group') %> <%= select('group_role', 'type', {t(:viewer) => "1", t(:editor) => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %>
-              <br/>
-
-              <div id="autocomplete" style="display: none;" class="autocomplete"></div>
-              <script type="text/javascript">
-                  //<![CDATA[
-                  var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '/groups/autocomplete_for_groups', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
-                  //]]>
-              </script>
-          <% end %>
-          <div class="info_warning">
-            <%= t(:permissions_warning) %>
-          </div>
+        <div style="display: none;" id='attach_file'>
           <br/>
 
-          <div class="files">
-            <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>
-            .
+          <div>
+            <label for="file_version"><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data, :size =>'20' %>
+            </label>
           </div>
-          <!-- END OF PAGE PERMISIONS -->
+          <div class="info_warning">
+            <%= t(:files_warning) %>
+          </div>
         </div>
-    <% else %>
-        <%= t(:permissions_error) %>
-    <% end %>
+      </div>
+      <!-- END OF FILES -->
+
+      <% if @current_user.can_manage_page? @page %>
+          <!--PAGE PERMISIONS -->
+          <div class="lighter_bg" id="permissions">
+            <h3><%= t(:permissions_for) %></h3>
+
+
+            <%#= render :partial => 'page/remove_permission' %>
+            <table class="page_permisions">
+              <thead>
+              <tr>
+                <th><%= t(:group) %></th>
+                <th><%= t(:permission) %></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @page.page_permissions.each_with_index do |permission, index| %>
+                  <tr id="group_<%= index %>">
+                    <% opravnenie = 0 %>
+
+                    <% if permission.group.users.include? @current_user %>
+                        <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) ||(permission.can_view?) )
+                            opravnenie = 1
+                        end %>
+
+                        <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
+                            opravnenie = 2
+                        end %>
+
+                        <% if permission.can_manage?
+                            opravnenie = 3
+                        end %>
+                    <% else %>
+
+                        <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) || (permission.can_view?))
+                            opravnenie = 1
+                        end %>
+
+                        <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
+                            opravnenie = 2
+                        end %>
+
+                        <% if permission.can_manage?
+                            opravnenie = 3
+                        end %>
+                    <% end %>
+
+
+                    <% if opravnenie > 0 %>
+                        <td><%= h  permission.group.name %></td>
+                        <td>
+                          <select name="<%= permission.group.name %>_select" id="<%= permission.group.name %>_select">
+                            <% if !(@page.is_editable?) %>
+                                <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t(:viewer) %></option>
+                            <% end %>
+                            <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t(:editor) %></option>
+                            <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
+                          </select>
+                        </td>
+
+                        <td>
+                          <% if opravnenie == 3 %>
+                              <div class="ManagerHidden" style="visibility:hidden"></div>
+                              <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers()", :href => _remove_permission_path(@page, index), :confirm => t(:'are_you_sure_to_remove_permission') %>
+                          <% else %>
+                              <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :href => _remove_permission_path(@page, index), :confirm => t(:'are_you_sure_to_remove_permission') %>
+                          <% end %>
+                        </td>
+                    <% end %>
+                  </tr>
+              <% end %>
+              <tr>
+                <td><%= t(:everyone) %></td>
+                <!-- <td><%#= link_to image_boolean(@page.is_public?, t(:toggle)), switch_public_path(@page), {:method => :post} %></td> -->
+                <td colspan="2"><select name="everyone_select" id="everyone_select">
+                  <option selected="selected">-</option>
+                  <option value="1" <%= @page.is_public? ? selected = "selected": "" %> ><%= t(:can_view) %></option>
+                  <option value="2" <%= @page.is_editable? ? selected = "selected" : "" %> ><%= t(:can_edit) %></option>
+                </select>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <% unless @page.ancestors.empty? %>
+                <h3><%= t(:inherited_permissions) %></h3>
+                <table class="page_permisions">
+                  <thead>
+                  <tr>
+                    <th><%= t(:group) %></th>
+                    <th><%= t(:permission) %></th>
+                    <th><%= t(:via) %></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @page.ancestors.each do |ancestor| %>
+
+                      <% ancestor.page_permissions.each do |permission| %>
+                          <tr>
+                            <td><%= h  permission.group.name %></td>
+
+                            <% opravnenie = 0 %>
+                            <% if ancestor.is_public? %>
+                                <% opravnenie = 1 %>
+                            <% else %>
+                                <% if permission.can_view?
+                                    opravnenie = 1
+                                end %>
+                            <% end %>
+                            <% if ancestor.is_editable? %>
+                                <% opravnenie = 2 %>
+                            <% else %>
+                                <% if permission.can_edit?
+                                    opravnenie = 2
+                                end %>
+                            <% end %>
+                            <td>
+                              <% if permission.can_manage?
+                                  opravnenie = 3
+                              end %>
+                              <% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
+                              <%= perm[opravnenie-1] %>
+                              <% if opravnenie == 3 %>
+                                  <div class="ManagerHidden" style="visibility:hidden"></div>
+                              <% end %>
+                            </td>
+                            <td><%= ancestor.sid %></td>
+                          </tr>
+                      <% end %>
+                  <% end %>
+                  </tbody>
+                </table>
+            <% end %>
+
+
+            <h3><%= t(:add_group_permission) %></h3>
+            <% form_tag :controller => 'page', :action => 'set_permissions' do %>
+                <%= text_field_tag('add_group') %> <%= select('group_role', 'type', {t(:viewer) => "1", t(:editor) => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %>
+                <br/>
+
+                <div id="autocomplete" style="display: none;" class="autocomplete"></div>
+                <script type="text/javascript">
+                    //<![CDATA[
+                    var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '/groups/autocomplete_for_groups', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
+                    //]]>
+                </script>
+            <% end %>
+            <div class="info_warning">
+              <%= t(:permissions_warning) %>
+            </div>
+            <br/>
+
+            <div class="files">
+              <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>
+              .
+            </div>
+            <!-- END OF PAGE PERMISIONS -->
+          </div>
+      <% else %>
+          <%= t(:permissions_error) %>
+      <% end %>
     </div>
 <% end %>
 </div>

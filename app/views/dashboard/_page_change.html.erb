@@ -1,6 +1,6 @@
 <% record = object %>
 <% if not record['nested'].nil? %>
-    <li class="Collapsed" onclick="toggleTreeElement(this,event,6);">
+    <li class="Collapsed" onclick="toggleTreeElement(this,event,'sub-tree');">
 <% else %>
     <li>
 <% end %>
@@ -11,7 +11,7 @@
 &nbsp; <%= link_to t(:show_from), page_path(record['page'], :revision, :revision => record['revision'].to_s) %>
 <br/>
 <% if not record['nested'].nil? %>
-    <ul class="hidden" style="display:none;">
+    <ul class="hidden" id="sub-tree" style="display:none;">
       <% for nested_record in record['nested'] %>
           <li>
             <span id="user"><%= nested_record['who'] %></span> <%= t(:edited) %> <%= nested_record['what'] %>

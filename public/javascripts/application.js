@@ -18,10 +18,7 @@ function toggleDiv(elementId) {
     return false;
 }
 
-function toggleTreeElement(Li, evt, child) {
-
-    child = (typeof child == 'undefined') ? 1 : child;
-
+function toggleTreeElement(Li, evt, id) {
 
     if (evt.stopPropagation) {
         evt.stopPropagation();
@@ -33,15 +30,26 @@ function toggleTreeElement(Li, evt, child) {
     } else {
         Li.className = "Expanded";
     }
-    Element.toggle(Li.children[child]);
+    childs = Li.childElements();
+    for (var i = 0; i < childs.length; i++) {
+        if (childs[i].id == id) {
+            Element.toggle(childs[i]);
+            return;
+        }
+    }
 }
 
-function link_visible(element, show) {
-    element.children[0].style.display = show;
+//function link_visible(element, show) {
+//    element.children[0].style.display = show;
+//}
+
+function visible_remove_icon(id, show) {
+    document.getElementById(id).style.visibility = show;
 }
 
-function visible_remove_icon(element, show, child) {
-    element.children[child].firstChild.style.visibility = show;
+function enable_js(id1, id2) {
+    document.getElementById(id1).style.display = "none";
+    document.getElementById(id2).style.display = "inline";
 }
 
 function subm(id,type)

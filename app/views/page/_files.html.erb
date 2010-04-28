@@ -1,0 +1,25 @@
+<% if @uploaded_files.empty? then %>
+    <%= t(:no_files_uploaded) %>
+<% else %>
+    <% index = 0 %>
+    <% for file in @uploaded_files %>
+        <% index += 1 %>
+        <p onmouseover="visible_remove_icon('<%='history_'+index.to_s() %>', 'visible')" onmouseout="visible_remove_icon('<%='history_'+index.to_s() %>', 'hidden')">
+          <% if (not file.current_file_version.nil?) %>
+              <%= file_type_image_tag(file) %> &nbsp;
+              <%= link_to truncate(file.filename), file.filename, :title => file.filename %> &nbsp;
+              <% if (file.versions.length > 1) %>
+                  <%= link_to icon_tag('file_rev.png', :alt => t(:history), :title => t(:history)), file_history_page_path(@page, file.filename), :id => 'history_'+index.to_s(), :style => 'visibility:hidden' %>
+              <% end %>
+          <% else %>
+              <%= file_type_image_tag(file) %>
+              <%= link_to file.filename, file.filename %>
+              <%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %>
+          <% end %>
+        </p>
+    <% end %>
+<% end %>
+<p>
+  <%#= will_paginate @uploaded_files, :id => "js", :renderer => 'RemoteLinkRenderer', :remote => {:update => 'files'}, :previous_label => t("pagination.prev_label"), :next_label => t("pagination.next_label"), :style => 'display:none' %>
+  <%#= will_paginate @uploaded_files, :id => "nojs", :previous_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
+</p>
