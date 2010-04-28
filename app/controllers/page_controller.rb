@@ -430,7 +430,7 @@ class PageController < ApplicationController
     end
 
     update
-    #@page.remove_pages_from_cache
+
     
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
@@ -609,14 +609,6 @@ class PageController < ApplicationController
   def update_lock
     @up_part_id = params[:part_id]
     PagePartLock.create_lock(@up_part_id, @current_user)
-  end
-
-  private
-  def remove_pages_from_cache
-    pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?",  @page.lft,  @page.rgt])
-    pages.each do |page|
-      expire_fragment(page.id)
-    end
   end
 
   def generate_preview
