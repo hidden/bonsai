@@ -8,9 +8,7 @@ Scenario: User log in, set SK locale and should see slovak page
   And I follow "Editovať"
   And I should see "Prístupové práva"
   Then I follow "EN"
-
-#TODO toto je nejaky divny test, ktory funguje len vdaka zamene textu a linku odkazu na prihlasovanie 
-@wip
+ 
 Scenario: Anonymous user set language, after he/she returns, he/she should see wiki in selected language
   Given user "jozo" exists
   When I logout
@@ -18,9 +16,8 @@ Scenario: Anonymous user set language, after he/she returns, he/she should see w
   And I create "/" page
   And I follow "SK"
   Then I should see "Skupiny"
-  When I go to /users/logout
-  Then I should see "Login"
-  And I should see "Password"
+  When I follow "Odhlásiť sa"
+  And I should see "Log in"
   When I login as "jozo"
   Then I should see "Skupiny"
   And I follow "EN"
