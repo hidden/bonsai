@@ -1,10 +1,10 @@
 sk:
   login: "Login:"
   btn_registration: "Registrácia"
-  btn_log_in: "Prihlásiť"
+  btn_log_in: "Prihlásiť sa"
   password: "Heslo:"
   logged_as: "Prihlásený ako: "
-  log_out: "Odhlásiť"
+  log_out: "Odhlásiť sa"
   view: "Zobrazenie"
   history: "História"
   edit: "Editovať"
