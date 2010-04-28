@@ -305,9 +305,10 @@ class PageController < ApplicationController
        p = control_page (path)
        #flash[:notice] = path
          if (!p.blank?)
-          flash[:notice] = t(:page_exist)
+          flash[:error] = t(:page_exist)
           render :action => :add
          else
+           flash.discard
            redirect_to ('/' + path)
          end
      else
