@@ -1,6 +1,4 @@
 class PageController < ApplicationController
-  caches_page :index
-  caches_action :view
   cache_sweeper :page_sweeper, :only => [:update]
 
   before_filter :load_page, :except => [:add_lock, :update_lock, :search]
@@ -614,6 +612,13 @@ class PageController < ApplicationController
   end
 
   private
+  def remove_pages_from_cache
+    pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?",  @page.lft,  @page.rgt])
+    pages.each do |page|
+      expire_fragment(page.id)
+    end
+  end
+
   def generate_preview
     parent = nil
     unless params[:parent_id].blank?
