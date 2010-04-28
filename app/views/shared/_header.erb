@@ -13,7 +13,6 @@
   <% end %>
 
   <%= javascript_include_tag 'wmd_creator.js' %>
-  <%= javascript_include_tag 'wmd.js' %>
 
   <!-- Syntax highlighter  -->
   <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
@@ -50,7 +49,7 @@
   <%= render :partial => 'shared/rss_link' %>
   <%= javascript_include_tag 'menu.js' %>
   <%= javascript_include_tag 'addons.js' %>
-  <%= fb_connect_javascript_tag %>
+  <%= (APP_CONFIG['authentication_method'] == 'facebook')? fb_connect_javascript_tag : '' %>
   <%= init_fb_connect "XFBML"%>
 </head>
 

@@ -12,15 +12,10 @@ class GroupsController < ApplicationController
 
   def permissions_history
     @group = Group.find(params[:id])
-    #@permissions_history = GroupPermissionsHistory.find_all_by_group_id(@group.id) #:joins => 'JOIN users e ON e.id = editor_id', :order => 'created_at DESC')
-    #stmnt =  "SELECT p.id, p.user_id, p.editor_id, p.group_id, p.role, p.action, u.username, u2.username as editor FROM group_permissions_histories p JOIN users u ON u.id = user_id  JOIN users u2 ON u2.id = p.editor_id WHERE group_id = ???"
-    #stmnt["???"] = @group.id.to_s()
-    #@permissions_history = GroupPermissionsHistory.find_by_sql(stmnt)
     @permissions_history = GroupPermissionsHistory.paginate( :all,:conditions => "group_id='#{@group.id}'", :include => [:user, :editor], :per_page => 20, :page => params[:page], :order => 'created_at DESC')
-    @no_toolbar = true
-    #return render('groups/permissions_history')
+    @history_toolbar = true
     respond_to do |format|
-      format.html # index.html.erb
+      format.html 
       format.xml do
         render 'groups/permissions_history'
       end
@@ -150,31 +145,25 @@ class GroupsController < ApplicationController
   end
 
   def switch_public
-    if (@group.is_public?)
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => 2)
-    else
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => 1)
-    end
+    (@group.is_public?) ? action = "2" : action = "1"
     was_public = @group.is_public?
     @group.group_permissions.each do |permission|
       permission.can_view = was_public
       permission.save
     end
+    gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 1, :action => action)
     gh.save
   end
 
   def switch_editable
-    if (@group.is_editable?)
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 2)
-    else
-      gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 1)
-    end
+   (@group.is_editable?) ? action = "2" : action = "1"
     was_editable = @group.is_editable?
     @group.group_permissions.each do |permission|
       permission.can_view = was_editable if !was_editable
       permission.can_edit = was_editable
       permission.save
     end
+    gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => action)
     gh.save
   end
 
@@ -215,6 +204,8 @@ class GroupsController < ApplicationController
         permission.save
         gh.save
         @editors = @editors - 1
+      else
+        flash[:error] = t(:editors_error)
       end
     else
       gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 1)
@@ -225,8 +216,13 @@ class GroupsController < ApplicationController
   end
 
   def set_global_permission
-    if params[:all_users_select] == "1" && !@group.is_public?
-      switch_public
+    if params[:all_users_select] == "1"
+      if !@group.is_public?
+        switch_public
+      else if @group.is_editable?
+        switch_editable
+      end
+      end
     else
       if params[:all_users_select] == "2" && !@group.is_editable?
         switch_editable

@@ -19,7 +19,7 @@
             <%= f.text_field :name %>&nbsp;&nbsp;
           </p>
           <h2><%= t(:group_members) %></h2>
-          <table id="Groups_memberstable">
+          <table id="Groups_memberstable" class="history">
             <thead>
             <tr>
               <th><%= t(:user) %></th>
@@ -42,7 +42,9 @@
                       <option value='2' <%= (opravnenie == 2 || @group.is_editable?)? "selected='selected'" : '' %>><%= t(:editor) %></option>
                     </select>
                   </td>
-                  <td><%= link_to "<img src='../../images/icons/cancel.png'>", group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => t(:destroy_question), :id => "Remove_member_#{permission.user.id}" %></td>
+                  <td>
+                    <%= link_to icon_tag('cancel.png', :alt => t(:remove_action)), group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => t(:destroy_question), :id => "Remove_member_#{permission.user.id}", :title=>t(:remove_action) %>
+                  </td>
                 </tr>
             <% end %>
             <tr>
@@ -65,7 +67,7 @@
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
           <script type="text/javascript">
               //<![CDATA[
-              var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '/groups/autocomplete_for_user', {paramName: 'infix', method: 'get', select: 'username', tokens: ','});
+              var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '<%= autocomplete_for_user_groups_path %>', {paramName: 'infix', method: 'get', select: 'username', tokens: ','});
               //]]>
           </script>
       <%# end %>

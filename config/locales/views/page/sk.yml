@@ -129,7 +129,6 @@ sk:
   for_page: "pre stránku"
   remove_action: "zrušil"
   removed_you: "ťa zrušil"
-  manager_error: "Nemôžeš vymazať právo, musí ostať aspoň jeden manažér pre stránku."
   more_options: "Ďalšie nastavenia"
   page_parts_ordering: "Zoraďovanie častí stránky:"
   order_by_date: "Podľa dátumu"

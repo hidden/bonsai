@@ -3,6 +3,9 @@ Feature: Registration
   A user
   Should be able to register and log in
 
+  Background:
+    Given the user registration is enabled
+
   Scenario: Anonymous user make registration to wiki
     When I go to the main page
     And I follow "Registration"
@@ -33,3 +36,9 @@ Feature: Registration
     When I login as "johno"
     And I go to the registration page
     Then I should not see "New account"
+
+  Scenario: User want to visit registration page when it is disabled
+    When the user registration is disabled
+    And I should not see "Registration"
+    When I go to the registration page
+    Then I should see "User registrations are disabled."

@@ -6,16 +6,40 @@ function initialize() {
     }
 }
 
-function toggleDiv(elementId) {
-    var div  = document.getElementById(elementId);
-    if(div != null){
+function switchVisibility(div){
+
+    if(navigator.appName == "Microsoft Internet Explorer"){
+        if(div.style.display=='none')
+            div.style.display='block';
+        else
+            div.style.display='none';
+    }
+    else{
         if (div.visible()) {
             div.blindUp();
         } else {
             div.blindDown();
         }
     }
+
+}
+
+function toggleDiv(elementId) {
+    var div  = document.getElementById(elementId);
+    if(div != null){
+      switchVisibility(div);
+    }
     return false;
+}
+
+function toggleTextAreaDiv(elementId) {
+    var element  = document.getElementById(elementId);
+    toggleDiv(elementId);
+    var areas = element.getElementsByTagName("textarea");
+    for(var i=0; i < areas.length; i++){
+        switchVisibility(areas[i]);
+    }
+    return false;    
 }
 
 function toggleTreeElement(Li, evt, child) {
