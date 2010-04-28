@@ -178,4 +178,31 @@ class Page < ActiveRecord::Base
     end
     return (node_with_layout.nil? ? 'default' : node_with_layout.layout)
   end
+
+  def get_page_revisions
+      revisions=PagePartRevision.find_by_sql ["select p.id as pg_id, p.title as pg_name, p.sid as pg_path, pp.name as pg_part_name,
+                                                  (select count(p1.id) from pages p1
+                                                   right join page_parts pp1 on p1.id=pp1.page_id
+                                                   right join page_part_revisions ppr1 on pp1.id=ppr1.page_part_id
+                                                   where ppr1.id<ppr.id AND p1.id=p.id) as prev_rev_count, ppr.*
+                                            from pages p
+                                            right join page_parts pp on p.id=pp.page_id
+                                            right join page_part_revisions ppr on pp.id=ppr.page_part_id
+                                            where p.id=? order by ppr.id", self.id]
+    return revisions
+  end
+
+  def get_page_subtree_revisions user
+    ids =  user.find_all_accessible_pages.collect(&:id)
+      revisions=PagePartRevision.find_by_sql ["select p.id as pg_id, p.title as pg_name, p.sid as pg_path, pp.name as pg_part_name,
+                                                  (select count(p1.id) from pages p1
+                                                   right join page_parts pp1 on p1.id=pp1.page_id
+                                                   right join page_part_revisions ppr1 on pp1.id=ppr1.page_part_id
+                                                   where ppr1.id<ppr.id AND p1.id=p.id) as prev_rev_count, ppr.*
+                                            from pages p
+                                            right join page_parts pp on p.id=pp.page_id
+                                            right join page_part_revisions ppr on pp.id=ppr.page_part_id
+                                            where p.lft>? AND p.rgt<? AND p.id in (?) order by ppr.id", self.lft, self.rgt, ids]
+    return revisions
+  end
 end

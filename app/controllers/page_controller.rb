@@ -277,15 +277,12 @@ class PageController < ApplicationController
   end
 
   def rss
-    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "page_part_revisions.id DESC")
-    @revision_count = @page.page_parts_revisions.count
+    @recent_revisions = @page.get_page_revisions
     render :layout => false
   end
 
   def rss_tree
-    ids =  @current_user.find_all_accessible_pages.collect(&:id)
-    @recent_revisions = PagePartRevision.all(:joins => [{:page_part => :page}, :user], :conditions => ["page_parts.page_id IN (?) AND pages.lft >= ? AND pages.rgt <= ?", ids, @page.lft, @page.rgt], :limit => 20, :order => "page_part_revisions.id DESC")
-    @revision_count = @recent_revisions.length
+   @recent_revisions = @page.get_page_subtree_revisions(@current_user)
     render :layout => false
   end
 
