@@ -686,12 +686,12 @@ input[type="submit"].large_button{
 .favourite_content{
 
 }
-.pagination{
-    position:relative;
-    top:160%;
-    left:100%;
-    background:none;
-}
+/*.pagination{*/
+    /*position:relative;*/
+    /*top:160%;*/
+    /*left:100%;*/
+    /*background:none;*/
+/*}*/
 h2.dashboard, h3.favourites_title{
     background:none;
     border:none;
@@ -741,4 +741,9 @@ LI.Collapsed {
 
 .width100{
     width:100%;
+}
+
+#files {
+    height: 5em;
+    overflow-y: auto;
 }
