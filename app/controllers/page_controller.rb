@@ -1,6 +1,4 @@
 class PageController < ApplicationController
-  caches_page :index
-  caches_action :view
   cache_sweeper :page_sweeper, :only => [:update]
 
   before_filter :load_page, :except => [:add_lock, :update_lock, :search]
@@ -399,7 +397,7 @@ class PageController < ApplicationController
     end
 
     update
-    #@page.remove_pages_from_cache
+
     
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
@@ -580,7 +578,6 @@ class PageController < ApplicationController
     PagePartLock.create_lock(@up_part_id, @current_user)
   end
 
-  private
   def generate_preview
     parent = nil
     unless params[:parent_id].blank?

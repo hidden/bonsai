@@ -22,9 +22,11 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_user
   before_filter :set_locale
-  before_filter :set_facebook_session
-  before_filter :fetch_logged_in_user
-  helper_method :facebook_session
+  if (APP_CONFIG['authentication_method'] == 'facebook')
+    before_filter :set_facebook_session
+    before_filter :fetch_logged_in_user
+    helper_method :facebook_session
+  end
 
   def set_user
     if session[:user_id].nil? and not cookies[:token].nil?

@@ -414,7 +414,7 @@ ul#menu li ul li.small{
     float:left;
     height:37px;
     padding: 15px 30px;
-    min-width:450px;
+    width:100%;
 }
 
 .header_right{
