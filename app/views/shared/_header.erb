@@ -1,25 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title><%=h @page.full_title unless @page.nil? %></title>
-
-
   <%= stylesheet_link_tag 'bonsai' %>
   <% unless @page.nil? %>
         <% if @stylesheet %><%= stylesheet_link_tag @stylesheet %><% end %>
   <% end %>
-
   <%= javascript_include_tag 'wmd_creator.js' %>
-
   <!-- Syntax highlighter  -->
-  <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
-
   <%= stylesheet_link_tag 'SyntaxHighlighter/shCore.css' %>
   <%= stylesheet_link_tag 'SyntaxHighlighter/shThemeDefault.css' %>
 
+  <%= javascript_include_tag 'SyntaxHighlighter/shCore.js' %>
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushAS3.js' %>
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushBash.js' %>
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushColdFusion.js' %>
@@ -49,8 +42,10 @@
   <%= render :partial => 'shared/rss_link' %>
   <%= javascript_include_tag 'menu.js' %>
   <%= javascript_include_tag 'addons.js' %>
-  <%= (APP_CONFIG['authentication_method'] == 'facebook')? fb_connect_javascript_tag : '' %>
-  <%= init_fb_connect "XFBML"%>
+  <% if(APP_CONFIG['authentication_method'] == 'facebook') %>
+    <%=  fb_connect_javascript_tag %>
+    <%= init_fb_connect "XFBML" %>
+  <% end %>
 </head>
 
 <body onload="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
