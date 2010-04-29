@@ -202,7 +202,7 @@ class Page < ActiveRecord::Base
                                             from pages p
                                             right join page_parts pp on p.id=pp.page_id
                                             right join page_part_revisions ppr on pp.id=ppr.page_part_id
-                                            where p.lft>? AND p.rgt<? AND p.id in (?) order by ppr.id", self.lft, self.rgt, ids]
+                                            where p.lft>=? AND p.rgt<=? AND p.id in (?) order by ppr.id", self.lft, self.rgt, ids]
     return revisions
   end
 end
