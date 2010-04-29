@@ -1,22 +1,21 @@
 xml.instruct! :xml, :version => "1.0"
 xml.rss :version => "2.0" do
   xml.channel do
-    xml.title "Subtree of " + @page.title + " changes"
-    xml.description "Recent changes for subtree of wiki page " + @page.title
-    xml.link root_url.chomp('/') + @page.get_path
+    xml.title "Subtree of " + @recent_revisions[0].pg_name + " changes"
+    xml.description "Recent changes for subtree of wiki page " + @recent_revisions[0].pg_name
+    xml.link root_url.chomp('/') + '/' +  (@recent_revisions[0].pg_path.nil? ? "" : @recent_revisions[0].pg_path)
 
-    @recent_revisions.each_with_index do |revision, index|
-
-      xml.item do
-        summary = revision.summary.empty? ? "" : "(#{revision.summary})"
-        xml.title "#{revision.user.full_name} edited #{revision.page_part.name} #{summary} of #{revision.page_part.page.title}"
-        xml.pubDate revision.created_at.to_s(:rfc822)
-        if index<1
-          xml.link root_url.chomp('/') + @page.get_path
-        else
-          xml.link root_url.chomp('/') + ';diff?first_revision='+(@revision_count - index - 1).to_s + '&second_revision='+(@revision_count - index).to_s()
+       @recent_revisions.each do |revision|
+        xml.item do
+          summary = revision.summary.empty? ? "" : "(#{revision.summary})"
+          xml.title "#{revision.user.full_name} edited #{revision.page_part.name} #{summary} of #{revision.pg_name}"
+          xml.pubDate revision.created_at.to_s(:rfc822)
+          if (revision.prev_rev_count.to_i > 0)
+               xml.link root_url.chomp('/') + '/' + (@recent_revisions[0].pg_path.nil? ? "" : @recent_revisions[0].pg_path) + ';diff?first_revision=' + (revision.prev_rev_count).to_s + '&second_revision=' + (revision.prev_rev_count.to_i + 1).to_s()
+          else
+               xml.link root_url.chomp('/') + '/' + (@recent_revisions[0].pg_path.nil? ? "" : @recent_revisions[0].pg_path)
         end
         end
+      end
     end
   end
-end

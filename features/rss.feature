@@ -51,8 +51,8 @@ Feature: Wiki
     And that a "main" page with multiple revisions exist
     And I am logged in
     And I follow "RSS feed"
-    And I should see ";diff?first_revision=0&second_revision=1"
-    And I go to /;diff?first_revision=0&second_revision=1
+    And I should see ";diff?first_revision=1&second_revision=2"
+    And I go to /;diff?first_revision=1&second_revision=2
     Then I should see "Diff for: main"
 
     Scenario: check if RSS for subtree works properly on init

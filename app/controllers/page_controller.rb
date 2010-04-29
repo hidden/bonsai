@@ -49,10 +49,11 @@ class PageController < ApplicationController
 
   def diff
     page = PageAtRevision.find_by_path(@path)
+    number_of_revisions = @page.page_parts_revisions.length
 
-    first_revision = params[:first_revision]
-    second_revision = params[:second_revision]
-    if (first_revision.to_i < second_revision.to_i)
+    first_revision = number_of_revisions - params[:first_revision].to_i
+    second_revision = number_of_revisions - params[:second_revision].to_i
+    if (first_revision < second_revision)
       first = second_revision
       second = first_revision
     else
@@ -285,15 +286,12 @@ class PageController < ApplicationController
   end
 
   def rss
-    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "page_part_revisions.id DESC")
-    @revision_count = @page.page_parts_revisions.count
+    @recent_revisions = @page.get_page_revisions
     render :layout => false
   end
 
   def rss_tree
-    ids =  @current_user.find_all_accessible_pages.collect(&:id)
-    @recent_revisions = PagePartRevision.all(:joins => [{:page_part => :page}, :user], :conditions => ["page_parts.page_id IN (?) AND pages.lft >= ? AND pages.rgt <= ?", ids, @page.lft, @page.rgt], :limit => 10, :order => "page_part_revisions.id DESC")
-    @revision_count = @page.page_parts_revisions.count
+   @recent_revisions = @page.get_page_subtree_revisions(@current_user)
     render :layout => false
   end
 
