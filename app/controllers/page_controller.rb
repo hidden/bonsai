@@ -225,6 +225,8 @@ class PageController < ApplicationController
       end
     end
 
+    layout_select
+
     if (!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
       unprivileged
     else
@@ -319,6 +321,7 @@ class PageController < ApplicationController
 
   def edit
     @uploaded_files = @page.uploaded_files #.paginate(:page => params[:page], :per_page => 2)
+    layout_select
     render :action => :edit
   end
 
@@ -796,4 +799,79 @@ class PageController < ApplicationController
     managers = PagePermission.find_all_by_page_id(@page.id, :conditions => "can_manage = 1")
     return managers.length
   end
+
+  def show_layout_helper
+    #get params
+    layout = params["layout"]
+    @parent_layout = params["parent_layout"]
+
+    #inherited layout
+    @inherited = false
+    if layout.blank?
+      layout = @parent_layout
+    end
+    
+    if layout == @parent_layout
+      @inherited=true
+    end
+
+    #layout
+    @layout = layout
+
+    #stylesheet
+    if layout != 'default'
+       @stylesheet = layout + '.css'
+    end
+
+    params = get_layout_parameters("vendor/layouts/"+layout)
+    @layout_name = params[1]
+    @layout_description = params[0]
+    @layout_params = params[2]
+
+  end
+
+
+private
+
+   def get_layout_definitions
+    directories =  Array.new
+    Dir.glob("vendor/layouts/*") do |directory|
+      if File::directory? directory
+        if File.exist? ("#{directory}/definition.yml")
+          directories.push directory
+        end
+      end
+    end
+    return directories
+  end
+
+  def get_layout_parameters(file)
+    layout = YAML.load_file("#{file}/definition.yml")
+    unless layout.nil?
+      layout_value = file[(file.rindex("/")+1)..-1]
+      parameters =[ layout_value, layout['name'], layout['parts'] ]
+    end
+    return parameters
+  end
+
+  def layout_select
+    #read layout names data
+    @definition = get_layout_definitions
+
+    #basic layout settings
+    if (@definition.length == 0)
+       @user_layouts = [['Inherit', nil]]
+    else
+       @user_layouts = []
+    end
+
+    for file in @definition
+    params = get_layout_parameters(file)
+    option_text = (!@parent_id.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+    option_value = (params[0] == @parent_layout) ? '' : params[0]
+    @user_layouts.push([option_text, option_value])
+    end
+
+   return @user_layouts;
+ end
 end
