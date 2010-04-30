@@ -1,25 +1,55 @@
-<% if @uploaded_files.empty? then %>
-    <%= t(:no_files_uploaded) %>
-<% else %>
-    <% index = 0 %>
-    <% for file in @uploaded_files %>
-        <% index += 1 %>
-        <p onmouseover="visible_remove_icon('<%='history_'+index.to_s() %>', 'visible')" onmouseout="visible_remove_icon('<%='history_'+index.to_s() %>', 'hidden')">
-          <% if (not file.current_file_version.nil?) %>
-              <%= file_type_image_tag(file) %> &nbsp;
-              <%= link_to truncate(file.filename), file.filename, :title => file.filename %> &nbsp;
-              <% if (file.versions.length > 1) %>
-                  <%= link_to icon_tag('file_rev.png', :alt => t(:history), :title => t(:history)), file_history_page_path(@page, file.filename), :id => 'history_'+index.to_s(), :style => 'visibility:hidden' %>
-              <% end %>
-          <% else %>
-              <%= file_type_image_tag(file) %>
-              <%= link_to file.filename, file.filename %>
-              <%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %>
-          <% end %>
-        </p>
-    <% end %>
-<% end %>
-<p>
-  <%#= will_paginate @uploaded_files, :id => "js", :renderer => 'RemoteLinkRenderer', :remote => {:update => 'files'}, :previous_label => t("pagination.prev_label"), :next_label => t("pagination.next_label"), :style => 'display:none' %>
-  <%#= will_paginate @uploaded_files, :id => "nojs", :previous_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
-</p>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <%= stylesheet_link_tag 'bonsai' %>
+  <%= javascript_include_tag :defaults, :cache => true %>
+  <%= javascript_include_tag 'application.js' %>
+</head>
+
+<body style="background: none;">
+ <% if (params.include?(:upscale)) %>
+    <script type="text/javascript">resize_frame('file_frame', '<%= @uploaded_files.length %>')</script>
+    <% params.delete(:upscale) %>
+ <% end %>
+
+<div class="file_list lighter_bg">
+  <% if @uploaded_files.empty? then %>
+      <%= t(:no_files_uploaded) %>
+  <% else %>
+      <% index = 0 %>
+      <% for file in @uploaded_files %>
+          <% index += 1 %>
+          <p onmouseover="visible_remove_icon('<%='history_'+index.to_s() %>', 'visible')" onmouseout="visible_remove_icon('<%='history_'+index.to_s() %>', 'hidden')">
+            <% if (not file.current_file_version.nil?) %>
+                <%= file_type_image_tag(file) %> &nbsp;
+                <%= link_to truncate(file.filename, :length => 25), file.filename, :title => file.filename %> &nbsp;
+                <% if (file.versions.length > 1) %>
+                    <%= link_to icon_tag('file_rev.png', :border => 0, :alt => t(:history), :title => t(:history)), file_history_page_path(@page, file.filename), :id => 'history_'+index.to_s(), :target => '_parent', :style => 'visibility:hidden' %>
+                <% end %>
+            <% else %>
+                <%= file_type_image_tag(file) %>
+                <%= link_to file.filename, file.filename %>
+                <%= icon_tag('file_rev_dis.png', :alt => 'show file\'s history') %>
+            <% end %>
+          </p>
+      <% end %>
+  <% end %>
+  
+  <div class="bottom">
+    <%= will_paginate @uploaded_files, :previous_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
+    <br/>
+    <% icon = @status['error'] ? 'information_error.png' : 'information_success.png' unless @status.nil? %>
+    <div class="upload_file">
+      <% form_for(:file_version, :url => edit_upload_file_path(@page, params[:per_page]), :html => {:multipart => true}) do |f| %>
+          <%= icon_tag(icon, :id => 'status_img', :alt => @status['msg'], :title => @status['msg']) unless @status.nil? %>
+          <label><strong><%= t(:upload_file) %></strong><br/><%= f.file_field :uploaded_data, :class => "file_input" %></label>
+          <%= submit_tag t(:btn_upload), :class=>'mini_button' %>
+      <% end %>
+    </div>
+  </div>
+</div>
+</body>
+</html>

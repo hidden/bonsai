@@ -36,6 +36,10 @@ module PathsHelper
     page_path(page, 'upload')
   end
 
+  def edit_upload_file_path(page, per_page)
+    page_path(page, 'upload', :redirect => 'none', :per_page => per_page)
+  end
+
   def page_history_path(page)
     page_path(page, 'history')
   end
@@ -90,5 +94,9 @@ module PathsHelper
 
     def add_page_path(page)
      page_path(page,'add')
+    end
+
+  def render_files_path(page, per_page, upscale = nil, ok = nil)
+    page_path(page, 'render_files', :per_page => per_page, :success => ok, :upscale => upscale)
   end
 end

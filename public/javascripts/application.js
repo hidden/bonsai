@@ -6,14 +6,27 @@ function initialize() {
     }
 }
 
-function toggleDiv(elementId) {
-    var div  = document.getElementById(elementId);
-    if(div != null){
+function switchVisibility(div){
+
+    if(navigator.appName == "Microsoft Internet Explorer"){
+        if(div.style.display=='none')
+            div.style.display='block';
+        else
+            div.style.display='none';
+    }
+    else{
         if (div.visible()) {
             div.blindUp();
         } else {
             div.blindDown();
         }
+    }
+}
+
+function toggleDiv(elementId) {
+    var div  = document.getElementById(elementId);
+    if(div != null){
+      switchVisibility(div);
     }
     return false;
 }
@@ -39,17 +52,8 @@ function toggleTreeElement(Li, evt, id) {
     }
 }
 
-//function link_visible(element, show) {
-//    element.children[0].style.display = show;
-//}
-
 function visible_remove_icon(id, show) {
     document.getElementById(id).style.visibility = show;
-}
-
-function enable_js(id1, id2) {
-    document.getElementById(id1).style.display = "none";
-    document.getElementById(id2).style.display = "inline";
 }
 
 function subm(id,type)
@@ -63,6 +67,12 @@ function subm(id,type)
     {
         form.target = "_self";
     }
+}
+
+function resize_frame(id, count)
+{
+    var frame = parent.document.getElementById(id);
+    frame.style.height = (((count) *30) + 80) + "px";
 }
 
 Event.observe(window, 'load', initialize);

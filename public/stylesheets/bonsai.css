@@ -86,7 +86,7 @@ body {
 }
 
 .autocomplete {
-    width: 244px !important;
+    width: 235px !important;
 }
 
 .autocomplete ul {
@@ -132,7 +132,7 @@ body {
     margin: 0 0 20px 10px;
 }
 
-.DashboardTree #user, #time, #editor, #role, #group {
+.DashboardTree .user, .time, #editor, #role, #group {
     font-weight:bold;
 }
 
@@ -233,6 +233,9 @@ input[type="text"].small_input:focus, input[type="password"].small_input:focus, 
     border:none;
 }
 
+.main_content_right input[type="text"]#add_group{
+    width: 145px;    
+}
 
 /* menu_box */
 .login{
@@ -374,6 +377,7 @@ ul#menu li ul li.small{
     height:100%;
     float:left;
     padding:10px 33px;
+    min-width:400px;
 }
 
 .main_content_right{
@@ -381,11 +385,20 @@ ul#menu li ul li.small{
     float:right;
     width:244px;
     background:transparent;
-    padding:0 33px;
+    padding:0 28px;
 }
 .main_content_right h3{
     font-size:14px;
 
+}
+
+.main_content_right .files h3{
+    margin-top:0px;
+}
+
+.main_content_right .lighter_bg{
+    margin-top:33px;
+    padding:3px;
 }
 
 .header{
@@ -614,6 +627,17 @@ input[type="submit"].small_button{
     height:25px;
 }
 
+input[type="submit"].mini_button{
+    font-weight:bold;
+    font-size:11px;
+    color:white;
+    background:transparent;
+    border:0;
+    background: url('../images/buttons/mini_button.png') no-repeat left top;
+    width:50px;
+    height:18px;
+}
+
 /*breadcrumb*/
 .breadcrumb {
     font-size:13px;
@@ -678,6 +702,12 @@ input[type="submit"].large_button{
     width:223px;
     height:30px;
 }
+
+input[type="file"].file_input{
+    width: 60%;
+}
+
+
 .center{
     text-align:center;
 }
@@ -686,12 +716,13 @@ input[type="submit"].large_button{
 .favourite_content{
 
 }
-/*.pagination{*/
-    /*position:relative;*/
-    /*top:160%;*/
-    /*left:100%;*/
-    /*background:none;*/
-/*}*/
+
+.pagination{
+    position:relative;
+    top: 5px;
+    background:none;
+}
+
 h2.dashboard, h3.favourites_title{
     background:none;
     border:none;
@@ -707,7 +738,7 @@ UL.hidden{
     position:relative;
     right:30px
 }
-.DashboardTree #user, #time {
+.DashboardTree .user, .time {
     font-weight:bold;
 }
 
@@ -743,7 +774,21 @@ LI.Collapsed {
     width:100%;
 }
 
-#files {
-    height: 5em;
-    overflow-y: auto;
+.file_list {
+    /*height: 100%;*/
+    width: 100%;
+    font-family: sans-serif;
+    font-size: 11px;
+
+}
+
+.upload_file {
+    overflow: visible;
+    /*padding-bottom: 80px;*/
+}
+
+.bottom {
+    position: absolute;
+    bottom: 5px;
+    white-space: nowrap;
 }

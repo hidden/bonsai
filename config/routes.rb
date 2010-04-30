@@ -1,31 +1,42 @@
 ActionController::Routing::Routes.draw do |map|
-  ActionController::Routing::SEPARATORS <<  ";" unless ActionController::Routing::SEPARATORS.include?(";")
-
+  ActionController::Routing::SEPARATORS << ";" unless ActionController::Routing::SEPARATORS.include?(";")
 
   map.resources :groups,
                 :member => {:switch_public => :put, :switch_editable => :put},
-                :collection => { :autocomplete_for_user => :get, :autocomplete_for_groups => :get }
+                :collection => { :autocomplete_for_user => :get, :autocomplete_for_groups => :get },
+                :path_prefix => '/w'
+
   map.resources :admin,
                 :singular => :admin_instance,
                 :member => {:activate => :put, :deactivate => :put},
-                :collection => { :autocomplete_for_user => :get}
-  map.resources :group_permissions, :member => { :switch_edit => :put, :switch_view => :put }
-  map.resources :groups, :member => {:permissions_history => :get, :permissions_history => :get}
+                :collection => { :autocomplete_for_user => :get},
+                :path_prefix => '/w'
 
-  map.search 'admin/search', :controller => 'admin', :action => 'index'
+  map.resources :group_permissions,
+                :member => { :switch_edit => :put, :switch_view => :put },
+                :path_prefix => '/w'
 
-  map.connect 'dashboard/:action/:id', :controller => "dashboard"
+  map.resources :groups,
+                :member => {:permissions_history => :get, :permissions_history => :get},
+                :path_prefix => '/w'
 
-  map.connect 'page/new', :controller => "page", :action => "create"
+  map.search 'admin/search', :controller => 'admin', :action => 'index', :path_prefix => '/w'
+
+  map.connect 'dashboard/:action/:id', :controller => "dashboard", :path_prefix => '/w'
+
+  map.connect 'page/new', :controller => "page", :action => "create", :path_prefix => '/w'
+
+  map.search 'search', :controller => 'page', :action => 'search', :path_prefix => '/w'
+
+  map.connect 'users/:action', :controller => "users", :path_prefix => '/w'
+
+  map.facebook 'users/facebook', :controller => "users", :action => "fb_post_authentification", :path_prefix => '/w'
 
   map.page '*path;:action', :controller => "page"
 
-  map.search 'search', :controller => 'page', :action => 'search'
+  map.page_view '*path', :controller => 'page', :action => 'view'
 
-  map.connect 'users/:action', :controller => "users"
-
-  map.facebook 'users/facebook', :controller => "users", :action => "fb_post_authentification"
-
+  map.root :controller => 'page', :action => 'view', :path => []
 
   # The priority is based upon order of creation: first created -> highest priority.
 
@@ -61,13 +72,7 @@ ActionController::Routing::Routes.draw do |map|
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   # map.root :controller => "welcome"
 
-  map.root :controller => 'page', :action => 'view', :path => []
-
   # See how all your routes lay out with "rake routes"
-  map.search "/search", :controller => "page", :action => "search"
-  map.page_view '*path' , :controller => 'page', :action => 'view'
-
-
 
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should

@@ -139,6 +139,13 @@ When /^(?:|I )attach the file "([^\"]*)" to "([^\"]*)"$/ do |path, field|
   attach_file(field, path, type)
 end
 
+Then /^(?:|I )should see "([^\"]*)" within image title "([^\"]*)"$/ do |text, image_id|
+  within 'img[id='+image_id+']' do |image|
+    content = image.dom.attributes["title"].value
+    content.should contain(text)
+  end
+end
+
 Then /^(?:|I )should see "([^\"]*)"$/ do |text|
   if defined?(Spec::Rails::Matchers)
     body = nil

@@ -14,14 +14,15 @@ Feature: Secure file uploads
     Then I should see "File not found."
     When I go to /a/nested/bogus_file.txt
     Then I should see "File not found."
-
+  
   Scenario: User wants to upload a file
     When I create "/" page
   #And I upload "test_file.txt" file
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
-    And I press "Save"
-    Then I should see "Page successfully updated."
+    And I press "Upload"
+    Then I should see "File was successfully uploaded" within image title "status_img"
     When I go to /test_file.txt
     Then I should see "Some text in file."
 
@@ -31,8 +32,10 @@ Feature: Secure file uploads
     And I create "/" page
     And page "/" is viewable by "johno"
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
+    And I go to the main page
     And I logout
     When I go to /test_file.txt
     Then I should see "Permission denied."
@@ -99,14 +102,15 @@ Feature: Secure file uploads
   Scenario: User uploads some files and wants to see them all
     When I create "/" page
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
-    And I press "Save"
-    Then I should see "Page successfully updated."
-    When I follow "edit"
-    And I attach the file at "test_file2.txt" to "file_version_uploaded_data"
-    And I press "Save"
-    Then I should see "Page successfully updated."
-    When I follow "files"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded." within image title "status_img"
+    When I attach the file at "test_file2.txt" to "file_version_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded." within image title "status_img"
+    When I go to the main page
+    And I follow "files"
     Then I should see "test_file.txt"
     And I should see "test_file2.txt"
 
@@ -118,14 +122,16 @@ Feature: Secure file uploads
   Scenario: User uploads some files and wants to see them without listing subdirectories
     When I create "/" page
     And I follow "Edit"
+    And I visit "files_frame" frame
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
     And I create "/nested/" page
     And I follow "Edit"
+    And I visit "files_frame" frame
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
-    And I press "Save"
-    And I go to the main page
-    When I follow "Files"
+    And I press "Upload"
+    When I go to the main page
+    And I follow "Files"
     Then I should see "test_file.txt"
     And I should not see "nested"
 
@@ -137,8 +143,10 @@ Feature: Secure file uploads
     And I create "/" page
     And page "/" is editable by "bio"
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "test_file.txt" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
+    And I go to the main page
     And I follow "files"
     Then I should see "test_file.txt"
     When I logout
@@ -163,8 +171,9 @@ Feature: Secure file uploads
     And I logout
     And I login as "bio"
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "test_file2.txt" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
     And I go to /test_file2.txt
     Then I should see "Different text in file."
     When I go to the main page
@@ -188,9 +197,10 @@ Feature: Secure file uploads
     And I create "/readme/" page with title "citaj ma"
     And I go to the main page
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "readme" to "file_version_uploaded_data"
-    And I press "Save"
-    Then I should see "There is a page with the same name."
+    And I press "Upload"
+    Then I should see "There is a page with the same name." within image title "status_img"
     When I go to /readme
     Then I should see "citaj ma"
 
@@ -204,18 +214,22 @@ Feature: Secure file uploads
     When I login as "user"
     And I create "/" page
     And I follow "Edit"
+    And I visit "files_frame" frame
     And I attach the file at "readme" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
+    And I go to the main page
     Then I logout
     When I login as "bio"
     And page "/" is editable by "bio"
     When I go to the main page
     And I should see "Edit"
     And I follow "Edit"
+    And I visit "files_frame" frame
     And I attach the file at "version2/readme" to "file_version_uploaded_data"
-    And I press "Save"
-    Then I should see "File was successfully uploaded."
-    When I follow "files"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded." within image title "status_img"
+    When I go to the main page
+    And I follow "files"
     And I follow "show file's history"
     Then I should see "Version 1 user"
     And I should see "Version 2 bio"
@@ -227,12 +241,14 @@ Feature: Secure file uploads
   Scenario: Two files with same name on two different pages
     When I create "/" page
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "readme" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
     And I create "/nested/" page
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "version2/readme" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
     And I go to the main page
     And I go to /readme
     Then I should see "Some text in file."
@@ -242,14 +258,23 @@ Feature: Secure file uploads
   Scenario: User wants to download latest version of file
     When I create "/" page
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "readme" to "file_version_uploaded_data"
-    And I press "Save"
+    And I press "Upload"
     And I go to the main page
     And I follow "edit"
+    And I visit "files_frame" frame
     And I attach the file at "version2/readme" to "file_version_uploaded_data"
-    And I press "Save"
-    Then I should see "File was successfully uploaded."
-    When I follow "files"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded." within image title "status_img"
+    When I go to the main page
+    And I follow "files"
     Then I should see "readme"
     When I go to readme
     Then I should see "Readme here version 2."
+@wip  
+  Scenario: User wants to upload no file
+    When I create "/" page
+    And I follow "files"
+    And I press "Upload"
+    Then I should see "No file selected" within image title "status_img"

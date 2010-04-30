@@ -9,6 +9,8 @@ Scenario: User log in, set SK locale and should see slovak page
   And I should see "Prístupové práva"
   Then I follow "EN"
 
+#TODO toto je nejaky divny test, ktory funguje len vdaka zamene textu a linku odkazu na prihlasovanie 
+@wip
 Scenario: Anonymous user set language, after he/she returns, he/she should see wiki in selected language
   Given user "jozo" exists
   When I logout

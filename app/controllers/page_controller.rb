@@ -1,7 +1,11 @@
 class PageController < ApplicationController
+  caches_page :index
+  caches_action :view
+  cache_sweeper :page_sweeper, :only => [:update]
+
   before_filter :load_page, :except => [:add_lock, :update_lock, :search]
   before_filter :can_manage_page_check, :only => [:manage, :set_permissions, :remove_permission, :switch_public, :switch_editable]
-  before_filter :can_edit_page_check, :only => [:add,:edit, :update, :upload, :undo, :new_part, :files]
+  before_filter :can_edit_page_check, :only => [:add, :edit, :update, :upload, :undo, :new_part, :files, :render_files]
   before_filter :check_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
@@ -21,7 +25,7 @@ class PageController < ApplicationController
 
   def permissions_history
     @permissions_history = PagePermissionsHistory.paginate( :all, :conditions => {:page_id => @page.id}, :include => [:user, :group], :per_page => 20, :page => params[:page], :order => 'id DESC')
-    @no_toolbar = true
+    @history_toolbar = true
   end
 
   def view
@@ -91,7 +95,7 @@ class PageController < ApplicationController
       @page_parts << current_part if current_part
     end
     layout = @page.nil? ? 'application' : @page.resolve_layout
-
+    @stylesheet = @page.resolve_layout
     render :action => 'show_revision', :layout => layout
   end
 
@@ -104,11 +108,7 @@ class PageController < ApplicationController
 
   def switch_public
     was_public = @page.is_public?
-    if (@page.is_public?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => 2)
-    else
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => 1)
-    end
+    (@page.is_public?) ? action = "2" : action = "1"
     if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_public
@@ -116,18 +116,14 @@ class PageController < ApplicationController
         #TODO: if the @page has some public descendants, we should spread the switch to them as well
         permission.save
       end
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 1, :action => action)
+      ph.save
     end
-    ph.save
-    #redirect_to manage_page_path(@page)
   end
 
   def switch_editable
     was_editable = @page.is_editable?
-    if (@page.is_editable?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => 2)
-    else
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => 1)
-    end
+    (@page.is_editable?) ? action = "2" : action = "1"
     if (@page.parent.nil? || @page.parent.is_public?)
       @page.page_permissions.each do |permission|
         permission.can_view = was_editable if !was_editable
@@ -135,29 +131,35 @@ class PageController < ApplicationController
         #TODO: if the @page has some public descendants, we should spread the switch to them as well
         permission.save
       end
+      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => 0, :role => 2, :action => action)
+      ph.save
     end
-    ph.save
-    #redirect_to manage_page_path(@page)
   end
 
   def remove_permission
     page_permission = @page.page_permissions[params[:index].to_i]
-
-    if (page_permission.can_manage?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
-      ph.save
+    managers = get_num_of_managers
+    if ((page_permission.can_manage? && managers >= 2) || !page_permission.can_manage?)
+      if (page_permission.can_manage?)
+        ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
+        ph.save
+      end
+      if (page_permission.can_edit? || @page.is_editable?)
+        ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
+        ph.save
+      end
+      if (page_permission.can_view? || @page.is_public?)
+        ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 1, :action => 2)
+        ph.save
+      end
+      page_permission.destroy
+    else
+      flash[:error] = t(:manager_error)
     end
-    if (page_permission.can_edit? || @page.is_editable?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
-      ph.save
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
     end
-    if (page_permission.can_view? || @page.is_public?)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 1, :action => 2)
-      ph.save
-    end
-
-    page_permission.destroy
-    #redirect_to manage_page_path(@page)
   end
 
   def process_file
@@ -319,12 +321,20 @@ class PageController < ApplicationController
   end
 
   def edit
-    @uploaded_files = @page.uploaded_files #.paginate(:page => params[:page], :per_page => 2)
+    @per_page = 8
+    @list_len = (@page.uploaded_files.length > @per_page) ? @per_page : @page.uploaded_files.length
     render :action => :edit
   end
 
+  def render_files
+    @uploaded_files = @page.uploaded_files.paginate(:page => params[:page], :per_page => params[:per_page]) #params[:per_page] sa nastavuje v edit metode ako @per_page
+    @status = {'error', params[:success].empty? ? false : true, 'msg', params[:success].empty? ? t('file_uploaded') : params[:success]} if (params.include?('success'))
+    params.delete(:success) if (params.include?('success'))
+    render :partial => 'files'
+  end
+
   def set_permissions
-    addedgroups = params[:add_group].split(",")
+    addedgroups = params[:add_group].split(/[ ]*, */)
     for addedgroup in addedgroups
       groups = Group.find_all_by_name(addedgroup)
       unless groups.any? then
@@ -334,21 +344,15 @@ class PageController < ApplicationController
       end
       for group in groups
         users = group.users
-        retVal = group.is_public?
-        retValUsers = users.include?(@current_user)
-        if (retVal || retValUsers)
+        if (group.is_public? || users.include?(@current_user))
           @page.add_viewer group if params[:group_role][:type] == "1"
           @page.add_editor group if params[:group_role][:type] == "2"
-          if params[:group_role][:type] == "3"
-            @page.add_manager group
-            @managers += 1
-          end
+          @page.add_manager group if params[:group_role][:type] == "3"
           ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => group.id, :role => params[:group_role][:type], :action => 1)
           ph.save
         end
       end
     end
-    #redirect_to manage_page_path(@page)
   end
 
   def remove_page_part
@@ -367,15 +371,6 @@ class PageController < ApplicationController
     end
   end
 
-  #TODO toto tu nema co hladat
-  def remove_pages_from_cache
-    pages = Page.all(:select => "id", :conditions => ["lft >= ? AND rgt <= ?", @page.lft, @page.rgt])
-
-    pages.each do |page|
-      expire_fragment(page.id)
-    end
-  end
-
   def save_edit
     if params.include?('Preview')
       generate_preview
@@ -387,51 +382,14 @@ class PageController < ApplicationController
     end
     @error_flash_msg = ""
     @notice_flash_msg = ""
-    @managers = 0;
-    @page.page_permissions.each_with_index do |permission, index|
-      if permission.can_manage?
-        @managers += 1
-      end
-    end
 
     set_global_permissions
+
+    set_dropdown_permissions
 
     #add group permission from autocomplete
     if not params[:add_group].nil?
       set_permissions
-    end
-    
-    @page.page_permissions.each_with_index do |permission,index|
-      selectbox_value = params[permission.group.name + "_select"]
-      if not selectbox_value.nil?
-        opravnenie = 0;
-        (permission.can_view || @page.is_public?) ? opravnenie = 1 : opravnenie = opravnenie
-        (permission.can_edit || @page.is_editable?) ? opravnenie = 2 : opravnenie = opravnenie
-        (permission.can_manage) ? opravnenie = 3 : opravnenie = opravnenie
-
-        if (selectbox_value == '1')
-          if opravnenie == 2
-            switch_editor permission
-          end
-          if opravnenie == 3 && @managers >= 2
-            switch_manager permission
-            switch_editor permission
-          end
-        else if (selectbox_value == '2')
-          if opravnenie == 1
-            switch_editor permission
-          end
-          if opravnenie == 3
-            switch_manager permission
-          end
-        else if (selectbox_value == '3')
-          if opravnenie == 1 || opravnenie == 2
-            switch_manager permission
-          end
-        end
-        end
-        end
-      end
     end
 
     # TODO refactor
@@ -446,8 +404,7 @@ class PageController < ApplicationController
     end
 
     update
-
-    remove_pages_from_cache
+    #@page.remove_pages_from_cache
     
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
@@ -556,18 +513,24 @@ class PageController < ApplicationController
   def upload
     @notice_flash_msg = "" if @notice_flash_msg.blank?
     @error_flash_msg = "" if @error_flash_msg.blank?
-    tmp_file = params[:file_version][:uploaded_data]
-    filename = File.basename(tmp_file.original_filename)
-    target_filename = params[:uploaded_file_filename]
-    if !target_filename.blank? and (File.extname(filename) != File.extname(target_filename))
-      @error_flash_msg += t('file_not_match') + "\r\n"
+    if (params.include?(:file_version))    
+      tmp_file = params[:file_version][:uploaded_data]
+      filename = File.basename(tmp_file.original_filename)
+      target_filename = params[:uploaded_file_filename]
+      if !target_filename.blank? and (File.extname(filename) != File.extname(target_filename))
+        @error_flash_msg += t('file_not_match') + "\r\n"
+      else
+        filename = target_filename unless target_filename.blank?
+        do_upload(tmp_file, filename)
+      end
     else
-      filename = target_filename unless target_filename.blank?
-      do_upload(tmp_file, filename)
+      @error_flash_msg += t('no_files_selected') + "\r\n"  
     end
-    flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
-    flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
-    redirect_to list_files_path(@page)
+    unless params.include?('redirect')
+      flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
+      flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
+    end
+    redirect_to params.include?('redirect') ? render_files_path(@page, params[:per_page], @upscale, @error_flash_msg) : list_files_path(@page)
   end
 
   def do_upload(tmp_file, filename)
@@ -591,8 +554,14 @@ class PageController < ApplicationController
     file.current_file_version_id = 0
     version.save!
     file.current_file_version = version
-    file.save!
-    @notice_flash_msg += t('file_uploaded') + "\r\n"
+    if (file.save!)
+      @notice_flash_msg += t('file_uploaded') + "\r\n"
+      if (version.version == 1)
+        @upscale = true
+      end
+    else
+      file.errors.each_full { |msg| @error_flash_msg << msg }
+    end
   end
 
   def toggle_favorite
@@ -750,8 +719,13 @@ class PageController < ApplicationController
 
   def set_global_permissions    
     #set page public or editable
-    if params[:everyone_select] == "1" && !@page.is_public?
-      switch_public
+    if params[:everyone_select] == "1"
+      if !@page.is_public?
+        switch_public
+      else if @page.is_editable?
+        switch_editable
+      end
+      end
     else
       if params[:everyone_select] == "2" && !@page.is_editable?
         switch_editable
@@ -768,17 +742,50 @@ class PageController < ApplicationController
     end
   end
 
+  def set_dropdown_permissions
+    @managers = get_num_of_managers
+    @page.page_permissions.each do |permission|
+      selectbox_value = params[permission.group.name + "_select"]
+      if not selectbox_value.nil?
+        opravnenie = get_permission permission
+
+        if (selectbox_value == '1')
+          if opravnenie == 2
+            switch_editor permission
+          end
+          if opravnenie == 3 && @managers >= 2
+            switch_manager permission
+            switch_editor permission
+          end
+        else if (selectbox_value == '2')
+          if opravnenie == 1
+            switch_editor permission
+          end
+          if opravnenie == 3
+            switch_manager permission
+          end
+        else if (selectbox_value == '3')
+          if opravnenie == 1 || opravnenie == 2
+            switch_manager permission
+          end
+        end
+        end
+        end
+      end
+    end
+  end
+
   def switch_editor page_permission
     if page_permission.can_edit?
       @page.remove_editor(page_permission.group)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 2)
-      ph.save
+      action = "2"
     else
       @page.add_editor(page_permission.group)
-      ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => 1)
-      ph.save
+      action = "1"
     end
     page_permission.save
+    ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 2, :action => action)
+    ph.save
   end
 
   def switch_manager page_permission
@@ -788,6 +795,8 @@ class PageController < ApplicationController
         @managers = @managers - 1
         ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
         ph.save
+      else
+        flash[:error] = t(:manager_error)
       end
     else
       @page.add_manager(page_permission.group)
@@ -795,5 +804,18 @@ class PageController < ApplicationController
       ph.save
     end
     page_permission.save
+  end
+
+  def get_permission permission
+    opravnenie = 0;
+    (permission.can_view || @page.is_public?) ? opravnenie = 1 : opravnenie = opravnenie
+    (permission.can_edit || @page.is_editable?) ? opravnenie = 2 : opravnenie = opravnenie
+    (permission.can_manage) ? opravnenie = 3 : opravnenie = opravnenie
+    return opravnenie
+  end
+
+  def get_num_of_managers
+    managers = PagePermission.find_all_by_page_id(@page.id, :conditions => "can_manage = 1")
+    return managers.length
   end
 end
