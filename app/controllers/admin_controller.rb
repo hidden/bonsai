@@ -3,9 +3,11 @@ class AdminController < ApplicationController
    #, :only => [:index, :activate, :deactivate]
 
   def index
-    if params.include? 'back'
-       session[:link_back] = params['back']
-    end if
+
+    @gridpage = params['gridpage'].nil? ? 1: (params['gridpage']).to_i
+    @order = params['order'].nil? ? "" : params['order'].to_s
+    @back = session['back'].nil? ? '' : session['back'].to_s
+    
 
     #name = '' #params[]   #:add_user
 
@@ -29,7 +31,7 @@ class AdminController < ApplicationController
       @user.change_active(false)
       flash[:error] = t(:User)+" "+ @user.name
       flash[:error].concat(" "+ t(:was) +" "+ t(:deactivated) + '.')
-      redirect_to "#{admin_path.gsub /\/(\d+)/,'/'}?back=#{session[:link_back].nil? ? '/' : session[:link_back]}"
+      redirect_to admin_path
     end
   end
 
@@ -39,7 +41,7 @@ class AdminController < ApplicationController
       @user.change_active(true)
       flash[:notice] = t(:User)+" "+ @user.name
       flash[:notice].concat(" "+ t(:was) +" "+ t(:activated) + '.')
-      redirect_to "#{admin_path.gsub /\/(\d+)/,'/'}?back=#{session[:link_back].nil? ? '/' : session[:link_back]}"
+      redirect_to admin_path
     end
   end
 

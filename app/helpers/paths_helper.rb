@@ -76,8 +76,12 @@ module PathsHelper
     url_for(:controller => 'page', :action => 'history', :path => page.get_rel_path + [name])    
   end
 
-  def admin_page_path(page)    
+  def admin_page_path(page)
     admin_path(:back => page_path(page))
+  end
+
+  def admin_page_path_sort(back,grid_page,order)
+    admin_path(:gridpage=>grid_page,:order => order)
   end
 
   def rss_path(page, user)
