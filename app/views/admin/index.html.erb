@@ -9,10 +9,7 @@
     </div>
     <div class="main_content">
       <div class="user_search">
-        <% @gridpage = params['page'].nil? ? 1: (params['page']).to_i%>
-        <% @order = params['order'].nil? ? "" : "&order=#{params['order']}" %>
-        <% @back = session['back'].nil? ? "/" : "back=#{session['back']}" %>
-        <% form_tag "#{admin_path}/search?back=#{@back}", :method => :post do %>
+        <% form_tag "#{search_admin_path}", :method => :post do %>
           <p>
             <%= text_field('add_user', 'usernames') %>
             <%= submit_tag(t(:btn_search_page), :class=> "small_button") %>
@@ -20,7 +17,7 @@
           <div id="autocomplete" style="display: block;" class="autocomplete"></div>
           <script type="text/javascript">
               //<![CDATA[
-              var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '/groups/autocomplete_for_user', {paramName: 'infix', method: 'get', select: 'username', tokens: ','});
+              var autocompleter = new Ajax.Autocompleter('add_user_usernames', 'autocomplete', '<%= autocomplete_for_user_groups_path %>', {paramName: 'infix', method: 'get', select: 'username', tokens: ','});
               //]]>
           </script>
       <% end %>
@@ -28,11 +25,11 @@
       <table class="history">
         <thead>
         <tr>
-          <th><a href="<%= admin_path %>?<%= @back %>&page=<%=@gridpage %>&order=username"><%= t(:user)%></a></th>
-          <th><a href="<%= admin_path %>?<%= @back %>&page=<%=@gridpage %>&order=active"><%= t(:status)%></a></th>
-          <th><a href="<%= admin_path %>?<%= @back %>&page=<%=@gridpage %>&order=active"><%= t(:action)%></a></th>
-          <th><a href="<%= admin_path %>?<%= @back %>&page=<%=@gridpage %>&order=created_at"><%= t(:regtime)%></a></th>
-          <th><a href="<%= admin_path %>?<%= @back %>&page=<%=@gridpage %>&order=updated_at"><%= t(:logtime)%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"username")%>"><%= t(:user)%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"active")%>"><%= t(:status)%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"active")%>"><%= t(:action)%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"created_at")%>"><%= t(:regtime)%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"updated_at")%>"><%= t(:logtime)%></a></th>
         </tr>
         </thead>
         <tbody>

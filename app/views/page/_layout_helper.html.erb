@@ -1,0 +1,14 @@
+<% if @inherited %>
+    <p><%= t(:layout_is_inherited) %><strong><%= @layout_name%></strong></p>
+<% end %>
+<% unless t(@layout_description).nil? %>
+    <h3><%= t("layouts.#{@layout_description}.description")%></h3>
+<% end %>
+<% unless (@layout_params.nil? or t(@layout_params).nil?) %>
+    <%= t(:layout_help_title) %>
+        <ul>
+            <% for param in @layout_params %>
+                <li><strong><%= param %></strong>&nbsp;<%=t("layouts.#{@layout_description}.parts.#{param}")%> </li>
+            <% end %>
+        </ul>
+<% end %>

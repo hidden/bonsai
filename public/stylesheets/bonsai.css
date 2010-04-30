@@ -192,6 +192,10 @@ form {
     width:200px;
 }
 
+#toolbar .search_box a{
+    margin-right:5px;
+}
+
 .search_box .actions img{
     width:16px;
 }
@@ -317,6 +321,53 @@ ul#menu li ul li.small{
 .menu_box #menu{
     float:right;
 }
+
+.login_box_left_menu{
+    float:left;
+    margin:5px 0px;
+    color: white;
+}
+.login_box_left_menu span{
+    float:left;
+    margin-right:10px;
+    color: white;
+    font-size:16px;
+    font-family: sans-serif;
+    margin-top:-3px;
+}
+
+.login_box_left_menu a{
+    float: left;
+    color: white;
+    cursor: pointer;
+    display: block;
+    text-decoration:none;
+    margin-right:10px;
+    font-size:16px;
+    font-family: sans-serif;
+}
+
+
+.login_box_left_menu a:hover{
+    text-decoration:underline;
+}
+                                                
+.login_box_left_menu a img{
+    border:none;
+}
+
+#menu {list-style-type:none; padding:0 0 10px 0; margin:0 0 0 0;position:relative;}
+#menu ul {list-style-type:none; padding:0; margin:0; }
+#menu li {float:left; position:relative;}
+#menu li.sub {margin-right:1px;}
+
+#menu li, #menu li a {display:block; color:#fff;
+    text-decoration:none;
+    text-align:center; cursor:pointer;
+    padding:0 5px;
+}
+
+
 /* login formular */
 .login_box{
     margin:0px 0px;
@@ -324,14 +375,14 @@ ul#menu li ul li.small{
     width:100%;
     background-color:#515151;
     height:32px;
-    padding:0px 0px;
+    padding:0px 20px;
 }
 
 .login_area{
     float:right;
     color:white;
     top:0;
-    margin-right:25px;
+    margin-right:45px;
     margin-top:3px;
 }
 .login_area .login_inputs{
@@ -414,7 +465,7 @@ ul#menu li ul li.small{
     float:left;
     height:37px;
     padding: 15px 30px;
-    min-width:450px;
+    width:100%;
 }
 
 .header_right{
@@ -625,6 +676,20 @@ input[type="submit"].small_button{
     background: url('../images/buttons/small_button.png') no-repeat left top;
     width:69px;
     height:25px;
+    cursor:pointer;
+}
+
+/*save */
+input[type="submit"].medium_button{
+    font-weight:bold;
+    color:white;
+    background:transparent;
+    border:0;
+    background: url('../images/buttons/medium_button.png') no-repeat left top;
+    width:99px;
+    height:25px;
+    cursor:pointer;
+    font-size:14px;
 }
 
 input[type="submit"].mini_button{
@@ -701,6 +766,7 @@ input[type="submit"].large_button{
     background: url('../images/buttons/large_button.png') no-repeat right bottom;
     width:223px;
     height:30px;
+    cursor:pointer;
 }
 
 input[type="file"].file_input{

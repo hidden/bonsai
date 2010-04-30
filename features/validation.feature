@@ -39,6 +39,7 @@ Feature: Wiki
    Then this page is XHTML valid
   
   Scenario: Check if registration page is XHTML valid
+   When the user registration is enabled    
    When I am not logged in 
    Then this page is XHTML valid
    When I follow "Registration"

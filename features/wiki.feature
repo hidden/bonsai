@@ -53,6 +53,10 @@ Feature: Wiki
     And I follow "Show page from revision 1"
     Then I should see "This is original caption."
 
+  Scenario: User visits page registered for internal use
+    When I go to the system page
+    Then I should see "System page"
+
   @wip
   Scenario: User wants to show a revision of complex page
     When I create "/" page with title "Root page" body "Root body!" and "PeWe Layout" layout

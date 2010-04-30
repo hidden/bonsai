@@ -1,0 +1,2 @@
+page['layout_details'].show
+page.replace_html 'layout_details',:partial => 'layout_helper'

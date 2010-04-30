@@ -13,6 +13,8 @@ def path_to(page_name)
     when /the registration page/i
       "/w/users/new/"
 
+    when /the system page/i
+      "/w/"
     else
       page_name
   end

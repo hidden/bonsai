@@ -1,9 +1,7 @@
 class PageController < ApplicationController
-  caches_page :index
-  caches_action :view
   cache_sweeper :page_sweeper, :only => [:update]
 
-  before_filter :load_page, :except => [:add_lock, :update_lock, :search]
+  before_filter :load_page, :except => [:add_lock, :update_lock, :search, :system_page]
   before_filter :can_manage_page_check, :only => [:manage, :set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:add, :edit, :update, :upload, :undo, :new_part, :files, :render_files]
   before_filter :check_file, :only => [:view]
@@ -51,10 +49,11 @@ class PageController < ApplicationController
 
   def diff
     page = PageAtRevision.find_by_path(@path)
+    number_of_revisions = @page.page_parts_revisions.length
 
-    first_revision = params[:first_revision]
-    second_revision = params[:second_revision]
-    if (first_revision.to_i < second_revision.to_i)
+    first_revision = number_of_revisions - params[:first_revision].to_i
+    second_revision = number_of_revisions - params[:second_revision].to_i
+    if (first_revision < second_revision)
       first = second_revision
       second = first_revision
     else
@@ -226,6 +225,8 @@ class PageController < ApplicationController
       end
     end
 
+    layout_select
+
     if (!@parent_id.nil? && !(@current_user.can_edit_page? Page.find_by_id(@parent_id)))
       unprivileged
     else
@@ -287,15 +288,12 @@ class PageController < ApplicationController
   end
 
   def rss
-    @recent_revisions = PagePartRevision.all(:include => [:page_part, :user], :conditions => ["page_parts.page_id = ?", @page.id], :limit => 10, :order => "page_part_revisions.id DESC")
-    @revision_count = @page.page_parts_revisions.count
+    @recent_revisions = @page.get_page_revisions
     render :layout => false
   end
 
   def rss_tree
-    ids =  @current_user.find_all_accessible_pages.collect(&:id)
-    @recent_revisions = PagePartRevision.all(:joins => [{:page_part => :page}, :user], :conditions => ["page_parts.page_id IN (?) AND pages.lft >= ? AND pages.rgt <= ?", ids, @page.lft, @page.rgt], :limit => 10, :order => "page_part_revisions.id DESC")
-    @revision_count = @page.page_parts_revisions.count
+   @recent_revisions = @page.get_page_subtree_revisions(@current_user)
     render :layout => false
   end
 
@@ -305,9 +303,10 @@ class PageController < ApplicationController
        p = control_page (path)
        #flash[:notice] = path
          if (!p.blank?)
-          flash[:notice] = t(:page_exist)
+          flash[:error] = t(:page_exist)
           render :action => :add
          else
+           flash.discard
            redirect_to ('/' + path)
          end
      else
@@ -323,6 +322,7 @@ class PageController < ApplicationController
   def edit
     @per_page = 8
     @list_len = (@page.uploaded_files.length > @per_page) ? @per_page : @page.uploaded_files.length
+    layout_select
     render :action => :edit
   end
 
@@ -404,7 +404,7 @@ class PageController < ApplicationController
     end
 
     update
-    #@page.remove_pages_from_cache
+
     
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
@@ -597,7 +597,6 @@ class PageController < ApplicationController
     PagePartLock.create_lock(@up_part_id, @current_user)
   end
 
-  private
   def generate_preview
     parent = nil
     unless params[:parent_id].blank?
@@ -818,4 +817,79 @@ class PageController < ApplicationController
     managers = PagePermission.find_all_by_page_id(@page.id, :conditions => "can_manage = 1")
     return managers.length
   end
+
+  def show_layout_helper
+    #get params
+    layout = params["layout"]
+    @parent_layout = params["parent_layout"]
+
+    #inherited layout
+    @inherited = false
+    if layout.blank?
+      layout = @parent_layout
+    end
+    
+    if layout == @parent_layout
+      @inherited=true
+    end
+
+    #layout
+    @layout = layout
+
+    #stylesheet
+    if layout != 'default'
+       @stylesheet = layout + '.css'
+    end
+
+    params = get_layout_parameters("vendor/layouts/"+layout)
+    @layout_name = params[1]
+    @layout_description = params[0]
+    @layout_params = params[2]
+
+  end
+
+
+private
+
+   def get_layout_definitions
+    directories =  Array.new
+    Dir.glob("vendor/layouts/*") do |directory|
+      if File::directory? directory
+        if File.exist? ("#{directory}/definition.yml")
+          directories.push directory
+        end
+      end
+    end
+    return directories
+  end
+
+  def get_layout_parameters(file)
+    layout = YAML.load_file("#{file}/definition.yml")
+    unless layout.nil?
+      layout_value = file[(file.rindex("/")+1)..-1]
+      parameters =[ layout_value, layout['name'], layout['parts'] ]
+    end
+    return parameters
+  end
+
+  def layout_select
+    #read layout names data
+    @definition = get_layout_definitions
+
+    #basic layout settings
+    if (@definition.length == 0)
+       @user_layouts = [['Inherit', nil]]
+    else
+       @user_layouts = []
+    end
+
+    for file in @definition
+    params = get_layout_parameters(file)
+    option_text = (!@parent_id.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+    option_value = (params[0] == @parent_layout) ? '' : params[0]
+    @user_layouts.push([option_text, option_value])
+    end
+
+   return @user_layouts;
+ end
 end

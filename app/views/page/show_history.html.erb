@@ -40,8 +40,8 @@
                       r<%= counter %>
                     </td>
                     <td>
-                      <%= radio_button_tag "first_revision" , index, false, :id => "first_revision_#{counter}" %>
-                      <%= radio_button_tag "second_revision" , index, false, :id => "second_revision_#{counter}" %>
+                      <%= radio_button_tag "first_revision" , counter, false, :id => "first_revision_#{counter}" %>
+                      <%= radio_button_tag "second_revision" , counter, false, :id => "second_revision_#{counter}" %>
                     </td>
                     <td>
                       <%= revision.created_at.to_time.strftime("%H:%M, %d %b %Y") %>
