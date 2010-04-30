@@ -34,6 +34,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.page '*path;:action', :controller => "page"
 
+  map.connect 'w', :controller => "page", :action => "system_page"
+
   map.page_view '*path', :controller => 'page', :action => 'view'
 
   map.root :controller => 'page', :action => 'view', :path => []

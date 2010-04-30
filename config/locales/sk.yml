@@ -8,6 +8,9 @@ sk:
   pagination:
     prev_label: "Predchádzajúce"
     next_label: "Nasledujúce"
+  system_page:
+    title: "Systémová stránka"
+    description: "Táto stránka je rezervovaná pre interné potreby wiki systému. Prosím použite iný názov pre vašu stránku."    
 
   # ActiveSupport
   support:
