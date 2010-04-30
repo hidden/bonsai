@@ -151,7 +151,7 @@ Feature: Secure file uploads
 
   Scenario: User tries to reupload existing file
     Given I am not logged in
-    And I login as "user"
+    And I login as "tester"
     And I create "/" page
     And I go to /test_file2.txt
     Then I should see "File not found."
@@ -171,7 +171,7 @@ Feature: Secure file uploads
     And I follow "files"
     Then I should see "test_file2.txt"
     And I should see "bio"
-    And I should not see "user"
+    And I should not see "tester"
 
   Scenario: User wants to upload file with no ext trough file page
     When I create "/" page
