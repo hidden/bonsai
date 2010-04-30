@@ -10,11 +10,7 @@ Feature: Registration
     When I go to the main page
     And I follow "Registration"
     Then I should see "New account"
-    And I fill in "Username" with "michal"
-    And I fill in "Name" with "Michal Novotny"
-    And I fill in "Password" with "heslo2"
-    And I fill in "Password confirmation" with "heslo2"
-    And I press "Submit registration"
+    And I make registration with login "michal", name "Michal Novotny", password "heslo2" and password confrimation "heslo2"
     Then I should see "Registration successfully completed!"
     And I fill in "username" with "michal"
     And I fill in "password" with "heslo2"
@@ -24,11 +20,7 @@ Feature: Registration
   Scenario: Anonymoou user fail registration
     When I go to the main page
     And I follow "Registration"
-    And I fill in "Username" with "martin"
-    And I fill in "Name" with "Martin Kovac"
-    And I fill in "Password" with "heslo"
-    And I fill in "Password confirmation" with "ineheslo"
-    And I press "Submit registration"
+    And I make registration with login "martin", name "Martin Kovac", password "heslo" and password confrimation "ineheslo"
     Then I should see "Registration unsuccessful - please check form"
     And I should see "Password doesn't match confirmation"
 
@@ -39,6 +31,7 @@ Feature: Registration
 
   Scenario: User want to visit registration page when it is disabled
     When the user registration is disabled
+    And I go to the main page
     And I should not see "Registration"
     When I go to the registration page
     Then I should see "User registrations are disabled."

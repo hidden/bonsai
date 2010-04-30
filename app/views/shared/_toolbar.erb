@@ -26,9 +26,7 @@
       <div class="menu_box">
         <div class="login">
           <% unless @current_user.logged? %>
-              <%# if(APP_CONFIG['allow_user_registration'] == 'true') %>
-              <%= link_to t(:btn_registration), :controller => "users", :action => "new" %>
-              <% #end %>
+              <%= link_to t(:btn_registration), :controller => "users", :action => "new" if APP_CONFIG['allow_user_registration'] %>
               <a href="" title="<%= t(:btn_log_in) %>" onclick="return toggleDiv('login_box')"><%= t(:btn_log_in) %></a>
           <% else %>
               <%#= t(:logged_as) %><%= @current_user.full_name %>
