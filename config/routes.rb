@@ -4,33 +4,33 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :groups,
                 :member => {:switch_public => :put, :switch_editable => :put},
                 :collection => { :autocomplete_for_user => :get, :autocomplete_for_groups => :get },
-                :path_prefix => '/w'
+                :path_prefix => 'w'
 
   map.resources :admin,
                 :singular => :admin_instance,
                 :member => {:activate => :put, :deactivate => :put},
                 :collection => { :autocomplete_for_user => :get},
-                :path_prefix => '/w'
+                :path_prefix => 'w'
 
   map.resources :group_permissions,
                 :member => { :switch_edit => :put, :switch_view => :put },
-                :path_prefix => '/w'
+                :path_prefix => 'w'
 
   map.resources :groups,
                 :member => {:permissions_history => :get, :permissions_history => :get},
-                :path_prefix => '/w'
+                :path_prefix => 'w'
 
-  map.search 'admin/search', :controller => 'admin', :action => 'index', :path_prefix => '/w'
+  map.search 'admin/search', :controller => 'admin', :action => 'index', :path_prefix => 'w'
 
-  map.connect 'dashboard/:action/:id', :controller => "dashboard", :path_prefix => '/w'
+  map.connect 'dashboard/:action/:id', :controller => "dashboard", :path_prefix => 'w'
 
-  map.connect 'page/new', :controller => "page", :action => "create", :path_prefix => '/w'
+  map.connect 'page/new', :controller => "page", :action => "create", :path_prefix => 'w'
 
-  map.search 'search', :controller => 'page', :action => 'search', :path_prefix => '/w'
+  map.search 'search', :controller => 'page', :action => 'search', :path_prefix => 'w'
 
-  map.connect 'users/:action', :controller => "users", :path_prefix => '/w'
+  map.connect 'users/:action', :controller => "users", :path_prefix => 'w'
 
-  map.facebook 'users/facebook', :controller => "users", :action => "fb_post_authentification", :path_prefix => '/w'
+  map.facebook 'users/facebook', :controller => "users", :action => "fb_post_authentification", :path_prefix => 'w'
 
   map.page '*path;:action', :controller => "page"
 
