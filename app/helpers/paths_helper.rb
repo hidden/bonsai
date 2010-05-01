@@ -3,7 +3,7 @@ module PathsHelper
     if APP_CONFIG['force_https']
       url_for :controller => 'users', :action => 'login', :only_path => false, :protocol => 'https'
     else
-      url_for :controller => 'users', :action => 'login'            
+      url_for :controller => 'users', :action => 'login'
     end
   end
 
@@ -77,7 +77,7 @@ module PathsHelper
   end
 
   def file_history_page_path(page, name)
-    url_for(:controller => 'page', :action => 'history', :path => page.get_rel_path + [name])    
+    url_for(:controller => 'page', :action => 'history', :path => page.get_rel_path + [name])
   end
 
   def admin_page_path(page)
@@ -100,7 +100,12 @@ module PathsHelper
      page_path(page,'add')
     end
 
-  def render_files_path(page, per_page, upscale = nil, ok = nil)
-    page_path(page, 'render_files', :per_page => per_page, :success => ok, :upscale => upscale)
+  def render_files_path(page, per_page, upscale = nil, ok = nil, order = nil)
+    if(order.nil?)
+      order = (!session[:sort].nil? && session[:sort].eql?('name')) ? 'filename ASC' : 'current_file_version_id DESC'
+    else
+      change = true
+    end
+    page_path(page, 'render_files', :per_page => per_page, :success => ok, :upscale => upscale, :order => order, :change => change)
   end
 end

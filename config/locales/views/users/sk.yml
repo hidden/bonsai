@@ -1,7 +1,8 @@
 sk:
   new_account: "Nový učet"
   input_username: "Prihlasovacie meno"
-  name: "Meno"
+  real_name: "Meno"
+  #name: "Meno"
   input_password: "Heslo"
   input_password_confirmation: "Potvrdenie hesla"
   submit_registration: "Zaregistrovať"

@@ -336,9 +336,10 @@ class PageController < ApplicationController
   end
 
   def render_files
-    @uploaded_files = @page.uploaded_files.paginate(:page => params[:page], :per_page => params[:per_page]) #params[:per_page] sa nastavuje v edit metode ako @per_page
+    @uploaded_files = @page.uploaded_files.paginate(:page => params[:page], :per_page => params[:per_page], :order => params[:order]) #params[:per_page] sa nastavuje v edit metode ako @per_page
     @status = {'error', params[:success].empty? ? false : true, 'msg', params[:success].empty? ? t('file_uploaded') : params[:success]} if (params.include?('success'))
     params.delete(:success) if (params.include?('success'))
+    session[:sort] = session[:sort].eql?('name') ? 'date' : 'name' if params.include?(:change)
     render :partial => 'files'
   end
 

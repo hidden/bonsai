@@ -19,6 +19,7 @@
   <% if @uploaded_files.empty? then %>
       <%= t(:no_files_uploaded) %>
   <% else %>
+      <div class="small_link right"><%#= t(:sort_by) %><!--&nbsp;--><%= render :partial =>'sort' %></div>
       <% index = 0 %>
       <% for file in @uploaded_files %>
           <% index += 1 %>

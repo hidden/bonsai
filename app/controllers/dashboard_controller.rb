@@ -30,7 +30,7 @@ class DashboardController < ApplicationController
       format.js do
         render :update do |page|
           #page.replace_html 'news_content', :partial => 'dashboard/news'
-          page. redirect_to url_for :controller => 'dashboard'
+          page.redirect_to url_for :controller => 'dashboard'
         end
       end
       format.html { redirect_to url_for :controller => 'dashboard' }

@@ -272,9 +272,36 @@ Feature: Secure file uploads
     Then I should see "readme"
     When I go to readme
     Then I should see "Readme here version 2."
-@wip  
+    
   Scenario: User wants to upload no file
     When I create "/" page
     And I follow "files"
     And I press "Upload"
-    Then I should see "No file selected" within image title "status_img"
+    Then I should see "No file selected"
+  #@wip TODO: regexpy???
+  Scenario: User uploads some files and sorts them
+    When I create "/" page
+    And I follow "edit"
+    And I visit "files_frame" frame
+    And I attach the file at "test_file.txt" to "file_version_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded." within image title "status_img"
+    When I attach the file at "test_file2.txt" to "file_version_uploaded_data"
+    And I press "Upload"
+    Then I should see "File was successfully uploaded." within image title "status_img"
+    When I go to the main page
+    And I follow "edit"
+    And I visit "files_frame" frame
+    #Then I should see /^[\s\n\r.]*(test_file2.txt)+[\s\n\r.]*(test_file.txt)+[\s\n\r.]*$/
+    #And I should see "Sort by: name"
+    When I follow "Order by name"
+    #Then I should see "test_file.txt test_file2.txt"
+    #And I should see "Sort by: date"
+    When I go to the main page
+    And I follow "edit"
+    And I visit "files_frame" frame
+    #Then I should see "test_file.txt test_file2.txt"
+    #And I should see "Sort by: date"
+    When I follow "Order by date"
+    #Then I should see "test_file2.txt test_file.txt"
+    #And I should see "Sort by: name"

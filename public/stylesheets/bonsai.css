@@ -800,6 +800,13 @@ h3.favourites_title{
 .small_link{
     font-size:12px;
 }
+
+.right{
+    width:100%;
+    text-align:right;
+    white-space:nowrap;
+}
+
 UL.hidden{
     position:relative;
     right:30px

@@ -82,7 +82,7 @@ function subm(id,type)
 function resize_frame(id, count)
 {
     var frame = parent.document.getElementById(id);
-    frame.style.height = (((count) *30) + 80) + "px";
+    frame.style.height = (((count) *30) + 100) + "px";
 }
 
 Event.observe(window, 'load', initialize);
