@@ -321,6 +321,14 @@ class PageController < ApplicationController
 
   def edit
     @uploaded_files = @page.uploaded_files #.paginate(:page => params[:page], :per_page => 2)
+    @layout = @page.layout
+
+    if @layout.nil?
+      @parent_layout = @page.inherited_layout
+    else
+      @parent_layout = @page.parent_layout
+    end
+    
     layout_select
     render :action => :edit
   end
@@ -867,7 +875,7 @@ private
 
     for file in @definition
     params = get_layout_parameters(file)
-    option_text = (!@parent_id.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+    option_text = (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
     option_value = (params[0] == @parent_layout) ? '' : params[0]
     @user_layouts.push([option_text, option_value])
     end
