@@ -31,6 +31,16 @@ function toggleDiv(elementId) {
     return false;
 }
 
+function toggleTextAreaDiv(elementId) {
+    var element  = document.getElementById(elementId);
+    toggleDiv(elementId);
+    var areas = element.getElementsByTagName("textarea");
+    for(var i=0; i < areas.length; i++){
+        switchVisibility(areas[i]);
+    }
+    return false;
+}
+
 function toggleTreeElement(Li, evt, id) {
 
     if (evt.stopPropagation) {

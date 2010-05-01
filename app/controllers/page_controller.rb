@@ -13,11 +13,11 @@ class PageController < ApplicationController
   def search
     @query = params[:search_query]
     @search_results = Page.search(
-      @query,
-      :conditions => {:page_ids => @current_user.find_all_accessible_pages.collect(&:id)},
-      :page => params[:page],
-      :excerpts => true,
-      :per_page => APP_CONFIG['fulltext_page_results']
+            @query,
+            :conditions => {:page_ids => @current_user.find_all_accessible_pages.collect(&:id)},
+            :page => params[:page],
+            :excerpts => true,
+            :per_page => APP_CONFIG['fulltext_page_results']
     )
   end
 
@@ -293,28 +293,28 @@ class PageController < ApplicationController
   end
 
   def rss_tree
-   @recent_revisions = @page.get_page_subtree_revisions(@current_user)
+    @recent_revisions = @page.get_page_subtree_revisions(@current_user)
     render :layout => false
   end
 
   def add
-     if (params.include? 'add_page')
-       path =  (params[:path].blank? ? '' : (params[:path].to_s + '/')) + params['add_page']['new_page']
-       p = control_page (path)
-       #flash[:notice] = path
-         if (!p.blank?)
-          flash[:error] = t(:page_exist)
-          render :action => :add
-         else
-           flash.discard
-           redirect_to ('/' + path)
-         end
-     else
-         render :action => :add
-     end
-   end
+    if (params.include? 'add_page')
+      path =  (params[:path].blank? ? '' : (params[:path].to_s + '/')) + params['add_page']['new_page']
+      p = control_page (path)
+      #flash[:notice] = path
+      if (!p.blank?)
+        flash[:error] = t(:page_exist)
+        render :action => :add
+      else
+        flash.discard
+        redirect_to ('/' + path)
+      end
+    else
+      render :action => :add
+    end
+  end
 
-   def control_page  path
+  def control_page  path
     p = Page.find_by_path(path.to_a)
     return p
   end
@@ -393,11 +393,11 @@ class PageController < ApplicationController
     end
 
     # TODO refactor
-    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?
-      tmp_file = params[:file_version][:uploaded_data]
-      filename = File.basename(tmp_file.original_filename)
-      do_upload(tmp_file, filename)
-    end
+#    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?
+#      tmp_file = params[:file_version][:uploaded_data]
+#      filename = File.basename(tmp_file.original_filename)
+#      do_upload(tmp_file, filename)
+#    end
 
     if not (params[:new_page_part_name].empty? and params[:new_page_part_text].empty?)
       new_part
@@ -405,7 +405,7 @@ class PageController < ApplicationController
 
     update
 
-    
+
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
     redirect_to page_path(@page)
@@ -513,7 +513,7 @@ class PageController < ApplicationController
   def upload
     @notice_flash_msg = "" if @notice_flash_msg.blank?
     @error_flash_msg = "" if @error_flash_msg.blank?
-    if (params.include?(:file_version))    
+    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?
       tmp_file = params[:file_version][:uploaded_data]
       filename = File.basename(tmp_file.original_filename)
       target_filename = params[:uploaded_file_filename]
@@ -524,7 +524,7 @@ class PageController < ApplicationController
         do_upload(tmp_file, filename)
       end
     else
-      @error_flash_msg += t('no_files_selected') + "\r\n"  
+      @error_flash_msg += t('no_files_selected') + "\r\n"
     end
     unless params.include?('redirect')
       flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
@@ -596,6 +596,8 @@ class PageController < ApplicationController
     @up_part_id = params[:part_id]
     PagePartLock.create_lock(@up_part_id, @current_user)
   end
+
+  private
 
   def generate_preview
     parent = nil
@@ -716,14 +718,15 @@ class PageController < ApplicationController
     end
   end
 
-  def set_global_permissions    
+  def set_global_permissions
     #set page public or editable
     if params[:everyone_select] == "1"
       if !@page.is_public?
         switch_public
-      else if @page.is_editable?
-        switch_editable
-      end
+      else
+        if @page.is_editable?
+          switch_editable
+        end
       end
     else
       if params[:everyone_select] == "2" && !@page.is_editable?
@@ -756,19 +759,21 @@ class PageController < ApplicationController
             switch_manager permission
             switch_editor permission
           end
-        else if (selectbox_value == '2')
-          if opravnenie == 1
-            switch_editor permission
+        else
+          if (selectbox_value == '2')
+            if opravnenie == 1
+              switch_editor permission
+            end
+            if opravnenie == 3
+              switch_manager permission
+            end
+          else
+            if (selectbox_value == '3')
+              if opravnenie == 1 || opravnenie == 2
+                switch_manager permission
+              end
+            end
           end
-          if opravnenie == 3
-            switch_manager permission
-          end
-        else if (selectbox_value == '3')
-          if opravnenie == 1 || opravnenie == 2
-            switch_manager permission
-          end
-        end
-        end
         end
       end
     end
@@ -828,7 +833,7 @@ class PageController < ApplicationController
     if layout.blank?
       layout = @parent_layout
     end
-    
+
     if layout == @parent_layout
       @inherited=true
     end
@@ -838,7 +843,7 @@ class PageController < ApplicationController
 
     #stylesheet
     if layout != 'default'
-       @stylesheet = layout + '.css'
+      @stylesheet = layout + '.css'
     end
 
     params = get_layout_parameters("vendor/layouts/"+layout)
@@ -848,10 +853,7 @@ class PageController < ApplicationController
 
   end
 
-
-private
-
-   def get_layout_definitions
+  def get_layout_definitions
     directories =  Array.new
     Dir.glob("vendor/layouts/*") do |directory|
       if File::directory? directory
@@ -878,18 +880,18 @@ private
 
     #basic layout settings
     if (@definition.length == 0)
-       @user_layouts = [['Inherit', nil]]
+      @user_layouts = [['Inherit', nil]]
     else
-       @user_layouts = []
+      @user_layouts = []
     end
 
     for file in @definition
-    params = get_layout_parameters(file)
-    option_text = (!@parent_id.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
-    option_value = (params[0] == @parent_layout) ? '' : params[0]
-    @user_layouts.push([option_text, option_value])
+      params = get_layout_parameters(file)
+      option_text = (!@parent_id.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+      option_value = (params[0] == @parent_layout) ? '' : params[0]
+      @user_layouts.push([option_text, option_value])
     end
 
-   return @user_layouts;
- end
+    return @user_layouts;
+  end
 end

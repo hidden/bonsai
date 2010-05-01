@@ -26,6 +26,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'page/new', :controller => "page", :action => "create", :path_prefix => 'w'
 
+  map.search 'search', :controller => 'page', :action => 'search', :path_prefix => 'w'
+
   map.connect 'users/:action', :controller => "users", :path_prefix => 'w'
 
   map.facebook 'users/facebook', :controller => "users", :action => "fb_post_authentification", :path_prefix => 'w'
