@@ -9,7 +9,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :admin,
                 :singular => :admin_instance,
                 :member => {:activate => :put, :deactivate => :put},
-                :collection => { :autocomplete_for_user => :get, :search => :get },
+                :collection => { :autocomplete_for_user => :get, :search => :get},
                 :path_prefix => 'w'
 
   map.resources :group_permissions,

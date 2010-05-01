@@ -13,11 +13,11 @@ class PageController < ApplicationController
   def search
     @query = params[:search_query]
     @search_results = Page.search(
-            @query,
-            :conditions => {:page_ids => @current_user.find_all_accessible_pages.collect(&:id)},
-            :page => params[:page],
-            :excerpts => true,
-            :per_page => APP_CONFIG['fulltext_page_results']
+      @query,
+      :conditions => {:page_ids => @current_user.find_all_accessible_pages.collect(&:id)},
+      :page => params[:page],
+      :excerpts => true,
+      :per_page => APP_CONFIG['fulltext_page_results']
     )
   end
 
@@ -293,28 +293,28 @@ class PageController < ApplicationController
   end
 
   def rss_tree
-    @recent_revisions = @page.get_page_subtree_revisions(@current_user)
+   @recent_revisions = @page.get_page_subtree_revisions(@current_user)
     render :layout => false
   end
 
   def add
-    if (params.include? 'add_page')
-      path =  (params[:path].blank? ? '' : (params[:path].to_s + '/')) + params['add_page']['new_page']
-      p = control_page (path)
-      #flash[:notice] = path
-      if (!p.blank?)
-        flash[:error] = t(:page_exist)
-        render :action => :add
-      else
-        flash.discard
-        redirect_to ('/' + path)
-      end
-    else
-      render :action => :add
-    end
-  end
+     if (params.include? 'add_page')
+       path =  (params[:path].blank? ? '' : (params[:path].to_s + '/')) + params['add_page']['new_page']
+       p = control_page (path)
+       #flash[:notice] = path
+         if (!p.blank?)
+          flash[:error] = t(:page_exist)
+          render :action => :add
+         else
+           flash.discard
+           redirect_to ('/' + path)
+         end
+     else
+         render :action => :add
+     end
+   end
 
-  def control_page  path
+   def control_page  path
     p = Page.find_by_path(path.to_a)
     return p
   end
@@ -322,6 +322,15 @@ class PageController < ApplicationController
   def edit
     @per_page = 8
     @list_len = (@page.uploaded_files.length > @per_page) ? @per_page : @page.uploaded_files.length
+    
+    @layout = @page.layout
+
+    if @layout.nil?
+      @parent_layout = @page.inherited_layout
+    else
+      @parent_layout = @page.parent_layout
+    end
+    
     layout_select
     render :action => :edit
   end
@@ -404,7 +413,6 @@ class PageController < ApplicationController
     end
 
     update
-
 
     flash[:error] = @error_flash_msg unless @error_flash_msg.empty?
     flash[:notice] = @notice_flash_msg unless @notice_flash_msg.empty? or not @error_flash_msg.empty?
@@ -759,21 +767,19 @@ class PageController < ApplicationController
             switch_manager permission
             switch_editor permission
           end
-        else
-          if (selectbox_value == '2')
-            if opravnenie == 1
-              switch_editor permission
-            end
-            if opravnenie == 3
-              switch_manager permission
-            end
-          else
-            if (selectbox_value == '3')
-              if opravnenie == 1 || opravnenie == 2
-                switch_manager permission
-              end
-            end
+        else if (selectbox_value == '2')
+          if opravnenie == 1
+            switch_editor permission
           end
+          if opravnenie == 3
+            switch_manager permission
+          end
+        else if (selectbox_value == '3')
+          if opravnenie == 1 || opravnenie == 2
+            switch_manager permission
+          end
+        end
+        end
         end
       end
     end
@@ -833,7 +839,7 @@ class PageController < ApplicationController
     if layout.blank?
       layout = @parent_layout
     end
-
+    
     if layout == @parent_layout
       @inherited=true
     end
@@ -880,18 +886,18 @@ class PageController < ApplicationController
 
     #basic layout settings
     if (@definition.length == 0)
-      @user_layouts = [['Inherit', nil]]
+       @user_layouts = [['Inherit', nil]]
     else
-      @user_layouts = []
+       @user_layouts = []
     end
 
     for file in @definition
-      params = get_layout_parameters(file)
-      option_text = (!@parent_id.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
-      option_value = (params[0] == @parent_layout) ? '' : params[0]
-      @user_layouts.push([option_text, option_value])
+    params = get_layout_parameters(file)
+    option_text = (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+    option_value = (params[0] == @parent_layout) ? '' : params[0]
+    @user_layouts.push([option_text, option_value])
     end
 
-    return @user_layouts;
-  end
+   return @user_layouts;
+ end
 end
