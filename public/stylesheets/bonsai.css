@@ -514,7 +514,7 @@ ul#menu li ul li.small{
 /* telo inputy */
 
 .header_content input[type="text"]#title, .header_content input[type="text"]:focus#title{
-    width:100%;
+    width:95%;
     background:#eff8ff;
     border:1px solid #def1ff;
     height:35px;

@@ -23,7 +23,7 @@
           <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
 
           <p><%= label_tag 'layout', t(:layout) %>
-           <%= select_tag :layout, options_for_select(@user_layouts, @layout),
+           <%= select_tag :layout, options_for_select(@user_layouts, @layout.to_s()),
                :onchange => remote_function(:with => "'parent_layout=#{@parent_layout}&layout='+encodeURIComponent(value)",
                                             :url => {:controller => "page",
                                             :action => 'show_layout_helper'})  %>

@@ -22,7 +22,7 @@
       <% if @current_user.can_manage_page? @page %>
           <p><%= label_tag 'layout', t(:layout) %>
 
-             <%= select_tag :layout, options_for_select(@user_layouts, @layout),
+             <%= select_tag :layout, options_for_select(@user_layouts, @layout.to_s()),
                :onchange => remote_function(:with => "'parent_layout=#{@parent_layout}&layout='+encodeURIComponent(value)",
                                             :url => {:controller => "page",
                                             :action => 'show_layout_helper'})  %>
