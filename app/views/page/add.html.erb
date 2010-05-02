@@ -2,7 +2,7 @@
   <div class="holder_right">
     <div class="header">
       <div class="header_content">
-        <h1><%= t(:add_page)%></h1>
+        <h1><%= t("views.page.add_page")%></h1>
       </div>
       <div class="header_right">
       </div>
@@ -12,7 +12,7 @@
          <p>
            <%= t("views.groups.name") %> :
            <%= text_field('add_page','new_page') %>
-           <%= submit_tag(t(:btn_create_page), :class=> "small_button") %>
+           <%= submit_tag(t("views.general.btn_create"), :class=> "small_button") %>
          </p>
       <% end %>
     </div>

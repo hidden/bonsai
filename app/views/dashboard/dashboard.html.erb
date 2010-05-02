@@ -1,7 +1,7 @@
 <div class="holder_right_dark">
   <div class="header">
     <div class="header_content">
-      <h1><%= t(:hello) %>, <%= @current_user.name %></h1>
+      <h1><%= t("views.page.hello") %>, <%= @current_user.name %></h1>
     </div>
     <div class="header_right">
     </div>
@@ -10,13 +10,13 @@
   <%= render :partial => 'news' %>
   <div class="main_content_right">
     <div class="favourite_content">
-      <h2 class="favourites"><%= icon_tag('star.png', :alt => t(:star))%>&nbsp;<%= t(:pages_watching)%>(<%= @current_user.favorite_pages.length %>)</h2>
+      <h2 class="favourites"><%= icon_tag('star.png', :alt => t(:star))%>&nbsp;<%= t("views.page.pages_watching")%>(<%= @current_user.favorite_pages.length %>)</h2>
       <% index = 0 %>
       <% for favorite in @current_user.favorite_pages %>
           <% index += 1 %>
           <p onmouseover="visible_remove_icon('<%='remove_'+index.to_s() %>', 'visible')" onmouseout="visible_remove_icon('<%='remove_'+index.to_s() %>', 'hidden')">
-            <%= link_to favorite.title, page_path(favorite) %>  <%= " " + t(:by) + " " + favorite.page_parts_revisions.last.user.username %>
-            <%= link_to_remote icon_tag('cancel.png', :border => 0, :title => t(:remove_from_favorites), :alt => ''), {:url => { :controller => "dashboard", :action => "remove_favorite", :id => favorite.id }}, :href => url_for(:controller => "dashboard", :action => "remove_favorite", :id => favorite.id), :id => 'remove_'+index.to_s(), :style => 'visibility:hidden' %>
+            <%= link_to favorite.title, page_path(favorite) %>  <%= " " + t("views.page.by") + " " + favorite.page_parts_revisions.last.user.username %>
+            <%= link_to_remote icon_tag('cancel.png', :border => 0, :title => t("views.page.remove_from_favorites"), :alt => ''), {:url => { :controller => "dashboard", :action => "remove_favorite", :id => favorite.id }}, :href => url_for(:controller => "dashboard", :action => "remove_favorite", :id => favorite.id), :id => 'remove_'+index.to_s(), :style => 'visibility:hidden' %>
           </p>
       <% end %>
     </div>

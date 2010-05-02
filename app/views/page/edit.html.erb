@@ -20,7 +20,7 @@
     <div class="main_content">
 
       <% if @current_user.can_manage_page? @page %>
-          <p><%= label_tag 'layout', t(:layout) %>
+          <p><%= label_tag 'layout', t("views.page.layout") %>
 
              <%= select_tag :layout, options_for_select(@user_layouts, @layout.to_s()),
                :onchange => remote_function(:with => "'parent_layout=#{@parent_layout}&layout='+encodeURIComponent(value)",
@@ -39,7 +39,7 @@
                   <%= text_field_tag("parts_name[#{part.name}]", part.name) %>
                   <% if @page.page_parts.count > 1 %>
                       <div class="page_part_edit_remove_link">
-                        <%= link_to_remote image_tag('icons/cancel_big.png', :title => t(:delete_page_part)), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id), :confirm => t(:'are_you_sure_to_delete_part'), :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)} %>
+                        <%= link_to_remote image_tag('icons/cancel_big.png', :title => t("views.page.delete_page_part")), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id), :confirm => t("views.page.are_you_sure_to_delete_part"), :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)} %>
                       </div>
                   <% end %>
                   <div class="page_part_edit_remove_link" onclick="return toggleDiv('textarea_id_<%= part.id %>')">
@@ -81,13 +81,13 @@
 
 
       <p>
-        <script type="text/javascript">document.write('<%= t(:or) %> <a href="#" onclick="return toggleTextAreaDiv(\'add_new_page_part\');"><%= t(:add_new_page_part) %></a>');</script>
-        <noscript><strong><%= t(:or) %> <%= t(:add_new_page_part) %></strong></noscript>
+        <script type="text/javascript">document.write('<%= t("views.page.or") %> <a href="#" onclick="return toggleTextAreaDiv(\'add_new_page_part\');"><%= t("views.page.add_new_page_part") %></a>');</script>
+        <noscript><strong><%= t("views.page.or") %> <%= t("views.page.add_new_page_part") %></strong></noscript>
       </p>
 
       <script type="text/javascript">document.write('<div style="display: none;" id="add_new_page_part">');</script>
       <p>
-        <%= label_tag t(:new_part_name) %><br/>
+        <%= label_tag t("views.page.new_part_name") %><br/>
         <%= text_field_tag('new_page_part_name') %>
       </p>
       <p>
@@ -98,18 +98,18 @@
 
       <% if @current_user.can_manage_page? @page %>
           <p>
-            <script type="text/javascript">document.write('<a href="#" onclick="return toggleDiv(\'more_options\');"><%= t("more_options") %></a>');</script>
-            <noscript><strong><%= t("more_options") %></strong></noscript>
+            <script type="text/javascript">document.write('<a href="#" onclick="return toggleDiv(\'more_options\');"><%= t("views.page.more_options") %></a>');</script>
+            <noscript><strong><%= t("views.page.more_options") %></strong></noscript>
           </p>
           <script type="text/javascript">document.write('<div style="display: none;" id="more_options">')</script>
-          <%= t :page_parts_ordering %>
-          <%= select_tag "ordering", "<option value='0' #{'selected=\"selected\"' if @page.ordering==0}>#{t("order_by_date")}</option><option value='1' #{'selected=\"selected\"' if @page.ordering==1}>#{t("order_by_name")}</option>" %>
+          <%= t("views.page.page_parts_ordering") %>
+          <%= select_tag "ordering", "<option value='0' #{'selected=\"selected\"' if @page.ordering==0}>#{t("views.page.order_by_date")}</option><option value='1' #{'selected=\"selected\"' if @page.ordering==1}>#{t("views.page.order_by_name")}</option>" %>
           <script type="text/javascript">document.write('</div>');</script>
       <% end %>
 
       <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
-      <p><%= submit_tag t(:save), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
-        <%= submit_tag t(:preview), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
+      <p><%= submit_tag t("views.page.save"), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+        <%= submit_tag t("views.page.preview"), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
     </div>
 
     <div class="main_content_right" style="width:244px;">
@@ -124,7 +124,7 @@
     <!--PAGE PERMISIONS -->
     <% if @current_user.can_manage_page? @page %>
         <div id="permissions">
-          <h3><%= t(:permissions_for) %></h3>
+          <h3><%= t("views.page.permissions_for") %></h3>
 
 
           <%#= render :partial => 'page/remove_permission' %>
@@ -132,7 +132,7 @@
             <thead>
             <tr>
               <th><%= t("views.groups.group") %></th>
-              <th><%= t(:permission) %></th>
+              <th><%= t("views.page.permission") %></th>
               <th></th>
             </tr>
             </thead>
@@ -177,17 +177,17 @@
                               <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t("views.general.viewer") %></option>
                           <% end %>
                           <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t("views.general.editor") %></option>
-                          <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
+                          <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t("views.general.manager") %></option>
                         </select>
                       </td>
 
                       <td>
                         <% if opravnenie == 3 %>
                             <div class="ManagerHidden" style="visibility:hidden"></div>
-                            <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers()", :confirm => t(:'are_you_sure_to_remove_permission'),
+                            <%= link_to_remote icon_tag('cancel.png', :title => t("views.page.remove")), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers()", :confirm => t("views.page.are_you_sure_to_remove_permission"),
                                                :html => { :href => _remove_permission_path(@page, index) }  %>
                         <% else %>
-                            <%= link_to_remote icon_tag('cancel.png', :title => t(:remove)), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :confirm => t(:'are_you_sure_to_remove_permission'),
+                            <%= link_to_remote icon_tag('cancel.png', :title => t("views.page.remove")), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :confirm => t("views.page.are_you_sure_to_remove_permission"),
                                                :html => { :href => _remove_permission_path(@page, index) } %>
 
                         <% end %>
@@ -200,21 +200,21 @@
               <!-- <td><%#= link_to image_boolean(@page.is_public?, t(:toggle)), switch_public_path(@page), {:method => :post} %></td> -->
               <td colspan="2"><select name="everyone_select" id="everyone_select">
                 <option selected="selected">-</option>
-                <option value="1" <%= @page.is_public? ? selected = "selected": "" %> ><%= t(:can_view) %></option>
-                <option value="2" <%= @page.is_editable? ? selected = "selected" : "" %> ><%= t(:can_edit) %></option>
+                <option value="1" <%= @page.is_public? ? selected = "selected": "" %> ><%= t("views.general.can_view") %></option>
+                <option value="2" <%= @page.is_editable? ? selected = "selected" : "" %> ><%= t("views.general.can_edit") %></option>
               </select>
               </td>
             </tr>
             </tbody>
           </table>
           <% unless @page.ancestors.empty? %>
-              <h3><%= t(:inherited_permissions) %></h3>
+              <h3><%= t("views.page.inherited_permissions") %></h3>
               <table class="page_permisions">
                 <thead>
                 <tr>
                   <th><%= t("views.groups.group") %></th>
-                  <th><%= t(:permission) %></th>
-                  <th><%= t(:via) %></th>
+                  <th><%= t("views.page.permission") %></th>
+                  <th><%= t("views.page.via") %></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -243,7 +243,7 @@
                             <% if permission.can_manage?
                                 opravnenie = 3
                             end %>
-                            <% perm = Array.[](t("views.general.viewer"), t("views.general.editor"), t(:manager)) %>
+                            <% perm = Array.[](t("views.general.viewer"), t("views.general.editor"), t("views.general.manager")) %>
                             <%= perm[opravnenie-1] %>
                             <% if opravnenie == 3 %>
                                 <div class="ManagerHidden" style="visibility:hidden"></div>
@@ -257,9 +257,9 @@
               </table>
           <% end %>
 
-          <h3><%= t(:add_group_permission) %></h3>
+          <h3><%= t("views.page.add_group_permission") %></h3>
           <%# form_tag :controller => 'page', :action => 'set_permissions' do %>
-          <%= text_field_tag('add_group') %> <%= select('group_role', 'type', {t("views.general.viewer") => "1", t("views.general.editor") => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %>
+          <%= text_field_tag('add_group') %> <%= select('group_role', 'type', {t("views.general.viewer") => "1", t("views.general.editor") => "2", t("views.general.manager")=> "3"}) %> <%#= submit_tag t(:set) %>
           <br/>
 
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
@@ -271,12 +271,12 @@
           <%# end %>
           <br/>
           <div class="info_warning">
-            <%= t(:permissions_warning) %>
+            <%= t("views.page.permissions_warning") %>
           </div>
           <br/>
 
           <div class="files">
-            <%= t(:permission_history) %> <%= link_to t(:link), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>
+            <%= t("views.page.permission_history") %> <%= link_to t("views.page.link"), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>
           </div>
 
         </div>

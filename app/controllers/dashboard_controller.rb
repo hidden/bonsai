@@ -9,8 +9,8 @@ class DashboardController < ApplicationController
       return
     end
     session[:last_visit] = @current_user.last_dashboard_visit if session[:last_visit].nil?
-    session[:toggle_text] = t(:show_older) if session[:toggle_text].nil?
-    session[:toggle_text] == t(:show_older) ? all = false : all = true
+    session[:toggle_text] = t("views.page.show_older") if session[:toggle_text].nil?
+    session[:toggle_text] == t("views.page.show_older") ? all = false : all = true
     @news = get_news(all)
     get_groups(all)
     get_pages(all)
@@ -21,7 +21,7 @@ class DashboardController < ApplicationController
   end
 
   def toggle_news
-    session[:toggle_text] == t(:show_older) ? session[:toggle_text] = t(:show_latest) : session[:toggle_text] = t(:show_older)
+    session[:toggle_text] == t("views.page.show_older") ? session[:toggle_text] = t("views.page.show_latest") : session[:toggle_text] = t("views.page.show_older")
 #    @news = get_news(all)
 #    get_groups(all)
 #    get_pages(all)

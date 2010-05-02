@@ -2,7 +2,7 @@
 <div class="holder_right">
   <div class="header">
     <div class="header_content">
-      <span class="subtitle"><%= t(:perm_history_title) %></span>
+      <span class="subtitle"><%= t("views.general.perm_history_title") %></span>
       <h1><%= @page.title %></h1>
     </div>
     <div class="header_right">
@@ -19,13 +19,13 @@
             <th><%= t("views.general.user") %></th>
             <th><%= t("views.general.action") %></th>
             <th><%= t("views.groups.group") %></th>
-            <th><%= t(:permission) %></th>
-            <th><%= t(:date_label) %></th>
+            <th><%= t("views.page.permission") %></th>
+            <th><%= t("views.general.date_label") %></th>
           </tr>
           </thead>
           <tbody>
-          <% perm = Array.[](t("views.general.viewer"), t("views.general.editor"), t(:manager)) %>
-          <% action = Array.[](t(:set_action), t(:remove_action)) %>
+          <% perm = Array.[](t("views.general.viewer"), t("views.general.editor"), t("views.general.manager")) %>
+          <% action = Array.[](t("views.page.set_action"), t("views.general.remove_action")) %>
           <% for permission in @permissions_history %>
           <tr>
             <td></td>

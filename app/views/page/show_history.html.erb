@@ -2,7 +2,7 @@
   <div class="holder_right">
     <div class="header">
       <div class="header_content">
-        <span class="subtitle"><%= t(:changes_for_page) %></span>
+        <span class="subtitle"><%= t("views.page.changes_for_page") %></span>
         <h1> <%= @page.title %></h1>
       </div>
       <div class="header_right">
@@ -12,20 +12,20 @@
 
       <% form_tag("#{@page.get_path};diff", {:method => :get}) do %>
           <div>
-            <%= submit_tag t(:btn_compare), :name => nil, :class=>'large_button' %>
+            <%= submit_tag t("views.page.btn_compare"), :name => nil, :class=>'large_button' %>
             <table class="history">
               <thead>
               <tr>
                 <th>
-                  <%= t(:version) %>
+                  <%= t("views.page.version") %>
                 </th>
                 <th></th>
-                <th><%= t(:date_label) %></th>
+                <th><%= t("views.general.date_label") %></th>
                 <th>
-                  <%= t(:author) %>
+                  <%= t("views.page.author") %>
                 </th>
                 <th>
-                  <%= t(:part) %>
+                  <%= t("views.page.part") %>
                 </th>
                 <th></th>
                 <th></th>
@@ -57,18 +57,18 @@
                   -->
                     <td>
                       <% if @current_user.can_edit_page? @page %>
-                          <%= link_to t(:revert) + " #{counter}", page_path(@page, :undo, :revision => index.to_s), {:method => :post} %>
+                          <%= link_to t("views.page.revert") + " #{counter}", page_path(@page, :undo, :revision => index.to_s), {:method => :post} %>
                       <% end %>
                     </td>
                     <td>
-                      <%= link_to t(:show_from) + " #{counter}", page_path(@page, :revision, :revision => index.to_s) %>
+                      <%= link_to t("views.page.show_from") + " #{counter}", page_path(@page, :revision, :revision => index.to_s) %>
                     </td>
                   </tr>
               <% end %>
               </tbody>
             </table>
 
-            <%= submit_tag t(:btn_compare), :name => nil, :class=>'large_button' %>
+            <%= submit_tag t("views.page.btn_compare"), :name => nil, :class=>'large_button' %>
           </div>
       <% end %>
 

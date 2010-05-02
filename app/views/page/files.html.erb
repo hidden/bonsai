@@ -8,16 +8,16 @@
   </div>
   <div class="main_content">
     <% if @page.uploaded_files.empty? then %>
-        <p><%= t(:no_files_uploaded) %></p>
+        <p><%= t("views.page.no_files_uploaded") %></p>
     <% else %>
         <table class="history center">
           <thead>
           <tr>
             <th></th>
-            <th><%= t(:file) %></th>
-            <th><%= t(:uploader) %></th>
-            <th><%= t(:size) %></th>
-            <th><%= t(:creation_time) %></th>
+            <th><%= t("views.page.file") %></th>
+            <th><%= t("views.page.uploader") %></th>
+            <th><%= t("views.page.size") %></th>
+            <th><%= t("views.page.creation_time") %></th>
             <th><%= t("views.general.history") %></th>
           </tr>
           </thead>
@@ -27,7 +27,7 @@
                 <td><%= file_type_image_tag(file) %></td>
                 <td><%= link_to file.filename, file.filename %></td>
                 <td>
-                  <% if file.current_file_version.uploader.nil? %><%= t(:unknown) %>
+                  <% if file.current_file_version.uploader.nil? %><%= t("views.page.unknown") %>
                       <% else %><%= h file.current_file_version.uploader.full_name %>
                   <% end %></td>
                 <td><%= number_to_human_size(file.current_file_version.size, :precision => 2) %></td>
@@ -44,12 +44,12 @@
           </tbody>
         </table>
     <% end %>
-    <p><%= t(:you_can) %> <a href="#" onclick="return toggleDiv('add_new_file');"><%= t(:upload_new_file) %></a>.</p>
+    <p><%= t("views.page.you_can") %> <a href="#" onclick="return toggleDiv('add_new_file');"><%= t("views.page.upload_new_file") %></a>.</p>
 
     <div style="display: none;" id="add_new_file">
       <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
-          <p><label><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %>
-          </label><%= submit_tag t(:btn_upload), :class=>'small_button' %></p>
+          <p><label><%= t("views.page.upload_file") %><br/><%= f.file_field :uploaded_data %>
+          </label><%= submit_tag t("views.page.btn_upload"), :class=>'small_button' %></p>
       <% end %>
     </div>
   </div>

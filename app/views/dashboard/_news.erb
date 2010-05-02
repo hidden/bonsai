@@ -1,5 +1,5 @@
 <div class="main_content">
-  <h2 class="dashboard"><%= @news.length > 0 ? t(:news) : t(:no_news) %> &nbsp;
+  <h2 class="dashboard"><%= @news.length > 0 ? t("views.page.news") : t("views.page.no_news") %> &nbsp;
   <span class="small_link">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>)</span></h2>
   <% if @news.size > 0 %>
   <ul class="DashboardTree">

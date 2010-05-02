@@ -23,7 +23,7 @@
             <thead>
             <tr>
               <th><%= t("views.general.user") %></th>
-              <th><%= t(:permission)%></th>
+              <th><%= t("views.page.permission")%></th>
               <th></th>
             </tr>
             </thead>
@@ -43,7 +43,7 @@
                     </select>
                   </td>
                   <td>
-                    <%= link_to icon_tag('cancel.png', :alt => t("views.groups.remove_member")), group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => t("views.groups.destroy_question"), :id => "Remove_member_#{permission.user.id}", :title=>t(:remove_action) %>
+                    <%= link_to icon_tag('cancel.png', :alt => t("views.groups.remove_member")), group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => t("views.groups.destroy_question"), :id => "Remove_member_#{permission.user.id}", :title=>t("views.general.remove_action") %>
                   </td>
                 </tr>
             <% end %>
@@ -52,8 +52,8 @@
               
               <td><select name="all_users_select" id="all_users_select">
                   <option value='0' selected='selected'>-</option>
-                  <option value='1' <%= @group.is_public? ? "selected='selected'" : '' %>><%= t(:can_view) %></option>
-                  <option value='2' <%= @group.is_editable? ? "selected='selected'" : '' %>><%= t(:can_edit) %></option>  
+                  <option value='1' <%= @group.is_public? ? "selected='selected'" : '' %>><%= t("views.general.can_view") %></option>
+                  <option value='2' <%= @group.is_editable? ? "selected='selected'" : '' %>><%= t("views.general.can_edit") %></option>
               </select>
               </td>
             </tr>
@@ -72,7 +72,7 @@
           </script>
       <%# end %>
 
-          <%= t("views.groups.group_history") %> <%= link_to t(:link), permissions_history_group_path, :target => "_blank", :title => "PermissionsHistory" %>.<br/><br/>
+          <%= t("views.groups.group_history") %> <%= link_to t("views.page.link"), permissions_history_group_path, :target => "_blank", :title => "PermissionsHistory" %>.<br/><br/>
           <%= f.submit t("views.groups.btn_update"), :class=> "small_button" %><br/><br/>
           <%= link_to t("views.general.back"), groups_path %>
       <% end %>
