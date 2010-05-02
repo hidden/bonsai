@@ -20,7 +20,18 @@ sk:
       editors_error: "Nie je možné zmazať toto právo, musí zostať aspoň jeden editor."
       manager_error: "Nie je možné zmazať toto právo, musí zostať aspoň jeden manažér pre stránku."
       registration_disabled: "Registrácia nových používateľov nie je momentálne dostupná."
+
   views:
+    general:
+      action: "Akcia"
+      user: "Používateľ"
+      viewer: "Čitateľ"
+      editor: "Editor"
+      everyone: "Všetci používatelia"
+      back: "Späť"
+      history: "História"
+      files: "Súbory"
+
     admin:
       status: "Stav"
       active: "aktívny"
@@ -36,6 +47,7 @@ sk:
       regtime: "Registrácia"
       logtime: "Posledný prístup"
       err_destroy_group: "Administrátorská skupina sa nedá zmazať"
+
     groups:
       groups_management: "Manažment skupín"
       group: "Skupina"
@@ -51,10 +63,24 @@ sk:
       add_new_user: "Pridať nového používateľa"
       btn_create_group: "Vytvoriť"
       group_history: "Môžes si pozrieť históriu práv pre túto skupinu kliknutím na"
-    general:
-      action: "Akcia"
-      user: "Používateľ"
-      viewer: "Čitateľ"
-      editor: "Editor"
-      everyone: "Všetci používatelia"
-      back: "Späť"
+
+    toolbar:
+      login: "Login:"
+      btn_registration: "Registrácia"
+      btn_log_in: "Prihlásiť sa"
+      password: "Heslo:"
+      log_out: "Odhlásiť sa"
+      view: "Zobrazenie"
+      edit: "Editovať"
+      groups: "Skupiny"
+      dashboard: "Nástenka"
+      return: "Návrat na stránku"
+      rss_feed: "RSS kanál"
+      rss_feed_subtree: "RSS kanál podstromu"
+      btn_search_page: "Vyhľadaj"
+      actions: "Akcie"
+      fb_login: "Prihlásiť sa cez Facebook connect. "
+      no_frames: "Váš prehliadač nepodporuje iframe."
+
+    page:
+      summary: "Sumár"

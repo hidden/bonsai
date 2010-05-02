@@ -28,7 +28,7 @@
                 <%= file_type_image_tag(file) %> &nbsp;
                 <%= link_to truncate(file.filename, :length => 25), file.filename, :title => file.filename %> &nbsp;
                 <% if (file.versions.length > 1) %>
-                    <%= link_to icon_tag('file_rev.png', :border => 0, :alt => t(:history), :title => t(:history)), file_history_page_path(@page, file.filename), :id => 'history_'+index.to_s(), :target => '_parent', :style => 'visibility:hidden' %>
+                    <%= link_to icon_tag('file_rev.png', :border => 0, :alt => t("views.general.history"), :title => t("views.general.history")), file_history_page_path(@page, file.filename), :id => 'history_'+index.to_s(), :target => '_parent', :style => 'visibility:hidden' %>
                 <% end %>
             <% else %>
                 <%= file_type_image_tag(file) %>

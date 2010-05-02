@@ -1,5 +1,5 @@
 <% form_tag do %>
-  <label><span><%= t(:login) %></span><%= text_field_tag 'username' %></label>
-  <label><span><%= t(:password)%></span><%= password_field_tag 'password' %></label>
+  <label><span><%= t("views.toolbar.login") %></span><%= text_field_tag 'username' %></label>
+  <label><span><%= t("views.toolbar.password")%></span><%= password_field_tag 'password' %></label>
   <%= submit_tag 'Login' %>
 <% end %>

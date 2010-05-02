@@ -20,7 +20,18 @@ en:
       editors_error: "It is not possible to delete this permission, there must be at least one editor."
       manager_error: "It is not possible to remove this permission, there must be at least one manager."
       registration_disabled: "User registrations are disabled."
+
   views:
+    general:
+      action: "Action"
+      user: "User"
+      viewer: "Viewer"
+      editor: "Editor"
+      everyone: "Everyone"
+      back: "Back"
+      history: "History"
+      files: "Files"
+
     admin:
       status: "Status"
       active: "active"
@@ -36,6 +47,7 @@ en:
       regtime: "Registration"
       logtime: "Last login"
       err_destroy_group: "You cannot destroy admin group"
+
     groups:
       groups_management: "Groups Management"
       group: "Group"
@@ -51,10 +63,24 @@ en:
       add_new_user: "Add new user"
       btn_create_group: "Create"
       group_history: "You can see permissions history for this group by following this"
-    general:
-      action: "Action"
-      user: "User"
-      viewer: "Viewer"
-      editor: "Editor"
-      everyone: "Everyone"
-      back: "Back"
+
+    toolbar:
+      login: "Login:"
+      btn_registration: "Registration"
+      btn_log_in: "Log in"
+      password: "Password:"
+      log_out: "Log out"
+      view: "View"
+      edit: "Edit"
+      groups: "Groups"
+      dashboard: "Dashboard"
+      return: "Return to page"
+      rss_feed: "RSS feed"
+      rss_feed_subtree: "RSS feed of subtree"
+      btn_search_page: "Search"
+      actions: "Actions"
+      fb_login: "Login with facebook connect. "
+      no_frames: "Your browser does not support iframes."
+
+    page:
+      summary: "Summary"
