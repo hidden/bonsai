@@ -63,7 +63,10 @@ function toggleTreeElement(Li, evt, id) {
 }
 
 function visible_remove_icon(id, show) {
-    document.getElementById(id).style.visibility = show;
+    var el = document.getElementById(id);
+    if(el != null){
+        el.style.visibility = show;
+    }
 }
 
 function subm(id,type)
