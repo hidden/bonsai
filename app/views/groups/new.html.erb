@@ -1,7 +1,7 @@
 <div class="holder_right">
   <div class="header">
     <div class="header_content">
-      <h1><%= t(:new_group) %></h1>
+      <h1><%= t("views.groups.new_group") %></h1>
     </div>
     <div class="header_right">
     </div>
@@ -12,16 +12,16 @@
           <%= f.error_messages %>
 
           <p>
-            <%= f.label t(:name) %><br />
+            <%= f.label t("views.groups.name") %><br />
             <%= f.text_field :name %>
           </p>
           <p>
-            <%= f.submit t(:btn_create_group), :class=> "small_button" %>
+            <%= f.submit t("views.groups.btn_create_group"), :class=> "small_button" %>
           </p>
         </div>
     <% end %>
 
-    <%= link_to t(:back), groups_path %>
+    <%= link_to t("views.groups.back"), groups_path %>
 
   </div>
 </div>

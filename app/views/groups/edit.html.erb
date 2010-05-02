@@ -2,7 +2,7 @@
   <div class="holder_right">
     <div class="header">
       <div class="header_content">
-        <span class="subtitle"><%= t(:group) %></span>
+        <span class="subtitle"><%= t("views.groups.group") %></span>
         <h1> <%=h @group.name %></h1>
       </div>
       <div class="header_right">
@@ -15,14 +15,14 @@
             <%= f.error_messages %>
 
           <p>
-            <%= f.label t(:name) %><br />
+            <%= f.label t("views.groups.name") %><br />
             <%= f.text_field :name %>&nbsp;&nbsp;
           </p>
-          <h2><%= t(:group_members) %></h2>
+          <h2><%= t("views.groups.group_members") %></h2>
           <table id="Groups_memberstable" class="history">
             <thead>
             <tr>
-              <th><%= t(:user) %></th>
+              <th><%= t("views.groups.user") %></th>
               <th><%= t(:permission)%></th>
               <th></th>
             </tr>
@@ -38,17 +38,17 @@
                     <% if (permission.can_edit)
                         opravnenie = 2 %><% end %>
                     <select name="<%= permission.user.name%>_select" id="<%= permission.user.name%>_select">
-                      <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t(:viewer) %></option>
-                      <option value='2' <%= (opravnenie == 2 || @group.is_editable?)? "selected='selected'" : '' %>><%= t(:editor) %></option>
+                      <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t("views.groups.viewer") %></option>
+                      <option value='2' <%= (opravnenie == 2 || @group.is_editable?)? "selected='selected'" : '' %>><%= t("views.groups.editor") %></option>
                     </select>
                   </td>
                   <td>
-                    <%= link_to icon_tag('cancel.png', :alt => t(:remove_action)), group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => t(:destroy_question), :id => "Remove_member_#{permission.user.id}", :title=>t(:remove_action) %>
+                    <%= link_to icon_tag('cancel.png', :alt => t("views.groups.remove_member")), group_permission_path(permission, :group_id => permission.group_id), :method => :delete, :confirm => t("views.groups.destroy_question"), :id => "Remove_member_#{permission.user.id}", :title=>t(:remove_action) %>
                   </td>
                 </tr>
             <% end %>
             <tr>
-              <td><%= t(:everyone) %></td>
+              <td><%= t("views.groups.everyone") %></td>
               
               <td><select name="all_users_select" id="all_users_select">
                   <option value='0' selected='selected'>-</option>
@@ -61,9 +61,9 @@
             </tbody>
           </table>
 
-      <h2><%= t(:add_new_user) %></h2>
+      <h2><%= t("views.groups.add_new_user") %></h2>
       <%# form_tag group_permissions_path(:group_id => @group.id), :method => :post do %>
-          <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', {t(:viewer) => "1", t(:editor) => "2"}) %>&nbsp;&nbsp;<%#= submit_tag(t(:btn_add), :class=> "small_button") %></p>
+          <p><%= text_field('add_user', 'usernames') %> <%= select('add_user', 'type', {t("views.groups.viewer") => "1", t("views.groups.editor") => "2"}) %>&nbsp;&nbsp;</p>
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>
           <script type="text/javascript">
               //<![CDATA[
@@ -72,9 +72,9 @@
           </script>
       <%# end %>
 
-          <%= t(:group_history) %> <%= link_to t(:link), permissions_history_group_path, :target => "_blank", :title => "PermissionsHistory" %>.<br/><br/>
-          <%= f.submit t(:btn_update), :class=> "small_button" %><br/><br/>
-          <%= link_to t(:back), groups_path %>
+          <%= t("views.groups.group_history") %> <%= link_to t(:link), permissions_history_group_path, :target => "_blank", :title => "PermissionsHistory" %>.<br/><br/>
+          <%= f.submit t("views.groups.btn_update"), :class=> "small_button" %><br/><br/>
+          <%= link_to t("views.groups.back"), groups_path %>
       <% end %>
     </div>
   </div>

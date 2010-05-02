@@ -2,7 +2,7 @@ class PageController < ApplicationController
   cache_sweeper :page_sweeper, :only => [:update]
 
   before_filter :load_page, :except => [:add_lock, :update_lock, :search, :system_page]
-  before_filter :can_manage_page_check, :only => [:manage, :set_permissions, :remove_permission, :switch_public, :switch_editable]
+  before_filter :can_manage_page_check, :only => [:set_permissions, :remove_permission, :switch_public, :switch_editable]
   before_filter :can_edit_page_check, :only => [:add, :edit, :update, :upload, :undo, :new_part, :files, :render_files]
   before_filter :check_file, :only => [:view]
   before_filter :slash_check, :only => [:view]

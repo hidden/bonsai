@@ -10,7 +10,7 @@
     <div class="main_content">
       <% form_tag "#{add_page_path(@page)}", :method => :post do %>
          <p>
-           <%= t(:name) %> :
+           <%= t("views.groups.name") %> :
            <%= text_field('add_page','new_page') %>
            <%= submit_tag(t(:btn_create_page), :class=> "small_button") %>
          </p>

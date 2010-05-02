@@ -1,8 +1,8 @@
 <p>
-  <b><%= t(:name) %></b>
+  <b><%= t("views.groups.name") %></b>
   <%=h @group.name %>
 </p>
 
 
-<%= link_to t(:edit_group), edit_group_path(@group) %> |
-<%= link_to t(:back), groups_path %>
+<%= link_to t("views.groups.edit_group"), edit_group_path(@group) %> |
+<%= link_to t("views.groups.back"), groups_path %>
