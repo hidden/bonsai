@@ -44,14 +44,24 @@
           </tbody>
         </table>
     <% end %>
-    <p><%= t(:you_can) %> <a href="#" onclick="return toggleDiv('add_new_file');"><%= t(:upload_new_file) %></a>.</p>
-
-    <div style="display: none;" id="add_new_file">
+    <script type="text/javascript">
+        document.write('<p><%= t(:you_can) %> <a href="#" onclick="return toggleDiv(\'add_new_file\');"><%= t(:upload_new_file) %></a>.</p>');
+        <!--
+        document.write('<div style="display: none;" id="add_new_file">');
+        // -->
+    </script>
+    <noscript>
+      <p><strong><%= t(:upload_new_file) %></strong></p>
+    </noscript>
       <% form_for(:file_version, :url => upload_file_path(@page), :html => {:multipart => true}) do |f| %>
           <p><label><%= t(:upload_file) %><br/><%= f.file_field :uploaded_data %>
           </label><%= submit_tag t(:btn_upload), :class=>'small_button' %></p>
       <% end %>
-    </div>
+    <script type="text/javascript">
+        <!--
+        document.write('</div>');
+        // -->
+    </script>
   </div>
 </div>
 
