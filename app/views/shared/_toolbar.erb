@@ -38,7 +38,7 @@
 
             <div class="actions">
               <% if @current_user.logged? %>
-                  <%= link_to icon_tag('user.png', :alt => t("views.toolbar.dashboard")) + " " + t("views.toolbar.dashboard"), dashboard_page_path(@page), :title=>t("views.toolbar.dashboard") %>
+                  <%= link_to icon_tag('user.png', :alt => t("views.toolbar.dashboard")) + " " + t("views.toolbar.dashboard"), dashboard_page_path, :title=>t("views.toolbar.dashboard") %>
               <% end %>
             </div>
             <ul id="menu">
@@ -53,10 +53,10 @@
                       document.write('<li><%= link_to icon_tag('page_white_edit.png', :alt => t("views.toolbar.edit")) + " " + t("views.toolbar.edit"), edit_page_path(@page) %></li>');
                       <% end %>
                       <% if @current_user.logged? %>
-                      document.write('<li><%= link_to icon_tag('group.png', :alt => t("views.toolbar.groups")) + " " + t("views.toolbar.groups"), groups_page_path(@page) %></li>');
+                      document.write('<li><%= link_to icon_tag('group.png', :alt => t("views.toolbar.groups")) + " " + t("views.toolbar.groups"), groups_page_path %></li>');
                       <% end %>
                       <% if @current_user.verify_admin_right %>
-                      document.write('<li><%= link_to icon_tag('user_edit.png', :alt => t("views.admin.Administration")) + " " + t("views.admin.Administration"), admin_page_path(@page) %></li>');
+                      document.write('<li><%= link_to icon_tag('user_edit.png', :alt => t("views.admin.Administration")) + " " + t("views.admin.Administration"), admin_page_path %></li>');
                       <% end %>
                       <% if @current_user.can_edit_page? @page %>
                       document.write('<li><%= link_to icon_tag('page_white_link.png', :alt => t("views.general.files")) + " " + t("views.general.files"), list_files_path(@page) %></li>');
@@ -122,10 +122,10 @@
             <%= link_to icon_tag('page_white_edit.png', :alt => t("views.toolbar.edit")) + " " + t("views.toolbar.edit"), edit_page_path(@page) %>
         <% end %>
         <% if @current_user.logged? %>
-            <%= link_to icon_tag('group.png', :alt => t("views.toolbar.groups")) + " " + t("views.toolbar.groups"), groups_page_path(@page) %>
+            <%= link_to icon_tag('group.png', :alt => t("views.toolbar.groups")) + " " + t("views.toolbar.groups"), groups_page_path %>
         <% end %>
         <% if @current_user.verify_admin_right %>
-            <%= link_to icon_tag('user_edit.png', :alt => t("views.admin.Administration")) + " " + t("views.admin.Administration"), admin_page_path(@page) %>
+            <%= link_to icon_tag('user_edit.png', :alt => t("views.admin.Administration")) + " " + t("views.admin.Administration"), admin_page_path %>
         <% end %>
         <% if @current_user.can_edit_page? @page %>
             <%= link_to icon_tag('page_white_link.png', :alt => t("views.general.files")) + " " + t("views.general.files"), list_files_path(@page) %>

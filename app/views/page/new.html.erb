@@ -20,7 +20,7 @@
             <%= text_area_tag "body", @body, :rows => 30, :style => 'width:100%' %>
           </p>
           <%= render :partial => 'maruku_help' %>
-          <p><%= label_tag t("views.page.summary") %>:<%= text_field_tag('summary') %></p>
+          <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
 
           <p><%= label_tag 'layout', t("views.page.layout") %>
            <%= select_tag :layout, options_for_select(@user_layouts, @layout.to_s()),

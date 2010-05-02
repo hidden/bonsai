@@ -52,9 +52,9 @@ module ApplicationHelper
 
   def logout_nieco
     if @current_user.facebook_user?
-      fb_logout_link(t("views.toolbar.log_out"), logout_path, :class => "red")
+      fb_logout_link(t(:log_out), logout_path, :class => "red")
     else
-      link_to t("views.toolbar.log_out"), logout_path, :class => "red", :title=> t("views.toolbar.log_out")
+      link_to t(:log_out), logout_path, :class => "red", :title=> t(:log_out)
     end
   end
 

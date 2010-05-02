@@ -2,7 +2,7 @@
   <div class="holder_right">
     <div class="header">
       <div class="header_content">
-        <h1><%= t("views.users.new_account")%></h1>
+        <h1><%= t(:new_account)%></h1>
       </div>
       <div class="header_right">
       </div>
@@ -12,24 +12,24 @@
     <%=error_messages_for 'user' %>
     <table>
     <tr>
-      <td><%= f.label :username, t("views.users.input_username")%></td>
+      <td><%= f.label :username, t(:input_username)%></td>
       <td><%= f.text_field :username %></td>
     </tr>
     <tr>
-      <td><%= f.label :name, t("views.users.real_name")%></td>
+      <td><%= f.label :name, t(:real_name)%></td>
       <td><%= f.text_field :name %></td>
     </tr>
     <tr>
-      <td><%= f.label :password, t("views.users.input_password")%></td>
+      <td><%= f.label :password, t(:input_password)%></td>
       <td><%= f.password_field :password %></td>
     </tr>
     <tr>
-      <td><%= f.label :password_confirmation, t("views.users.input_password_confirmation")%></td>
+      <td><%= f.label :password_confirmation, t(:input_password_confirmation)%></td>
       <td><%= f.password_field :password_confirmation %></td>
     </tr>
     <tr>
       <td></td>
-      <td><%= f.submit t("views.users.submit_registration")%></td>
+      <td><%= f.submit t(:submit_registration)%></td>
     </tr>
     </table>
     <% end %>
