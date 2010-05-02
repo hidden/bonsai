@@ -11,17 +11,28 @@ Feature: Wiki
   Scenario: Check if main page is XHTML valid
    When I go to the main page
    Then this page is XHTML valid
-   
+
   Scenario: Check if groups page is XHTML valid
    When I follow "Groups"
    Then this page is XHTML valid
+   When I follow "New group"
+   Then this page is XHTML valid
+   When I go to the main page
+   And I create "New group" group
+   And I go to the main page
+   And I follow "Groups"
+   And I follow "Edit"
+   Then this page is XHTML valid
+
+  Scenario:
+    When I follow "Administration"
+    Then this page is XHTML valid
    
-   
-  Scenario: Check if edit page is XHTML valid
+ Scenario: Check if edit page is XHTML valid
    When I follow "Edit"
    Then this page is XHTML valid
 
-  Scenario: Check if history page is XHTML valid
+ Scenario: Check if history page is XHTML valid
    When I follow "History"
    Then this page is XHTML valid
 
