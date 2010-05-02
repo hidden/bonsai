@@ -40,11 +40,10 @@ class GroupsController < ApplicationController
   # GET /groups
   # GET /groups.xml
   def index
-    if params.include? 'back'
-      session[:link_back] = params['back']
-      redirect_to groups_path
-      return
-    end
+     if session[:link_back].nil?
+        session[:link_back] = request.env["HTTP_REFERER"]
+     end
+     
     if @current_user.instance_of?(AnonymousUser)
       return render(:template => 'page/unprivileged')
     end

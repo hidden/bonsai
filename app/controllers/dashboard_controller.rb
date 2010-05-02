@@ -3,11 +3,10 @@ class DashboardController < ApplicationController
   before_filter :can_view_dashboard_check
 
   def index
-    if params.include? 'back'
-      session[:link_back] = params['back']
-      redirect_to url_for :controller => 'dashboard'
-      return
-    end
+     if session[:link_back].nil?
+        session[:link_back] = request.env["HTTP_REFERER"]
+     end
+     
     session[:last_visit] = @current_user.last_dashboard_visit if session[:last_visit].nil?
     session[:toggle_text] = t(:show_older) if session[:toggle_text].nil?
     session[:toggle_text] == t(:show_older) ? all = false : all = true

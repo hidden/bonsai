@@ -64,12 +64,12 @@ module PathsHelper
     page_path(page, 'switch_editable')
   end
 
-  def groups_page_path(page)
-    groups_path(:back => page_path(page))
+  def groups_page_path
+    groups_path
   end
 
-  def dashboard_page_path(page)
-    url_for :controller => 'dashboard', :back => page_path(page)
+  def dashboard_page_path
+    url_for :controller => 'dashboard'
   end
 
   def toggle_news
@@ -80,12 +80,12 @@ module PathsHelper
     url_for(:controller => 'page', :action => 'history', :path => page.get_rel_path + [name])
   end
 
-  def admin_page_path(page)
-    admin_path(:back => page_path(page))
+  def admin_page_path
+    admin_path
   end
 
-  def admin_page_path_sort(back,grid_page,order)
-    admin_path(:gridpage=>grid_page,:order => order)
+  def admin_page_path_sort(grid_page,order)
+    admin_path(:page=>grid_page,:order => order)
   end
 
   def rss_path(page, user)
