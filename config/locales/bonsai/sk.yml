@@ -1,0 +1,21 @@
+sk:
+  controller:
+    notices:
+      login_successful: "Bol(a) si úspešne prihlásenı(á)."
+      login_error: "Prihlásanie neúspešené. Zlé údaje."
+      logout: "Odhlásenie úspešné."
+      page_created: "Stránka bola úspešne vytvorená."
+      page_updated: "Stránka bola úspešne aktualizovaná."
+      page_part_added: "Sekcia stránky bola úspešne pridaná."
+      page_updated_with_new_revisions: "Stránka bola úspešne aktualizavaná, ale poèas vašej editácie inı uívate¾ vytvoril ïalšiu revíziu."
+      page_is_editing: "Táto èas stránky je momentálne editovaná inım uivate¾om. Chcete napriek tomu pokraèova v editovaní?"
+      same_as_page: "Chyba! Existuje stránka s rovnakım menom."
+      file_not_match: "Typ súboru nesedí. iadny súbor nebol nahranı."
+      file_uploaded: "Súbor bol úspešne nahranı."
+      group_created: "Skupina bola úspešne vytvorená."
+      group_updated: "Skupina bola úspešne aktualizovaná."
+      user_not_found: "Pouívate¾ské meno nebolo nájdené!"
+      set_language: "Nastavili ste si jazyk na slovenèinu."
+      editors_error: "Nie je moné zmaza toto právo, musí zosta aspoò jeden editor."
+      manager_error: "Nie je moné zmaza toto právo, musí zosta aspoò jeden manaér pre stránku."
+      registration_disabled: "Registrácia novıch pouívate¾ov nie je momentálne dostupná."

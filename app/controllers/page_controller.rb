@@ -153,7 +153,7 @@ class PageController < ApplicationController
       end
       page_permission.destroy
     else
-      flash[:error] = t(:manager_error)
+      flash[:error] = t("controller.notices.manager_error")
     end
     respond_to do |format|
       format.html { redirect_to :back }
@@ -279,7 +279,7 @@ class PageController < ApplicationController
         return
       end
       if (first_revision.save)
-        flash[:notice] = t(:page_created)
+        flash[:notice] = t("controller.notices.page_created")
         page_part.current_page_part_revision = first_revision
         page_part.save!
       end
@@ -337,7 +337,7 @@ class PageController < ApplicationController
 
   def render_files
     @uploaded_files = @page.uploaded_files.paginate(:page => params[:page], :per_page => params[:per_page], :order => params[:order]) #params[:per_page] sa nastavuje v edit metode ako @per_page
-    @status = {'error', params[:success].empty? ? false : true, 'msg', params[:success].empty? ? t('file_uploaded') : params[:success]} if (params.include?('success'))
+    @status = {'error', params[:success].empty? ? false : true, 'msg', params[:success].empty? ? t("controller.notices.file_uploaded") : params[:success]} if (params.include?('success'))
     params.delete(:success) if (params.include?('success'))
     session[:sort] = session[:sort].eql?('name') ? 'date' : 'name' if params.include?(:change)
     render :partial => 'files'
@@ -481,9 +481,9 @@ class PageController < ApplicationController
     end
 
     if @num_of_changed_page_parts > 0 then
-      notice = t(:page_updated_with_new_revisions)
+      notice = t("controller.notices.page_updated_with_new_revisions")
     else
-      notice = t(:page_updated)
+      notice = t("controller.notices.page_updated")
     end
     if params[:non_redirect].nil?
       flash[:notice] = notice
@@ -512,10 +512,10 @@ class PageController < ApplicationController
     page_part.current_page_part_revision = page_part_revision
     page_part.save!
     if params[:non_redirect].nil?
-      flash[:notice] = t(:page_part_added)
+      flash[:notice] = t("controller.notices.page_part_added")
       redirect_to edit_page_path(@page)
     else
-      @notice_flash_msg += t(:page_part_added) + "\r\n"
+      @notice_flash_msg += t("controller.notices.page_part_added") + "\r\n"
     end
   end
 
@@ -527,7 +527,7 @@ class PageController < ApplicationController
       filename = File.basename(tmp_file.original_filename)
       target_filename = params[:uploaded_file_filename]
       if !target_filename.blank? and (File.extname(filename) != File.extname(target_filename))
-        @error_flash_msg += t('file_not_match') + "\r\n"
+        @error_flash_msg += t("controller.notices.file_not_match") + "\r\n"
       else
         filename = target_filename unless target_filename.blank?
         do_upload(tmp_file, filename)
@@ -544,7 +544,7 @@ class PageController < ApplicationController
 
   def do_upload(tmp_file, filename)
     unless @page.children.find_by_sid(filename).nil?
-      @error_flash_msg += t('same_as_page') + "\r\n"
+      @error_flash_msg += t("controller.notices.same_as_page") + "\r\n"
       return
     end
     # TODO move somewhere else
@@ -564,7 +564,7 @@ class PageController < ApplicationController
     version.save!
     file.current_file_version = version
     if (file.save!)
-      @notice_flash_msg += t('file_uploaded') + "\r\n"
+      @notice_flash_msg += t("controller.notices.file_uploaded") + "\r\n"
       if (version.version == 1)
         @upscale = true
       end
@@ -807,7 +807,7 @@ class PageController < ApplicationController
         ph = PagePermissionsHistory.new(:page_id => @page.id, :user_id => @current_user.id, :group_id => page_permission.group.id, :role => 3, :action => 2)
         ph.save
       else
-        flash[:error] = t(:manager_error)
+        flash[:error] = t("controller.notices.manager_error")
       end
     else
       @page.add_manager(page_permission.group)

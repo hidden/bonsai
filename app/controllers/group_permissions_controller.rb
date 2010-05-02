@@ -10,7 +10,7 @@ class GroupPermissionsController < ApplicationController
   def create
     users = User.find_all_by_username(params[:add_user][:usernames].split(/[ ]*, */))
     if users.empty?
-      flash[:notice] = t(:user_not_found)
+      flash[:notice] = t("controller.notices.user_not_found")
     else
       for user in users do
         Group.find(params[:group_id]).add_viewer user if params[:add_user][:type] == '1'
@@ -66,7 +66,7 @@ class GroupPermissionsController < ApplicationController
           gh.save
           permission.destroy
         else
-          flash[:error] = t(:editors_error)
+          flash[:error] = t("controller.notices.editors_error")
           continue = false
         end
       end
