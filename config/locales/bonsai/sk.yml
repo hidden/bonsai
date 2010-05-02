@@ -13,7 +13,7 @@ sk:
       file_not_match: "Typ súboru nesedí. Žiadny súbor nebol nahraný."
       file_uploaded: "Súbor bol úspešne nahraný."
       group_created: "Skupina bola úspešne vytvorená."
-      group_updated: "Skupina bola úspešnee aktualizovan�."
+      group_updated: "Skupina bola úspešnee aktualizovaná."
       user_not_found: "Používateľské meno nebolo nájdené!"
       set_language: "Nastavili ste si jazyk na slovenčinu."
       editors_error: "Nie je možné zmazať toto právo, musí zostať aspoň jeden editor."
