@@ -29,8 +29,8 @@ class AdminController < ApplicationController
     @user = User.find(params[:id])
     if @user.username!=@current_user.username
       @user.change_active(false)
-      flash[:error] = t(:User)+" "+ @user.name
-      flash[:error].concat(" "+ t(:was) +" "+ t(:deactivated) + '.')
+      flash[:error] = t("views.admin.User")+" "+ @user.name
+      flash[:error].concat(" "+ t("views.admin.was") +" "+ t("views.admin.deactivated") + '.')
       redirect_to admin_path
     end
   end
@@ -39,8 +39,8 @@ class AdminController < ApplicationController
     @user = User.find(params[:id])
     if @user.username!=@current_user.username
       @user.change_active(true)
-      flash[:notice] = t(:User)+" "+ @user.name
-      flash[:notice].concat(" "+ t(:was) +" "+ t(:activated) + '.')
+      flash[:notice] = t("views.admin.User")+" "+ @user.name
+      flash[:notice].concat(" "+ t("views.admin.was") +" "+ t("views.admin.activated") + '.')
       redirect_to admin_path
     end
   end
@@ -48,7 +48,7 @@ class AdminController < ApplicationController
 
   def verify_admin_rights
     if !@current_user.verify_admin_right
-        flash[:error] = t(:ad_account)
+        flash[:error] = t("views.admin.ad_account")
         redirect_to session[:link_back].blank? ? '/' : session[:link_back]
     end
   end

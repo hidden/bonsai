@@ -56,7 +56,7 @@
                       document.write('<li><%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page) %></li>');
                       <% end %>
                       <% if @current_user.verify_admin_right %>
-                      document.write('<li><%= link_to icon_tag('user_edit.png', :alt => t(:Administration)) + " " + t(:Administration), admin_page_path(@page) %></li>');
+                      document.write('<li><%= link_to icon_tag('user_edit.png', :alt => t("views.admin.Administration")) + " " + t("views.admin.Administration"), admin_page_path(@page) %></li>');
                       <% end %>
                       <% if @current_user.can_edit_page? @page %>
                       document.write('<li><%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page) %></li>');
@@ -125,7 +125,7 @@
             <%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page) %>
         <% end %>
         <% if @current_user.verify_admin_right %>
-            <%= link_to icon_tag('user_edit.png', :alt => t(:Administration)) + " " + t(:Administration), admin_page_path(@page) %>
+            <%= link_to icon_tag('user_edit.png', :alt => t("views.admin.Administration")) + " " + t("views.admin.Administration"), admin_page_path(@page) %>
         <% end %>
         <% if @current_user.can_edit_page? @page %>
             <%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page) %>

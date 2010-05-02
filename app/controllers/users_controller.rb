@@ -160,7 +160,7 @@ class UsersController < ApplicationController
 
 
   def banned_login
-    flash[:error] = t(:login_banned)
+    flash[:error] = t("views.admin.login_banned")
     redirect_to session[:return_to]
   end
 

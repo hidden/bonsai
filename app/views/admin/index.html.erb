@@ -2,7 +2,7 @@
   <div class="holder_right">
     <div class="header">
       <div class="header_content">
-        <h1><%= t(:Administration)%></h1>
+        <h1><%= t("views.admin.Administration")%></h1>
       </div>
       <div class="header_right">
       </div>
@@ -26,10 +26,10 @@
         <thead>
         <tr>
           <th><a href="<%= admin_page_path_sort(@back,@gridpage,"username")%>"><%= t(:user)%></a></th>
-          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"active")%>"><%= t(:status)%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"active")%>"><%= t("views.admin.status")%></a></th>
           <th><a href="<%= admin_page_path_sort(@back,@gridpage,"active")%>"><%= t(:action)%></a></th>
-          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"created_at")%>"><%= t(:regtime)%></a></th>
-          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"updated_at")%>"><%= t(:logtime)%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"created_at")%>"><%= t("views.admin.regtime")%></a></th>
+          <th><a href="<%= admin_page_path_sort(@back,@gridpage,"updated_at")%>"><%= t("views.admin.logtime")%></a></th>
         </tr>
         </thead>
         <tbody>
@@ -39,14 +39,14 @@
 
               <% if user.id != @current_user.id %>
                 <% if(user.active) %>
-                    <td><%= t(:active)%></td>
-                    <td><%= link_to t(:deactive_user), deactivate_admin_instance_path(user), :id => "deact_#{user.id}", :method => :put %></td>
+                    <td><%= t("views.admin.active")%></td>
+                    <td><%= link_to t("views.admin.deactive_user"), deactivate_admin_instance_path(user), :id => "deact_#{user.id}", :method => :put %></td>
                 <% else %>
-                    <td><%= t(:inactive)%></td>
-                    <td><%= link_to t(:active_user), activate_admin_instance_path(user), :id => "act_#{user.id}", :method => :put %></td>
+                    <td><%= t("views.admin.inactive")%></td>
+                    <td><%= link_to t("views.admin.active_user"), activate_admin_instance_path(user), :id => "act_#{user.id}", :method => :put %></td>
                 <% end %>
               <% else %>
-                <td><%= (user.active) ? t(:active) : t(:active) %></td>
+                <td><%= t("views.admin.active") %></td>
                 <td>&nbsp;</td>
               <% end %>
               <td><%= user.created_at.nil? ? "&nbsp;" : user.created_at.strftime("%H:%M:%S  %d/%m/%Y") %></td>
