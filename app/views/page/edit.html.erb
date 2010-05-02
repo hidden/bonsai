@@ -174,9 +174,9 @@
                       <td>
                         <select name="<%= permission.group.name %>_select" id="<%= permission.group.name %>_select">
                           <% if !(@page.is_editable?) %>
-                              <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t("views.groups.viewer") %></option>
+                              <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t("views.general.viewer") %></option>
                           <% end %>
-                          <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t("views.groups.editor") %></option>
+                          <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t("views.general.editor") %></option>
                           <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t(:manager) %></option>
                         </select>
                       </td>
@@ -196,7 +196,7 @@
                 </tr>
             <% end %>
             <tr>
-              <td><%= t("views.groups.everyone") %></td>
+              <td><%= t("views.general.everyone") %></td>
               <!-- <td><%#= link_to image_boolean(@page.is_public?, t(:toggle)), switch_public_path(@page), {:method => :post} %></td> -->
               <td colspan="2"><select name="everyone_select" id="everyone_select">
                 <option selected="selected">-</option>
@@ -243,7 +243,7 @@
                             <% if permission.can_manage?
                                 opravnenie = 3
                             end %>
-                            <% perm = Array.[](t("views.groups.viewer"), t("views.groups.editor"), t(:manager)) %>
+                            <% perm = Array.[](t("views.general.viewer"), t("views.general.editor"), t(:manager)) %>
                             <%= perm[opravnenie-1] %>
                             <% if opravnenie == 3 %>
                                 <div class="ManagerHidden" style="visibility:hidden"></div>
@@ -259,7 +259,7 @@
 
           <h3><%= t(:add_group_permission) %></h3>
           <%# form_tag :controller => 'page', :action => 'set_permissions' do %>
-          <%= text_field_tag('add_group') %> <%= select('group_role', 'type', {t("views.groups.viewer") => "1", t("views.groups.editor") => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %>
+          <%= text_field_tag('add_group') %> <%= select('group_role', 'type', {t("views.general.viewer") => "1", t("views.general.editor") => "2", t(:manager)=> "3"}) %> <%#= submit_tag t(:set) %>
           <br/>
 
           <div id="autocomplete" style="display: none;" class="autocomplete"></div>

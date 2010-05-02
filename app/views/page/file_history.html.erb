@@ -11,7 +11,7 @@
     <% if @file.versions.size < 2 %>
         <%= t(:file_history_not_exist) %>
         <p>
-          <%= link_to t("views.groups.back"), list_files_path(@page) %>
+          <%= link_to t("views.general.back"), list_files_path(@page) %>
         </p>
     <% else %>
         <table class="history center">

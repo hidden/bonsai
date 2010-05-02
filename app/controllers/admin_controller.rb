@@ -29,7 +29,7 @@ class AdminController < ApplicationController
     @user = User.find(params[:id])
     if @user.username!=@current_user.username
       @user.change_active(false)
-      flash[:error] = t("views.admin.User")+" "+ @user.name
+      flash[:error] = t("views.general.user")+" "+ @user.name
       flash[:error].concat(" "+ t("views.admin.was") +" "+ t("views.admin.deactivated") + '.')
       redirect_to admin_path
     end
@@ -39,7 +39,7 @@ class AdminController < ApplicationController
     @user = User.find(params[:id])
     if @user.username!=@current_user.username
       @user.change_active(true)
-      flash[:notice] = t("views.admin.User")+" "+ @user.name
+      flash[:notice] = t("views.general.user")+" "+ @user.name
       flash[:notice].concat(" "+ t("views.admin.was") +" "+ t("views.admin.activated") + '.')
       redirect_to admin_path
     end
