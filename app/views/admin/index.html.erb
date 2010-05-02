@@ -12,7 +12,7 @@
         <% form_tag "#{search_admin_path}", :method => :post do %>
           <p>
             <%= text_field('add_user', 'usernames') %>
-            <%= submit_tag(t(:btn_search_page), :class=> "small_button") %>
+            <%= submit_tag(t("views.toolbar.btn_search_page"), :class=> "small_button") %>
           </p>
           <div id="autocomplete" style="display: block;" class="autocomplete"></div>
           <script type="text/javascript">
