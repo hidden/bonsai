@@ -29,7 +29,7 @@ Feature: Secure wiki
     When I go to the main page
     And I should see "Edit"
     And I follow "Edit"
-    Then I should see "You don't have manage permissions for this page."
+    Then I should not see "Add group permission"
 
   Scenario: Viewer can only view page
     When I go to the main page
@@ -229,6 +229,7 @@ Feature: Secure wiki
     And I go to the main page
     And I follow "Edit"
     Then I should not see "MyNewGroup"
+
   Scenario: User create page with many managers and should not be allowed to remove all of them (there must be always at least 1 manager)
     Given user "jozo" exists
     Given user "fero" exists
@@ -246,8 +247,8 @@ Feature: Secure wiki
     And I logout
     And I login as "fero"
     When I follow "Edit"
-    Then I should see "You don't have manage permissions for this page."
+    Then I should not see "Add group permission"
     And I logout
     And I login as "jozo"
     When I follow "Edit"
-    Then I should see "You don't have manage permissions for this page"
+    Then I should not see "Add group permission"

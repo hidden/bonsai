@@ -50,10 +50,10 @@
                   <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
 
                   <% if part == @page_part %>
-                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :style=>"width:100%" %>
+                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => '', :style=>"width:100%" %>
                   <% else %>
                       <%=
-                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :style=>"width:100%",
+                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => '', :style=>"width:100%",
                                         :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock", :part_id => part.id}
                                         )
                       %>
@@ -80,10 +80,12 @@
       </p>
 
 
-      <p>
-        <script type="text/javascript">document.write('<%= t(:or) %> <a href="#" onclick="return toggleTextAreaDiv(\'add_new_page_part\');"><%= t(:add_new_page_part) %></a>');</script>
-        <noscript><strong><%= t(:or) %> <%= t(:add_new_page_part) %></strong></noscript>
-      </p>
+
+        <script type="text/javascript">
+        document.write('<p><%= t(:or) %> <a href="#" onclick="return toggleTextAreaDiv(\'add_new_page_part\');"><%= t(:add_new_page_part) %></a></p>');
+        </script>
+        <noscript><p><strong><%= t(:or) %> <%= t(:add_new_page_part) %></strong></p></noscript>
+
 
       <script type="text/javascript">document.write('<div style="display: none;" id="add_new_page_part">');</script>
       <p>
@@ -97,10 +99,10 @@
       <script type="text/javascript">document.write('</div>');</script>
 
       <% if @current_user.can_manage_page? @page %>
-          <p>
-            <script type="text/javascript">document.write('<a href="#" onclick="return toggleDiv(\'more_options\');"><%= t("more_options") %></a>');</script>
-            <noscript><strong><%= t("more_options") %></strong></noscript>
-          </p>
+
+            <script type="text/javascript">document.write('<p><a href="#" onclick="return toggleDiv(\'more_options\');"><%= t("more_options") %></a></p>');</script>
+            <noscript><p><strong><%= t("more_options") %></strong></p></noscript>
+
           <script type="text/javascript">document.write('<div style="display: none;" id="more_options">')</script>
           <%= t :page_parts_ordering %>
           <%= select_tag "ordering", "<option value='0' #{'selected=\"selected\"' if @page.ordering==0}>#{t("order_by_date")}</option><option value='1' #{'selected=\"selected\"' if @page.ordering==1}>#{t("order_by_name")}</option>" %>
@@ -280,8 +282,6 @@
           </div>
 
         </div>
-    <% else %>
-        <%= t(:permissions_error) %>
     <% end %>
     <!-- END OF PAGE PERMISIONS -->
     </div>
