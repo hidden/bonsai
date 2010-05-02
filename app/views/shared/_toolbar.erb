@@ -27,7 +27,11 @@
         <div class="login">
           <% unless @current_user.logged? %>
               <%= link_to t(:btn_registration), :controller => "users", :action => "new" if APP_CONFIG['allow_user_registration'] %>
-              <a href="" title="<%= t(:btn_log_in) %>" onclick="return toggleDiv('login_box')"><%= t(:btn_log_in) %></a>
+              <script type="text/javascript">
+              <!--
+              document.write('<a href="" title="<%= t(:btn_log_in) %>" onclick="return toggleDiv(\'login_box\')"><%= t(:btn_log_in) %></a>');
+              // -->
+              </script>
           <% else %>
               <%#= t(:logged_as) %><%= @current_user.full_name %>
               | <%= logout_nieco %>
@@ -41,57 +45,13 @@
                   <%= link_to icon_tag('user.png', :alt => t(:dashboard)) + " " + t(:dashboard), dashboard_page_path(@page), :title=>t(:dashboard) %>
               <% end %>
             </div>
-            <ul id="menu">
-              <% if (( @current_user.can_edit_page? @page) || (@current_user.can_manage_page? @page) || (@current_user.logged?) || (@current_user.can_view_page? @page) || (@current_user.verify_admin_right) ) %>
-                  <script type="text/javascript">
-                      document.write('<li class="sub"><span><%= icon_tag('actions.png', :alt => t(:actions)) + " " + t(:actions) %></span>');
-                      document.write('<ul>');
-                      <% if (@current_user.can_manage_page? @page) %>
-                      document.write('<li><%= link_to icon_tag('page_white_add.png', :alt => t(:edit)) + " " + t(:add_page), add_page_path(@page) %></li>');
-                      <% end %>
-                      <% if @current_user.can_edit_page? @page %>
-                      document.write('<li><%= link_to icon_tag('page_white_edit.png', :alt => t(:edit)) + " " + t(:edit), edit_page_path(@page) %></li>');
-                      <% end %>
-                      <% if @current_user.logged? %>
-                      document.write('<li><%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page) %></li>');
-                      <% end %>
-                      <% if @current_user.verify_admin_right %>
-                      document.write('<li><%= link_to icon_tag('user_edit.png', :alt => t(:Administration)) + " " + t(:Administration), admin_page_path(@page) %></li>');
-                      <% end %>
-                      <% if @current_user.can_edit_page? @page %>
-                      document.write('<li><%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page) %></li>');
-                      <% end %>
-                      <% if (@current_user.can_view_page? @page) %>
-                      document.write('<li><%= link_to icon_tag('page_white_stack.png',  :alt => t(:history)) + " "+ t(:history), page_history_path(@page), {:id => "page_history"} %></li>');
-                      <% end %>
-                      document.write('</ul>');
-                      document.write('</li>');
-                  </script>
-              <% else
-                  if (@current_user.can_view_page? @page) %>
-                      <li class="sub">
-                        <span><%= link_to icon_tag('page_white_stack.png', :alt => t(:history)) + " " + t(:history), page_history_path(@page) %></span>
-                      </li>
-                  <% end %>
-              <% end %>
-              <script type="text/javascript">
-                  <% if @current_user.can_view_page? @page %>
 
-                  document.write('<li class="sub"><span><%= icon_tag('rss.png', :alt => 'RSS') %></span><ul><li class="small"><%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_path(@page, @current_user), :title => t(:rss_feed) %></li><li class="small"><%= link_to icon_tag('rss_tree.png', :alt => 'RSS'), rss_tree_path(@page, @current_user), :title => t(:rss_feed_subtree) %></li></ul></li>');
-                  <% end %>
-                  document.write('<li class="sub">');
-                  document.write('<span><%= icon_tag(I18n.locale.to_s()+'.png', :alt => '&nbsp;'+I18n.locale.to_s()+'&nbsp;') %></span>');
-                  <% locales = I18n.available_locales() %>
-                  document.write('<ul>');
-                  <% for locale in locales %>
-                  <% unless locale.to_s() == I18n.locale.to_s() %>
-                  document.write('<li class="small"><%= link_to icon_tag(locale.to_s().concat('.png'), :alt => locale.to_s()), change_locale_path(locale.to_s()), :title => locale.to_s() %></li>');
-                  <% end %>
-                  <% end %>
-                  document.write('</ul>');
-                  document.write('</li>');
-              </script>
-            </ul>
+           <script type="text/javascript">
+            <!--
+            <%= render :partial => 'menu' %>
+            // -->
+            </script>
+           
         <% end %>
       </div>
   <% end %>
@@ -103,50 +63,55 @@
 <% end %>
 
 <% if not (@preview_toolbar || @history_toolbar) %>
-<% unless @page.nil? || @no_toolbar %>
-    <script type="text/javascript">
-        document.write('<div style="display:none" id="login_box">');
-    </script>
+    <% unless @page.nil? || @no_toolbar %>
+        <script type="text/javascript">
+            <!--
+            document.write('<div style="display:none" id="login_box">');
+            // -->
+        </script>
 
-    <div class="login_box">
-      <div class="login_box_left_menu">
-        <%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_path(@page, @current_user), :title => t(:rss_feed) %>
-        <%= link_to icon_tag('rss_tree.png', :alt => 'RSS'), rss_tree_path(@page, @current_user), :title => t(:rss_feed_subtree) %>
-        <% if @current_user.logged? %>
-            <%= '<span>&nbsp;:::&nbsp;</span>' %>
-        <% end %>
-        <% if (@current_user.can_manage_page? @page) %>
-            <%= link_to icon_tag('page_white_add.png', :alt => t(:edit)) + " " + t(:add_page), add_page_path(@page) %>
-        <% end %>
-        <% if @current_user.can_edit_page? @page %>
-            <%= link_to icon_tag('page_white_edit.png', :alt => t(:edit)) + " " + t(:edit), edit_page_path(@page) %>
-        <% end %>
-        <% if @current_user.logged? %>
-            <%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page) %>
-        <% end %>
-        <% if @current_user.verify_admin_right %>
-            <%= link_to icon_tag('user_edit.png', :alt => t(:Administration)) + " " + t(:Administration), admin_page_path(@page) %>
-        <% end %>
-        <% if @current_user.can_edit_page? @page %>
-            <%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page) %>
-        <% end %>
-        <% if (@current_user.can_view_page? @page) and (@current_user.logged?) %>
-            <%= link_to icon_tag('page_white_stack.png',  :alt => t(:history)) + " "+ t(:history), page_history_path (@page), {:id => "page_history"} %>
-        <% end %>
-        <span>&nbsp;:::&nbsp;</span>
+        <div class="login_box">
+          <div class="login_box_left_menu">
+            <%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_path(@page, @current_user), :title => t(:rss_feed) %>
+            <%= link_to icon_tag('rss_tree.png', :alt => 'RSS'), rss_tree_path(@page, @current_user), :title => t(:rss_feed_subtree) %>
+           <% if (( @current_user.can_edit_page? @page) || (@current_user.can_manage_page? @page) || (@current_user.logged?) || (@current_user.can_view_page? @page) || (@current_user.verify_admin_right) ) %>
+            <span>&nbsp;:::&nbsp;</span>
+           <% end %>
 
-        <% for locale in locales %>
-            <%= link_to icon_tag(locale.to_s().concat('.png'), :alt => locale.to_s()), change_locale_path(locale.to_s()), :title => locale.to_s() %>&nbsp;
-        <% end %>
-      </div>
-      <% unless @current_user.logged? %>
-          <%= login_form %>
-      <% end %>
-    </div>
-    <script type="text/javascript">
-        document.write('</div>');
-    </script>
-<% end %>
+            <% if (@current_user.can_manage_page? @page) %>
+                <%= link_to icon_tag('page_white_add.png', :alt => t(:add_page)) + " " + t(:add_page), add_page_path(@page), :title => t(:add_page) %>
+            <% end %>
+            <% if @current_user.can_edit_page? @page %>
+                <%= link_to icon_tag('page_white_edit.png', :alt => t(:edit)) + " " + t(:edit), edit_page_path(@page),  :title => t(:edit) %>
+            <% end %>
+            <% if @current_user.logged? %>
+                <%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page), :title => t(:groups) %>
+            <% end %>
+            <% if @current_user.verify_admin_right %>
+                <%= link_to icon_tag('user_edit.png', :alt => t(:Administration)) + " " + t(:Administration), admin_page_path(@page),  :title => t(:Administration) %>
+            <% end %>
+            <% if @current_user.can_edit_page? @page %>
+                <%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page),  :title => t(:files) %>
+            <% end %>
+            <% if (@current_user.can_view_page? @page) %>
+                <%= link_to icon_tag('page_white_stack.png',  :alt => t(:history)) + " "+ t(:history), page_history_path (@page), {:id => "page_history"}, t(:history) %>
+            <% end %>
+            <span>&nbsp;:::&nbsp;</span>
+            <% locales = I18n.available_locales() %>
+            <% for locale in locales %>
+                <%= link_to icon_tag(locale.to_s().concat('.png'), :alt => locale.to_s()), change_locale_path(locale.to_s()), :title => locale.to_s() %>&nbsp;
+            <% end %>
+          </div>
+          <% unless @current_user.logged? %>
+              <%= login_form %>
+          <% end %>
+        </div>
+        <script type="text/javascript">
+            <!--
+            document.write('</div>');
+            // -->
+        </script>
+    <% end %>
 <% end %>
 
 
