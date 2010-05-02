@@ -24,7 +24,7 @@
       <% index = 0 %>
       <% for file in @uploaded_files %>
           <% index += 1 %>
-          <p onmouseover="visible_remove_icon('<%='history_'+index.to_s() %>', 'visible')" onmouseout="visible_remove_icon('<%='history_'+index.to_s() %>', 'hidden')">
+          <p onmouseover="set_visibility('<%='history_'+index.to_s() %>', 'visible')" onmouseout="set_visibility('<%='history_'+index.to_s() %>', 'hidden')">
             <% if (not file.current_file_version.nil?) %>
                 <%= file_type_image_tag(file) %> &nbsp;
                 <%= link_to truncate(file.filename, :length => 25), file.filename, :title => file.filename %> &nbsp;
