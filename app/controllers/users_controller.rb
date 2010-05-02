@@ -11,10 +11,10 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     @user.active = false
     if @user.save
-      flash[:notice] = t(:registration_complete)
+      flash[:notice] = t("views.users.registration_complete")
       redirect_to root_path
     else
-      flash[:error]  = t(:registration_incomplete)
+      flash[:error]  = t("views.users.registration_incomplete")
       render :action => 'new'
     end
   end

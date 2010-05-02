@@ -84,3 +84,13 @@ sk:
 
     page:
       summary: "Sumár"
+
+    users:
+      new_account: "Nový učet"
+      input_username: "Prihlasovacie meno"
+      real_name: "Meno"
+      input_password: "Heslo"
+      input_password_confirmation: "Potvrdenie hesla"
+      submit_registration: "Zaregistrovať"
+      registration_incomplete: "Vyskytli sa chyby pri registrácii - prekontrolujte si prosím vyplnené údaje"
+      registration_complete: "Registrácia prebehla úspešne"
