@@ -16,7 +16,7 @@ class DashboardController < ApplicationController
     get_pages(all)
     @current_user.last_dashboard_visit = DateTime.now
     @current_user.save
-    @news = @news.paginate(:page => params[:page], :per_page => 10)
+    @news = @news.paginate(:page => params[:page], :per_page => APP_CONFIG['dashboard_news_per_page'])
     render :action => :dashboard
   end
 

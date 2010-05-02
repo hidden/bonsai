@@ -320,7 +320,7 @@ class PageController < ApplicationController
   end
 
   def edit
-    @per_page = 8
+    @per_page = APP_CONFIG['edit_files_per_page']
     @list_len = (@page.uploaded_files.length > @per_page) ? @per_page : @page.uploaded_files.length
     
     @layout = @page.layout
@@ -339,7 +339,10 @@ class PageController < ApplicationController
     @uploaded_files = @page.uploaded_files.paginate(:page => params[:page], :per_page => params[:per_page], :order => params[:order]) #params[:per_page] sa nastavuje v edit metode ako @per_page
     @status = {'error', params[:success].empty? ? false : true, 'msg', params[:success].empty? ? t("controller.notices.file_uploaded") : params[:success]} if (params.include?('success'))
     params.delete(:success) if (params.include?('success'))
-    session[:sort] = session[:sort].eql?('name') ? 'date' : 'name' if params.include?(:change)
+    if params.include?(:change)
+      session[:sort] = session[:sort].eql?('name') ? 'date' : 'name'
+      params.delete(:change)
+    end
     render :partial => 'files'
   end
 
