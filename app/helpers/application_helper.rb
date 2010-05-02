@@ -46,15 +46,15 @@ module ApplicationHelper
       when "facebook"   then
         render :partial => 'shared/fb_login'
       else
-        p "@@@@@@@@@@@@@@@@@@@@@volaka chyba@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + APP_CONFIG['authentication_method']
+        p "neznamy parameter prihlasovania" + APP_CONFIG['authentication_method']
     end
   end
 
   def logout_nieco
     if @current_user.facebook_user?
-      fb_logout_link(t(:log_out), logout_path, :class => "red")
+      fb_logout_link(t("views.toolbar.log_out"), logout_path, :class => "red")
     else
-      link_to t(:log_out), logout_path, :class => "red", :title=> t(:log_out)
+      link_to t("views.toolbar.log_out"), logout_path, :class => "red", :title=> t("views.toolbar.log_out")
     end
   end
 
