@@ -533,7 +533,7 @@ class PageController < ApplicationController
         do_upload(tmp_file, filename)
       end
     else
-      @error_flash_msg += t('no_files_selected') + "\r\n"
+      @error_flash_msg += t("controller.notices.no_files_selected") + "\r\n"
     end
     unless params.include?('redirect')
       flash[:error] = @error_flash_msg unless @error_flash_msg.empty?

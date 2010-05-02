@@ -12,6 +12,7 @@ sk:
       same_as_page: "Chyba! Existuje stránka s rovnakým menom."
       file_not_match: "Typ súboru nesedí. Žiadny súbor nebol nahraný."
       file_uploaded: "Súbor bol úspešne nahraný."
+      no_files_selected: "Nebol vybraný žiadny súbor."
       group_created: "Skupina bola úspešne vytvorená."
       group_updated: "Skupina bola úspešnee aktualizovaná."
       user_not_found: "Používateľské meno nebolo nájdené!"
