@@ -1,13 +1,19 @@
 <div class="main_content">
   <h2 class="dashboard"><%= @news.length > 0 ? t("views.page.news") : t("views.page.no_news") %> &nbsp;
-  <span class="small_link">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>)</span></h2>
+    <span class="small_link">(<%= link_to_remote session[:toggle_text], {:url => toggle_news}, :href => toggle_news %>)</span></h2>
   <% if @news.size > 0 %>
-  <ul class="DashboardTree">
-    <% for record in @news %>
-        <%= render :partial => record['type'], :object => record %>
-    <% end %>
-  </ul>
-  <% end %>    
+      <ul class="DashboardTree">
+        <% for record in @news %>
+            <%= render :partial => record['type'], :object => record %>
+        <% end %>
+      </ul>
+      <script type="text/javascript">
+          <!--
+          $$(".Collapsed ul").each(function(e) {e.hide()});
+          // -->
+      </script>
+
+  <% end %>
   <%= will_paginate @news, :prev_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
 </div>
 

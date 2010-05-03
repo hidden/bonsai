@@ -41,7 +41,7 @@ function toggleTextAreaDiv(elementId) {
     return false;
 }
 
-function toggleTreeElement(Li, evt, id) {
+function toggleTreeElement(Li, evt) {
 
     if (evt.stopPropagation) {
         evt.stopPropagation();
@@ -53,13 +53,8 @@ function toggleTreeElement(Li, evt, id) {
     } else {
         Li.className = "Expanded";
     }
-    childs = Li.childElements();
-    for (var i = 0; i < childs.length; i++) {
-        if (childs[i].id == id) {
-            Element.toggle(childs[i]);
-            return;
-        }
-    }
+
+    Element.toggle(Li.getElementsByClassName('hidden')[0]);
 }
 
 function set_visibility(id, show) {
