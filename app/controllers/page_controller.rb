@@ -767,9 +767,13 @@ class PageController < ApplicationController
           if opravnenie == 2
             switch_editor permission
           end
-          if opravnenie == 3 && @managers >= 2
+          if opravnenie == 3
+            if @managers >= 2
             switch_manager permission
             switch_editor permission
+            else
+              flash[:error] = t("controller.notices.manager_error")
+            end
           end
         else if (selectbox_value == '2')
           if opravnenie == 1
