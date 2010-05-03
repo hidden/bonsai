@@ -11,10 +11,10 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     @user.active = false
     if @user.save
-      flash[:notice] = t(:registration_complete)
+      flash[:notice] = t("views.users.registration_complete")
       redirect_to root_path
     else
-      flash[:error]  = t(:registration_incomplete)
+      flash[:error]  = t("views.users.registration_incomplete")
       render :action => 'new'
     end
   end
@@ -35,7 +35,7 @@ class UsersController < ApplicationController
   end
 
   def logout
-    flash[:notice] = t(:logout)
+    flash[:notice] = t("controller.notices.logout")
     if @current_user.facebook_user?
       clear_fb_cookies!
       clear_facebook_session_information
@@ -51,7 +51,7 @@ class UsersController < ApplicationController
     I18n.locale = params[:locale]
     @current_user.prefered_locale = params[:locale]
     @current_user.save if @current_user.respond_to? :save
-    flash[:notice] = translate(:set_language)
+    flash[:notice] = translate("controller.notices.set_language")
     session[:toggle_text] = nil
     redirect_to :back
   end
@@ -160,19 +160,19 @@ class UsersController < ApplicationController
 
 
   def banned_login
-    flash[:error] = t(:login_banned)
+    flash[:error] = t("views.admin.login_banned")
     redirect_to session[:return_to]
   end
 
   def successful_login(user)
     session[:user_id] = user.id
     cookies[:token] = {:value => user.token, :expires => 1.month.from_now}
-    flash[:notice] = t(:login_successful)
+    flash[:notice] = t("controller.notices.login_successful")
     redirect_to session[:return_to]
   end
 
   def failed_login
-    flash[:error] = t(:login_error)
+    flash[:error] = t("controller.notices.login_error")
     redirect_to session[:return_to]
   end
 
@@ -205,7 +205,7 @@ class UsersController < ApplicationController
 
   def registration_allowed
     unless APP_CONFIG['allow_user_registration']
-      flash[:error] = I18n.t("registration_disabled")
+      flash[:error] = I18n.t("controller.notices.registration_disabled")
       redirect_to root_path
     end
   end

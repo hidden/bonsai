@@ -67,7 +67,7 @@ Feature: Wiki
     And I should see "Edit"
     And I should see "Destroy"
     When I follow "MyNewGroup" edit
-    Then I should see "Group MyNewGroup"
+    Then I should see "Group: MyNewGroup"
 
   Scenario: User was not given permission to manage group. He wants to manage group, we check if he has permission
     Given user "crutch" exists

@@ -1,7 +1,7 @@
 <div class="holder_right">
   <div class="header">
     <div class="header_content">
-     <span class="subtitle"><%= t(:file_history) %></span> <h1><%= @file.filename %></h1>
+     <span class="subtitle"><%= t("views.page.file_history") %></span> <h1><%= @file.filename %></h1>
     </div>
     <div class="header_right">
     </div>
@@ -9,19 +9,19 @@
   <div class="main_content">
 
     <% if @file.versions.size < 2 %>
-        <%= t(:file_history_not_exist) %>
+        <%= t("views.page.file_history_not_exist") %>
         <p>
-          <%= link_to t(:back), list_files_path(@page) %>
+          <%= link_to t("views.general.back"), list_files_path(@page) %>
         </p>
     <% else %>
         <table class="history center">
           <thead>
           <tr>
             <th></th>
-            <th><%= t(:version) %></th>
-            <th><%= t(:uploader) %></th>
-            <th><%= t(:size) %></th>
-            <th><%= t(:creation_time) %></th>
+            <th><%= t("views.page.version") %></th>
+            <th><%= t("views.page.uploader") %></th>
+            <th><%= t("views.page.size") %></th>
+            <th><%= t("views.page.creation_time") %></th>
           </tr>
           </thead>
           <tbody>
@@ -29,7 +29,7 @@
               <tr>
                 <td><%= file_type_image_tag(@file) %></td>
                 <td><%= link_to "Version #{version.version}", @file.filename + '?version=' + version.version.to_s %></td>
-                <td><% if version.uploader.nil? %><%= t(:unknown) %><% else %><%= h version.uploader.full_name %><% end %></td>
+                <td><% if version.uploader.nil? %><%= t("views.page.unknown") %><% else %><%= h version.uploader.full_name %><% end %></td>
                 <td><%= number_to_human_size(version.size) %></td>
                 <td><%= version.created_at.strftime("%H:%M:%S %d %b %Y") %></td>
               </tr>

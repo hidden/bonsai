@@ -1,7 +1,7 @@
 <div class="holder_right">
   <div class="header">
     <div class="header_content">
-      <h1><%= t(:new_page) %></h1>
+      <h1><%= t("views.page.new_page") %></h1>
     </div>
     <div class="header_right">
     </div>
@@ -20,9 +20,9 @@
             <%= text_area_tag "body", @body, :rows => 30, :style => 'width:100%' %>
           </p>
           <%= render :partial => 'maruku_help' %>
-          <p><%= label_tag t(:summary) %>:<%= text_field_tag('summary') %></p>
+          <p><%= label_tag t("views.page.summary") %>:<%= text_field_tag('summary') %></p>
 
-          <p><%= label_tag 'layout', t(:layout) %>
+          <p><%= label_tag 'layout', t("views.page.layout") %>
            <%= select_tag :layout, options_for_select(@user_layouts, @layout.to_s()),
                :onchange => remote_function(:with => "'parent_layout=#{@parent_layout}&layout='+encodeURIComponent(value)",
                                             :url => {:controller => "page",
@@ -30,8 +30,8 @@
           </p>
           <div id="layout_details" class="lighter_bg" style="display:none;"></div>
 
-          <p><%= submit_tag t(:save), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
-          <%= submit_tag t(:preview), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
+          <p><%= submit_tag t("views.page.save"), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+          <%= submit_tag t("views.page.preview"), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
         </div>
     <% end %>
   </div>

@@ -2,7 +2,7 @@
   <div class="holder_right">
     <div class="header">
       <div class="header_content">
-        <h1><%= t(:groups_management)%></h1>
+        <h1><%= t("views.groups.groups_management")%></h1>
       </div>
       <div class="header_right">
       </div>
@@ -12,9 +12,9 @@
       <table class="history">
         <thead>
         <tr>
-          <th><%= t(:group)%></th>
-          <th><%= t(:users)%></th>
-          <th><%= t(:action)%></th>
+          <th><%= t("views.groups.group")%></th>
+          <th><%= t("views.groups.users")%></th>
+          <th><%= t("views.general.action")%></th>
         </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
               <td><%=h group.users.collect {|user| user.full_name }.join(', ') %></td>
               <td>
                 <% if((@current_user.can_edit_group? group) && (group.name != @current_user.username)) && (group.id!= APP_CONFIG['administrators']['admin_group'].to_i)%>
-                    <%= link_to t(:edit_group), edit_group_path(group), :id => "Edit_#{group.id}" %> <%= link_to t(:destroy_group), group, :id => "Destroy_#{group.id}", :confirm => t(:destroy_question), :method => :delete %>
+                    <%= link_to t("views.groups.edit_group"), edit_group_path(group), :id => "Edit_#{group.id}" %> <%= link_to t("views.groups.destroy_group"), group, :id => "Destroy_#{group.id}", :confirm => t("views.groups.destroy_question"), :method => :delete %>
                 <% else %>
                     -
                 <% end %>
@@ -41,7 +41,7 @@
 
       <br />
 
-      <%= link_to t(:new_group), new_group_path %>
+      <%= link_to link_to t("views.groups.new_group"), new_group_path %>
       
     </div>
   </div>

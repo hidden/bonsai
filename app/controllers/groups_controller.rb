@@ -40,11 +40,10 @@ class GroupsController < ApplicationController
   # GET /groups
   # GET /groups.xml
   def index
-    if params.include? 'back'
-      session[:link_back] = params['back']
-      redirect_to groups_path
-      return
-    end
+     if session[:link_back].nil?
+        session[:link_back] = request.env["HTTP_REFERER"]
+     end
+     
     if @current_user.instance_of?(AnonymousUser)
       return render(:template => 'page/unprivileged')
     end
@@ -90,7 +89,7 @@ class GroupsController < ApplicationController
         @group.add_editor @current_user
         gh = GroupPermissionsHistory.new(:user_id => @current_user.id, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => 1)
         gh.save
-        flash[:notice] = t(:group_created)
+        flash[:notice] = t("controller.notices.group_created")
         format.html { redirect_to edit_group_path(@group) }
         format.xml  { render :xml => @group, :status => :created, :location => @group }
       else
@@ -107,7 +106,7 @@ class GroupsController < ApplicationController
     save_permissions
     respond_to do |format|
       if @group.update_attributes(params[:group])
-        flash[:notice] = t(:group_updated)
+        flash[:notice] = t("controller.notices.group_updated")
         format.html { redirect_to groups_path }
         format.xml  { head :ok }
       else
@@ -139,7 +138,7 @@ class GroupsController < ApplicationController
       format.xml  { head :ok }
     end
     else
-      flash[:notice] = t(:err_destroy_group)
+      flash[:notice] = t("views.admin.err_destroy_group")
       redirect_to groups_path
     end
   end
@@ -205,7 +204,7 @@ class GroupsController < ApplicationController
         gh.save
         @editors = @editors - 1
       else
-        flash[:error] = t(:editors_error)
+        flash[:error] = t("controller.notices.editors_error")
       end
     else
       gh = GroupPermissionsHistory.new(:user_id => permission.user_id, :group_id => permission.group_id, :editor_id => @current_user.id, :role => 2, :action => 1)
@@ -242,7 +241,7 @@ class GroupsController < ApplicationController
   def create_permission group_id
     users = User.find_all_by_username(params[:add_user][:usernames].split(/[ ]*, */))
     if users.empty?
-      flash[:notice] = t(:user_not_found)
+      flash[:notice] = t("controller.notices.user_not_found")
     else
       for user in users do
         Group.find(group_id).add_viewer user if params[:add_user][:type] == '1'

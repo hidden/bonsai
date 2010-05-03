@@ -3,25 +3,24 @@ class DashboardController < ApplicationController
   before_filter :can_view_dashboard_check
 
   def index
-    if params.include? 'back'
-      session[:link_back] = params['back']
-      redirect_to url_for :controller => 'dashboard'
-      return
-    end
+     if session[:link_back].nil?
+        session[:link_back] = request.env["HTTP_REFERER"]
+     end
+     
     session[:last_visit] = @current_user.last_dashboard_visit if session[:last_visit].nil?
-    session[:toggle_text] = t(:show_older) if session[:toggle_text].nil?
-    session[:toggle_text] == t(:show_older) ? all = false : all = true
+    session[:toggle_text] = t("views.page.show_older") if session[:toggle_text].nil?
+    session[:toggle_text] == t("views.page.show_older") ? all = false : all = true
     @news = get_news(all)
     get_groups(all)
     get_pages(all)
     @current_user.last_dashboard_visit = DateTime.now
     @current_user.save
-    @news = @news.paginate(:page => params[:page], :per_page => 10)
+    @news = @news.paginate(:page => params[:page], :per_page => APP_CONFIG['dashboard_news_per_page'])
     render :action => :dashboard
   end
 
   def toggle_news
-    session[:toggle_text] == t(:show_older) ? session[:toggle_text] = t(:show_latest) : session[:toggle_text] = t(:show_older)
+    session[:toggle_text] == t("views.page.show_older") ? session[:toggle_text] = t("views.page.show_latest") : session[:toggle_text] = t("views.page.show_older")
 #    @news = get_news(all)
 #    get_groups(all)
 #    get_pages(all)

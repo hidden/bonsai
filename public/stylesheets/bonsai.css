@@ -791,6 +791,10 @@ h3.favourites_title{
     color: #0c6ec2;
     
 }
+h2.favourites{
+  font-size:20px;  
+
+}
 .small_link{
     font-size:12px;
 }

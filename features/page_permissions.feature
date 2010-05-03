@@ -29,7 +29,7 @@ Feature: Secure wiki
     When I go to the main page
     And I should see "Edit"
     And I follow "Edit"
-    Then I should not see "Add group permission"
+    Then I should not see "Permissions"
 
   Scenario: Viewer can only view page
     When I go to the main page
@@ -247,8 +247,8 @@ Feature: Secure wiki
     And I logout
     And I login as "fero"
     When I follow "Edit"
-    Then I should not see "Add group permission"
+    Then I should not see "Permissions"
     And I logout
     And I login as "jozo"
     When I follow "Edit"
-    Then I should not see "Add group permission"
+    Then I should not see "Permissions"

@@ -2,7 +2,7 @@
   <div class="holder_right">
     <div class="header">
       <div class="header_content">
-        <span class="subtitle"><%= t(:diff_for) %>:</span>
+        <span class="subtitle"><%= t("views.page.diff_for") %>:</span>
         <h1><%=h @page.title %></h1>
       </div>
       <div class="header_right">
@@ -18,7 +18,7 @@
             <% if (item[0] == '*')%><div class="line"><% for diff_item in item[1] %><% if (diff_item[0] == '=')%><%=h diff_item[1]%><% elsif (diff_item[0] == '+')%><span class="addition"><%=h diff_item[1]%></span><% elsif (diff_item[0] == '-')%><span class="deletion"><%=h diff_item[1]%></span><% end %><% end %></div><% end %>
         <% end %>
       </div>
-<%= link_to t(:back), :back %>
+<%= link_to t("views.general.back"), :back %>
     </div>
   </div>
 </div>

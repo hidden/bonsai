@@ -1,17 +1,17 @@
 <div id="toolbar" class="bonsai">
   <% if @preview_toolbar || @history_toolbar %>
-      <div class=preview>
-        <%= @preview_toolbar ? t(:preview_info) : "" %> <%= link_to  t(:close), "JavaScript:window.close()" %>
+      <div class="preview">
+        <%= @preview_toolbar ? t('views.page.preview_info') : "" %> <%= link_to  t('views.general.close'), "javascript:window.close()" %>
       </div>
   <% else %>
       <div class="search_box">
         <div class="actions">
           <% unless session[:link_back].nil? %>
-              <%= link_to icon_tag('arrow_left.png') + " " + t(:return), session[:link_back] %>&nbsp;&nbsp;
+              <%= link_to icon_tag('arrow_left.png') + " " + t('views.toolbar.return'), session[:link_back] %>&nbsp;&nbsp;
           <% end %>
           <% unless @page.nil? || @no_toolbar %>
               <% unless @hide_view_in_toolbar %>
-                  <%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t(:view), page_path(@page) %>
+                  <%= link_to icon_tag('page_white_text.png', :alt => '') + " " + t('views.toolbar.view'), page_path(@page) %>
               <% end %>
               <% if @current_user.logged? %>
                   <%= render :partial => 'shared/favorite' %>
@@ -26,14 +26,14 @@
       <div class="menu_box">
         <div class="login">
           <% unless @current_user.logged? %>
-              <%= link_to t(:btn_registration), :controller => "users", :action => "new" if APP_CONFIG['allow_user_registration'] %>
+              <%= link_to t('views.toolbar.btn_registration'), :controller => "users", :action => "new" if APP_CONFIG['allow_user_registration'] %>
               <script type="text/javascript">
               <!--
-              document.write('<a href="" title="<%= t(:btn_log_in) %>" onclick="return toggleDiv(\'login_box\')"><%= t(:btn_log_in) %></a>');
+              document.write('<a href="" title="<%= t('views.toolbar.btn_log_in') %>" onclick="return toggleDiv(\'login_box\')"><%= t('views.toolbar.btn_log_in') %></a>');
               // -->
               </script>
           <% else %>
-              <%#= t(:logged_as) %><%= @current_user.full_name %>
+              <%= @current_user.full_name %>
               | <%= logout_nieco %>
           <% end %>
         </div>
@@ -42,7 +42,7 @@
 
             <div class="actions">
               <% if @current_user.logged? %>
-                  <%= link_to icon_tag('user.png', :alt => t(:dashboard)) + " " + t(:dashboard), dashboard_page_path(@page), :title=>t(:dashboard) %>
+                  <%= link_to icon_tag('user.png', :alt => t('views.toolbar.dashboard') ) + " " + t('views.toolbar.dashboard') , dashboard_page_path, :title=> t('views.toolbar.dashboard')  %>
               <% end %>
             </div>
 
@@ -72,29 +72,29 @@
 
         <div class="login_box">
           <div class="login_box_left_menu">
-            <%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_path(@page, @current_user), :title => t(:rss_feed) %>
-            <%= link_to icon_tag('rss_tree.png', :alt => 'RSS'), rss_tree_path(@page, @current_user), :title => t(:rss_feed_subtree) %>
+            <%= link_to icon_tag('rss.png', :alt => 'RSS'), rss_path(@page, @current_user), :title => t('views.toolbar.rss_feed') %>
+            <%= link_to icon_tag('rss_tree.png', :alt => 'RSS'), rss_tree_path(@page, @current_user), :title =>  t('views.toolbar.rss_feed_subtree') %>
            <% if (( @current_user.can_edit_page? @page) || (@current_user.can_manage_page? @page) || (@current_user.logged?) || (@current_user.can_view_page? @page) || (@current_user.verify_admin_right) ) %>
             <span>&nbsp;:::&nbsp;</span>
            <% end %>
 
             <% if (@current_user.can_manage_page? @page) %>
-                <%= link_to icon_tag('page_white_add.png', :alt => t(:add_page)) + " " + t(:add_page), add_page_path(@page), :title => t(:add_page) %>
+                <%= link_to icon_tag('page_white_add.png', :alt => t('views.page.add_page') ) + " " + t('views.page.add_page'), add_page_path(@page), :title =>  t('views.page.add_page') %>
             <% end %>
             <% if @current_user.can_edit_page? @page %>
-                <%= link_to icon_tag('page_white_edit.png', :alt => t(:edit)) + " " + t(:edit), edit_page_path(@page),  :title => t(:edit) %>
+                <%= link_to icon_tag('page_white_edit.png', :alt => t('views.toolbar.edit')) + " " + t('views.toolbar.edit'), edit_page_path(@page),  :title => t('views.toolbar.edit') %>
             <% end %>
             <% if @current_user.logged? %>
-                <%= link_to icon_tag('group.png', :alt => t(:groups)) + " " + t(:groups), groups_page_path(@page), :title => t(:groups) %>
+                <%= link_to icon_tag('group.png', :alt => t('views.toolbar.groups')) + " " + t('views.toolbar.groups'), groups_page_path, :title => t('views.toolbar.groups') %>
             <% end %>
             <% if @current_user.verify_admin_right %>
-                <%= link_to icon_tag('user_edit.png', :alt => t(:Administration)) + " " + t(:Administration), admin_page_path(@page),  :title => t(:Administration) %>
+                <%= link_to icon_tag('user_edit.png', :alt => t('views.admin.Administration')) + " " + t('views.admin.Administration'), admin_page_path,  :title => t('views.admin.Administration') %>
             <% end %>
             <% if @current_user.can_edit_page? @page %>
-                <%= link_to icon_tag('page_white_link.png', :alt => t(:files)) + " " + t(:files), list_files_path(@page),  :title => t(:files) %>
+                <%= link_to icon_tag('page_white_link.png', :alt => t('views.general.files')) + " " + t('views.general.files'), list_files_path(@page),  :title => t('views.general.files') %>
             <% end %>
             <% if (@current_user.can_view_page? @page) %>
-                <%= link_to icon_tag('page_white_stack.png',  :alt => t(:history)) + " "+ t(:history), page_history_path (@page), {:id => "page_history"}, t(:history) %>
+                <%= link_to icon_tag('page_white_stack.png',  :alt => t('views.general.history')) + " "+ t('views.general.history'), page_history_path (@page), {:id => "page_history", :title =>  t('views.general.history')} %>
             <% end %>
             <span>&nbsp;:::&nbsp;</span>
             <% locales = I18n.available_locales() %>

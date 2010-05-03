@@ -11,7 +11,7 @@ page <<
             function show_confirm(is_edited_by_another, part_id, part_name){
                 if(is_edited_by_another && (!check_lock(part_id))){
                     lost_focus();
-                    if(confirm("'+ t(:page_is_editing) +'")){
+                    if(confirm("'+ t("controller.notices.page_is_editing") +'")){
                         add_lock(part_id);
                         set_focus(part_name);
                     }else{
@@ -35,7 +35,7 @@ page << '{function testManagers(){
                     var managers = document.getElementsByClassName("ManagerHidden");
                     if ((managers.length) >= 2) return true;
                     else{
-                        alert("'+ t(:manager_error) +'");
+                        alert("'+ t("controller.notices.manager_error") +'");
                         return false;
                     }
                 }

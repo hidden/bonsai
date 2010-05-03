@@ -1,13 +1,13 @@
-<% perm = Array.[](t(:viewer), t(:editor), t(:manager)) %>
-<% action = Array.[](t(:set_you), t(:removed_you)) %>
+<% perm = Array.[](t("views.general.viewer"), t("views.general.editor"), t("views.general.manager")) %>
+<% action = Array.[](t("views.page.set_you"), t("views.page.removed_you")) %>
 <% record = object %>
 <li>
   <span id="editor"><%= record.editor.name %></span>
   <%= action[record.action-1] %>
-  <%= t(:as) %>
+  <%= t("views.page.as") %>
   <span id="role"><%= perm[record.role-1] %></span>
-  <%= t(:for_group) %>
+  <%= t("views.page.for_group") %>
   <span id="group"><%= record.group.name %></span>
   <br/>
-  <span id="time"><%= t(:before_date) + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t(:after_date) %></span>
+  <span id="time"><%= t("views.page.before_date") + distance_of_time_in_words_to_now(record['when'].to_time.localtime, true) + t("views.page.after_date") %></span>
 </li>

@@ -1,15 +1,15 @@
 <div class="holder_right">
   <div class="header">
     <div class="header_content">
-      <h1><%= h t(:seach_results) %></h1>
+      <h1><%= h t("views.page.seach_results") %></h1>
     </div>
     <div class="header_right">
     </div>
   </div>
   <div class="main_content">
     <% if @search_results.total_entries == 0 %>
-        <h2><%= t(:no_page_results_title) %></h2>
-        <p><%= t(:no_page_results_body) %></p>
+        <h2><%= t("views.page.no_page_results_title") %></h2>
+        <p><%= t("views.page.no_page_results_body") %></p>
     <% else %>
 
         <% @search_results.each do |page| %>
