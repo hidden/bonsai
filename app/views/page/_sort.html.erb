@@ -1,9 +1,9 @@
 <span id="sort">
   <% if (!session[:sort].nil? && session[:sort].eql?('name')) %>
-    <%= link_to t("views.page.order_by_date"), render_files_path(@page, params[:per_page], nil, nil, 'current_file_version_id DESC') %>
+    <%= link_to t("views.page.order_by_date"), render_files_path(@page, params[:per_page], nil, nil, 'date') %>
     <%# session[:sort] = 'date' %>
   <% else %>
-    <%= link_to t("views.page.order_by_name"), render_files_path(@page, params[:per_page], nil, nil, 'filename ASC') %>
+    <%= link_to t("views.page.order_by_name"), render_files_path(@page, params[:per_page], nil, nil, 'name') %>
     <%# session[:sort] = 'name' %>
   <% end %>
 </span>

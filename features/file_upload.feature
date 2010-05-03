@@ -278,7 +278,7 @@ Feature: Secure file uploads
     And I follow "files"
     And I press "Upload"
     Then I should see "No file selected"
-  #@wip TODO: regexpy???
+  
   Scenario: User uploads some files and sorts them
     When I create "/" page
     And I follow "edit"
@@ -292,16 +292,16 @@ Feature: Secure file uploads
     When I go to the main page
     And I follow "edit"
     And I visit "files_frame" frame
-    #Then I should see /^[\s\n\r.]*(test_file2.txt)+[\s\n\r.]*(test_file.txt)+[\s\n\r.]*$/
-    #And I should see "Sort by: name"
+    Then I should see "test_file2.txt test_file.txt"
+    And I should see "Order by name"
     When I follow "Order by name"
-    #Then I should see "test_file.txt test_file2.txt"
-    #And I should see "Sort by: date"
+    Then I should see "test_file.txt test_file2.txt"
+    And I should see "Order by date"
     When I go to the main page
     And I follow "edit"
     And I visit "files_frame" frame
-    #Then I should see "test_file.txt test_file2.txt"
-    #And I should see "Sort by: date"
+    Then I should see "test_file.txt test_file2.txt"
+    And I should see "Order by date"
     When I follow "Order by date"
-    #Then I should see "test_file2.txt test_file.txt"
-    #And I should see "Sort by: name"
+    Then I should see "test_file2.txt test_file.txt"
+    And I should see "Order by name"

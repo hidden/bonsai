@@ -26,8 +26,8 @@
           <% index += 1 %>
           <p onmouseover="set_visibility('<%='history_'+index.to_s() %>', 'visible')" onmouseout="set_visibility('<%='history_'+index.to_s() %>', 'hidden')">
             <% if (not file.current_file_version.nil?) %>
-                <%= file_type_image_tag(file) %> &nbsp;
-                <%= link_to truncate(file.filename, :length => 25), file.filename, :title => file.filename %> &nbsp;
+                <%= file_type_image_tag(file) %>
+                <%= link_to truncate(file.filename, :length => 25), file.filename, :title => file.filename %>
                 <% if (file.versions.length > 1) %>
                     <%= link_to icon_tag('file_rev.png', :border => 0, :alt => t('views.general.history'), :title => t('views.general.history')), file_history_page_path(@page, file.filename), :id => 'history_'+index.to_s(), :target => '_parent', :name => 'file_history' %>
                 <% end %>

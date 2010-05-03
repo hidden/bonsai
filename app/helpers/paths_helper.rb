@@ -102,7 +102,7 @@ module PathsHelper
 
   def render_files_path(page, per_page, upscale = nil, ok = nil, order = nil)
     if(order.nil?)
-      order = (!session[:sort].nil? && session[:sort].eql?('name')) ? 'filename ASC' : 'current_file_version_id DESC'
+      order = (!session[:sort].nil? && session[:sort].eql?('name')) ? 'name' : 'date'
     else
       change = true
     end
