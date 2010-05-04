@@ -12,7 +12,7 @@
         <% form_tag "#{search_admin_path}", :method => :post do %>
           <p>
             <%= text_field('add_user', 'usernames') %>
-            <%= submit_tag(t("views.toolbar.btn_search_page"), :class=> "small_button") %>
+            <%= submit_tag(t("views.toolbar.btn_search_page"), :class=> "small_button", :id => 'user_search') %>
           </p>
           <div id="autocomplete" style="display: block;" class="autocomplete"></div>
           <script type="text/javascript">
@@ -40,7 +40,9 @@
               <% if user.id != @current_user.id %>
                 <% if(user.active) %>
                     <td><%= t("views.admin.active")%></td>
-                    <td><%= link_to t("views.admin.deactive_user"), deactivate_admin_instance_path(user), :id => "deact_#{user.id}", :method => :put %></td>
+                    <td><%= link_to t("views.admin.deactive_user"), deactivate_admin_instance_path(user),
+                                    :id => "deact_#{user.id}", :method => :put,
+                                    :confirm => t("views.admin.deactive_user_confirm") %></td>
                 <% else %>
                     <td><%= t("views.admin.inactive")%></td>
                     <td><%= link_to t("views.admin.active_user"), activate_admin_instance_path(user), :id => "act_#{user.id}", :method => :put %></td>
