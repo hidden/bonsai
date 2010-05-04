@@ -1,5 +1,7 @@
 <%= render :partial => 'shared/analytics' %>
-<%= render :partial => 'shared/highlight_all' %>
+<% if (!@highlighter_display.nil?) and @highlighter_display %>
+    <%= render :partial => 'shared/highlight_all' %>
+<% end %>
 <%= javascript_include_tag 'wmd.js' %>
 </body>
 </html>

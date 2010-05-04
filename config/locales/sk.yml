@@ -53,6 +53,7 @@ sk:
       Administration: "Administrácia"
       active_user: "Aktivuj"
       deactive_user: "Deaktivuj"
+      deactive_user_confirm: "Snažíte sa deaktivovať používateľa. Naozaj ste si istý?"
       was: "bol"
       deactivated: "deaktivovaný"
       activated: "aktivovaný"

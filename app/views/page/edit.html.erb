@@ -1,9 +1,4 @@
-
-<script type="text/javascript">
-    <!--
-    <%= render :partial => 'edit' %>
-    //-->
-</script>
+<%= javascript_include_tag 'edit' %>
 
 <div class="bonsai">
 <div class="holder_right_dark">
@@ -24,7 +19,7 @@
       <% if @current_user.can_manage_page? @page %>
           <p><%= label_tag 'layout', t("views.page.layout") %>
 
-            <%= select_tag :layout, options_for_select(@user_layouts, @layout.to_s()),
+            <%= select_tag :layout, options_for_select(@user_layouts, @layout),
                            :onchange => remote_function(:with => "'parent_layout=#{@parent_layout}&layout='+encodeURIComponent(value)",
                                                         :url => {:controller => "page",
                                                                  :action => 'show_layout_helper'})  %>
@@ -213,7 +208,7 @@
                           <td>
                             <% if opravnenie == 3 %>
                                 <div class="ManagerHidden" style="visibility:hidden"></div>
-                                <%= link_to_remote icon_tag('cancel.png', :title => t('views.page.remove')), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers()", :confirm => t('views.page.are_you_sure_to_remove_permission'),
+                                <%= link_to_remote icon_tag('cancel.png', :title => t('views.page.remove')), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers(" + t("controller.notices.manager_error")  + ")", :confirm => t('views.page.are_you_sure_to_remove_permission'),
                                                    :html => { :href => _remove_permission_path(@page, index) }  %>
                             <% else %>
                                 <%= link_to_remote icon_tag('cancel.png', :title => t('views.page.remove')), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :confirm => t('views.page.are_you_sure_to_remove_permission'),

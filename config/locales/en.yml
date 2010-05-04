@@ -50,6 +50,7 @@ en:
       Administration: "Administration"
       active_user: "Activate"
       deactive_user: "Deactivate"
+      deactive_user_confirm: "You are trying to deactivate user. Are you sure?"
       was: "was"
       deactivated: "banned"
       activated: "activated"
