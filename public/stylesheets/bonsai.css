@@ -809,7 +809,7 @@ h2.favourites{
 
 UL.hidden{
     position:relative;
-    right:30px
+    right:30px;
 }
 .DashboardTree .user, .time {
     font-weight:bold;
