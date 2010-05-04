@@ -101,8 +101,9 @@ body {
 
 .autocomplete li {
     margin: 0;
-    padding: 5px;
+    padding: 3px;
     cursor: pointer;
+    height:40px;
 }
 
 .autocomplete .selected {
