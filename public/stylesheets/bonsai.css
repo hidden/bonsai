@@ -62,6 +62,7 @@ body {
     font-size:14px;
     height:27px;
     background: url('../images/bonsai/flash_bg.png') repeat-x left top;
+    z-index:1;
     
 }
 
@@ -290,7 +291,7 @@ ul#menu li.sub span:hover{text-decoration:underline;}
 #menu li.click ul li {margin-bottom:5px; border-right:0; width:100px;}
 #menu li ul li a{ padding-left:0px;}
 
-#menu li.click ul {left:0px; top:24px; background:#333333;}
+#menu li.click ul {left:0px; top:24px; background:#333333; z-index:999; }
 #menu li.click ul li.hover ul,
 #menu li.click ul li.hover ul li.hover ul {left:110px; top:-1px; }
 
