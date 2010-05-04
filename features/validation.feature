@@ -1,4 +1,4 @@
-Feature: Wiki
+Feature: Validation
   In order to see the same look of wiki on any browser
   A wiki
   Should be XHTML valid
@@ -24,7 +24,11 @@ Feature: Wiki
    And I follow "Edit"
    Then this page is XHTML valid
 
-  Scenario:
+ Scenario: Check if administration is XHTML valid
+   When I load admin group with id "3"
+    And I create "Admins" group
+   Then I should see "Group was successfully created."
+    And I go to the main page
     When I follow "Administration"
     Then this page is XHTML valid
    
