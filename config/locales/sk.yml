@@ -127,6 +127,7 @@ sk:
       upload_new_file: " nahrať nový súbor"
       upload_file: "Nahrať súbor"
       btn_upload: "Nahrať"
+      btn_choose: "Zvol súbor"
       delete_page_part: "Zmazať túto časť stránky?"
       or: "Alebo"
       add_new_page_part: "pridať novú časť stránky"

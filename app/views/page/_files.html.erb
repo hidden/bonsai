@@ -8,6 +8,7 @@
   <%= javascript_include_tag :defaults, :cache => true %>
   <%= javascript_include_tag 'application.js' %>
   <%= javascript_include_tag 'addons.js' %>
+  <%= javascript_include_tag 'si.files.js' %> <!-- temp -->
 </head>
 
 <body style="background: none;">
@@ -27,7 +28,7 @@
           <p onmouseover="set_visibility('<%='history_'+index.to_s() %>', 'visible')" onmouseout="set_visibility('<%='history_'+index.to_s() %>', 'hidden')">
             <% if (not file.current_file_version.nil?) %>
                 <%= file_type_image_tag(file) %>
-                <%= link_to truncate(file.filename, :length => 25), file.filename, :title => file.filename %>
+                <%= link_to truncate(file.filename, :length => 25), file.filename, :title => file.filename, :target => '_parent' %>
                 <% if (file.versions.length > 1) %>
                     <%= link_to icon_tag('file_rev.png', :border => 0, :alt => t('views.general.history'), :title => t('views.general.history')), file_history_page_path(@page, file.filename), :id => 'history_'+index.to_s(), :target => '_parent', :name => 'file_history' %>
                 <% end %>
@@ -48,14 +49,27 @@
   <div class="bottom">
     <%= will_paginate @uploaded_files, :previous_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
     <br/>
-    <% icon = @status['error'] ? 'information_error.png' : 'information_success.png' unless @status.nil? %>
+    <% classes = "info" %>
+    <% unless @status.nil? %>
+    <% icon = @status['error'] ? 'information_error.png' : 'information_success.png' %>
+    <% classes += (@status['error']) ? " red_background" : " green_background" %>
+    <% end %>
     <div class="upload_file">
       <% form_for(:file_version, :url => edit_upload_file_path(@page, params[:per_page]), :html => {:multipart => true}) do |f| %>
-          <%= icon_tag(icon, :id => 'status_img', :alt => @status['msg'], :title => @status['msg']) unless @status.nil? %>
-          <label><strong><%= t("views.page.upload_file") %></strong><br/><%= f.file_field :uploaded_data, :class => "file_input" %></label>
-          <%= submit_tag t("views.page.btn_upload"), :class=>'mini_button' %>
+          <div class="<%= classes %>">
+            <%= icon_tag(icon, :id => 'status_img', :alt => @status['msg'], :title => @status['msg']) unless @status.nil? %>
+            <span>
+            <%= @status['msg'] unless @status.nil? %>
+            <%= t("views.page.upload_file") if @status.nil? %>
+            </span>
+          </div>
+          <span class="upload_text"><label class="upload_cabinet"><script type="text/javascript">document.write("<%= t("views.page.btn_choose") %>")</script><%= f.file_field :uploaded_data, :class => "file_input file_i" %></label>
+          <%= submit_tag t("views.page.btn_upload"), :class=>'mini_button' %></span>
       <% end %>
     </div>
+    <script type="text/javascript" language="javascript">
+        SI.Files.stylizeAll();
+    </script>
   </div>
 </div>
 </body>
