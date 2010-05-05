@@ -147,7 +147,7 @@
           document.write('<iframe src= "<%= render_files_path(@page, @per_page) %>" name="files_frame" id="file_frame" frameborder="0" width="100%" height="<%= ((@list_len * 30) + 100).to_s() %>px" scrolling="no"><%= t(:no_frames) %></iframe>');
           // -->
           </script>
-          <noscript>ble<iframe src= "<%= render_files_path(@page, @per_page) %>" name="files_frame" frameborder="0" width="100%" height="<%= ((@per_page * 30) + 100).to_s() %>px" scrolling="no"><%= t(:no_frames) %></iframe></noscript>
+          <noscript><iframe src= "<%= render_files_path(@page, @per_page) %>" name="files_frame" frameborder="0" width="100%" height="<%= ((@per_page * 30) + 100).to_s() %>px" scrolling="no"><%= t(:no_frames) %></iframe></noscript>
         </div>
         <!-- END OF FILES -->
         <!--PAGE PERMISIONS -->

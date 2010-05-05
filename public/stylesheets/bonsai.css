@@ -876,13 +876,13 @@ LI.Collapsed {
     text-align:center;
 }
 
-.info {
+.info_text {
     font-weight:bold;
     width:100%;
     height:16px;
 
 }
-.info span {
+.info_text span {
     vertical-align:40%;
 }
 
@@ -908,17 +908,15 @@ LI.Collapsed {
     border:0;
 	width: 79px;
 	height: 22px;
-	/*background: url('../images/buttons/btn-choose-file.gif') no-repeat left top;*/
     vertical-align:top;
     z-index:-1;
 	display: inline-block;
 	overflow: hidden;
-    margin:0 40px 0 10px;
+    margin-left: 10px;
 }
 
 .SI-FILES-STYLIZED label.upload_cabinet input.file_input
 {
-    /*cursor:pointer;*/
 	position: relative;
 	height: 100%;
 	width: 79px;

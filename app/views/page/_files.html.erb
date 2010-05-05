@@ -49,7 +49,7 @@
   <div class="bottom">
     <%= will_paginate @uploaded_files, :previous_label => t("pagination.prev_label"), :next_label => t("pagination.next_label") %>
     <br/>
-    <% classes = "info" %>
+    <% classes = "info_text" %>
     <% unless @status.nil? %>
     <% icon = @status['error'] ? 'information_error.png' : 'information_success.png' %>
     <% classes += (@status['error']) ? " red_background" : " green_background" %>
