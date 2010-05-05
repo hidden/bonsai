@@ -230,7 +230,9 @@
                 </tr>
                 </tbody>
               </table>
-              <% unless @page.ancestors.empty? %>
+
+              <% if (not @page.ancestors.empty? and @page.inherited_permissions)  %>
+
                   <h3><%= t('views.page.inherited_permissions') %></h3>
                   <table class="page_permisions">
                     <thead>
