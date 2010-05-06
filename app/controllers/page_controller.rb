@@ -911,10 +911,25 @@ class PageController < ApplicationController
        @user_layouts = []
     end
 
+
+
     for file in @definition
     params = get_layout_parameters(file)
-    option_text = (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
-    option_value = (params[0] == @parent_layout) ? '' : params[0]
+
+    if (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout)
+         option_text = 'Inherited (' + params[1] + ')'
+         @layout = params[0]
+    else
+         option_text = params[1]
+    end
+
+    if !@page.nil?
+       @layout = @page.layout
+    end
+
+    #@layout = 'pewe'
+
+    option_value = params[0] #(params[0] == @parent_layout) ? '' : params[0]
     @user_layouts.push([option_text, option_value])
     end
 
