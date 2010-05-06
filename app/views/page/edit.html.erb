@@ -215,7 +215,7 @@
                         <%= link_to_remote image_tag('icons/cancel_big.png', :title => t("views.page.delete_page_part")), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id), :confirm => t("views.page.are_you_sure_to_delete_part"), :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)} %>
                       </div>
                   <% end %>
-                  <div class="page_part_edit_remove_link" onclick="return toggleDiv('textarea_id_<%= part.id %>')">
+                  <div class="page_part_edit_remove_link" onclick="return toggleTextAreaDiv('textarea_id_<%= part.id %>')">
                     <%= image_tag ('icons/edit_big.gif', :alt =>'Edit') %>
                   </div>
                 </div>
@@ -223,10 +223,10 @@
                   <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
 
                   <% if part == @page_part %>
-                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => '', :style=>"width:100%" %>
+                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :style=>"display:none;" %>
                   <% else %>
                       <%=
-                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => '', :style=>"width:100%",
+                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :style=>"#{'display:none;' unless part.name == 'body'}",
                                         :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock", :part_id => part.id}
                                         )
                       %>
