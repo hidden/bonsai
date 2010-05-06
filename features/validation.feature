@@ -31,6 +31,7 @@ Feature: Validation
     And I go to the main page
     When I follow "Administration"
     Then this page is XHTML valid
+    Then I load admin group with id "0"
    
  Scenario: Check if edit page is XHTML valid
    When I follow "Edit"
