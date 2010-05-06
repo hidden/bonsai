@@ -17,7 +17,7 @@ if(!Attacklab.wmd){
             _1(Attacklab.account_options);
             _1(top["wmd_options"]);
             Attacklab.full=true;
-            var _4="bold italic | link blockquote code image | ol ul heading hr";
+            var _4="bold italic | link blockquote image | ol ul heading hr";
             Attacklab.wmd_env.buttons=Attacklab.wmd_env.buttons||_4;
         };
         Attacklab.loadEnv();
