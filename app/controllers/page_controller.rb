@@ -620,6 +620,9 @@ class PageController < ApplicationController
     layout = params["layout"]
     @parent_layout = params["parent_layout"]
 
+     #layout
+    @layout = layout
+
     #inherited layout
     @inherited = false
     if layout.blank?
@@ -629,9 +632,6 @@ class PageController < ApplicationController
     if layout == @parent_layout
       @inherited=true
     end
-
-    #layout
-    @layout = layout
 
     #stylesheet
     if layout != 'default'
@@ -911,9 +911,23 @@ class PageController < ApplicationController
        @user_layouts = []
     end
 
+
+
     for file in @definition
     params = get_layout_parameters(file)
-    option_text = (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+
+    if (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout)
+         option_text = 'Inherited (' + params[1] + ')'
+         @layout = ''
+    else
+         option_text = params[1]
+    end
+
+    if (!@page.nil? and @layout.nil?)
+       @layout = @page.layout
+    end
+
+
     option_value = (params[0] == @parent_layout) ? '' : params[0]
     @user_layouts.push([option_text, option_value])
     end

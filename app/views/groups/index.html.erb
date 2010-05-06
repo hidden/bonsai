@@ -27,9 +27,12 @@
                 <% end %>
               <td><%=h group.users.collect {|user| user.full_name }.join(', ') %></td>
               <td>
-                <% if((@current_user.can_edit_group? group) && (group.name != @current_user.username)) && (group.id!= APP_CONFIG['administrators']['admin_group'].to_i)%>
-                    <%= link_to t("views.groups.edit_group"), edit_group_path(group), :id => "Edit_#{group.id}" %> <%= link_to t("views.groups.destroy_group"), group, :id => "Destroy_#{group.id}", :confirm => t("views.groups.destroy_question"), :method => :delete %>
-                <% else %>
+                <% if((@current_user.can_edit_group? group) && (group.name != @current_user.username))%>
+                    <%= link_to t("views.groups.edit_group"), edit_group_path(group), :id => "Edit_#{group.id}" %>
+                    <% if (group.id!= APP_CONFIG['administrators']['admin_group'].to_i) %>
+                        <%= link_to t("views.groups.destroy_group"), group, :id => "Destroy_#{group.id}", :confirm => t("views.groups.destroy_question"), :method => :delete %>
+                    <% end %> 
+               <% else %>
                     -
                 <% end %>
               </td>
