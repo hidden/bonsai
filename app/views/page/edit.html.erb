@@ -13,127 +13,7 @@
       </div>
     </div>
 
-
-    <div class="main_content">
-
-      <% if @current_user.can_manage_page? @page %>
-          <p><%= label_tag 'layout', t("views.page.layout") %>
-
-            <%= select_tag :layout, options_for_select(@user_layouts, @layout),
-                           :onchange => remote_function(:with => "'parent_layout=#{@parent_layout}&layout='+encodeURIComponent(value)",
-                                                        :url => {:controller => "page",
-                                                                 :action => 'show_layout_helper'})  %>
-          </p>
-
-          <div id="layout_details" class="lighter_bg" style="display:none;">
-          </div>
-      <% end %>
-
-      <% for part in @page.ordered_page_parts %>
-          <% if @undo or !part.current_page_part_revision.was_deleted %>
-              <div id="page_part_id_<%= part.id %>" class="width100">
-                <div class="page_part_listing">
-                  <%= text_field_tag("parts_name[#{part.name}]", part.name) %>
-                  <% if @page.page_parts.count > 1 %>
-                      <div class="page_part_edit_remove_link">
-                        <%= link_to_remote image_tag('icons/cancel_big.png', :title => t("views.page.delete_page_part")), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id), :confirm => t("views.page.are_you_sure_to_delete_part"), :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)} %>
-                      </div>
-                  <% end %>
-                  <div class="page_part_edit_remove_link" onclick="return toggleDiv('textarea_id_<%= part.id %>')">
-                    <%= image_tag ('icons/edit_big.gif', :alt =>'Edit') %>
-                  </div>
-                </div>
-                <div<%= ' style="display:none;"' unless part.name == 'body' %> class="width100" id="textarea_id_<%= part.id %>">
-                  <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
-
-                  <% if part == @page_part %>
-                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :cols => '', :style=>"width:100%" %>
-                  <% else %>
-                      <%=
-                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :cols => '', :style=>"width:100%",
-                                        :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock", :part_id => part.id}
-                                        )
-                      %>
-                      <%= periodically_call_remote(
-                              :url => {:controller => 'page', :action => 'update_lock', :part_id => part.id},
-                              :frequency => APP_CONFIG['page_part']['saving_time'],
-                              :condition => "(check_lock('#{part.id}') == true)"
-                      )
-                      %>
-
-                  <% end %>
-                  <%= render :partial => 'maruku_help', :object => part.id  %>
-                </div>
-              </div>
-          <% end %>
-      <% end %>
-      <p>
-        <%= label_tag "summary", t("views.page.summary") %>
-        <% if @undo %>
-            <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s, :size => 40) %>
-        <% else %>
-            <%= text_field_tag('summary', nil, :size => 40) %>
-        <% end %>
-      </p>
-
-
-
-      <script type="text/javascript">
-          <!--
-          document.write('<p><%= t('views.page.or') %> <a href="#" onclick="return toggleTextAreaDiv(\'add_new_page_part\');"><%= t('views.page.add_new_page_part') %></a></p>');
-          // -->
-      </script>
-      <noscript><p><strong><%= t('views.page.or') %> <%= t('views.page.add_new_page_part') %></strong></p></noscript>
-
-
-      <script type="text/javascript">
-          <!--
-          document.write('<div style="display: none;" id="add_new_page_part">');
-          // -->
-      </script>
-      <p>
-        <%= label_tag t("views.page.new_part_name") %><br/>
-        <%= text_field_tag('new_page_part_name') %>
-      </p>
-      <p>
-        <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80, :style => "display:none;"} %>
-      </p>
-      <%= render :partial => 'maruku_help' %>
-      <script type="text/javascript">
-          <!--
-          document.write('</div>');
-          // -->
-      </script>
-
-      <% if @current_user.can_manage_page? @page %>
-
-          <script type="text/javascript">
-              <!--
-              document.write('<p><a href="#" onclick="return toggleDiv(\'more_options\');"><%= t('views.page.more_options') %></a></p>');
-              // -->
-          </script>
-          <noscript><p><strong><%= t('views.page.more_options') %></strong></p></noscript>
-
-          <script type="text/javascript">
-              <!--
-              document.write('<div style="display: none;" id="more_options">')
-              // -->
-          </script>
-          <%= t("views.page.page_parts_ordering") %>
-          <%= select_tag "ordering", "<option value='0' #{'selected="selected"' if @page.ordering==0}>#{t("views.page.order_by_date")}</option><option value='1' #{'selected="selected"' if @page.ordering==1}>#{t("views.page.order_by_name")}</option>" %>
-          <script type="text/javascript">
-              <!--
-              document.write('</div>');
-              // -->
-          </script>
-      <% end %>
-
-      <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
-      <p><%= submit_tag t("views.page.save"), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
-        <%= submit_tag t("views.page.preview"), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
-    </div>
-
-    <div class="main_content_right" style="width:244px;">
+   <div class="main_content_right" style="width:244px;">
       <div class="lighter_bg">
         <!-- FILES -->
         <div class="files">
@@ -295,7 +175,7 @@
                   var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '<%= autocomplete_for_groups_groups_path %>', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
                   //]]>
               </script>
-              
+
               <br/>
               <div class="info_warning">
                 <%= t("views.page.permissions_warning") %>
@@ -311,6 +191,127 @@
         <!-- END OF PAGE PERMISIONS -->
       </div>
 </div>
+
+    <div class="main_content">
+
+      <% if @current_user.can_manage_page? @page %>
+          <p><%= label_tag 'layout', t("views.page.layout") %>
+
+            <%= select_tag :layout, options_for_select(@user_layouts, @layout),
+                           :onchange => remote_function(:with => "'parent_layout=#{@parent_layout}&layout='+encodeURIComponent(value)",
+                                                        :url => {:controller => "page",
+                                                                 :action => 'show_layout_helper'})  %>
+          </p>
+
+          <div id="layout_details" class="lighter_bg" style="display:none;">
+          </div>
+      <% end %>
+
+      <% for part in @page.ordered_page_parts %>
+          <% if @undo or !part.current_page_part_revision.was_deleted %>
+              <div id="page_part_id_<%= part.id %>" class="width100">
+                <div class="page_part_listing">
+                  <%= text_field_tag("parts_name[#{part.name}]", part.name) %>
+                  <% if @page.page_parts.count > 1 %>
+                      <div class="page_part_edit_remove_link">
+                        <%= link_to_remote image_tag('icons/cancel_big.png', :title => t("views.page.delete_page_part")), :update=> "page_part_id_#{part.id}", :url => remove_page_part_path(@page, part.id), :href => remove_page_part_path(@page, part.id), :confirm => t("views.page.are_you_sure_to_delete_part"), :html => {:id=>"part_id_#{part.name}", :href => remove_page_part_path(@page, part.id)} %>
+                      </div>
+                  <% end %>
+                  <div class="page_part_edit_remove_link" onclick="return toggleTextAreaDiv('textarea_id_<%= part.id %>')">
+                    <%= image_tag ('icons/edit_big.gif', :alt =>'Edit') %>
+                  </div>
+                </div>
+                <div<%= ' style="display:none;"' unless part.name == 'body' %> class="width100" id="textarea_id_<%= part.id %>">
+                  <%= hidden_field_tag "parts_revision[#{part.name}]", part.current_page_part_revision.id %>
+
+                  <% if part == @page_part %>
+                      <%= text_area_tag "parts[#{part.name}]", @page_revision.body, :rows => 30, :style=>"display:none;" %>
+                  <% else %>
+                      <%=
+                          text_area_tag "parts[#{part.name}]", part.current_page_part_revision.body, :rows => 30, :style=>"#{'display:none;' unless part.name == 'body'}",
+                                        :onfocus => remote_function( :url =>{ :controller => "page", :action => "add_lock", :part_id => part.id}
+                                        )
+                      %>
+                      <%= periodically_call_remote(
+                              :url => {:controller => 'page', :action => 'update_lock', :part_id => part.id},
+                              :frequency => APP_CONFIG['page_part']['saving_time'],
+                              :condition => "(check_lock('#{part.id}') == true)"
+                      )
+                      %>
+
+                  <% end %>
+                  <%= render :partial => 'maruku_help', :object => part.id  %>
+                </div>
+              </div>
+          <% end %>
+      <% end %>
+      <p>
+        <%= label_tag "summary", t("views.page.summary") %>
+        <% if @undo %>
+            <%= text_field_tag('summary', 'Undid to revision' + @page_revision.id.to_s, :size => 40) %>
+        <% else %>
+            <%= text_field_tag('summary', nil, :size => 40) %>
+        <% end %>
+      </p>
+
+
+
+      <script type="text/javascript">
+          <!--
+          document.write('<p><%= t('views.page.or') %> <a href="#" onclick="return toggleTextAreaDiv(\'add_new_page_part\');"><%= t('views.page.add_new_page_part') %></a></p>');
+          // -->
+      </script>
+      <noscript><p><strong><%= t('views.page.or') %> <%= t('views.page.add_new_page_part') %></strong></p></noscript>
+
+
+      <script type="text/javascript">
+          <!--
+          document.write('<div style="display: none;" id="add_new_page_part">');
+          // -->
+      </script>
+      <p>
+        <%= label_tag t("views.page.new_part_name") %><br/>
+        <%= text_field_tag('new_page_part_name') %>
+      </p>
+      <p>
+        <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80, :style => "display:none;"} %>
+      </p>
+      <%= render :partial => 'maruku_help' %>
+      <script type="text/javascript">
+          <!--
+          document.write('</div>');
+          // -->
+      </script>
+
+      <% if @current_user.can_manage_page? @page %>
+
+          <script type="text/javascript">
+              <!--
+              document.write('<p><a href="#" onclick="return toggleDiv(\'more_options\');"><%= t('views.page.more_options') %></a></p>');
+              // -->
+          </script>
+          <noscript><p><strong><%= t('views.page.more_options') %></strong></p></noscript>
+
+          <script type="text/javascript">
+              <!--
+              document.write('<div style="display: none;" id="more_options">')
+              // -->
+          </script>
+          <%= t("views.page.page_parts_ordering") %>
+          <%= select_tag "ordering", "<option value='0' #{'selected="selected"' if @page.ordering==0}>#{t("views.page.order_by_date")}</option><option value='1' #{'selected="selected"' if @page.ordering==1}>#{t("views.page.order_by_name")}</option>" %>
+          <script type="text/javascript">
+              <!--
+              document.write('</div>');
+              // -->
+          </script>
+      <% end %>
+
+      <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
+      <p><%= submit_tag t("views.page.save"), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
+        <%= submit_tag t("views.page.preview"), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
+    </div>
+
+
 <% end %>
 </div>
 </div>

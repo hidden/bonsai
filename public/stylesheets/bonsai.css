@@ -426,8 +426,7 @@ ul#menu li ul li.small{
 
 
 .main_content{
-    height:100%;
-    float:left;
+    margin-right:300px;
     padding:10px 33px;
     min-width:400px;
 }
@@ -436,6 +435,7 @@ ul#menu li ul li.small{
     height:100%;
     float:right;
     width:244px;
+    margin-left: -200px; 
     background:transparent;
     padding:0 28px;
 }
