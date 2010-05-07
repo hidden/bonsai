@@ -134,7 +134,7 @@ class GroupsController < ApplicationController
         @group.destroy
       end
     respond_to do |format|
-      format.html { redirect_to(groups_url) }
+      format.html { redirect_to groups_path }
       format.xml  { head :ok }
     end
     else
@@ -164,6 +164,10 @@ class GroupsController < ApplicationController
     end
     gh = GroupPermissionsHistory.new(:user_id => 0, :group_id => @group.id, :editor_id => @current_user.id, :role => 2, :action => action)
     gh.save
+  end
+
+  def show
+    redirect_back_or_default
   end
 
   private

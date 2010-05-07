@@ -13,8 +13,7 @@ function switchVisibility(div){
             div.style.display='block';
         else
             div.style.display='none';
-    }
-    else{
+    }else {
         if (div.visible()) {
             div.blindUp();
         } else {
@@ -39,6 +38,13 @@ function toggleTextAreaDiv(elementId) {
         switchVisibility(areas[i]);
     }
     return false;
+}
+
+function showMoreStories(el){
+    var parent = el.parentNode;
+    parent.getElementsByTagName('ul')[0].show();
+    parent.className = 'Expanded';
+    parent.removeChild(el);
 }
 
 function toggleTreeElement(Li, evt) {

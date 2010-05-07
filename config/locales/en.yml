@@ -171,6 +171,7 @@ en:
       order_by_name: "Order by name"
       add_page: "New page"
       page_exist: "This page exists"
+      similar_stories: "similar stories"
 
     syntax_help:
       syntax_help: "Syntax help"

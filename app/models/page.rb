@@ -38,6 +38,10 @@ class Page < ActiveRecord::Base
     self.page_parts.find(:all, :order => self.choose_ordering)
   end
 
+  def inherited_permissions
+     Page.first(:joins => {:page_permissions => :page}, :conditions => ["pages.lft < ? and pages.rgt > ?", self.lft, self.rgt])
+  end
+
   def self.find_by_path path
     full_path = [nil] + path
     parent_id = nil
