@@ -911,17 +911,19 @@ class PageController < ApplicationController
        @user_layouts = []
     end
 
-
+    @parent_layout = @page.parent_layout unless @page.nil?
+    #inherited_layout unless @page.nil?
 
     for file in @definition
     params = get_layout_parameters(file)
 
-    if (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout)
+    if (!@parent_layout.nil? and params[0] == @parent_layout)
          option_text = 'Inherited (' + params[1] + ')'
-         @layout = ''
     else
          option_text = params[1]
     end
+
+    @layout = '' if @layout.nil?
 
     if (!@page.nil? and @layout.nil?)
        @layout = @page.layout
