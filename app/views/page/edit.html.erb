@@ -3,7 +3,7 @@
 <div class="bonsai">
 <div class="holder_right_dark">
 
-<% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true, :id => "edit_form"}) do |f| %>
+<%# form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true, :id => "edit_form"}) do |f| %>
 
     <div class="header">
       <div class="header_content">
@@ -27,164 +27,10 @@
         <!-- END OF FILES -->
         <!--PAGE PERMISIONS -->
         <% if @current_user.can_manage_page? @page %>
+
             <div id="permissions">
-              <h3><%= t("views.page.permissions_for") %></h3>
-
-
-              <%#= render :partial => 'page/remove_permission' %>
-              <table class="page_permisions">
-                <thead>
-                <tr>
-                  <th><%= t("views.groups.group") %></th>
-                  <th><%= t("views.page.permission") %></th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @page.page_permissions.each_with_index do |permission, index| %>
-                    <tr id="group_<%= index %>">
-                      <% opravnenie = 0 %>
-
-                      <% if permission.group.users.include? @current_user %>
-                          <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) ||(permission.can_view?) )
-                              opravnenie = 1
-                          end %>
-
-                          <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
-                              opravnenie = 2
-                          end %>
-
-                          <% if permission.can_manage?
-                              opravnenie = 3
-                          end %>
-                      <% else %>
-
-                          <% if ((@page.is_public?) || ((!@page.parent.nil?) && (!@page.parent.is_public?) && (permission.group.can_view_page? @page.parent)) || (permission.can_view?))
-                              opravnenie = 1
-                          end %>
-
-                          <% if ((@page.is_editable?) || ((!@page.parent.nil?) && (!@page.parent.is_editable?) && (permission.group.can_edit_page? @page.parent)) || (permission.can_edit?))
-                              opravnenie = 2
-                          end %>
-
-                          <% if permission.can_manage?
-                              opravnenie = 3
-                          end %>
-                      <% end %>
-
-
-                      <% if opravnenie > 0 %>
-                          <td><%= h  permission.group.name %></td>
-                          <td>
-                            <select name="<%= permission.group.name %>_select" id="<%= permission.group.name %>_select">
-                              <% if !(@page.is_editable?) %>
-                                  <option value='1' <%= opravnenie == 1? "selected='selected'" : '' %>><%= t('views.general.viewer') %></option>
-                              <% end %>
-                              <option value='2' <%= opravnenie == 2? "selected='selected'" : '' %>><%= t('views.general.editor') %></option>
-                              <option value='3' <%= opravnenie == 3? "selected='selected'" : '' %>><%= t('views.general.manager') %></option>
-                            </select>
-                          </td>
-
-                          <td>
-                            <% if opravnenie == 3 %>
-                                <div class="ManagerHidden" style="visibility:hidden"></div>
-                                <%= link_to_remote icon_tag('cancel.png', :title => t('views.page.remove')), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :condition => "testManagers(" + t("controller.notices.manager_error")  + ")", :confirm => t('views.page.are_you_sure_to_remove_permission'),
-                                                   :html => { :href => _remove_permission_path(@page, index) }  %>
-                            <% else %>
-                                <%= link_to_remote icon_tag('cancel.png', :title => t('views.page.remove')), :update=> "group_#{index}", :url => _remove_permission_path(@page, index), :confirm => t('views.page.are_you_sure_to_remove_permission'),
-                                                   :html => { :href => _remove_permission_path(@page, index) } %>
-
-                            <% end %>
-                          </td>
-                      <% end %>
-                    </tr>
-                <% end %>
-                <tr>
-                  <td><%= t('views.general.everyone') %></td>
-                  <td colspan="2"><select name="everyone_select" id="everyone_select">
-                    <option selected="selected">-</option>
-                    <option value="1" <%= @page.is_public? ? "selected='selected'": "" %> ><%= t('views.general.can_view') %></option>
-                    <option value="2" <%= @page.is_editable? ? "selected='selected'" : "" %> ><%= t('views.general.can_edit') %></option>
-                  </select>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-
-              <% if (not @page.ancestors.empty? and @page.inherited_permissions)  %>
-
-                  <h3><%= t('views.page.inherited_permissions') %></h3>
-                  <table class="page_permisions">
-                    <thead>
-                    <tr>
-                      <th><%= t("views.groups.group") %></th>
-                      <th><%= t("views.page.permission") %></th>
-                      <th><%= t("views.page.via") %></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                   <% @page.ancestors.each do |ancestor| %>
-
-                        <% ancestor.page_permissions.each do |permission| %>
-                            <tr>
-                              <td><%= h  permission.group.name %></td>
-
-                              <% opravnenie = 0 %>
-                              <% if ancestor.is_public? %>
-                                  <% opravnenie = 1 %>
-                              <% else %>
-                                  <% if permission.can_view?
-                                      opravnenie = 1
-                                  end %>
-                              <% end %>
-                              <% if ancestor.is_editable? %>
-                                  <% opravnenie = 2 %>
-                              <% else %>
-                                  <% if permission.can_edit?
-                                      opravnenie = 2
-                                  end %>
-                              <% end %>
-                              <td>
-                                <% if permission.can_manage?
-                                    opravnenie = 3
-                                end %>
-                                <% perm = Array.[](t('views.general.viewer'), t('views.general.editor'), t('views.general.manager')) %>
-                                <%= perm[opravnenie-1] %>
-                                <% if opravnenie == 3 %>
-                                    <div class="ManagerHidden" style="visibility:hidden"></div>
-
-                                <% end %>
-                              </td>
-                              <td><%= ancestor.sid %></td>
-                            </tr>
-                        <% end %>
-
-                    <% end %>
-                    </tbody>
-                  </table>
-              <% end %>
-
-              <h3><%= t('views.page.add_group_permission') %></h3>
-
-              <%= text_field_tag('add_group') %> <%= select('group_role', 'type', {t('views.general.viewer') => "1", t('views.general.editor') => "2", t('views.general.manager')=> "3"}) %>
-              <br/>
-
-              <div id="autocomplete" style="display: none;" class="autocomplete"></div>
-              <script type="text/javascript">
-                  //<![CDATA[
-                  var autocompleter = new Ajax.Autocompleter('add_group', 'autocomplete', '<%= autocomplete_for_groups_groups_path %>', {paramName: 'infix', method: 'get', select: 'groupname', tokens: ','});
-                  //]]>
-              </script>
-
-              <br/>
-              <div class="info_warning">
-                <%= t("views.page.permissions_warning") %>
-              </div>
-              <br/>
-
-              <div class="files">
-                <%= t("views.page.permission_history") %> <%= link_to t("views.page.link"), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>
-              </div>
+         
+              <%= render :partial => 'page/permissions' %>
 
             </div>
         <% end %>
@@ -193,7 +39,8 @@
 </div>
 
     <div class="main_content">
-
+     <% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true, :id => "edit_form"}) do |f| %>
+          <%= text_field_tag('title', @page.title) %>
       <% if @current_user.can_manage_page? @page %>
           <p><%= label_tag 'layout', t("views.page.layout") %>
 
@@ -309,10 +156,11 @@
       <%= hidden_field_tag('non_redirect', nil, :value => 1) %>
       <p><%= submit_tag t("views.page.save"), :name => 'Save', :class=> "small_button", :onclick => "subm('edit_form','save');" %>
         <%= submit_tag t("views.page.preview"), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
+          <% end %>
     </div>
 
 
-<% end %>
+
 </div>
 </div>
 <div class="footer">

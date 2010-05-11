@@ -166,6 +166,22 @@ class PageController < ApplicationController
     end
   end
 
+  def test_metoda
+    save_permissions
+    if flash[:error].nil?
+      flash[:notice] = "Permissions updated."
+    end
+
+    p flash[:notice]   #do konzoly
+
+    #render :partial => 'shared/notice'
+    #render :partial => 'page/permissions'
+    #respond_to do |format|
+    #  format.html { render :partial => 'page/permissions' }
+    #  format.js
+    #  end
+  end
+
   def process_file
     @no_toolbar = true
 
@@ -402,15 +418,10 @@ class PageController < ApplicationController
     @error_flash_msg = ""
     @notice_flash_msg = ""
 
-    set_global_permissions
-
-    set_dropdown_permissions
-
-    #add group permission from autocomplete
-    if not params[:add_group].nil?
-      set_permissions
+    save_permissions
+    if flash[:error].nil?
+      @notice_flash_msg += "Permissions ok."
     end
-
     # TODO refactor
 #    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?
 #      tmp_file = params[:file_version][:uploaded_data]
@@ -769,6 +780,17 @@ class PageController < ApplicationController
         params.include?('create') ? create : new
       end
       return
+    end
+  end
+
+  def save_permissions   
+    set_global_permissions
+
+    set_dropdown_permissions
+
+    #add group permission from autocomplete
+    if not params[:add_group].nil?
+      set_permissions
     end
   end
 
