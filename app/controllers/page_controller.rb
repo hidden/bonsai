@@ -8,6 +8,10 @@ class PageController < ApplicationController
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
   before_filter :can_view_page_check, :only => [:view, :history, :revision, :diff, :toggle_favorite]
+  before_filter :remove_back_link
+ # before_filter :control_highlight, :only => [:view]
+
+
   around_filter :rss_view_check, :only => [:rss, :rss_tree]
 
   def search
@@ -27,10 +31,10 @@ class PageController < ApplicationController
   end
 
   def view
+    control_highlight(@page.ordered_page_parts)
     @hide_view_in_toolbar = true
     layout = @page.nil? ? 'application' : @page.resolve_layout
     @stylesheet = @page.resolve_layout
-    session[:link_back] = nil 
     render :action => :view, :layout => layout
   end
 
@@ -611,13 +615,49 @@ class PageController < ApplicationController
     PagePartLock.create_lock(@up_part_id, @current_user)
   end
 
+  def show_layout_helper
+    #get params
+    layout = params["layout"]
+    @parent_layout = params["parent_layout"]
+
+     #layout
+    @layout = layout
+
+    #inherited layout
+    @inherited = false
+    if layout.blank?
+      layout =  @page.inherited_layout
+    end
+
+    if layout == @parent_layout
+      @inherited=true
+    end
+
+    #stylesheet
+    if layout != 'default'
+      @stylesheet = layout + '.css'
+    end
+
+    params = get_layout_parameters("vendor/layouts/"+layout)
+    @layout_name = params[1]
+    @layout_description = params[0]
+    @layout_params = params[2]
+
+  end
+
   private
+
+  def remove_back_link
+     session[:link_back] = nil
+  end
 
   def generate_preview
     parent = nil
     unless params[:parent_id].blank?
       parent = Page.find_by_id(params[:parent_id])
     end
+
+
 
     if ((!parent.nil? && !(@current_user.can_edit_page? parent)) || params[:title].nil?)
       unprivileged
@@ -654,6 +694,7 @@ class PageController < ApplicationController
 #        page_part.current_page_part_revision = first_revision
       end
       @page.page_parts.sort! {|x, y| x.name <=> y.name } if params[:ordering]==1
+      control_highlight(@page.page_parts)
       @preview_toolbar = true
       @stylesheet = @page.resolve_layout
       render :action => :preview, :layout => layout
@@ -838,36 +879,6 @@ class PageController < ApplicationController
     return managers.length
   end
 
-  def show_layout_helper
-    #get params
-    layout = params["layout"]
-    @parent_layout = params["parent_layout"]
-
-    #inherited layout
-    @inherited = false
-    if layout.blank?
-      layout = @parent_layout
-    end
-    
-    if layout == @parent_layout
-      @inherited=true
-    end
-
-    #layout
-    @layout = layout
-
-    #stylesheet
-    if layout != 'default'
-      @stylesheet = layout + '.css'
-    end
-
-    params = get_layout_parameters("vendor/layouts/"+layout)
-    @layout_name = params[1]
-    @layout_description = params[0]
-    @layout_params = params[2]
-
-  end
-
   def get_layout_definitions
     directories =  Array.new
     Dir.glob("vendor/layouts/*") do |directory|
@@ -900,13 +911,39 @@ class PageController < ApplicationController
        @user_layouts = []
     end
 
+    @parent_layout = @page.parent_layout unless @page.nil?
+    #inherited_layout unless @page.nil?
+
     for file in @definition
     params = get_layout_parameters(file)
-    option_text = (!@parent_layout.nil? and @layout.nil? and params[0] == @parent_layout) ? 'Inherited (' + params[1] + ')' : params[1]
+
+    if (!@parent_layout.nil? and params[0] == @parent_layout)
+         option_text = 'Inherited (' + params[1] + ')'
+    else
+         option_text = params[1]
+    end
+
+    @layout = '' if @layout.nil?
+
+    if (!@page.nil? and @layout.nil?)
+       @layout = @page.layout
+    end
+
+
     option_value = (params[0] == @parent_layout) ? '' : params[0]
     @user_layouts.push([option_text, option_value])
     end
 
    return @user_layouts;
- end
+  end
+
+  def control_highlight pages
+    @highlighter_display = false
+
+    for part in pages
+        unless part.current_page_part_revision.was_deleted
+          @highlighter_display = true unless part.current_page_part_revision.body.match(/\{:[ ]{0,3}class/).nil?
+        end
+    end
+  end
 end

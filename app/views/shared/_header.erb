@@ -9,6 +9,7 @@
   <% end %>
   <%= javascript_include_tag 'wmd_creator.js' %>
   <!-- Syntax highlighter  -->
+<% if (!@highlighter_display.nil?) and @highlighter_display %>
   <%= stylesheet_link_tag 'SyntaxHighlighter/shCore.css' %>
   <%= stylesheet_link_tag 'SyntaxHighlighter/shThemeDefault.css' %>
 
@@ -37,6 +38,7 @@
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushXml.js' %>
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushLua.js' %>
   <%= javascript_include_tag 'SyntaxHighlighter/shBrushMatlab.js' %>
+<% end %>
 
   <%= javascript_include_tag :defaults, :cache => true %>
   <%= render :partial => 'shared/rss_link' %>
@@ -48,6 +50,6 @@
   <% end %>
 </head>
 
-<body onload="javascript:clickMenu('menu');setContentWidth();findTextareasAndCreateEditor();">
+<body onload="javascript:clickMenu('menu');findTextareasAndCreateEditor();">
 
 <%= render :partial => 'shared/toolbar' %>

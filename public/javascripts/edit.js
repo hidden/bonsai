@@ -1,6 +1,5 @@
-page <<
-            'var current_parts = new Array(' + @page.page_parts.count.to_s + ');
-             function lost_focus(){
+var current_parts = new Array();
+     function lost_focus(){
                 document.forms[0].elements["title"].focus();
              }
 
@@ -8,10 +7,11 @@ page <<
                 document.forms[0].elements["parts["+part_name+"]"].focus();
             }
 
-            function show_confirm(is_edited_by_another, part_id, part_name){
+            //I18n.t("page_is_editing")
+            function show_confirm(is_edited_by_another, part_id, part_name,text){
                 if(is_edited_by_another && (!check_lock(part_id))){
                     lost_focus();
-                    if(confirm("'+ t("controller.notices.page_is_editing") +'")){
+                    if(confirm(text)){
                         add_lock(part_id);
                         set_focus(part_name);
                     }else{
@@ -29,16 +29,17 @@ page <<
 
             function check_lock(part_id){
                 return (current_parts.indexOf(part_id) != -1);
-            }'
+            }
 
-page << '{function testManagers(){
+//I18n.t("manager_error")
+{function testManagers(text){
                     var managers = document.getElementsByClassName("ManagerHidden");
                     if ((managers.length) >= 2) return true;
                     else{
-                        alert("'+ t("controller.notices.manager_error") +'");
+                        alert(text);
                         return false;
                     }
                 }
 
-            }'
+            }
 

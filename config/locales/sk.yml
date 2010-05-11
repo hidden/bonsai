@@ -53,6 +53,7 @@ sk:
       Administration: "Administrácia"
       active_user: "Aktivuj"
       deactive_user: "Deaktivuj"
+      deactive_user_confirm: "Snažíte sa deaktivovať používateľa. Naozaj ste si istý?"
       was: "bol"
       deactivated: "deaktivovaný"
       activated: "aktivovaný"
@@ -174,6 +175,7 @@ sk:
       order_by_name: "Podľa mena (abecedne)"
       add_page: "Nová stránka"
       page_exist: "Táto stránka už existuje"
+      similar_stories: "podobných akcií"
 
     syntax_help:
       syntax_help: "Pomocník syntax"

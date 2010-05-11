@@ -50,6 +50,7 @@ en:
       Administration: "Administration"
       active_user: "Activate"
       deactive_user: "Deactivate"
+      deactive_user_confirm: "You are trying to deactivate user. Are you sure?"
       was: "was"
       deactivated: "banned"
       activated: "activated"
@@ -171,6 +172,7 @@ en:
       order_by_name: "Order by name"
       add_page: "New page"
       page_exist: "This page exists"
+      similar_stories: "similar stories"
 
     syntax_help:
       syntax_help: "Syntax help"

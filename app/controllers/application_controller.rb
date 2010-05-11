@@ -48,12 +48,18 @@ class ApplicationController < ActionController::Base
   end
 
   def fetch_logged_in_user
-  if facebook_session
-    @current_user = User.find_by_fb_id(facebook_session.user.uid.to_i)
-  else
-    return unless session[:user_id]
-    @current_user = User.find_by_id(session[:user_id])
+    if facebook_session
+      @current_user = User.find_by_fb_id(facebook_session.user.uid.to_i)
+    else
+      return unless session[:user_id]
+      @current_user = User.find_by_id(session[:user_id])
+    end
   end
+
+  def redirect_back_or_default(where=nil)
+    redirect_to :back
+  rescue ActionController::RedirectBackError
+    redirect_to where.nil? ? root_path : where
   end
 
   private

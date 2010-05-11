@@ -1,6 +1,6 @@
 <% record = object %>
 <% if not record['nested'].nil? %>
-    <li class="Collapsed" onclick="toggleTreeElement(this,event);">
+    <li class="Collapsed">
 <% else %>
     <li>
 <% end %>
@@ -11,6 +11,8 @@
 &nbsp; <%= link_to t("views.page.show_from"), page_path(record['page'], :revision, :revision => record['revision'].to_s) %>
 <br/>
 <% if not record['nested'].nil? %>
+    <span></span>
+    <%= link_to "#{record['nested'].size} #{t("views.page.similar_stories")}", '#', :onclick =>'showMoreStories(this)', :style => 'display:none' %>
     <ul class="hidden">
       <% for nested_record in record['nested'] %>
           <li>
