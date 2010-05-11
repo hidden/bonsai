@@ -175,6 +175,7 @@ sk:
       add_page: "Nová stránka"
       page_exist: "Táto stránka už existuje"
       similar_stories: "podobných akcií"
+      permissions_updated: "Práva boli aktualizované"
 
     syntax_help:
       syntax_help: "Pomocník syntax"

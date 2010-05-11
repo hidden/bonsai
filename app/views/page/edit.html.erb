@@ -40,7 +40,7 @@
 
     <div class="main_content">
      <% form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true, :id => "edit_form"}) do |f| %>
-          <%= text_field_tag('title', @page.title) %>
+             Name of this page: <%= text_field_tag('title', @page.title) %>
       <% if @current_user.can_manage_page? @page %>
           <p><%= label_tag 'layout', t("views.page.layout") %>
 

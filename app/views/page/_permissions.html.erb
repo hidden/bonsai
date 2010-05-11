@@ -148,13 +148,16 @@
     </script>
 
     <br/>
+    <%= submit_tag "Save", :class => "small_button" %>
+    <noscript>
     <div class="info_warning">
       <%= t("views.page.permissions_warning") %>
     </div>
+    </noscript>  
     <br/>
 
     <div class="files">
       <%= t("views.page.permission_history") %> <%= link_to t("views.page.link"), perm_hist, :target => "_blank", :title => "PermissionsHistory" %>
     </div>
-    <%= submit_tag "Save" %>
+
 <% end %>

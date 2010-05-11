@@ -168,18 +168,10 @@ class PageController < ApplicationController
 
   def test_metoda
     save_permissions
+    @page.reload # reload permissions
     if flash[:error].nil?
-      flash[:notice] = "Permissions updated."
+      flash[:notice] = t("views.page.permissions_updated")
     end
-
-    p flash[:notice]   #do konzoly
-
-    #render :partial => 'shared/notice'
-    #render :partial => 'page/permissions'
-    #respond_to do |format|
-    #  format.html { render :partial => 'page/permissions' }
-    #  format.js
-    #  end
   end
 
   def process_file
@@ -420,7 +412,7 @@ class PageController < ApplicationController
 
     save_permissions
     if flash[:error].nil?
-      @notice_flash_msg += "Permissions ok."
+      @notice_flash_msg += t("views.page.permissions_updated")
     end
     # TODO refactor
 #    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?

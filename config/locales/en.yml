@@ -172,6 +172,7 @@ en:
       add_page: "New page"
       page_exist: "This page exists"
       similar_stories: "similar stories"
+      permissions_updated: "Permissions updated"
 
     syntax_help:
       syntax_help: "Syntax help"
