@@ -240,7 +240,7 @@
                       %>
 
                   <% end %>
-                  <%= render :partial => 'maruku_help', :object => part.id  %>
+                  <%= link_to t('views.syntax_help.syntax_help'), {:action => "maruku_help"}, :target => "_blank"  %>
                 </div>
               </div>
           <% end %>
@@ -276,7 +276,7 @@
       <p>
         <%= text_area_tag "new_page_part_text", "", {:rows => 20, :cols => 80, :style => "display:none;"} %>
       </p>
-      <%= render :partial => 'maruku_help' %>
+      <%= link_to t('views.syntax_help.syntax_help'), {:action => "maruku_help"}, :target => "_blank" %>
       <script type="text/javascript">
           <!--
           document.write('</div>');
