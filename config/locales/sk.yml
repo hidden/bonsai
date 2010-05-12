@@ -24,7 +24,7 @@ sk:
       user_not_found: "Používateľské meno nebolo nájdené!"
       set_language: "Nastavili ste si jazyk na slovenčinu."
       editors_error: "Nie je možné zmazať toto právo, musí zostať aspoň jeden editor."
-      manager_error: "Nie je možné zmazať toto právo, musí zostať aspoň jeden manažér pre stránku."
+      manager_error: "Nie je možné zmeniť toto právo."
       registration_disabled: "Registrácia nových používateľov nie je momentálne dostupná."
 
   views:
@@ -176,8 +176,9 @@ sk:
       add_page: "Nová stránka"
       page_exist: "Táto stránka už existuje"
       similar_stories: "podobných akcií"
-      permissions_updated: "Práva boli aktualizované"
+      permissions_updated: "Práva boli aktualizované."
       btw_update_perms: "Aktualizovať práva"
+      page_name_label: "Názov stránky:"
 
     syntax_help:
       syntax_help: "Pomocník syntax"

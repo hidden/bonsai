@@ -1,8 +1,14 @@
-<% remote_form_for "perms", :url => skuska_path, :update => "permissions" do %>
-
+<% remote_form_for "perms", :url => update_permissions_path, :update => "permissions" do %>
     <h3><%= t("views.page.permissions_for") %></h3>
     <div id="test"></div>
     <%#= render :partial => 'page/remove_permission' %>
+    <% if !@notice.nil?%>
+        <div class="info_text green_background"><%= @notice %></div>
+    <% else if !@error.nil? %>
+        <div class="info_text red_background"><%= @error %></div>
+        <% end %>
+    <% end %>
+
     <table class="page_permisions">
       <thead>
       <tr>

@@ -21,7 +21,7 @@ en:
       user_not_found: "Username not found!"
       set_language: "You set language to english."
       editors_error: "It is not possible to delete this permission, there must be at least one editor."
-      manager_error: "It is not possible to remove this permission, there must be at least one manager."
+      manager_error: "It is not possible to change this permission."
       registration_disabled: "User registrations are disabled."
 
   views:
@@ -175,6 +175,7 @@ en:
       similar_stories: "similar stories"
       permissions_updated: "Permissions updated."
       btw_update_perms: "Update permissions"
+      page_name_label: "Name of this page:"
 
     syntax_help:
       syntax_help: "Syntax help"
