@@ -21,7 +21,7 @@ en:
       user_not_found: "Username not found!"
       set_language: "You set language to english."
       editors_error: "It is not possible to delete this permission, there must be at least one editor."
-      manager_error: "It is not possible to remove this permission, there must be at least one manager."
+      manager_error: "It is not possible to change this permission."
       registration_disabled: "User registrations are disabled."
 
   views:
@@ -146,7 +146,7 @@ en:
       no_page_results_title: "We couldn't find anything!"
       no_page_results_body: "Please try a different search."
       permission: "Permission"
-      permissions_warning: "All permissions and data will be saved when you hit the Save button."
+      permissions_warning: "If you hit Update permissins button, you will lose your page changes."
       author: "Author"
       part: "Part"
       file_history: "History of file: "
@@ -173,6 +173,9 @@ en:
       add_page: "New page"
       page_exist: "This page exists"
       similar_stories: "similar stories"
+      permissions_updated: "Permissions updated."
+      btw_update_perms: "Update permissions"
+      page_name_label: "Name of this page:"
 
     syntax_help:
       syntax_help: "Syntax help"

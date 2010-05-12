@@ -2,7 +2,7 @@ class PageController < ApplicationController
   cache_sweeper :page_sweeper, :only => [:update]
 
   before_filter :load_page, :except => [:add_lock, :update_lock, :search, :system_page]
-  before_filter :can_manage_page_check, :only => [:set_permissions, :remove_permission, :switch_public, :switch_editable]
+  before_filter :can_manage_page_check, :only => [:set_permissions, :remove_permission, :switch_public, :switch_editable, :update_permissions]
   before_filter :can_edit_page_check, :only => [:add, :edit, :update, :upload, :undo, :new_part, :files, :render_files]
   before_filter :check_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
@@ -159,6 +159,21 @@ class PageController < ApplicationController
       page_permission.destroy
     else
       flash[:error] = t("controller.notices.manager_error")
+    end
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
+    end
+  end
+
+  def update_permissions
+    save_permissions
+    @page.reload # reload permission
+    if flash[:error].nil?
+      @notice = t("views.page.permissions_updated")
+    else
+      @error = t("controller.notices.manager_error")
+      flash.discard
     end
     respond_to do |format|
       format.html { redirect_to :back }
@@ -401,15 +416,6 @@ class PageController < ApplicationController
     end
     @error_flash_msg = ""
     @notice_flash_msg = ""
-
-    set_global_permissions
-
-    set_dropdown_permissions
-
-    #add group permission from autocomplete
-    if not params[:add_group].nil?
-      set_permissions
-    end
 
     # TODO refactor
 #    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?
@@ -773,6 +779,17 @@ class PageController < ApplicationController
         params.include?('create') ? create : new
       end
       return
+    end
+  end
+
+  def save_permissions   
+    set_global_permissions
+
+    set_dropdown_permissions
+
+    #add group permission from autocomplete
+    if not params[:add_group].nil?
+      set_permissions
     end
   end
 

@@ -24,7 +24,7 @@ sk:
       user_not_found: "Používateľské meno nebolo nájdené!"
       set_language: "Nastavili ste si jazyk na slovenčinu."
       editors_error: "Nie je možné zmazať toto právo, musí zostať aspoň jeden editor."
-      manager_error: "Nie je možné zmazať toto právo, musí zostať aspoň jeden manažér pre stránku."
+      manager_error: "Nie je možné zmeniť toto právo."
       registration_disabled: "Registrácia nových používateľov nie je momentálne dostupná."
 
   views:
@@ -149,7 +149,7 @@ sk:
       no_page_results_title: "Nenašli sa žiadne záznamy!"
       no_page_results_body: "Skúste hľadanie podľa iného kľúčového slova."
       permission: "Právo"
-      permissions_warning: "Všetky práva a dáta budú uložené, keď stlačíš tlačidlo Uložiť."
+      permissions_warning: "Ak stlačíš Aktualizovať práva, prídeš o zmeny v stránke."
       author: "Autor"
       part: "časť"
       file_history: "História súboru: "
@@ -176,6 +176,9 @@ sk:
       add_page: "Nová stránka"
       page_exist: "Táto stránka už existuje"
       similar_stories: "podobných akcií"
+      permissions_updated: "Práva boli aktualizované."
+      btw_update_perms: "Aktualizovať práva"
+      page_name_label: "Názov stránky:"
 
     syntax_help:
       syntax_help: "Pomocník syntax"

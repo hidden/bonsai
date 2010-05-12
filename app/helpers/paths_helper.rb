@@ -108,4 +108,8 @@ module PathsHelper
     end
     page_path(page, 'render_files', :per_page => per_page, :success => ok, :upscale => upscale, :order => order, :change => change)
   end
+
+  def update_permissions_path
+    url_for :controller => "page", :action => "update_permissions"
+  end
 end
