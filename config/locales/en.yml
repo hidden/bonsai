@@ -145,7 +145,7 @@ en:
       no_page_results_title: "We couldn't find anything!"
       no_page_results_body: "Please try a different search."
       permission: "Permission"
-      permissions_warning: "All permissions and data will be saved when you hit the Save button."
+      permissions_warning: "If you hit Update permissins button, you will lose your page changes."
       author: "Author"
       part: "Part"
       file_history: "History of file: "
@@ -172,7 +172,8 @@ en:
       add_page: "New page"
       page_exist: "This page exists"
       similar_stories: "similar stories"
-      permissions_updated: "Permissions updated"
+      permissions_updated: "Permissions updated."
+      btw_update_perms: "Update permissions"
 
     syntax_help:
       syntax_help: "Syntax help"

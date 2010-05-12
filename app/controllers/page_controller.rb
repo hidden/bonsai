@@ -172,6 +172,10 @@ class PageController < ApplicationController
     if flash[:error].nil?
       flash[:notice] = t("views.page.permissions_updated")
     end
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
+    end
   end
 
   def process_file
@@ -412,7 +416,7 @@ class PageController < ApplicationController
 
     save_permissions
     if flash[:error].nil?
-      @notice_flash_msg += t("views.page.permissions_updated")
+      #@notice_flash_msg += t("views.page.permissions_updated")
     end
     # TODO refactor
 #    unless params[:file_version].blank? or params[:file_version][:uploaded_data].blank?

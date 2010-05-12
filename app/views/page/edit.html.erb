@@ -3,11 +3,10 @@
 <div class="bonsai">
 <div class="holder_right_dark">
 
-<%# form_for(:file_version, :url => save_edited_page_path(@page), :html => {:multipart => true, :id => "edit_form"}) do |f| %>
 
     <div class="header">
       <div class="header_content">
-        <%= text_field_tag('title', @page.title) %>
+        <%=  @page.title %>
       </div>
       <div class="header_right">
       </div>
@@ -158,7 +157,6 @@
         <%= submit_tag t("views.page.preview"), :name => 'Preview', :class=> "small_button", :onclick => "subm('edit_form','preview');" %></p>
           <% end %>
     </div>
-
 
 
 </div>

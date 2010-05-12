@@ -148,7 +148,7 @@ sk:
       no_page_results_title: "Nenašli sa žiadne záznamy!"
       no_page_results_body: "Skúste hľadanie podľa iného kľúčového slova."
       permission: "Právo"
-      permissions_warning: "Všetky práva a dáta budú uložené, keď stlačíš tlačidlo Uložiť."
+      permissions_warning: "Ak stlačíš Aktualizovať práva, prídeš o zmeny v stránke."
       author: "Autor"
       part: "časť"
       file_history: "História súboru: "
@@ -176,6 +176,7 @@ sk:
       page_exist: "Táto stránka už existuje"
       similar_stories: "podobných akcií"
       permissions_updated: "Práva boli aktualizované"
+      btw_update_perms: "Aktualizovať práva"
 
     syntax_help:
       syntax_help: "Pomocník syntax"
