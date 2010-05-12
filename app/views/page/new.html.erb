@@ -19,7 +19,7 @@
             <%= label_tag :body %><br />
             <%= text_area_tag "body", @body, :rows => 30, :style => 'width:100%' %>
           </p>
-          <%= render :partial => 'maruku_help' %>
+          <%= link_to t('views.syntax_help.syntax_help'), {:action => "maruku_help"}, :target => "_blank" %>
           <p><%= label_tag t("views.page.summary") %>:<%= text_field_tag('summary') %></p>
 
           <p><%= label_tag 'layout', t("views.page.layout") %>

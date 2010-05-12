@@ -6,7 +6,7 @@ Feature: Wiki pages
   Background:
     Given I am logged in
 
-     Scenario: Logged user visits a fresh wiki and creates first page
+  Scenario: Logged user visits a fresh wiki and creates first page
     Then I should see "Page does not exists. Do you want to create it?"
     And I create "/" page with title "Hello world" body "Hello universe"
     Then I should see "Page successfully created."
@@ -53,23 +53,31 @@ Feature: Wiki pages
     And I should not see "Hello universe."
 
 
-   Scenario: User wants to add new page which don't exist
-     When I create "/" page
-     And I go to the main page
-     And I follow "New page"
-     And I fill in "add_page[new_page]" with "neo"
-     And I press "Create"
-     Then I should see "Page does not exists. Do you want to create it?"
+  Scenario: User wants to add new page which don't exist
+    When I create "/" page
+    And I go to the main page
+    And I follow "New page"
+    And I fill in "add_page[new_page]" with "neo"
+    And I press "Create"
+    Then I should see "Page does not exists. Do you want to create it?"
 
-    Scenario: User wants to add new page which exist
-     When I create "/" page
-     And I create "neo" page
-     And I go to the main page
-     And I follow "New page"
-     And I fill in "add_page[new_page]" with "neo"
-     And I press "Create"
-     Then I should see "This page exists"
+  Scenario: User wants to add new page which exist
+    When I create "/" page
+    And I create "neo" page
+    And I go to the main page
+    And I follow "New page"
+    And I fill in "add_page[new_page]" with "neo"
+    And I press "Create"
+    Then I should see "This page exists"
      
-     
-    
+  Scenario: User wants to show help for maruku syntax when creating new page
+    When I create "/" page with title "Title" body "Hello universe." and "PeWe Layout" layout without saving
+    And I follow "Syntax help"
+    Then I should see "Paragraphs"
+
+  Scenario: User wants to show help for maruku syntax when editing page
+    When I create "/" page with title "Hello world" body "Hello universe"
+    And I follow "Edit"
+    And I follow "Syntax help"
+    Then I should see "Paragraphs"
   

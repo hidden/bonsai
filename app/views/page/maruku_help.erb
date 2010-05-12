@@ -1,0 +1,58 @@
+<ul>
+  <li><%= t("views.syntax_help.links") %>
+    <ul>
+      <li><%= t("views.syntax_help.this_is") %> [an example](http://example.com/
+        "Title") <%= t("views.syntax_help.inline_link") %></li>
+      <li><%= t("views.syntax_help.see_my") %> [About](/about/) <%= t("views.syntax_help.for_details") %> </li>
+      <li><%= t("views.syntax_help.automatic_links") %> &lt;http://example.com/&gt;</li>
+    </ul>
+  </li>
+  <li>
+    <%= t("views.syntax_help.image") %>
+    <ul>
+      <li>
+        ![Alt text](/path/to/img.jpg)
+      </li>
+      <li>
+        ![Alt text](/path/to/img.jpg "Optional title")
+      </li>
+    </ul>
+  </li>
+  <li><%= t("views.syntax_help.paragraphs") %></li>
+  <li>
+    <%= t("views.syntax_help.headings") %>
+    <ul>
+      <li><%= t("views.syntax_help.h1") %> </li>
+      <li><%= t("views.syntax_help.h2") %></li>
+      <li><%= t("views.syntax_help.h6") %></li>
+    </ul>
+  </li>
+  <li>
+    <%= t("views.syntax_help.preformatted_text") %>
+    <ul>
+      <li><%= t("views.syntax_help.bold") %> --/**text--/**</li>
+      <li><%= t("views.syntax_help.italic") %> -/*text-/*</li>
+    </ul>
+  </li>
+  <li><%= t("views.syntax_help.lists") %>
+    <ul>
+      <li><%= t("views.syntax_help.lists_p1") %>
+        <p>
+          <%= t("views.syntax_help.itemA") %><br/>
+          <%= t("views.syntax_help.itemB") %><br/>
+          <%= t("views.syntax_help.itemC") %><br/>
+        </p>
+      </li>
+      <li><%= t("views.syntax_help.lists_p2") %>
+        <p>
+          <%= t("views.syntax_help.item1") %><br/>
+          <%= t("views.syntax_help.item2") %><br/>
+          <%= t("views.syntax_help.item3") %><br/>
+        </p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <%= t("views.syntax_help.code_blocks") %>
+  </li>
+</ul>
