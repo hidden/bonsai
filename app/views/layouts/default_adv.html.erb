@@ -1,0 +1,80 @@
+<%= render :partial => 'shared/header' %>
+<%= render :partial => 'shared/notice' %>
+<%= render :partial => 'shared/breadcrumb' %>
+
+<% cache(@page.id) do %>
+    <div class="wrapper">
+      <div class="holder">
+          <% if !@page.resolve_part('right_menu').nil?
+                @right_menu = true %>
+                <div class="holder_right_dark">
+          <% end %>
+          <% if !@page.resolve_part('left_menu').nil?
+              @left_menu = true%>
+                <div class="holder_right_dark_left">
+          <% end %>
+
+        <% if !(@right_menu) %>
+            <div class="holder_right">
+        <% end %>
+
+        <div class="header">
+          <div class="header_content">
+            <h1><%=h @page.title %></h1>
+          </div>
+          <div class="header_right">
+          </div>
+        </div>
+
+       <% if @left_menu %>
+              <div class="main_content_left" style="width:244px;">
+                <%= markdown(@page.resolve_part('left_menu')) %>
+              </div>
+          <% end %>
+
+
+        <% if @right_menu %>
+            <div class="main_content_right" style="width:244px;">
+              <%= markdown(@page.resolve_part('right_menu')) %>
+            </div>
+        <% end %>
+
+        <div class="main_content_adv" style="<%= @left_menu ? 'margin-left:300px;' : ''%> <%=(@right_menu ? 'margin-right:300px;' : '') %>">
+          <%= markdown(@page.resolve_part('body')) %>
+        </div>
+
+
+
+
+        <% if !(@right_menu) or @left_menu %>
+            </div>
+        <% end %>
+
+
+
+        <div class="footer">
+          <% if @left_menu %>
+              <div class="footer_left_dark">
+               </div>
+          <% else %>
+              <div class="footer_left">
+               </div>
+          <% end %>
+
+          <% if @right_menu %>
+              <div class="footer_right_dark">
+               </div>
+          <% else %>
+              <div class="footer_right_light">
+               </div>
+          <% end %>
+
+          <%= render :partial => 'shared/footer' %>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+<% end %>
+
+
