@@ -1,0 +1,8 @@
+en:
+  layouts:
+    default_adv:
+      description: "This is a beautiful advance default layout with two columns. You can use it with one, two columns or without them."
+      parts:
+        body: "main content"
+        left_menu: "left column, might be page menu"
+        right_menu: "right column, might be page menu"

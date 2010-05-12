@@ -652,6 +652,10 @@ class PageController < ApplicationController
 
   end
 
+  def maruku_help
+    render :layout => false
+  end
+
   private
 
   def remove_back_link

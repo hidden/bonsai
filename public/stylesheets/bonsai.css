@@ -695,8 +695,11 @@ input[type="submit"].mini_button{
     background:transparent;
     border:0;
     background: url('../images/buttons/mini_button.png') no-repeat left top;
+    display:inline-block;
     width:50px;
-    height:18px;
+    height:20px;
+    cursor:pointer;
+    margin-top:3px;
 }
 
 /*breadcrumb*/
@@ -765,7 +768,7 @@ input[type="submit"].large_button{
     cursor:pointer;
 }
 
-input[type="file"].file_input{
+input[type="file"].file_i{
     width: 60%;
 }
 
@@ -857,11 +860,69 @@ LI.Collapsed {
 
 .upload_file {
     overflow: visible;
+    width:100%;
     /*padding-bottom: 80px;*/
+}
+
+.green_background {
+    color: #44b500;
+    background-color:#e7ffd8;
+    font-size: 10px;
+    text-align:center;
+}
+
+.red_background {
+    color: #b21f14;
+    background-color: #ffc7c3;
+    font-size: 10px;
+    text-align:center;
+}
+
+.info_text {
+    font-weight:bold;
+    width:100%;
+    height:16px;
+
+}
+.info_text span {
+    vertical-align:40%;
 }
 
 .bottom {
     position: absolute;
     bottom: 5px;
     white-space: nowrap;
+    width:100%;
+}
+
+.upload_text {
+    font-weight:bold;
+    font-size:11px;
+    color:white;
+    background: url('../images/buttons/btn-choose-file.gif') no-repeat left top;
+    display:inline-block;
+    vertical-align:bottom;
+}
+
+.SI-FILES-STYLIZED label.upload_cabinet
+{       
+    background:transparent;
+    border:0;
+	width: 79px;
+	height: 22px;
+    vertical-align:top;
+    z-index:-1;
+	display: inline-block;
+	overflow: hidden;
+    margin-left: 10px;
+}
+
+.SI-FILES-STYLIZED label.upload_cabinet input.file_input
+{
+	position: relative;
+	height: 100%;
+	width: 79px;
+	opacity:0;
+    -moz-opacity:0;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }

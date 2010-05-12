@@ -1,0 +1,10 @@
+sk:
+  layouts:
+    default_adv:
+      description: "Toto je rozšírený základný layout s dvoma stĺpcami. Môžťe použiť jeden, dva stĺpce, prípadne žiaden."
+      parts:
+        body: "hlavný obsah"
+        left_menu: "ľavý stĺpec, priestor pre menu stránky"
+        right_menu: "pravý stĺpec, priestor pre menu stránky"
+
+        
