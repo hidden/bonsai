@@ -626,7 +626,7 @@ class PageController < ApplicationController
     #inherited layout
     @inherited = false
     if layout.blank?
-      layout =  @page.inherited_layout
+      layout =  @page.parent_layout
     end
 
     if layout == @parent_layout
@@ -643,10 +643,6 @@ class PageController < ApplicationController
     @layout_description = params[0]
     @layout_params = params[2]
 
-  end
-
-  def maruku_help
-    render :layout => false
   end
 
   private
@@ -922,10 +918,10 @@ class PageController < ApplicationController
     params = get_layout_parameters(file)
 
     if (!@parent_layout.nil? and params[0] == @parent_layout)
-         option_text = 'Inherited (' + params[1] + ')'
-    else
-         option_text = params[1]
+         option_text_in = 'Inherited (' + params[1] + ')'
+         @user_layouts.push([option_text_in, ''])
     end
+    option_text = params[1]
 
     @layout = '' if @layout.nil?
 
@@ -934,7 +930,8 @@ class PageController < ApplicationController
     end
 
 
-    option_value = (params[0] == @parent_layout) ? '' : params[0]
+    option_value = params[0]
+
     @user_layouts.push([option_text, option_value])
     end
 
