@@ -626,7 +626,7 @@ class PageController < ApplicationController
     #inherited layout
     @inherited = false
     if layout.blank?
-      layout =  @page.parent_layout
+      layout =  @page.inherited_layout
     end
 
     if layout == @parent_layout
