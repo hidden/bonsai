@@ -125,6 +125,7 @@ en:
       upload_new_file: " upload new file"
       upload_file: "Upload a File"
       btn_upload: "Upload"
+      btn_choose: "Choose file"
       delete_page_part: "Delete this page part?"
       or: "Or"
       add_new_page_part: "add a new page part"
