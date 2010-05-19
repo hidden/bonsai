@@ -20,26 +20,6 @@ Feature: Wiki layouting and many page parts
     And I add "navigation" page part with text "This is a header"
     Then I should see "This is a header" within "#nav"
 
-  Scenario: User creates a page with inherit layout and change layout
-    When I create "/" page
-    And I create "/inherited" page with title "Inherit page" body "Inherit page body!" and "Inherited (Default Layout)" layout
-    And I go to the main page
-    And I follow "Edit"
-    And "" should be selected for "layout"  
-    And I select "PeWe Layout" from "layout"
-    And I press "Save"
-    And I go to /inherited
-    And I follow "Edit"
-    Then "" should be selected for "layout"
-
-  Scenario: User creates a page with non inherit layout and change layout
-    When I create "/" page
-    And I create "/inherited" page with title "Inherit page" body "Inherit page body!" and "PeWe Layout" layout
-    And I go to /inherited
-    And I follow "Edit"
-    And "PeWe Layout" should be selected for "layout"
-    Then I should not see "Inherited (PeWe Layout)"
-
   Scenario: User create a page part and then delete, it should not be seen from now on
     When I create "/" page
     And I add "testpage" page part with text "This is a header"
