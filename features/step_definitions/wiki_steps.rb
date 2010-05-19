@@ -20,3 +20,7 @@ Then /^the source should contain tag "([^\"]*)" with id "([^\"]*)"$/ do |tag, ta
   #response_body.should have_tag(tag, id)
   response_body.should have_selector("#{tag}[id='#{ tagid }']")
 end
+
+When /^"([^"]*)" should be selected for "([^"]*)"$/ do |value, field|
+  field_labeled(field).element.search(".//option[@selected = 'selected']").inner_html.should =~ /#{value}/
+end
