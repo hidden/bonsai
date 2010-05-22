@@ -933,23 +933,24 @@ class PageController < ApplicationController
     end
 
     @parent_layout = @page.parent_layout unless @page.nil?
-    #inherited_layout unless @page.nil?
 
     for file in @definition
     params = get_layout_parameters(file)
+
+    #pokial je v edite definovany layout
+    if (!@page.nil? and @layout.nil?)
+       @layout = @page.layout
+    end
+
+    #ak nema stranka lyout moze dedit
+    #pokial je nova stranka, selectujem na inherit
+    @layout = '' if @layout.nil?
 
     if (!@parent_layout.nil? and params[0] == @parent_layout)
          option_text = 'Inherited (' + params[1] + ')'
     else
          option_text = params[1]
     end
-
-    @layout = '' if @layout.nil?
-
-    if (!@page.nil? and @layout.nil?)
-       @layout = @page.layout
-    end
-
 
     option_value = (params[0] == @parent_layout) ? '' : params[0]
     @user_layouts.push([option_text, option_value])
