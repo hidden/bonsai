@@ -1,0 +1,225 @@
+/* bielik CSS Document */
+
+body{
+    background:white;
+}
+
+#bielik-content P,#bielik-content TD, #bielik-content UL, #bielik-content OL, #bielik-content LI, #bielik-content DL, #bielik-content PRE, #bielik-content BLOCKQUOTE {
+	font : 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content B {
+	font: bold 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content I {
+	font : italic 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content PRE, #bielik-content CODE {
+	font-family : "Courier New", Courier, monospace;
+}
+
+#bielik-content CITE, #bielik-content VAR {
+	font : italic 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content A:LINK {
+	color : #0086B0;
+}
+
+#bielik-content A:ACTIVE {
+	color : #00A5DE;
+}
+
+#bielik-content A:VISITED {
+	color : #00427B;
+}
+
+#bielik-content A.Black:link, #bielik-content A.Black:active, #bielik-content A.Black:visited {
+	color: Black;
+	text-decoration : none;
+}
+
+#bielik-content A.Black:hover {
+	color: Black;
+	text-decoration : underline;
+}
+
+#bielik-content A.NoLink:link {
+	color: #FFFFFF;
+	background: #FFFFFF;
+	text-decoration: none;
+}
+
+#bielik-content A.NoLink:visited {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+#bielik-content A.NoLink:hover {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+#bielik-content A.NoLink:active {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+
+
+
+
+#bielik-content .Heading0, #bielik-content h1 {
+	font : bold 20px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .Heading1, #bielik-content h2 {
+	font : bold 16px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .Heading2, #bielik-content h3 {
+	font : bold 14px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .Update {
+	font : 10px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .Normal {
+	font : 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .Bold {
+	font : bold 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .Italic {
+	font : italic 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .Small {
+	font : 10px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content .BigBoldItalic {
+	font : bold italic 16px Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bielik-content B.Red {
+	color: Red;
+}
+
+#bielik-content TD.Index {
+	font : bold italic 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+	vertical-align : top;
+}
+
+#bielik-content SPAN.New {
+	color: Red;
+	font : bold 11px Verdana, Geneva, Arial, Helvetica, sans-serif;
+/*	text-decoration: blink;*/
+}
+
+#bielik-content SPAN.Exp {
+	color: Red;
+	font : 11px Verdana, Geneva, Arial, Helvetica, sans-serif;
+
+}
+
+
+
+#bielik-holder{
+    margin: 5px auto 5px auto;
+	padding:0px;
+	width:850px;
+}
+
+#bielik-container{
+  margin:0px;
+  float:left;
+  border-right: 1px solid black;
+  width:700px;
+}
+
+#bielik-content{
+    font : 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
+    padding-right:10px;
+
+}
+#bielik-content h1{
+    margin-top:0px;
+}
+
+#bielik-nav{
+  border-top:1px solid;
+  float:left;
+  height:100%;
+  width:130px;
+
+}
+#bielik-nav p{
+    margin:0;
+    padding:0;
+}
+
+#bielik-nav a, #bielik-nav a:hover{
+  color: #000000;
+  vertical-align: middle;
+  font-size: 20px;
+  font-family:  Verdana, Geneva, Arial, Helvetica, sans-serif;
+  display: block;
+  text-decoration:none;
+  border-bottom:1px solid black;
+  padding: 2px 10px;
+}
+
+#bielik-nav a:hover{
+  color:#000000;
+  background:#0099cc;
+  border-bottom:1px solid black;
+}
+.bielik-hover{
+    color: #FFFFFF !important;
+    background:#006699;
+    border-bottom:1px solid black;
+}
+
+
+#bielik-info{
+  font-size: 12px;
+  font-family:  Verdana, Geneva, Arial, Helvetica, sans-serif;
+  float:right;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  padding:5px;
+  text-align:center;
+}
+#bielik-info p{
+    font-size: 12px;
+    font-family:  Verdana, Geneva, Arial, Helvetica, sans-serif;
+    margin:0;
+    padding:0;
+
+}
+
+.bielik-breadcrumb a{
+    height:20px;
+    vertical-align:top;
+    text-decoration:none;
+    color:#000000;
+}
+
+
+#bielik-content ul li p{
+    margin:0;
+    padding:2px;
+}
+
+#bielik-content .top-line{
+    border-top:1px solid;
+    width:80%;
+    margin: 5px auto;
+    height:1px;
+}

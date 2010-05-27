@@ -112,4 +112,16 @@ module PathsHelper
   def update_permissions_path
     url_for :controller => "page", :action => "update_permissions"
   end
+
+  def home_page_by_layout_path(page)
+     slash(page_path(page.home_page_by_layout))
+  end
+
+  def top_page_path(page)
+     page_path(page,'').gsub(';','/#top')
+  end
+
+  def slash(path)
+    path.gsub(';view','/')
+  end
 end

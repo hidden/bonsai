@@ -80,6 +80,17 @@ class Page < ActiveRecord::Base
     return (node_with_layout.nil?) ? 'default' : node_with_layout.layout
   end
 
+   def home_page_by_layout
+    home_page = Page.first(:conditions => ["(lft <= ? AND rgt >= ?) AND layout = ?", self.lft, self.rgt, resolve_layout], :order => "lft desc")
+    return (home_page.nil?) ? nil : home_page
+   end
+
+  def parents_by_layout
+    unless home_page_by_layout.nil?
+      Page.find_by_sql ["select * from pages where (lft < ? AND rgt > ?) and (lft >= ? and rgt <= ?) order by lft asc", self.lft, self.rgt, home_page_by_layout.lft, home_page_by_layout.rgt]
+    end
+  end
+
   def resolve_part part_name
     condition =  "(? BETWEEN pages.lft AND pages.rgt)"
     condition << " AND page_parts.name = ? AND page_part_revisions.was_deleted = ?"
@@ -181,6 +192,13 @@ class Page < ActiveRecord::Base
       node_with_layout = Page.first(:conditions => ["(? BETWEEN lft AND rgt) AND layout IS NOT NULL", parent.lft], :order => "lft DESC")
     end
     return (node_with_layout.nil? ? nil : node_with_layout.layout)
+  end
+
+  def last_update
+    unless self.id.nil?
+      last_sql = "select max(ppr.created_at) as last_update from page_part_revisions ppr, page_parts pp where  pp.page_id = #{self.id} and pp.current_page_part_revision_id = ppr.id"
+      PagePartRevision.find_by_sql(last_sql).first.last_update
+    end  
   end
 
   def is_root?

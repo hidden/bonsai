@@ -1,0 +1,4 @@
+<% unless @page.parents_by_layout.empty? %>
+<%= @page.parents_by_layout.collect {|page| link_to image_tag('layouts/bielik/home.gif', :alt => '') + " to " + page.title, slash(page_path(page))}.join " &nbsp; " %>
+<% end %>
+<%= link_to image_tag('layouts/bielik/top.gif', :alt => '') + " " + "to the Top", top_page_path(@page)  %>

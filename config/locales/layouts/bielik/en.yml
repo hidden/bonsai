@@ -1,0 +1,10 @@
+en:
+  layouts:
+    bielik:
+      description: "This is the most known layout for all students"
+      parts:
+        body: "main content"
+        navigation: "page menu"
+        footer: "info about author"
+      text:
+        last_update: "Last updated"

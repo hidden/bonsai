@@ -1,0 +1,10 @@
+sk:
+  layouts:
+    bielik:
+      description: "Najznámejší a všetkým študentom dobre známy dizajn"
+      parts:
+        body: "hlavný obsah"
+        navigation: "menu stránky"
+        footer: "informácie o autorovi"
+      text:
+        last_update: "Posledná aktualizácia"
