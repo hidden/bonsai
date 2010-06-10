@@ -203,6 +203,9 @@ body{
     padding:0;
 
 }
+.bielik-breadcrumb{
+    clear:both;
+}
 
 .bielik-breadcrumb a{
     height:20px;
@@ -222,4 +225,35 @@ body{
     width:80%;
     margin: 5px auto;
     height:1px;
+    clear:both;
+}
+
+.fright{
+    float:right;
+}
+
+.fleft{
+    float:left;
+    clear:left;
+}
+
+img.fleft{
+    margin:0 10px 10px 0;
+}
+
+img.fleft p{
+    background:red;
+}
+
+
+.titalic{
+    font-style:italic;
+}
+
+.tright{
+    text-align:right;
+}
+
+.tborder-top{
+    border-top: 1px solid black;
 }

@@ -426,9 +426,12 @@ ul#menu li ul li.small{
 
 
 .main_content{
-    margin-right:300px;
     padding:10px 33px;
     min-width:400px;
+}
+
+.holder#application .main_content {
+    margin-right:300px;
 }
 
 .main_content_right{
