@@ -305,3 +305,27 @@ Feature: Secure file uploads
     When I follow "Order by date"
     Then I should see "test_file2.txt test_file.txt"
     And I should see "Order by name"
+  
+  Scenario: User tries to revert file
+    When I create "/" page
+    And I go to /test_file2.txt
+    Then I should see "File not found."
+    When I attach the file at "test_file.txt" to "file_version_uploaded_data"
+    And I press "Upload"
+    And I go to /test_file2.txt
+    Then I should see "Some text in file."
+    When I go to the main page
+    And I follow "edit"
+    And I visit "files_frame" frame
+    And I attach the file at "test_file2.txt" to "file_version_uploaded_data"
+    And I press "Upload"
+    And I go to /test_file2.txt
+    Then I should see "Different text in file."
+    When I go to the main page
+    And I follow "files"
+    Then I should see "test_file2.txt"
+    And show me the page
+    And I follow "show file's history"
+    And I follow "revert to version 1"
+    And I go to /test_file2.txt
+    Then I should see "Some text in file."
