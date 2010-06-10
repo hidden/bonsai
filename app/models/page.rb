@@ -87,8 +87,9 @@ class Page < ActiveRecord::Base
 
   def parents_by_layout
     unless home_page_by_layout.nil?
-      Page.find_by_sql ["select * from pages where (lft < ? AND rgt > ?) and (lft >= ? and rgt <= ?) order by lft asc", self.lft, self.rgt, home_page_by_layout.lft, home_page_by_layout.rgt]
+      parents = Page.find_by_sql ["select * from pages where (lft < ? AND rgt > ?) and (lft >= ? and rgt <= ?) order by lft asc", self.lft, self.rgt, home_page_by_layout.lft, home_page_by_layout.rgt]
     end
+    return (parents.nil?) ? nil : parents
   end
 
   def resolve_part part_name
