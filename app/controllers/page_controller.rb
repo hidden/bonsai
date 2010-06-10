@@ -636,9 +636,16 @@ class PageController < ApplicationController
 
     #inherited layout
     @inherited = false
-    if layout.blank?
-      layout =  @page.inherited_layout
+
+    if @parent_layout.blank?
+      @parent_layout = @page.inherited_layout
     end
+
+    if layout.blank?
+      layout =  @parent_layout
+    end
+
+
 
     if layout == @parent_layout
       @inherited=true
@@ -939,9 +946,6 @@ class PageController < ApplicationController
 
     @parent_layout = @page.parent_layout unless @page.nil?
 
-    for file in @definition
-    params = get_layout_parameters(file)
-
     #pokial je v edite definovany layout
     if (!@page.nil? and @layout.nil?)
        @layout = @page.layout
@@ -949,7 +953,12 @@ class PageController < ApplicationController
 
     #ak nema stranka lyout moze dedit
     #pokial je nova stranka, selectujem na inherit
-    @layout = '' if @layout.nil?
+    @layout = '' if (@layout.nil? or @page.parent_layout == @layout)
+
+
+    for file in @definition
+    params = get_layout_parameters(file)
+
 
     if (!@parent_layout.nil? and params[0] == @parent_layout)
          option_text = 'Inherited (' + params[1] + ')'
