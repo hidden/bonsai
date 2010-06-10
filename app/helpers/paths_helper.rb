@@ -124,4 +124,8 @@ module PathsHelper
   def slash(path)
     path.gsub(';view','/')
   end
+
+  def revert_file_path(page, file, version)
+    page_path(page, 'revert_file', :file => file.id, :version => version.id)
+  end
 end

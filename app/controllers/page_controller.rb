@@ -3,7 +3,7 @@ class PageController < ApplicationController
 
   before_filter :load_page, :except => [:add_lock, :update_lock, :search, :system_page]
   before_filter :can_manage_page_check, :only => [:set_permissions, :remove_permission, :switch_public, :switch_editable, :update_permissions]
-  before_filter :can_edit_page_check, :only => [:add, :edit, :update, :upload, :undo, :new_part, :files, :render_files]
+  before_filter :can_edit_page_check, :only => [:add, :edit, :update, :upload, :undo, :new_part, :files, :render_files, :revert_file]
   before_filter :check_file, :only => [:view]
   before_filter :slash_check, :only => [:view]
   before_filter :is_blank_page, :only => [:view]
@@ -50,6 +50,13 @@ class PageController < ApplicationController
     else
       render :action => :show_history
     end
+  end
+
+  def revert_file
+    file = UploadedFile.find_by_id(params[:file])
+    file.current_file_version_id = params[:version]
+    file.save
+    redirect_to file_history_page_path(@page, file.filename)
   end
 
   def diff

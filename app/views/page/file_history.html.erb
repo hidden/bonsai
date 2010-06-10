@@ -22,6 +22,7 @@
             <th><%= t("views.page.uploader") %></th>
             <th><%= t("views.page.size") %></th>
             <th><%= t("views.page.creation_time") %></th>
+            <th><%= t("views.page.revert") %></th>
           </tr>
           </thead>
           <tbody>
@@ -32,6 +33,7 @@
                 <td><% if version.uploader.nil? %><%= t("views.page.unknown") %><% else %><%= h version.uploader.full_name %><% end %></td>
                 <td><%= number_to_human_size(version.size) %></td>
                 <td><%= version.created_at.strftime("%H:%M:%S %d %b %Y") %></td>
+                <td><%= link_to icon_tag('arrow_rotate_clockwise.png', :alt => t("views.page.revert_to_version")), revert_file_path(@page, @file, version), :title => t("views.page.revert_to_version") unless @file.current_file_version.eql?(version) %></td>
               </tr>
           <% end %>
           </tbody>

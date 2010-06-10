@@ -117,6 +117,8 @@ en:
       version: "Version"
       size: "Size"
       creation_time: "Time"
+      revert: "Revert"
+      revert_to_version: "revert to this version"
       unknown: "unknown"
       file_not_found: "File not found."
       file_deleted: "File revision was deleted."

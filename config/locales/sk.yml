@@ -120,6 +120,8 @@ sk:
       version: "Verzia"
       size: "Veľkosť"
       creation_time: "Čas"
+      revert: "Vrátiť"
+      revert_to_version: "vrátiť túto verziu"
       unknown: "neznámy"
       file_not_found: "Súbor nenájdený."
       file_deleted: "Verzia súboru bola vymazaná."
