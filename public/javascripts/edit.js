@@ -1,13 +1,17 @@
 var current_parts = new Array();
-     function lost_focus(){
-                document.forms[0].elements["title"].focus();
+            function lost_focus(){
+                var edit_form = document.forms["edit_form"];
+                if(edit_form != null)
+                    edit_form.title.focus();
              }
 
             function set_focus(part_name){
-                document.forms[0].elements["parts["+part_name+"]"].focus();
+                var edit_form = document.forms["edit_form"];
+                if(edit_form != null)
+                    edit_form.elements["parts["+part_name+"]"].focus();
             }
 
-            //I18n.t("page_is_editing")
+
             function show_confirm(is_edited_by_another, part_id, part_name,text){
                 if(is_edited_by_another && (!check_lock(part_id))){
                     lost_focus();
@@ -19,7 +23,7 @@ var current_parts = new Array();
                         return false;
                     }
                 }else{
-                add_lock(part_id);
+                    add_lock(part_id);
                 }
             }
 
@@ -31,7 +35,7 @@ var current_parts = new Array();
                 return (current_parts.indexOf(part_id) != -1);
             }
 
-//I18n.t("manager_error")
+
 {function testManagers(text){
                     var managers = document.getElementsByClassName("ManagerHidden");
                     if ((managers.length) >= 2) return true;

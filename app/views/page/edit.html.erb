@@ -52,7 +52,7 @@
           <div id="layout_details" class="lighter_bg" style="display:none;">
           </div>
       <% end %>
-
+      
       <% for part in @page.ordered_page_parts %>
           <% if @undo or !part.current_page_part_revision.was_deleted %>
               <div id="page_part_id_<%= part.id %>" class="width100">

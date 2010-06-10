@@ -495,16 +495,21 @@ class PageController < ApplicationController
       end
     end
 
+
     if @num_of_changed_page_parts > 0 then
-      notice = t("controller.notices.page_updated_with_new_revisions")
+      error = t("controller.notices.page_updated_with_new_revisions")
     else
       notice = t("controller.notices.page_updated")
     end
+
     if params[:non_redirect].nil?
-      flash[:notice] = notice
+
+      flash[:notice] = notice if notice
       redirect_to page_path(@page)
     else
-      @notice_flash_msg = @notice_flash_msg + notice + "\r\n"
+      flash[:error] = error if error
+      @notice_flash_msg = @notice_flash_msg + notice.to_s + "\r\n"
+      #TODO WTF?
     end
   end
 
