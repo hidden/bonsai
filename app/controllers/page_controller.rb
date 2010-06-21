@@ -514,7 +514,8 @@ class PageController < ApplicationController
       flash[:notice] = notice if notice
       redirect_to page_path(@page)
     else
-      flash[:error] = error if error
+      #flash[:error] = error if error
+      @error_flash_msg = error if error
       @notice_flash_msg = @notice_flash_msg + notice.to_s + "\r\n"
       #TODO WTF?
     end
