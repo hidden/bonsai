@@ -20,6 +20,7 @@ class Page < ActiveRecord::Base
     indexes :title
     indexes page_parts.name, :as => :part_names
     indexes page_parts.current_page_part_revision.body, :as => :content
+    has :id, :as => :page_id
     where "was_deleted = 0"
     set_property :field_weights => {:title => 10, :part_names => 5, :content => 2}
   end
