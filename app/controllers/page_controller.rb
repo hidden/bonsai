@@ -19,6 +19,7 @@ class PageController < ApplicationController
     @search_results = Page.search(
       @query,
       :conditions => {:page_id => @current_user.find_all_accessible_pages.collect(&:id)},
+      :include => {:page_parts => :current_page_part_revision},
       :page => params[:page],
       :excerpts => true,
       :per_page => APP_CONFIG['fulltext_page_results']
