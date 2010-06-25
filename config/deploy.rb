@@ -1,5 +1,5 @@
-set :application, "wiki"
-set :repository,  "git://github.com/jsuchal/bonsai.git"
+set :application, "wiki2"
+set :repository,  "git://github.com/hidden/bonsai.git"
 
 set :deploy_to, "/var/rails/#{application}"
 set :user, "wiki"
@@ -46,9 +46,5 @@ end
 after 'deploy:update_code', 'deploy:symlink_shared'
 after "deploy:finalize_update", 'deploy:symlink_database_yml'
 after "deploy:symlink", "deploy:update_crontab"
-
-Dir[File.join(File.dirname(__FILE__), '..', 'vendor', 'gems', 'hoptoad_notifier-*')].each do |vendored_notifier|
-  $: << File.join(vendored_notifier, 'lib')
-end
 
 require 'hoptoad_notifier/capistrano'
