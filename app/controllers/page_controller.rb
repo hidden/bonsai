@@ -772,7 +772,7 @@ class PageController < ApplicationController
 
   def slash_check
     link = request.env['PATH_INFO']
-    unless link.ends_with?('/')
+    unless link.ends_with?('/') or link.include?(';')
       redirect_to link + '/'
       return
     end
