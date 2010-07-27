@@ -21,7 +21,7 @@ module PathsHelper
 
   def page_path(page, action = 'view', options = {})
     forced_options = {:controller => 'page', :action => action, :path => page.get_rel_path}
-    url_for(options.merge(forced_options))
+    (action == 'view') ? page_view_path(page.get_rel_path) : url_for(options.merge(forced_options))
   end
 
   def edit_page_path(page)
